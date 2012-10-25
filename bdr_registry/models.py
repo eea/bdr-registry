@@ -38,4 +38,5 @@ class Person(models.Model):
     first_name = models.CharField(max_length=255, verbose_name="First name")
     email = models.EmailField(verbose_name="Email address")
     phone = models.CharField(max_length=255, verbose_name="Telephone")
-    fax = models.CharField(max_length=255, verbose_name="Fax")
+    fax = models.CharField(max_length=255, verbose_name="Fax",
+                           null=True, blank=True)

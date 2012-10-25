@@ -22,18 +22,22 @@ class SelfRegister(View):
 
     def make_forms(self, post_data=None):
         OrganisationForm = modelform_factory(models.Organisation)
-        return OrganisationForm(post_data, prefix='organisation')
+        PersonForm = modelform_factory(models.Person)
+        return (OrganisationForm(post_data, prefix='organisation'),
+                PersonForm(post_data, prefix='person'))
 
     def get(self, request):
-        organisation_form = self.make_forms()
+        organisation_form, person_form = self.make_forms()
         return render(request, 'self_register.html', {
             'organisation_form': organisation_form,
+            'person_form': person_form,
         })
 
     def post(self, request):
-        organisation_form = self.make_forms(request.POST)
-        if organisation_form.is_valid():
+        organisation_form, person_form = self.make_forms(request.POST)
+        if organisation_form.is_valid() and person_form.is_valid():
             organisation_form.save()
+            person_form.save()
             return redirect('self_register_done')
         else:
             raise NotImplementedError

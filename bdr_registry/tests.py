@@ -51,12 +51,17 @@ class FormSubmitTest(TestCase):
         }
         for key, value in org_text_data.items():
             form_data['organisation-' + key] = value
+        for key, value in person_text_data.items():
+            form_data['person-' + key] = value
         resp = self.client.post('/self_register', form_data)
 
         self.assertEqual(models.Organisation.objects.count(), 1)
+        self.assertEqual(models.Person.objects.count(), 1)
         org = models.Organisation.objects.all()[0]
+        person = models.Person.objects.all()[0]
 
         self.assert_object_has_items(org, org_text_data)
+        self.assert_object_has_items(person, person_text_data)
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
