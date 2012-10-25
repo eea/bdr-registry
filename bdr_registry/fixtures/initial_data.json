@@ -1,0 +1,233 @@
+[
+  {
+    "pk": 1,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Austria"
+    }
+  },
+  {
+    "pk": 2,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Belgium"
+    }
+  },
+  {
+    "pk": 3,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Bulgaria"
+    }
+  },
+  {
+    "pk": 4,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Croatia"
+    }
+  },
+  {
+    "pk": 5,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Cyprus"
+    }
+  },
+  {
+    "pk": 6,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Czech Republic"
+    }
+  },
+  {
+    "pk": 7,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Denmark"
+    }
+  },
+  {
+    "pk": 8,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Estonia"
+    }
+  },
+  {
+    "pk": 9,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Finland"
+    }
+  },
+  {
+    "pk": 10,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "France"
+    }
+  },
+  {
+    "pk": 11,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Germany"
+    }
+  },
+  {
+    "pk": 12,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Greece"
+    }
+  },
+  {
+    "pk": 13,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Hungary"
+    }
+  },
+  {
+    "pk": 14,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Iceland"
+    }
+  },
+  {
+    "pk": 15,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Ireland"
+    }
+  },
+  {
+    "pk": 16,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Italy"
+    }
+  },
+  {
+    "pk": 17,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Latvia"
+    }
+  },
+  {
+    "pk": 18,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Liechtenstein"
+    }
+  },
+  {
+    "pk": 19,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Lithuania"
+    }
+  },
+  {
+    "pk": 20,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Luxembourg"
+    }
+  },
+  {
+    "pk": 21,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Malta"
+    }
+  },
+  {
+    "pk": 22,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Netherlands"
+    }
+  },
+  {
+    "pk": 23,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Norway"
+    }
+  },
+  {
+    "pk": 24,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Poland"
+    }
+  },
+  {
+    "pk": 25,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Portugal"
+    }
+  },
+  {
+    "pk": 26,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Romania"
+    }
+  },
+  {
+    "pk": 27,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Slovakia"
+    }
+  },
+  {
+    "pk": 28,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Slovenia"
+    }
+  },
+  {
+    "pk": 29,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Spain"
+    }
+  },
+  {
+    "pk": 30,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Sweden"
+    }
+  },
+  {
+    "pk": 31,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Switzerland"
+    }
+  },
+  {
+    "pk": 32,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "Turkey"
+    }
+  },
+  {
+    "pk": 33,
+    "model": "bdr_registry.country",
+    "fields": {
+      "name": "United Kingdom"
+    }
+  }
+]
