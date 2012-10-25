@@ -20,13 +20,15 @@ class Organisation(DetailView):
 class SelfRegister(View):
 
     def get(self, request):
-        organisation_form = models.SelfRegisterOrganisationForm()
+        organisation_form = models.SelfRegisterOrganisationForm(
+                prefix='organisation')
         return render(request, 'self_register.html', {
             'organisation_form': organisation_form,
         })
 
     def post(self, request):
-        organisation_form = models.SelfRegisterOrganisationForm(request.POST)
+        organisation_form = models.SelfRegisterOrganisationForm(
+                request.POST, prefix='organisation')
         if organisation_form.is_valid():
             organisation_form.save()
             return redirect('self_register_done')

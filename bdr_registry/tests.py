@@ -47,10 +47,10 @@ class FormSubmitTest(TestCase):
             'phone': "555 1234",
         }
         form_data = {
-            'country': models.Country.objects.get(name="Denmark").pk,
+            'organisation-country': models.Country.objects.get(name="Denmark").pk,
         }
         for key, value in org_text_data.items():
-            form_data[key] = value
+            form_data['organisation-' + key] = value
         resp = self.client.post('/self_register', form_data)
 
         self.assertEqual(models.Organisation.objects.count(), 1)
