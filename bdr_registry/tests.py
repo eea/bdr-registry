@@ -1,12 +1,9 @@
-import unittest
 from django.test.client import Client
+from django.test import TestCase
 from bdr_registry import models
 
 
-class FormSubmitTest(unittest.TestCase):
-
-    def setUp(self):
-        self.client = Client()
+class FormSubmitTest(TestCase):
 
     def assert_object_has_items(self, obj, data):
         for key in data:
