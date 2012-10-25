@@ -62,6 +62,8 @@ class FormSubmitTest(TestCase):
 
         self.assert_object_has_items(org, org_text_data)
         self.assert_object_has_items(person, person_text_data)
+        self.assertEqual(person.organisation, org)
+        self.assertItemsEqual(org.people.all(), [person])
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],

@@ -35,9 +35,17 @@ class SelfRegister(View):
 
     def post(self, request):
         organisation_form, person_form = self.make_forms(request.POST)
-        if organisation_form.is_valid() and person_form.is_valid():
-            organisation_form.save()
-            person_form.save()
-            return redirect('self_register_done')
+
+        if organisation_form.is_valid():
+            organisation = organisation_form.save()
+            person_form.data['person-organisation'] = organisation.pk
+
+            if person_form.is_valid():
+                person_form.save()
+                return redirect('self_register_done')
+
+            else:
+                raise NotImplementedError
+
         else:
             raise NotImplementedError

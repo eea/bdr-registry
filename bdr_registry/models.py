@@ -40,3 +40,4 @@ class Person(models.Model):
     phone = models.CharField(max_length=255, verbose_name="Telephone")
     fax = models.CharField(max_length=255, verbose_name="Fax",
                            null=True, blank=True)
+    organisation = models.ForeignKey(Organisation, related_name='people')
