@@ -6,6 +6,7 @@ from django.forms.models import modelform_factory
 from django.db import transaction
 from django.core import mail
 from django.conf import settings
+from django.template.loader import render_to_string
 import models
 
 
@@ -50,11 +51,10 @@ class SelfRegister(View):
                 person.organisation = organisation
                 person.save()
 
-                mail_from = settings.BDR_EMAIL_FROM
-                mail_to = [settings.BDR_ADMIN_EMAIL]
-                mail.send_mail("BDR registration notification",
-                               "somebody has registered",
-                               mail_from, mail_to, fail_silently=False)
+                send_notification_email({
+                    'organisation': organisation,
+                    'person': person,
+                })
 
                 return redirect('self_register_done')
 
@@ -65,3 +65,12 @@ class SelfRegister(View):
             raise NotImplementedError
 
         return self.render_forms(request, organisation_form, person_form)
+
+
+def send_notification_email(context):
+    mail_from = settings.BDR_EMAIL_FROM
+    mail_to = [settings.BDR_ADMIN_EMAIL]
+    html = render_to_string('self_register_mail.html', context)
+    message = mail.EmailMessage("BDR Registration", html, mail_from, mail_to)
+    message.content_subtype = 'html'
+    message.send(fail_silently=False)

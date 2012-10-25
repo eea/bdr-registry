@@ -1,0 +1,78 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>BDR Registration</title>
+</head>
+
+<body>
+
+<div style="font-family: verdana, arial, sans-serif;
+            padding: 0.5em;
+            font-weight: bold;
+            font-size: 2em;
+            border: 1px solid black;
+            text-align:right">BDR Registration</div>
+
+<table>
+  <tr>
+    <th style="text-align: left">Organisation</th>
+    <td>{{ organisation.name }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Obligation</th>
+    <td>TODO - obligation</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Street and nr</th>
+    <td>{{ organisation.addr_street }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Place 1 / Municipality</th>
+    <td>{{ organisation.addr_place1 }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Postal code</th>
+    <td>{{ organisation.addr_postalcode }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Place 2 / Region</th>
+    <td>{{ organisation.addr_place2 }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Country</th>
+    <td>{{ organisation.country.name }}</td>
+  </tr>
+
+  <tr><td colspan="2">First contact:</td></tr>
+  <tr>
+    <th style="text-align: left">Title</th>
+    <td>{{ person.title }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Family name</th>
+    <td>{{ person.family_name }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">First name</th>
+    <td>{{ person.first_name }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Email address</th>
+    <td>{{ person.email }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Telephone</th>
+    <td>{{ person.phone }}</td>
+  </tr>
+  <tr>
+    <th style="text-align: left">Fax</th>
+    <td>{{ person.fax }}</td>
+  </tr>
+
+</table>
+
+<p><i>Best regards<br/> BDR</i></p>
+
+</body>
+</html>
