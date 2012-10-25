@@ -1,9 +1,9 @@
 from django.test.client import Client
-from django.test import TestCase
+from django.test import TransactionTestCase
 from bdr_registry import models
 
 
-class FormSubmitTest(TestCase):
+class FormSubmitTest(TransactionTestCase):
 
     ORG_FIXTURE = {
         'name': "Teh company",
@@ -61,3 +61,14 @@ class FormSubmitTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
                          'http://testserver/self_register/done')
+
+    def test_invalid_person_rolls_back_saved_organisation(self):
+        denmark = models.Country.objects.get(name="Denmark").pk
+        form_data = {'organisation-country': denmark}
+        for key, value in self.ORG_FIXTURE.items():
+            form_data['organisation-' + key] = value
+        resp = self.client.post('/self_register', form_data)
+
+        self.assertEqual(models.Organisation.objects.count(), 0)
+
+        self.assertEqual(resp.status_code, 200)
