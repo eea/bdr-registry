@@ -1,5 +1,6 @@
 from django.test.client import Client
 from django.test import TransactionTestCase
+from django.core import mail
 from bdr_registry import models
 
 
@@ -72,3 +73,14 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(models.Organisation.objects.count(), 0)
 
         self.assertEqual(resp.status_code, 200)
+
+    def test_mail_is_sent_after_successful_self_registration(self):
+        denmark = models.Country.objects.get(name="Denmark").pk
+        form_data = {'organisation-country': denmark}
+        for key, value in self.ORG_FIXTURE.items():
+            form_data['organisation-' + key] = value
+        for key, value in self.PERSON_FIXTURE.items():
+            form_data['person-' + key] = value
+        self.client.post('/self_register', form_data)
+
+        self.assertEqual(len(mail.outbox), 1)

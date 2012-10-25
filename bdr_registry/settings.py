@@ -149,3 +149,8 @@ LOGGING = {
         },
     }
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+BDR_ADMIN_EMAIL = os.environ.get('BDR_ADMIN_EMAIL', '')
+BDR_EMAIL_FROM = os.environ.get('BDR_EMAIL_FROM', 'bdr@localhost')

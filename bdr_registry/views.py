@@ -4,6 +4,8 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect
 from django.forms.models import modelform_factory
 from django.db import transaction
+from django.core import mail
+from django.conf import settings
 import models
 
 
@@ -47,6 +49,13 @@ class SelfRegister(View):
                 person = person_form.save(commit=False)
                 person.organisation = organisation
                 person.save()
+
+                mail_from = settings.BDR_EMAIL_FROM
+                mail_to = [settings.BDR_ADMIN_EMAIL]
+                mail.send_mail("BDR registration notification",
+                               "somebody has registered",
+                               mail_from, mail_to, fail_silently=False)
+
                 return redirect('self_register_done')
 
             else:
