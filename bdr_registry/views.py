@@ -61,9 +61,6 @@ class SelfRegister(View):
             else:
                 transaction.rollback()
 
-        else:
-            raise NotImplementedError
-
         return self.render_forms(request, organisation_form, person_form)
 
 
