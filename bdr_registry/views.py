@@ -23,7 +23,8 @@ class SelfRegister(View):
 
     def make_forms(self, post_data=None):
         OrganisationForm = modelform_factory(models.Organisation)
-        PersonForm = modelform_factory(models.Person)
+        PersonForm = modelform_factory(models.Person,
+                                       exclude=('organisation',))
         return (OrganisationForm(post_data, prefix='organisation'),
                 PersonForm(post_data, prefix='person'))
 
@@ -37,14 +38,15 @@ class SelfRegister(View):
         return self.render_forms(request, *self.make_forms())
 
     def post(self, request):
-        organisation_form, person_form = self.make_forms(request.POST)
+        organisation_form, person_form = self.make_forms(request.POST.dict())
 
         if organisation_form.is_valid():
             organisation = organisation_form.save()
-            person_form.data['person-organisation'] = organisation.pk
 
             if person_form.is_valid():
-                person_form.save()
+                person = person_form.save(commit=False)
+                person.organisation = organisation
+                person.save()
                 return redirect('self_register_done')
 
             else:
