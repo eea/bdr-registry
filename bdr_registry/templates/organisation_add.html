@@ -8,7 +8,7 @@
         {% for err in field.errors %}
           {{ err }}
         {% endfor %}
-        <label for="id_{{ field.name }}">{{ field.label }}</label>
+        {{ field.label_tag }}
       </td>
       <td>{{ field }}</td>
     </tr>
