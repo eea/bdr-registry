@@ -10,6 +10,14 @@ class Country(models.Model):
         return self.name
 
 
+class Obligation(models.Model):
+
+    name = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Organisation(models.Model):
 
     name = models.CharField(max_length=255,
@@ -23,6 +31,7 @@ class Organisation(models.Model):
     addr_place2 = models.CharField(max_length=255,
                                    verbose_name="Place 2 / Region")
     country = models.ForeignKey(Country)
+    obligation = models.ForeignKey(Obligation, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})
