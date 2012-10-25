@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.forms import ModelForm
 
 
 class Country(models.Model):
@@ -30,12 +29,6 @@ class Organisation(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-class SelfRegisterOrganisationForm(ModelForm):
-
-    class Meta:
-        model = Organisation
 
 
 class Person(models.Model):
