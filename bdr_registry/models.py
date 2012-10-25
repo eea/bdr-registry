@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.urlresolvers import reverse
 
 
 class Country(models.Model):
@@ -22,6 +23,12 @@ class Organisation(models.Model):
     addr_place2 = models.CharField(max_length=255,
                                    verbose_name="Place 2 / Region")
     country = models.ForeignKey(Country)
+
+    def get_absolute_url(self):
+        return reverse('organisation', kwargs={'pk': self.pk})
+
+    def __unicode__(self):
+        return self.name
 
 
 class Person(models.Model):
