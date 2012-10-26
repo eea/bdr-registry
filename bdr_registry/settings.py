@@ -142,11 +142,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler',
-        },
         'stderr': {
             'level': 'DEBUG' if DEBUG else 'INFO',
             'class': 'logging.StreamHandler',
@@ -154,13 +149,37 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
     },
 }
+
+_sentry_dsn = os.environ.get('BDR_REGISTRY_SENTRY_DSN')
+if _sentry_dsn:
+    INSTALLED_APPS += ('raven.contrib.django',)
+    RAVEN_CONFIG = {
+        'dsn': _sentry_dsn,
+    }
+    LOGGING['handlers']['sentry'] = {
+        'level': 'ERROR',
+        'class': 'raven.contrib.django.handlers.SentryHandler',
+    }
+    LOGGING['root']['handlers'].append('sentry')
+    LOGGING['loggers'].update({
+        'django.db.backends': {
+            'level': 'ERROR',
+            'handlers': ['stderr'],
+            'propagate': False,
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['stderr'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['stderr'],
+            'propagate': False,
+        },
+    })
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
