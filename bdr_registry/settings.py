@@ -131,6 +131,7 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'root': {'handlers': []},
     'formatters': {
         'console': {
             'format': '%(asctime)s %(module)s %(levelname)s %(message)s',
