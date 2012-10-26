@@ -1,19 +1,65 @@
+{% extends "bdr_layout.html" %}
+
+
+{% block content %}
+
+<h1>Self registration</h1>
+<h2>Reporting undertakings</h2>
+
+<p>
+  Designated reporters of an undertaking, who have to report in
+  accordance with Article 6 of the F-Gas Regulation or Article 27 of the
+  ODS Regulation, should register in order to be able to report.
+</p>
+
+<ul>
+
+  <li>In case you or another person in your company already have
+  received a username and password but have forgotten it or in case you
+  need further assistance logging in, please contact the helpdesk at: <a
+  href="mailto:BDR.helpdesk@eea.europa.eu">BDR.helpdesk@eea.europa.eu</a>.
+  </li>
+
+  <li>In case your undertaking is a first time reporter and has
+  therefore not yet received a username and password, please proceed to
+  the <a href="#theform">self-registration form</a> below.</li>
+
+</ul>
+
+<h2 id="theform">Self-registration form</h2>
+<p>
+  Please note that this registration form should only be used if your
+  company has not yet received a login and a password. In the case of a
+  forgotten login or password or in the case of a change of reporter
+  details, please contact the helpdesk at: <a
+  href="mailto:BDR.helpdesk@eea.europa.eu">BDR.helpdesk@eea.europa.eu</a>.
+</p>
+<p>
+  For undertakings reporting for the first time, the account request
+  will be evaluated and login and password will be provided.
+</p>
+
 <form method="post">
   {% csrf_token %}
 
   <fieldset>
     <legend>Company details</legend>
 
-    <table>
+    <table class="formtable">
+    <col style="width:10em"/>
+    <col />
     {% for field in organisation_form %}
       <tr>
         <td>
           {% for err in field.errors %}
             {{ err }}
           {% endfor %}
-          {{ field.label_tag }}
+          <label for="id_{{ field.name }}" class="question
+              {% if field.field.required %}required{% endif %}">
+            {{ field.label }}
+          </label>
         </td>
-        <td>{{ field }}</td>
+        <td> {{ field }} </td>
       </tr>
     {% endfor %}
     </table>
@@ -23,14 +69,19 @@
   <fieldset>
     <legend>Designated company reporter nr 1</legend>
 
-    <table>
+    <table class="formtable">
+    <col style="width:10em"/>
+    <col />
     {% for field in person_form %}
       <tr>
         <td>
           {% for err in field.errors %}
             {{ err }}
           {% endfor %}
-          {{ field.label_tag }}
+          <label for="id_{{ field.name }}" class="question
+              {% if field.field.required %}required{% endif %}">
+            {{ field.label }}
+          </label>
         </td>
         <td>{{ field }}</td>
       </tr>
@@ -42,3 +93,5 @@
   <button type="submit">Request account</button>
 
 </form>
+
+{% endblock %}

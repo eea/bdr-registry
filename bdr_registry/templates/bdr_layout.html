@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+
+  <head>
+
+   <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+   <title>Self registration</title>
+   <script src="https://bdr.eionet.europa.eu/styles/pageops.js"></script>
+   <link rel="stylesheet"
+          media="print"
+          href="https://www.eionet.europa.eu/styles/eionet2007/print.css" />
+    <link rel="stylesheet"
+          href="https://www.eionet.europa.eu/styles/eionet2007/screen.css"
+          media="screen"
+          title="Eionet 2007 style" />
+    <link rel="stylesheet"
+          href="https://bdr.eionet.europa.eu/styles/eionet2007.css"
+          media="screen"
+          title="Eionet 2007 style" />
+    <link rel="stylesheet"
+          media="handheld"
+          href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <style>
+      .formtable input {
+          width: 270px;
+          margin: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <div id="toolribbon">
+        <div id="lefttools">
+          <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
+          <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
+        </div>
+        <div id="righttools">
+          <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
+          <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
+<!--
+          <form action="search" method="get"><div id="freesrchform"><label for="freesrchfld">Search</label>
+            <input type="text" id="freesrchfld" name="q"/>
+            <input id="freesrchbtn" type="image" src="/styles/button_go.gif" alt="Go"/></div></form>
+-->
+        </div>
+      </div> <!-- toolribbon -->
+      <div id="pagehead">
+        <a href="/" accesskey="1"><img src="https://bdr.eionet.europa.eu/styles/eea-print-logo.gif" alt="Logo" id="logo" /></a>
+        <div id="networktitle">Eionet</div>
+        <div id="sitetitle">Data reporting for business</div>
+        <div id="sitetagline">This site is part of the Reportnet</div>
+      </div> <!-- page head -->
+      <div id="menuribbon">
+<!-- Last updated: 2011-03-01T10:41:29Z
+     To update download http://www.eionet.europa.eu/dropdownmenus.txt -->
+        <ul id="dropdowns">
+</ul>
+
+      </div>
+
+  
+<div class="breadcrumbtrail">
+<div class="breadcrumbhead">You are here:</div>
+  <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu/">Eionet</a></div>
+      <div class="breadcrumbitem"><a href="https://bdr.eionet.europa.eu">BDR</a></div>
+        <div class="breadcrumbitemlast">Registry</div>
+    <div class="breadcrumbtail"></div>
+</div>
+
+
+<div id="leftcolumn" class="localnav">
+ <h2>Services</h2>
+<ul>
+<li><a href="/" title="BDR home">BDR home </a></li>
+<li><a href="/searchdataflow" title="Search">Search </a></li>
+<li><a href="/help" title="Introduction to Reportnet Repository">Help </a></li>
+<li><a href="/selfregister" title="Create an account to report statistics">Self-registration </a></li>
+</ul>
+
+
+</div>
+<div id="workarea">
+
+{% block content %}
+
+<form action="." method="post">
+<fieldset><legend>Company details</legend>
+<table class="formtable">
+<col style="width:10em"/>
+<col />
+<tr>
+   <td><label for="organisation" class="question required">Company name</label></td>
+   <td><input type="text" size="50" id="organisation" name="organisation" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="orgstreet" class="question required">Street and nr</label></td>
+   <td><input type="text" size="50" id="orgstreet" name="orgstreet" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="orgmunicipality" class="question required">Place 1 / Municipality</label></td>
+   <td><input type="text" size="50" id="orgmunicipality" name="orgmunicipality" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="orgpostcode" class="question required">Postal code</label></td>
+   <td><input type="text" size="50" id="orgpostcode" name="orgpostcode" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="orgregion" class="question">Place 2 / Region</label></td>
+   <td><input type="text" size="50" id="orgregion" name="orgregion" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="orgcountry" class="question required">Country</label></td>
+   <td><select name="orgcountry" id="orgcountry">
+         <option value="">- Select country -</option>
+         <option value="Austria">Austria</option>
+         <option value="Belgium">Belgium</option>
+         <option value="Bulgaria">Bulgaria</option>
+         <option value="Croatia">Croatia</option>
+         <option value="Cyprus">Cyprus</option>
+         <option value="Czech Republic">Czech Republic</option>
+         <option value="Denmark">Denmark</option>
+         <option value="Estonia">Estonia</option>
+         <option value="Finland">Finland</option>
+         <option value="France">France</option>
+         <option value="Germany">Germany</option>
+         <option value="Greece">Greece</option>
+         <option value="Hungary">Hungary</option>
+         <option value="Iceland">Iceland</option>
+         <option value="Ireland">Ireland</option>
+         <option value="Italy">Italy</option>
+         <option value="Latvia">Latvia</option>
+         <option value="Liechtenstein">Liechtenstein</option>
+         <option value="Lithuania">Lithuania</option>
+         <option value="Luxembourg">Luxembourg</option>
+         <option value="Malta">Malta</option>
+         <option value="Netherlands">Netherlands</option>
+         <option value="Norway">Norway</option>
+         <option value="Poland">Poland</option>
+         <option value="Portugal">Portugal</option>
+         <option value="Romania">Romania</option>
+         <option value="Slovakia">Slovakia</option>
+         <option value="Slovenia">Slovenia</option>
+         <option value="Spain">Spain</option>
+         <option value="Sweden">Sweden</option>
+         <option value="Switzerland">Switzerland</option>
+         <option value="Turkey">Turkey</option>
+         <option value="United Kingdom">United Kingdom</option>
+       </select>
+   </td>
+<tr>
+</table>
+</fieldset>
+
+<fieldset><legend>Designated company reporter nr 1</legend>
+<table class="formtable">
+<col style="width:10em"/>
+<col />
+<tr>
+   <td><label for="title1" class="question">Title</label></td>
+   <td><input type="text" size="50" id="title1" name="title1" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="surname1" class="question required">Family name</label></td>
+   <td><input type="text" size="50" id="surname1" name="surname1" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="givenname1" class="question required">First name</label></td>
+   <td><input type="text" size="50" id="givenname1" name="givenname1" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="email1" class="question required">Email address</label></td>
+   <td><input type="text" size="50" id="email1" name="email1" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="phone1" class="question required">Telephone</label></td>
+   <td><input type="text" size="50" id="phone1" name="phone1" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="fax1" class="question">Fax</label></td>
+   <td><input type="text" size="50" id="fax1" name="fax1" value=""/>
+</td>
+</tr>
+
+</table>
+</fieldset>
+
+<fieldset><legend>Designated company reporter nr 2</legend>
+<table class="formtable">
+<col style="width:10em"/>
+<col />
+<tr>
+   <td><label for="title2" class="question">Title</label></td>
+   <td><input type="text" size="50" id="title2" name="title2" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="surname2" class="question">Family name</label></td>
+   <td><input type="text" size="50" id="surname2" name="surname2" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="givenname2" class="question">First name</label></td>
+   <td><input type="text" size="50" id="givenname2" name="givenname2" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="email2" class="question">Email address</label></td>
+   <td><input type="text" size="50" id="email2" name="email2" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="phone2" class="question">Telephone</label></td>
+   <td><input type="text" size="50" id="phone2" name="phone2" value=""/>
+</td>
+</tr>
+
+<tr>
+   <td><label for="fax2" class="question">Fax</label></td>
+   <td><input type="text" size="50" id="fax2" name="fax2" value=""/>
+</td>
+</tr>
+
+</table>
+</fieldset>
+
+
+<fieldset><legend>Obligation</legend>
+<table class="formtable">
+<col style="width:10em"/>
+<col />
+<tr>
+   <td><label for="obligation" class="question required">Which obligation to deliver for</label></td>
+   <td>
+     <input type="radio" id="obligation_ods" name="obligation" value="ods"/>
+<label for="obligation_ods">Ozone depleting substances</label>
+<br/>
+     <input type="radio" id="obligation_fgas" name="obligation" value="fgas"/>
+<label for="obligation_fgas">F-gases</label>
+
+
+   </td>
+</tr>
+ <td colspan="2">&nbsp;</td>
+</tr>
+<tr>
+ <td><label for="euterms" class="question required">Terms of use</label></td>
+ <td><input type="checkbox" id="euterms" name="euterms" value="1"/>
+
+<label for="euterms">I have read and agree with the specific <a href="/privacystatement" target="_new">privacy statement</a></label>
+
+</td>
+</tr>
+
+<tr>
+ <td></td>
+ <td><input type="submit" value="Request account"/></td>
+</tr>
+</table>
+</fieldset>
+</form>
+
+{% endblock %}
+
+</div> <!-- workarea -->
+</div> <!-- container -->
+<div id="pagefoot">
+Document last modified 2012/02/10.
+</div>
+</body>
+</html>
+
