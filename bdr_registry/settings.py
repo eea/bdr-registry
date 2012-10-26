@@ -131,7 +131,6 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'root': {'handlers': []},
     'formatters': {
         'console': {
             'format': '%(asctime)s %(module)s %(levelname)s %(message)s',
@@ -159,28 +158,6 @@ if _sentry_dsn:
     RAVEN_CONFIG = {
         'dsn': _sentry_dsn,
     }
-    LOGGING['handlers']['sentry'] = {
-        'level': 'ERROR',
-        'class': 'raven.contrib.django.handlers.SentryHandler',
-    }
-    LOGGING['root']['handlers'].append('sentry')
-    LOGGING['loggers'].update({
-        'django.db.backends': {
-            'level': 'ERROR',
-            'handlers': ['stderr'],
-            'propagate': False,
-        },
-        'raven': {
-            'level': 'DEBUG',
-            'handlers': ['stderr'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'DEBUG',
-            'handlers': ['stderr'],
-            'propagate': False,
-        },
-    })
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
