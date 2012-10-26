@@ -120,6 +120,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'bdr_registry',
     'south',
+    'gunicorn',
 )
 
 # A sample logging configuration. The only tangible logging
