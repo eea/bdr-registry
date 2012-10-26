@@ -2,7 +2,7 @@ import os
 
 # Django settings for bdr_registry project.
 
-DEBUG = True
+DEBUG = bool(os.environ.get('BDR_REGISTRY_DEBUG'))
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -131,17 +131,27 @@ INSTALLED_APPS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(asctime)s %(module)s %(levelname)s %(message)s',
+        },
+    },
     'filters': {
         'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
     },
     'handlers': {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+        'stderr': {
+            'level': 'DEBUG' if DEBUG else 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+        },
     },
     'loggers': {
         'django.request': {
@@ -149,7 +159,7 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-    }
+    },
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
