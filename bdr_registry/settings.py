@@ -41,7 +41,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-SECRET_KEY = '+446!omu-b1icjwq2lxyo5ej%=_mt_4&amp;y4j6=%k=%^!zvem@p1'
+SECRET_KEY = os.environ.get('BDR_REGISTRY_DJANGO_SECRET', 'asdf')
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
