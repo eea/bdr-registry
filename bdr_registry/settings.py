@@ -30,7 +30,7 @@ MEDIA_ROOT = ''
 
 MEDIA_URL = ''
 
-STATIC_ROOT = ''
+STATIC_ROOT = os.environ.get('BDR_STATIC_ROOT', '')
 
 STATIC_URL = os.environ.get('BDR_STATIC_URL', '/static/')
 
@@ -70,6 +70,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.admin',
+    'django.contrib.staticfiles',
     'bdr_registry',
     'south',
     'gunicorn',
