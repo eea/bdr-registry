@@ -26,7 +26,14 @@ class Organisation(DetailView):
 
 def organisation_all(request):
     data = []
-    return HttpResponse(json.dumps(data), content_type='application/json')
+    for organisation in models.Organisation.objects.all():
+        item = {k: getattr(organisation, k)
+                for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
+                          'addr_place1', 'addr_place2']}
+        item['country'] = organisation.country.name
+        data.append(item)
+    return HttpResponse(json.dumps(data, indent=2, sort_keys=True),
+                        content_type='application/json')
 
 
 class SelfRegister(View):

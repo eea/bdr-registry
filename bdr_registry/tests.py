@@ -4,23 +4,25 @@ from django.core import mail
 from bdr_registry import models
 
 
+ORG_FIXTURE = {
+    'name': "Teh company",
+    'addr_street': "teh street",
+    'addr_place1': "Copenhagen",
+    'addr_postalcode': "123456",
+    'addr_place2': "Hovedstaden",
+}
+
+
+PERSON_FIXTURE = {
+    'title': "Mr.",
+    'first_name': "Joe",
+    'family_name': "Tester",
+    'email': "tester@example.com",
+    'phone': "555 1234",
+}
+
+
 class FormSubmitTest(TransactionTestCase):
-
-    ORG_FIXTURE = {
-        'name': "Teh company",
-        'addr_street': "teh street",
-        'addr_place1': "Copenhagen",
-        'addr_postalcode': "123456",
-        'addr_place2': "Hovedstaden",
-    }
-
-    PERSON_FIXTURE = {
-        'title': "Mr.",
-        'first_name': "Joe",
-        'family_name': "Tester",
-        'email': "tester@example.com",
-        'phone': "555 1234",
-    }
 
     def assert_object_has_items(self, obj, data):
         for key in data:
@@ -28,12 +30,12 @@ class FormSubmitTest(TransactionTestCase):
 
     def test_submitted_organisation_is_saved(self):
         denmark = models.Country.objects.get(name="Denmark")
-        form_data = dict(self.ORG_FIXTURE, country=denmark.pk)
+        form_data = dict(ORG_FIXTURE, country=denmark.pk)
         resp = self.client.post('/organisation/add', form_data)
 
         self.assertEqual(models.Organisation.objects.count(), 1)
         org = models.Organisation.objects.all()[0]
-        self.assert_object_has_items(org, self.ORG_FIXTURE)
+        self.assert_object_has_items(org, ORG_FIXTURE)
         self.assertEqual(org.country, denmark)
 
         self.assertEqual(resp.status_code, 302)
@@ -43,9 +45,9 @@ class FormSubmitTest(TransactionTestCase):
     def test_submitted_organisation_and_person_are_saved(self):
         denmark = models.Country.objects.get(name="Denmark").pk
         form_data = {'organisation-country': denmark}
-        for key, value in self.ORG_FIXTURE.items():
+        for key, value in ORG_FIXTURE.items():
             form_data['organisation-' + key] = value
-        for key, value in self.PERSON_FIXTURE.items():
+        for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
         resp = self.client.post('/self_register', form_data)
 
@@ -54,8 +56,8 @@ class FormSubmitTest(TransactionTestCase):
         org = models.Organisation.objects.all()[0]
         person = models.Person.objects.all()[0]
 
-        self.assert_object_has_items(org, self.ORG_FIXTURE)
-        self.assert_object_has_items(person, self.PERSON_FIXTURE)
+        self.assert_object_has_items(org, ORG_FIXTURE)
+        self.assert_object_has_items(person, PERSON_FIXTURE)
         self.assertEqual(person.organisation, org)
         self.assertItemsEqual(org.people.all(), [person])
 
@@ -66,7 +68,7 @@ class FormSubmitTest(TransactionTestCase):
     def test_invalid_person_rolls_back_saved_organisation(self):
         denmark = models.Country.objects.get(name="Denmark").pk
         form_data = {'organisation-country': denmark}
-        for key, value in self.ORG_FIXTURE.items():
+        for key, value in ORG_FIXTURE.items():
             form_data['organisation-' + key] = value
         resp = self.client.post('/self_register', form_data)
 
@@ -77,9 +79,9 @@ class FormSubmitTest(TransactionTestCase):
     def test_mail_is_sent_after_successful_self_registration(self):
         denmark = models.Country.objects.get(name="Denmark").pk
         form_data = {'organisation-country': denmark}
-        for key, value in self.ORG_FIXTURE.items():
+        for key, value in ORG_FIXTURE.items():
             form_data['organisation-' + key] = value
-        for key, value in self.PERSON_FIXTURE.items():
+        for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
         self.client.post('/self_register', form_data)
 
@@ -92,3 +94,12 @@ class ApiTest(TestCase):
         resp = self.client.get('/organisation/all')
         self.assertEqual(resp['Content-Type'], 'application/json')
         self.assertEqual(json.loads(resp.content), [])
+
+    def test_response_contains_the_single_organisation_from_db(self):
+        dk = models.Country.objects.get(name="Denmark")
+        kwargs = dict(ORG_FIXTURE, country=dk)
+        org = models.Organisation.objects.create(**kwargs)
+        resp = self.client.get('/organisation/all')
+        self.assertEqual(json.loads(resp.content), [
+            dict(ORG_FIXTURE, country="Denmark", pk=org.pk),
+        ])
