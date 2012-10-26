@@ -1,5 +1,5 @@
-from django.test.client import Client
-from django.test import TransactionTestCase
+import simplejson as json
+from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from bdr_registry import models
 
@@ -84,3 +84,11 @@ class FormSubmitTest(TransactionTestCase):
         self.client.post('/self_register', form_data)
 
         self.assertEqual(len(mail.outbox), 1)
+
+
+class ApiTest(TestCase):
+
+    def test_response_empty_when_no_organisations_in_db(self):
+        resp = self.client.get('/organisation/all')
+        self.assertEqual(resp['Content-Type'], 'application/json')
+        self.assertEqual(json.loads(resp.content), [])

@@ -1,3 +1,4 @@
+import simplejson as json
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -21,6 +22,11 @@ class Organisation(DetailView):
 
     model = models.Organisation
     template_name = 'organisation.html'
+
+
+def organisation_all(request):
+    data = []
+    return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 class SelfRegister(View):
