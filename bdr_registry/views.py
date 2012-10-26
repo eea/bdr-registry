@@ -7,6 +7,7 @@ from django.db import transaction
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.http import HttpResponse
 import models
 
 
@@ -71,3 +72,10 @@ def send_notification_email(context):
     message = mail.EmailMessage("BDR Registration", html, mail_from, mail_to)
     message.content_subtype = 'html'
     message.send(fail_silently=False)
+
+
+def crashme(request):
+    if request.user.is_superuser:
+        raise RuntimeError("Crashing as requested")
+    else:
+        return HttpResponse("Must be administrator")

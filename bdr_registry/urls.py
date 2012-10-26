@@ -14,4 +14,5 @@ urlpatterns = patterns('',
      url(r'^self_register/done$',
             TemplateView.as_view(template_name='self_register_done.html'),
             name='self_register_done'),
+     url(r'^crashme$', views.crashme),
 )
