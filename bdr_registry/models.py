@@ -50,3 +50,6 @@ class Person(models.Model):
     fax = models.CharField(max_length=255, verbose_name="Fax",
                            null=True, blank=True)
     organisation = models.ForeignKey(Organisation, related_name='people')
+
+    def __unicode__(self):
+        return u"{p.first_name} {p.family_name} <{p.email}>".format(p=self)
