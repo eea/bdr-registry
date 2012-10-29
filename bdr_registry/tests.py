@@ -90,6 +90,12 @@ class FormSubmitTest(TransactionTestCase):
 
 class ApiTest(TestCase):
 
+    def setUp(self):
+        from django.contrib.auth.models import User
+        user_data = dict(username='user', password='pw')
+        User.objects.create_user(**user_data)
+        self.client.login(**user_data)
+
     def test_response_empty_when_no_organisations_in_db(self):
         resp = self.client.get('/organisation/all')
         self.assertEqual(resp['Content-Type'], 'application/json')

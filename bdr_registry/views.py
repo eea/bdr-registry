@@ -9,6 +9,7 @@ from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 import models
 
 
@@ -24,6 +25,7 @@ class Organisation(DetailView):
     template_name = 'organisation.html'
 
 
+@login_required
 def organisation_all(request):
     data = []
     for organisation in models.Organisation.objects.all():
