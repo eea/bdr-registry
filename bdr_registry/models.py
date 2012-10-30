@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 class Country(models.Model):
 
     name = models.CharField(max_length=255)
+    code = models.CharField(max_length=255)
 
     def __unicode__(self):
         return self.name
