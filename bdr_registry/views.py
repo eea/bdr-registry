@@ -1,4 +1,3 @@
-import simplejson as json
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -10,6 +9,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+import xmltodict
 import models
 
 
@@ -34,8 +34,8 @@ def organisation_all(request):
                           'addr_place1', 'addr_place2']}
         item['country'] = organisation.country.name
         data.append(item)
-    return HttpResponse(json.dumps(data, indent=2, sort_keys=True),
-                        content_type='application/json')
+    xml = xmltodict.unparse({'organisations': {'organisation': data}})
+    return HttpResponse(xml, content_type='application/xml')
 
 
 class SelfRegister(View):

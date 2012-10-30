@@ -1,4 +1,3 @@
-import simplejson as json
 from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from bdr_registry import models
@@ -98,14 +97,27 @@ class ApiTest(TestCase):
 
     def test_response_empty_when_no_organisations_in_db(self):
         resp = self.client.get('/organisation/all')
-        self.assertEqual(resp['Content-Type'], 'application/json')
-        self.assertEqual(json.loads(resp.content), [])
+        self.assertEqual(resp['Content-Type'], 'application/xml')
+        expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
+                    '<organisations></organisations>')
+        self.assertEqual(resp.content, expected)
 
-    def test_response_contains_the_single_organisation_from_db(self):
+    def test_response_contains_single_organisation_from_db(self):
         dk = models.Country.objects.get(name="Denmark")
         kwargs = dict(ORG_FIXTURE, country=dk)
         org = models.Organisation.objects.create(**kwargs)
+
         resp = self.client.get('/organisation/all')
-        self.assertEqual(json.loads(resp.content), [
-            dict(ORG_FIXTURE, country="Denmark", pk=org.pk),
-        ])
+        expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
+                    '<organisations>'
+                      '<organisation>'
+                        '<name>Teh company</name>'
+                        '<country>Denmark</country>'
+                        '<addr_street>teh street</addr_street>'
+                        '<addr_postalcode>123456</addr_postalcode>'
+                        '<addr_place1>Copenhagen</addr_place1>'
+                        '<addr_place2>Hovedstaden</addr_place2>'
+                        '<pk>' + str(org.pk) + '</pk>'
+                      '</organisation>'
+                    '</organisations>')
+        self.assertEqual(resp.content, expected)
