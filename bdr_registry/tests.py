@@ -104,8 +104,10 @@ class ApiTest(TestCase):
 
     def test_response_contains_single_organisation_from_db(self):
         dk = models.Country.objects.get(name="Denmark")
+        fgas = models.Obligation.objects.get(code='fgas')
         account = models.Account.objects.create(uid='fgas12345')
-        kwargs = dict(ORG_FIXTURE, country=dk, account=account)
+        kwargs = dict(ORG_FIXTURE, country=dk,
+                      account=account, obligation=fgas)
         org = models.Organisation.objects.create(**kwargs)
         person = models.Person.objects.create(organisation=org,
                                               first_name="Joe",
@@ -125,6 +127,7 @@ class ApiTest(TestCase):
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<account>fgas12345</account>'
+                        '<obligation name="F-gases">fgas</obligation>'
                         '<country name="Denmark">dk</country>'
                         '<person>'
                           '<name>Joe Smith</name>'
