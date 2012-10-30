@@ -1,4 +1,5 @@
 from collections import OrderedDict
+from functools import wraps
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -8,8 +9,7 @@ from django.db import transaction
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse, HttpResponseForbidden
 import xmltodict
 import models
 
@@ -26,7 +26,18 @@ class Organisation(DetailView):
     template_name = 'organisation.html'
 
 
-@login_required
+def api_key_required(view):
+    @wraps(view)
+    def wrapper(request, *args, **kwargs):
+        apikey = request.GET.get('apikey', '')
+        if models.ApiKey.objects.filter(key=apikey).count() < 1:
+            return HttpResponseForbidden(
+                "Invalid API key, please set correct 'apikey' GET parameter.")
+        return view(request, *args, **kwargs)
+    return wrapper
+
+
+@api_key_required
 def organisation_all(request):
     data = []
     for organisation in models.Organisation.objects.all():

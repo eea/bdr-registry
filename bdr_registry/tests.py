@@ -90,13 +90,10 @@ class FormSubmitTest(TransactionTestCase):
 class ApiTest(TestCase):
 
     def setUp(self):
-        from django.contrib.auth.models import User
-        user_data = dict(username='user', password='pw')
-        User.objects.create_user(**user_data)
-        self.client.login(**user_data)
+        self.apikey = models.ApiKey.objects.create().key
 
     def test_response_empty_when_no_organisations_in_db(self):
-        resp = self.client.get('/organisation/all')
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations></organisations>')
@@ -116,7 +113,7 @@ class ApiTest(TestCase):
                                               phone="555 1234",
                                               fax="555 6789")
 
-        resp = self.client.get('/organisation/all')
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
@@ -138,3 +135,7 @@ class ApiTest(TestCase):
                       '</organisation>'
                     '</organisations>')
         self.assertEqual(resp.content, expected)
+
+    def test_requests_with_no_api_key_are_rejected(self):
+        resp = self.client.get('/organisation/all')
+        self.assertEqual(resp.status_code, 403)
