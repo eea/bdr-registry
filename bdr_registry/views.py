@@ -33,6 +33,8 @@ def organisation_all(request):
         item = OrderedDict((k, getattr(organisation, k))
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
                           'addr_place1', 'addr_place2'])
+        if organisation.account is not None:
+            item['account'] = organisation.account.uid,
         item['country'] = {
             '@name': organisation.country.name,
             '#text': organisation.country.code,
