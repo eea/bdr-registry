@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from django.views.generic import View
 from django.views.generic.edit import CreateView
 from django.views.generic.detail import DetailView
@@ -29,9 +30,9 @@ class Organisation(DetailView):
 def organisation_all(request):
     data = []
     for organisation in models.Organisation.objects.all():
-        item = {k: getattr(organisation, k)
+        item = OrderedDict((k, getattr(organisation, k))
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
-                          'addr_place1', 'addr_place2']}
+                          'addr_place1', 'addr_place2'])
         item['country'] = {
             '@name': organisation.country.name,
             '#text': organisation.country.code,

@@ -111,13 +111,13 @@ class ApiTest(TestCase):
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
+                        '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
-                        '<country name="Denmark">dk</country>'
                         '<addr_street>teh street</addr_street>'
                         '<addr_postalcode>123456</addr_postalcode>'
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
-                        '<pk>' + str(org.pk) + '</pk>'
+                        '<country name="Denmark">dk</country>'
                       '</organisation>'
                     '</organisations>')
         self.assertEqual(resp.content, expected)
