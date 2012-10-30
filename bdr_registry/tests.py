@@ -106,6 +106,12 @@ class ApiTest(TestCase):
         dk = models.Country.objects.get(name="Denmark")
         kwargs = dict(ORG_FIXTURE, country=dk)
         org = models.Organisation.objects.create(**kwargs)
+        person = models.Person.objects.create(organisation=org,
+                                              first_name="Joe",
+                                              family_name="Smith",
+                                              email="joe.smith@example.com",
+                                              phone="555 1234",
+                                              fax="555 6789")
 
         resp = self.client.get('/organisation/all')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
@@ -118,6 +124,12 @@ class ApiTest(TestCase):
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<country name="Denmark">dk</country>'
+                        '<person>'
+                          '<name>Joe Smith</name>'
+                          '<email>joe.smith@example.com</email>'
+                          '<phone>555 1234</phone>'
+                          '<fax>555 6789</fax>'
+                        '</person>'
                       '</organisation>'
                     '</organisations>')
         self.assertEqual(resp.content, expected)
