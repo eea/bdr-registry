@@ -112,7 +112,7 @@ class ApiTest(TestCase):
                     '<organisations>'
                       '<organisation>'
                         '<name>Teh company</name>'
-                        '<country>Denmark</country>'
+                        '<country name="Denmark">dk</country>'
                         '<addr_street>teh street</addr_street>'
                         '<addr_postalcode>123456</addr_postalcode>'
                         '<addr_place1>Copenhagen</addr_place1>'

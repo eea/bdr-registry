@@ -32,7 +32,10 @@ def organisation_all(request):
         item = {k: getattr(organisation, k)
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
                           'addr_place1', 'addr_place2']}
-        item['country'] = organisation.country.name
+        item['country'] = {
+            '@name': organisation.country.name,
+            '#text': organisation.country.code,
+        }
         data.append(item)
     xml = xmltodict.unparse({'organisations': {'organisation': data}})
     return HttpResponse(xml, content_type='application/xml')
