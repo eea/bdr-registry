@@ -1,5 +1,21 @@
+import random
+import string
 from django.db import models
 from django.core.urlresolvers import reverse
+
+
+def generate_key():
+    vocabulary = string.ascii_lowercase + string.digits
+    return ''.join(random.choice(vocabulary) for c in range(20))
+
+
+class ApiKey(models.Model):
+
+    key = models.CharField(max_length=255, default=generate_key)
+    comment = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.comment
 
 
 class Country(models.Model):
