@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from functools import wraps
 from django.views.generic import View
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect
 from django.forms.models import modelform_factory
@@ -10,6 +10,8 @@ from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseForbidden
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
 import xmltodict
 import models
 
@@ -18,6 +20,16 @@ class OrganisationCreate(CreateView):
 
     model = models.Organisation
     template_name = 'organisation_add.html'
+
+
+class OrganisationUpdate(UpdateView):
+
+    model = models.Organisation
+    template_name = 'organisation_update.html'
+
+    @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    def dispatch(self, *args, **kwargs):
+        return super(OrganisationUpdate, self).dispatch(*args, **kwargs)
 
 
 class Organisation(DetailView):

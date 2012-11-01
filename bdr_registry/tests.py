@@ -87,6 +87,26 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
+class OrganisationEditTest(TestCase):
+
+    def setUp(self):
+        from django.contrib.auth.models import User
+        user_data = dict(username='user', password='pw')
+        user = User.objects.create_user(**user_data)
+        user.is_superuser = True
+        user.save()
+        self.client.login(**user_data)
+
+    def test_model_updated_from_organisation_edit(self):
+        dk = models.Country.objects.get(name="Denmark")
+        org_data = dict(ORG_FIXTURE, country_id=dk.pk)
+        org_form = dict(ORG_FIXTURE, country=dk.pk, name="teh new name")
+        org_pk = models.Organisation.objects.create(**org_data).pk
+        resp = self.client.post('/organisation/%d/update' % org_pk, org_form)
+        org = models.Organisation.objects.get(pk=org_pk)
+        self.assertEqual(org.name, "teh new name")
+
+
 class ApiTest(TestCase):
 
     def setUp(self):
