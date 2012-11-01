@@ -40,7 +40,12 @@ def api_key_required(view):
 @api_key_required
 def organisation_all(request):
     data = []
+    account_uid = request.GET.get('account_uid')
     for organisation in models.Organisation.objects.all():
+        if account_uid is not None:
+            if (organisation.account is None or
+                organisation.account.uid != account_uid):
+                continue
         item = OrderedDict((k, getattr(organisation, k))
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
                           'addr_place1', 'addr_place2'])

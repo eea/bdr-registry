@@ -136,6 +136,34 @@ class ApiTest(TestCase):
                     '</organisations>')
         self.assertEqual(resp.content, expected)
 
+    def test_response_contains_organisation_with_matching_uid(self):
+        dk = models.Country.objects.get(name="Denmark")
+        fgas = models.Obligation.objects.get(code='fgas')
+        kwargs = dict(ORG_FIXTURE, country=dk, obligation=fgas)
+        account1 = models.Account.objects.create(uid='fgas0001')
+        account2 = models.Account.objects.create(uid='fgas0002')
+        org1 = models.Organisation.objects.create(account=account1, **kwargs)
+        org2 = models.Organisation.objects.create(account=account2, **kwargs)
+
+        resp = self.client.get('/organisation/all'
+                               '?account_uid=fgas0002'
+                               '&apikey=' + self.apikey)
+        expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
+                    '<organisations>'
+                      '<organisation>'
+                        '<pk>' + str(org2.pk) + '</pk>'
+                        '<name>Teh company</name>'
+                        '<addr_street>teh street</addr_street>'
+                        '<addr_postalcode>123456</addr_postalcode>'
+                        '<addr_place1>Copenhagen</addr_place1>'
+                        '<addr_place2>Hovedstaden</addr_place2>'
+                        '<account>fgas0002</account>'
+                        '<obligation name="F-gases">fgas</obligation>'
+                        '<country name="Denmark">dk</country>'
+                      '</organisation>'
+                    '</organisations>')
+        self.assertEqual(resp.content, expected)
+
     def test_requests_with_no_api_key_are_rejected(self):
         resp = self.client.get('/organisation/all')
         self.assertEqual(resp.status_code, 403)
