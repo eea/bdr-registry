@@ -51,10 +51,11 @@ def organisation_all(request):
                           'addr_place1', 'addr_place2'])
         if organisation.account is not None:
             item['account'] = organisation.account.uid,
-        item['obligation'] = {
-            '@name': organisation.obligation.name,
-            '#text': organisation.obligation.code,
-        }
+        if organisation.obligation is not None:
+            item['obligation'] = {
+                '@name': organisation.obligation.name,
+                '#text': organisation.obligation.code,
+            }
         item['country'] = {
             '@name': organisation.country.name,
             '#text': organisation.country.code,
