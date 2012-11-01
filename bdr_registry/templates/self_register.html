@@ -51,15 +51,17 @@
     {% for field in organisation_form %}
       <tr>
         <td>
-          {% for err in field.errors %}
-            {{ err }}
-          {% endfor %}
           <label for="id_{{ field.name }}" class="question
               {% if field.field.required %}required{% endif %}">
             {{ field.label }}
           </label>
         </td>
-        <td> {{ field }} </td>
+        <td>
+          {% for err in field.errors %}
+            <div class="bdr-error">{{ err }}</div>
+          {% endfor %}
+          {{ field }}
+        </td>
       </tr>
     {% endfor %}
     </table>
@@ -75,15 +77,17 @@
     {% for field in person_form %}
       <tr>
         <td>
-          {% for err in field.errors %}
-            {{ err }}
-          {% endfor %}
           <label for="id_{{ field.name }}" class="question
               {% if field.field.required %}required{% endif %}">
             {{ field.label }}
           </label>
         </td>
-        <td>{{ field }}</td>
+        <td>
+          {% for err in field.errors %}
+            <div class="bdr-error">{{ err }}</div>
+          {% endfor %}
+          {{ field }}
+        </td>
       </tr>
     {% endfor %}
     </table>
