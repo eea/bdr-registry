@@ -62,7 +62,7 @@ def organisation_all(request):
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
                           'addr_place1', 'addr_place2'])
         if organisation.account is not None:
-            item['account'] = organisation.account.uid,
+            item['account'] = organisation.account.uid
         if organisation.obligation is not None:
             item['obligation'] = {
                 '@name': organisation.obligation.name,
