@@ -106,6 +106,19 @@ class OrganisationEditTest(TestCase):
         org = models.Organisation.objects.get(pk=org_pk)
         self.assertEqual(org.name, "teh new name")
 
+    def test_modifying_obligation_or_account_is_ignored(self):
+        dk = models.Country.objects.get(name="Denmark")
+        fgas = models.Obligation.objects.get(code='fgas')
+        account = models.Account.objects.create(uid='fgas12345')
+        org_data = dict(ORG_FIXTURE, country_id=dk.pk)
+        org_form = dict(ORG_FIXTURE, country=dk.pk,
+                        obligation=fgas.pk, account=account.pk)
+        org_pk = models.Organisation.objects.create(**org_data).pk
+        resp = self.client.post('/organisation/%d/update' % org_pk, org_form)
+        org = models.Organisation.objects.get(pk=org_pk)
+        self.assertIsNone(org.obligation)
+        self.assertIsNone(org.account)
+
 
 class ApiTest(TestCase):
 

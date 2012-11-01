@@ -26,6 +26,8 @@ class OrganisationUpdate(UpdateView):
 
     model = models.Organisation
     template_name = 'organisation_update.html'
+    form_class = modelform_factory(models.Organisation,
+                                   exclude=['obligation', 'account'])
 
     @method_decorator(user_passes_test(lambda u: u.is_superuser))
     def dispatch(self, *args, **kwargs):
