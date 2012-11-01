@@ -37,6 +37,14 @@ class Obligation(models.Model):
         return self.name
 
 
+class AccountManager(models.Manager):
+
+    def create_for_obligation(self, obligation):
+        rand = ''.join(str(random.randint(0, 9)) for c in range(5))
+        uid = u"{o.code}{rand}".format(o=obligation, rand=rand)
+        return self.create(uid=uid)
+
+
 class Account(models.Model):
 
     uid = models.CharField(max_length=255, unique=True)
@@ -53,6 +61,8 @@ class Account(models.Model):
         backend = load_backend(LDAP_AUTH_BACKEND)
         ldap_user = _LDAPUser(backend, username=self.uid)
         return bool(ldap_user.dn is not None)
+
+    objects = AccountManager()
 
 
 class Organisation(models.Model):

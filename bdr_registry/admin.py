@@ -1,11 +1,25 @@
 from django.contrib import admin
+from django.contrib import messages
 import models
+
+
+def generate_account(modeladmin, request, queryset):
+    n = 0
+    for organisation in queryset:
+        obligation = organisation.obligation
+        account = models.Account.objects.create_for_obligation(obligation)
+        organisation.account = account
+        organisation.save()
+        n += 1
+    messages.add_message(request, messages.INFO,
+                         "Generated %d accounts." % n)
 
 
 class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['country']
     list_display = ['__unicode__', 'account']
+    actions = [generate_account]
 
 
 admin.site.register(models.Country)
