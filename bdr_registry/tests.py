@@ -23,32 +23,36 @@ PERSON_FIXTURE = {
 
 class FormSubmitTest(TransactionTestCase):
 
+    def setUp(self):
+        self.denmark = models.Country.objects.get(name="Denmark")
+
     def assert_object_has_items(self, obj, data):
         for key in data:
             self.assertEqual(getattr(obj, key), data[key])
 
     def test_submitted_organisation_is_saved(self):
-        denmark = models.Country.objects.get(name="Denmark")
-        form_data = dict(ORG_FIXTURE, country=denmark.pk)
+        form_data = dict(ORG_FIXTURE, country=self.denmark.pk)
         resp = self.client.post('/organisation/add', form_data)
 
         self.assertEqual(models.Organisation.objects.count(), 1)
         org = models.Organisation.objects.all()[0]
         self.assert_object_has_items(org, ORG_FIXTURE)
-        self.assertEqual(org.country, denmark)
+        self.assertEqual(org.country, self.denmark)
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
                          'http://testserver/organisation/%d' % org.pk)
 
-    def test_submitted_organisation_and_person_are_saved(self):
-        denmark = models.Country.objects.get(name="Denmark").pk
-        form_data = {'organisation-country': denmark}
+    def prepare_form_data(self):
+        form_data = {'organisation-country': self.denmark.pk}
         for key, value in ORG_FIXTURE.items():
             form_data['organisation-' + key] = value
         for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
-        resp = self.client.post('/self_register', form_data)
+        return form_data
+
+    def test_submitted_organisation_and_person_are_saved(self):
+        resp = self.client.post('/self_register', self.prepare_form_data())
 
         self.assertEqual(models.Organisation.objects.count(), 1)
         self.assertEqual(models.Person.objects.count(), 1)
@@ -65,25 +69,15 @@ class FormSubmitTest(TransactionTestCase):
                          'http://testserver/self_register/done')
 
     def test_invalid_person_rolls_back_saved_organisation(self):
-        denmark = models.Country.objects.get(name="Denmark").pk
-        form_data = {'organisation-country': denmark}
-        for key, value in ORG_FIXTURE.items():
-            form_data['organisation-' + key] = value
+        form_data = self.prepare_form_data()
+        del form_data['person-email']
         resp = self.client.post('/self_register', form_data)
 
         self.assertEqual(models.Organisation.objects.count(), 0)
-
         self.assertEqual(resp.status_code, 200)
 
     def test_mail_is_sent_after_successful_self_registration(self):
-        denmark = models.Country.objects.get(name="Denmark").pk
-        form_data = {'organisation-country': denmark}
-        for key, value in ORG_FIXTURE.items():
-            form_data['organisation-' + key] = value
-        for key, value in PERSON_FIXTURE.items():
-            form_data['person-' + key] = value
-        self.client.post('/self_register', form_data)
-
+        self.client.post('/self_register', self.prepare_form_data())
         self.assertEqual(len(mail.outbox), 1)
 
 
