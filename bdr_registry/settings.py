@@ -123,8 +123,9 @@ if _auth_ldap_server:
 
     import ldap
     from django_auth_ldap.config import LDAPSearch
-    AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=Users,o=EIONET,l=Europe",
-                                       ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+    AUTH_LDAP_USER_SEARCH = LDAPSearch("o=EIONET,l=Europe",
+                                       ldap.SCOPE_SUBTREE,
+                                       "(uid=%(user)s)")
 
     AUTH_LDAP_USER_ATTR_MAP = {
         "first_name": "givenName",
