@@ -89,7 +89,7 @@ class OrganisationEditTest(TestCase):
 
     def setUp(self):
         from django.contrib.auth.models import User
-        user_data = dict(username='user', password='pw')
+        user_data = dict(username='test_user', password='pw')
         self.user = User.objects.create_user(**user_data)
         self.client.login(**user_data)
         self.dk = models.Country.objects.get(name="Denmark")
@@ -116,6 +116,23 @@ class OrganisationEditTest(TestCase):
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertIsNone(new_org.obligation)
         self.assertIsNone(new_org.account)
+
+    LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
+
+    def test_organisation_account_is_allowed_to_edit(self):
+        self.org.account = models.Account.objects.create(uid=self.user.username)
+        self.org.save()
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        resp = self.client.post(self.update_url, org_form)
+        self.assertFalse(resp['location'].startswith(self.LOGIN_PREFIX))
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertEqual(new_org.name, "teh new name")
+
+    def test_random_account_is_not_allowed_to_edit(self):
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        resp = self.client.post(self.update_url, org_form)
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(resp['location'].startswith(self.LOGIN_PREFIX))
 
 
 class ApiTest(TestCase):

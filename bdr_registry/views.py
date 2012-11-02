@@ -31,9 +31,21 @@ class OrganisationUpdate(UpdateView):
     form_class = modelform_factory(models.Organisation,
                                    exclude=['obligation', 'account'])
 
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
-    def dispatch(self, *args, **kwargs):
-        return super(OrganisationUpdate, self).dispatch(*args, **kwargs)
+    def dispatch(self, request, pk):
+        def can_edit(user):
+            if user.is_superuser:
+                return True
+
+            account = models.Organisation.objects.get(pk=pk).account
+            if account is not None:
+                if account.uid == user.username:
+                    return True
+
+            return False
+
+        dispatch = super(OrganisationUpdate, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
         return reverse('organisation_update', args=[self.object.pk])
