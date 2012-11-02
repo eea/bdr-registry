@@ -4,7 +4,8 @@ from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect
-from django.forms.models import modelform_factory
+from django.forms.models import ModelForm, modelform_factory
+from django.forms.models import ModelChoiceField
 from django.db import transaction
 from django.core import mail
 from django.conf import settings
@@ -89,7 +90,14 @@ def organisation_all(request):
     return HttpResponse(xml, content_type='application/xml')
 
 
-OrganisationForm = modelform_factory(models.Organisation)
+class OrganisationForm(ModelForm):
+
+    obligation = ModelChoiceField(queryset=models.Obligation.objects,
+                                  required=True)
+
+    class Meta:
+        model = models.Organisation
+        exclude = ['account']
 
 
 PersonForm = modelform_factory(models.Person, exclude=['organisation'])

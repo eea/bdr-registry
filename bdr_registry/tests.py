@@ -25,6 +25,7 @@ class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
         self.denmark = models.Country.objects.get(name="Denmark")
+        self.fgas = models.Obligation.objects.get(code='fgas')
 
     def assert_object_has_items(self, obj, data):
         for key in data:
@@ -44,7 +45,10 @@ class FormSubmitTest(TransactionTestCase):
                          'http://testserver/organisation/%d' % org.pk)
 
     def prepare_form_data(self):
-        form_data = {'organisation-country': self.denmark.pk}
+        form_data = {
+            'organisation-country': self.denmark.pk,
+            'organisation-obligation': self.fgas.pk,
+        }
         for key, value in ORG_FIXTURE.items():
             form_data['organisation-' + key] = value
         for key, value in PERSON_FIXTURE.items():
