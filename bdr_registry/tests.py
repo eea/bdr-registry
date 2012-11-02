@@ -90,32 +90,32 @@ class OrganisationEditTest(TestCase):
     def setUp(self):
         from django.contrib.auth.models import User
         user_data = dict(username='user', password='pw')
-        user = User.objects.create_user(**user_data)
-        user.is_superuser = True
-        user.save()
+        self.user = User.objects.create_user(**user_data)
         self.client.login(**user_data)
+        self.dk = models.Country.objects.get(name="Denmark")
+        org_data = dict(ORG_FIXTURE, country_id=self.dk.pk)
+        self.org = models.Organisation.objects.create(**org_data)
+        self.update_url = '/organisation/%d/update' % self.org.pk
 
     def test_model_updated_from_organisation_edit(self):
-        dk = models.Country.objects.get(name="Denmark")
-        org_data = dict(ORG_FIXTURE, country_id=dk.pk)
-        org_form = dict(ORG_FIXTURE, country=dk.pk, name="teh new name")
-        org_pk = models.Organisation.objects.create(**org_data).pk
-        resp = self.client.post('/organisation/%d/update' % org_pk, org_form)
-        org = models.Organisation.objects.get(pk=org_pk)
-        self.assertEqual(org.name, "teh new name")
+        self.user.is_superuser = True
+        self.user.save()
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        resp = self.client.post(self.update_url, org_form)
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertEqual(new_org.name, "teh new name")
 
     def test_modifying_obligation_or_account_is_ignored(self):
-        dk = models.Country.objects.get(name="Denmark")
+        self.user.is_superuser = True
+        self.user.save()
         fgas = models.Obligation.objects.get(code='fgas')
         account = models.Account.objects.create(uid='fgas12345')
-        org_data = dict(ORG_FIXTURE, country_id=dk.pk)
-        org_form = dict(ORG_FIXTURE, country=dk.pk,
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk,
                         obligation=fgas.pk, account=account.pk)
-        org_pk = models.Organisation.objects.create(**org_data).pk
-        resp = self.client.post('/organisation/%d/update' % org_pk, org_form)
-        org = models.Organisation.objects.get(pk=org_pk)
-        self.assertIsNone(org.obligation)
-        self.assertIsNone(org.account)
+        resp = self.client.post(self.update_url, org_form)
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertIsNone(new_org.obligation)
+        self.assertIsNone(new_org.account)
 
 
 class ApiTest(TestCase):
