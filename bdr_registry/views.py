@@ -89,12 +89,15 @@ def organisation_all(request):
     return HttpResponse(xml, content_type='application/xml')
 
 
+OrganisationForm = modelform_factory(models.Organisation)
+
+
+PersonForm = modelform_factory(models.Person, exclude=['organisation'])
+
+
 class SelfRegister(View):
 
     def make_forms(self, post_data=None):
-        OrganisationForm = modelform_factory(models.Organisation)
-        PersonForm = modelform_factory(models.Person,
-                                       exclude=('organisation',))
         return (OrganisationForm(post_data, prefix='organisation'),
                 PersonForm(post_data, prefix='person'))
 
