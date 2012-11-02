@@ -43,8 +43,9 @@ class OrganisationUpdate(UpdateView):
 
             return False
 
+        login_url = reverse('login')
         dispatch = super(OrganisationUpdate, self).dispatch
-        wrapped_dispatch = user_passes_test(can_edit)(dispatch)
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
