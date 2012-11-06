@@ -18,6 +18,23 @@ import xmltodict
 import models
 
 
+class CanEdit(object):
+
+    def __init__(self, organisation):
+        self.organisation = organisation
+
+    def __call__(self, user):
+        if user.is_superuser:
+            return True
+
+        account = self.organisation.account
+        if account is not None:
+            if account.uid == user.username:
+                return True
+
+        return False
+
+
 class OrganisationCreate(CreateView):
 
     model = models.Organisation
@@ -32,17 +49,8 @@ class OrganisationUpdate(UpdateView):
                                    exclude=['obligation', 'account'])
 
     def dispatch(self, request, pk):
-        def can_edit(user):
-            if user.is_superuser:
-                return True
-
-            account = models.Organisation.objects.get(pk=pk).account
-            if account is not None:
-                if account.uid == user.username:
-                    return True
-
-            return False
-
+        organisation = models.Organisation.objects.get(pk=pk)
+        can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -153,6 +161,25 @@ class SelfRegister(View):
                 transaction.rollback()
 
         return self.render_forms(request, organisation_form, person_form)
+
+
+class PersonUpdate(UpdateView):
+
+    template_name = 'person_update.html'
+    model = models.Person
+    form_class = PersonForm
+
+    def dispatch(self, request, pk):
+        organisation = models.Person.objects.get(pk=pk).organisation
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(PersonUpdate, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def get_success_url(self):
+        organisation = self.object.organisation
+        return reverse('organisation_update', args=[organisation.pk])
 
 
 def send_notification_email(context):
