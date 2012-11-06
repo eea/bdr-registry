@@ -85,6 +85,12 @@
 </div>
 <div id="workarea">
 
+
+{% for message in messages %}
+    <div class="system-msg">{{ message }}</div>
+{% endfor %}
+
+
 {% block content %}
 {% endblock %}
 

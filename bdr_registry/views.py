@@ -14,6 +14,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 import xmltodict
 import models
 
@@ -180,6 +181,11 @@ class PersonUpdate(UpdateView):
     def get_success_url(self):
         organisation = self.object.organisation
         return reverse('organisation_update', args=[organisation.pk])
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.INFO,
+                             u"Details saved: %s" % self.object)
+        return super(PersonUpdate, self).form_valid(form)
 
 
 def send_notification_email(context):

@@ -5,6 +5,9 @@
 
 <h1>Update organisation</h1>
 
+
+<h2>Company details</h2>
+
 <form method="post">
   {% csrf_token %}
 
@@ -31,5 +34,15 @@
   <button type="submit">Save</button>
 
 </form>
+
+
+<h2>People</h2>
+
+<ul>
+{% for person in organisation.people.all %}
+  <li><a href="{% url person_update person.pk %}">{{ person }}</a></li>
+{% endfor %}
+</ul>
+
 
 {% endblock %}
