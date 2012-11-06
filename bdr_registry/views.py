@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.http import HttpResponseRedirect
 import xmltodict
 import models
 
@@ -162,6 +163,33 @@ class SelfRegister(View):
                 transaction.rollback()
 
         return self.render_forms(request, organisation_form, person_form)
+
+
+class OrganisationAddPerson(CreateView):
+
+    template_name = 'organisation_add_person.html'
+    model = models.Person
+    form_class = PersonForm
+
+    def dispatch(self, request, pk):
+        organisation = models.Organisation.objects.get(pk=pk)
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(OrganisationAddPerson, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationAddPerson, self).get_context_data(**kwargs)
+        context['organisation_pk'] = self.kwargs['pk']
+        return context
+
+    def form_valid(self, form):
+        person = form.save(commit=False)
+        pk = self.kwargs['pk']
+        person.organisation = models.Organisation.objects.get(pk=pk)
+        person.save()
+        return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
 
 
 class PersonUpdate(UpdateView):

@@ -182,6 +182,15 @@ class PersonEditTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
+    def test_add_person_to_organisation(self):
+        account = models.Account.objects.create(uid=self.user.username)
+        self.acme.account = account
+        self.acme.save()
+        resp = self.client.post('/organisation/%d/add_person' % self.acme.pk,
+                                dict(PERSON_FIXTURE, first_name='Smith'))
+        new_person = models.Person.objects.get(first_name='Smith')
+        self.assertEqual(new_person.organisation, self.acme)
+
 
 class ApiTest(TestCase):
 
