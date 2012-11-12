@@ -1,4 +1,5 @@
 {% extends "bdr_layout.html" %}
+{% load static from staticfiles %}
 
 
 {% block content %}
@@ -40,7 +41,12 @@
 
 <ul>
 {% for person in organisation.people.all %}
-  <li><a href="{% url person_update person.pk %}">{{ person }}</a></li>
+  <li>
+    <a href="{% url person_update person.pk %}">{{ person }}</a>
+    <a class="delete" href="{% url person_delete person.pk %}">
+      <img src="{% static "admin/img/icon_deletelink.gif" %}">
+    </a>
+  </li>
 {% endfor %}
 </ul>
 

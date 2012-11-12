@@ -1,0 +1,16 @@
+{% extends "bdr_layout.html" %}
+
+
+{% block content %}
+
+<h1>Delete person</h1>
+
+<form method="post">
+  {% csrf_token %}
+  <p>
+    About to delete <strong>{{ object }}</strong>.
+    <button type="submit">Delete</button>
+  </p>
+</form>
+
+{% endblock %}

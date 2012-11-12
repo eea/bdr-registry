@@ -191,6 +191,19 @@ class PersonEditTest(TestCase):
         new_person = models.Person.objects.get(first_name='Smith')
         self.assertEqual(new_person.organisation, self.acme)
 
+    def test_organisation_account_can_delete_person_from_organisation(self):
+        account = models.Account.objects.create(uid=self.user.username)
+        self.acme.account = account
+        self.acme.save()
+        resp = self.client.post('/person/%d/delete' % self.person.pk)
+        self.assertItemsEqual(self.acme.people.all(), [])
+
+    def test_random_account_is_not_allowed_to_delete(self):
+        self.client.post('/person/%d/delete' % self.person.pk)
+        #self.assertEqual([p.pk for p in self.acme.people.all()],
+        #                 [self.person.pk])
+        self.assertItemsEqual(self.acme.people.all(), [self.person])
+
 
 class ApiTest(TestCase):
 

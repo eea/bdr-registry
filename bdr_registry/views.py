@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from functools import wraps
 from django.views.generic import View
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect
 from django.forms.models import ModelForm, modelform_factory
@@ -214,6 +214,26 @@ class PersonUpdate(UpdateView):
         messages.add_message(self.request, messages.INFO,
                              u"Details saved: %s" % self.object)
         return super(PersonUpdate, self).form_valid(form)
+
+
+class PersonDelete(DeleteView):
+
+    model = models.Person
+    template_name = 'person_confirm_delete.html'
+
+    def dispatch(self, request, pk):
+        organisation = models.Person.objects.get(pk=pk).organisation
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(PersonDelete, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.INFO,
+                             u"Person deleted: %s" % self.object)
+        organisation = self.object.organisation
+        return reverse('organisation_update', args=[organisation.pk])
 
 
 def send_notification_email(context):
