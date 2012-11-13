@@ -39,6 +39,12 @@
           <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
         </div>
         <div id="righttools">
+          {% if user.is_anonymous %}
+            <a id="loginlink" href="{% url login %}?next={{ request.get_full_path }}">Login</a>
+          {% else %}
+            <a id="logoutlink" href="{% url logout %}"
+              >Logout ({{ user.username }})</a>
+          {% endif %}
           <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
           <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
 <!--
