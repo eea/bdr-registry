@@ -253,6 +253,11 @@ def crashme(request):
         return HttpResponse("Must be administrator")
 
 
+def ping(request):
+    models.Obligation.objects.all()[0].name  # just get something from db
+    return HttpResponse("bdr-registry is ok\n")
+
+
 def logout_view(request):
     logout(request)
     messages.add_message(request, messages.INFO, "You have logged out.")
