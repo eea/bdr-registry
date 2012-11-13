@@ -8,10 +8,12 @@ import views
 admin.autodiscover()
 
 urlpatterns = patterns('',
-     url(r'^$', redirect_to, {'url': reverse_lazy('self_register')}),
+     url(r'^$', redirect_to, {'url': reverse_lazy('self_register')},
+            name='home'),
      url(r'^accounts/login/$', 'django.contrib.auth.views.login',
             {'template_name': 'login.html'},
             name='login'),
+     url(r'^accounts/logout/$', views.logout_view, name='logout'),
      url(r'^admin/', include(admin.site.urls)),
      url(r'^organisation/add$', views.OrganisationCreate.as_view()),
      url(r'^organisation/(?P<pk>\d+)$', views.Organisation.as_view(),

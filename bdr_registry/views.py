@@ -12,6 +12,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import logout
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -250,3 +251,9 @@ def crashme(request):
         raise RuntimeError("Crashing as requested")
     else:
         return HttpResponse("Must be administrator")
+
+
+def logout_view(request):
+    logout(request)
+    messages.add_message(request, messages.INFO, "You have logged out.")
+    return redirect('home')
