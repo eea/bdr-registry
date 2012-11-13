@@ -85,6 +85,9 @@
 <li><a href="/searchdataflow" title="Search">Search </a></li>
 <li><a href="/help" title="Introduction to Reportnet Repository">Help </a></li>
 <li><a href="/selfregister" title="Create an account to report statistics">Self-registration </a></li>
+{% if user.is_superuser %}
+<li><a href="{% url admin:index %}" title="Account administration">Account admin</a></li>
+{% endif %}
 </ul>
 
 
