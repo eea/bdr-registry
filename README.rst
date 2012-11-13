@@ -84,55 +84,55 @@ Run a management command, e.g. database initialization and migrations::
 Deployment using `sarge`
 ------------------------
 1. First of all, install sarge_ in a folder on the server. We'll call it
-``$SARGE_HOME`` below. A good choice is ``/var/local/bdr-registry``.
-Don't forget to set up an init script that starts
-``$SARGE_HOME/bin/supervisord`` at boot.
+   ``$SARGE_HOME`` below. A good choice is ``/var/local/bdr-registry``.
+   Don't forget to set up an init script that starts
+   ``$SARGE_HOME/bin/supervisord`` at boot.
 
-.. _sarge: http://mgax.github.com/sarge/
+   ::
 
-::
-
-    $ sudo mkdir $SARGE_HOME; sudo chown `whoami`: $SARGE_HOME
-    $ python <(curl -fsSL raw.github.com/mgax/sarge/master/install_sarge.py) $SARGE_HOME
-    $ cd $SARGE_HOME
+       $ sudo mkdir $SARGE_HOME; sudo chown `whoami`: $SARGE_HOME
+       $ python <(curl -fsSL raw.github.com/mgax/sarge/master/install_sarge.py) $SARGE_HOME
+       $ cd $SARGE_HOME
 
 2. Upload a configuration file in ``$SARGE_HOME/etc/app/config.json``::
 
-    {
-      "BDR_REGISTRY_DATABASE": "/var/local/bdr-registry/var/db/db.sqlite",
-      "BDR_ADMIN_EMAIL": "bdr.helpdesk@eea.europa.eu",
-      "BDR_EMAIL_FROM": "BDR Registration <bdr-registration@eionet.europa.eu>",
-      "BDR_REGISTRY_DJANGO_SECRET": "some random string",
-      "BDR_REVERSE_PROXY": "on"
-    }
+       {
+         "BDR_REGISTRY_DATABASE": "/var/local/bdr-registry/var/db/db.sqlite",
+         "BDR_ADMIN_EMAIL": "bdr.helpdesk@eea.europa.eu",
+         "BDR_EMAIL_FROM": "BDR Registration <bdr-registration@eionet.europa.eu>",
+         "BDR_REGISTRY_DJANGO_SECRET": "some random string",
+         "BDR_REVERSE_PROXY": "on"
+       }
 
 3. Configure an external (stable) port number and a range of ports for
-deployments. Add the following two lines to
-``$SARGE_HOME/etc/sarge.yaml`` changing the numbers as needed. At
-deployment, `sarge` will allocate a new port number from `port_range`,
-and proxy connections from the stable port (the one in `port_map`).
+   deployments. Add the following two lines to
+   ``$SARGE_HOME/etc/sarge.yaml`` changing the numbers as needed. At
+   deployment, `sarge` will allocate a new port number from
+   `port_range`, and proxy connections from the stable port (the one in
+   `port_map`).
 
-::
+   ::
 
-    "port_map": {"web": "0.0.0.0:12300"},
-    "port_range": [12310, 12349]
+       "port_map": {"web": "0.0.0.0:12300"},
+       "port_range": [12310, 12349]
 
 
 4. Copy all dependencies to ``$SARGE_HOME/dist``, either as source
-distributions or wheel_ files. During deployment `pip` does not search
-for packages over the network because it takes too much time.
-
-.. _wheel: http://wheel.readthedocs.org/
+   distributions or wheel_ files. During deployment `pip` does not
+   search for packages over the network because it takes too much time.
 
 5. Deploy the application. This requires a tarball of the repository
-which can be obtained by running ``git archive HEAD >
-bdr-registry.tar``.
+   which can be obtained by running ``git archive HEAD >
+   bdr-registry.tar``.
 
-::
+   ::
 
-    $ bin/sarge deploy bdr-registry.tar web
+       $ bin/sarge deploy bdr-registry.tar web
 
 6. Set up a front-end web server (apache, nginx) to proxy requests to
 the application on the port configured above. The server might need to
 set ``X-Forwarded-Script-Name`` and ``X-Forwarded-Proto`` so the
 application generates correct URLs.
+
+.. _wheel: http://wheel.readthedocs.org/
+.. _sarge: http://mgax.github.com/sarge/
