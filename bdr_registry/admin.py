@@ -17,8 +17,8 @@ def generate_account(modeladmin, request, queryset):
 
 class OrganisationAdmin(admin.ModelAdmin):
 
-    list_filter = ['country']
-    list_display = ['__unicode__', 'account']
+    list_filter = ['obligation', 'country']
+    list_display = ['__unicode__', 'obligation', 'account']
     actions = [generate_account]
 
 
