@@ -118,8 +118,11 @@ if _sentry_dsn:
     }
 
 BDR_ADMIN_EMAIL = os.environ.get('BDR_ADMIN_EMAIL', '')
-if BDR_ADMIN_EMAIL:
+BDR_SMTP = os.environ.get('BDR_SMTP', '')
+if BDR_SMTP:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST, _email_port = BDR_SMTP.split(':')
+    EMAIL_PORT = int(_email_port)
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

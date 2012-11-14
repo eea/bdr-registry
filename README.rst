@@ -29,6 +29,11 @@ Configuration variables
     Email address which receives notifications of newly self-registered
     organisations.
 
+``BDR_SMTP``
+    SMTP server for outgoing email (for example ``localhost:25``). If
+    blank or missing, email messages will be printed to `stdout`
+    instead.
+
 ``BDR_EMAIL_FROM``
     Address used in `From:` field of outgoing email messages.
 
