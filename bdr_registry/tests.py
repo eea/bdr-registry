@@ -150,6 +150,7 @@ class OrganisationPasswordTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.account = models.Account.objects.create_for_obligation(self.fgas)
+        self.account.set_random_password()
         self.acme = models.Organisation.objects.create(country=self.dk,
                                                        obligation=self.fgas,
                                                        account=self.account)
@@ -165,6 +166,23 @@ class OrganisationPasswordTest(TestCase):
 
         new_password = models.Account.objects.get(pk=self.account.pk).password
         self.assertNotEqual(password, new_password)
+
+    def test_password_email_is_sent(self):
+        self.acme.people.create(email="alice@example.com")
+        self.acme.people.create(email="bob@example.com")
+        create_user_and_login(self.client, superuser=True, staff=True)
+        self.client.post('/admin/bdr_registry/organisation/', {
+            helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
+            'action': 'send_password_email',
+            'perform_send': 'yes',
+        })
+        self.assertEqual(len(mail.outbox), 1)
+        [message] = mail.outbox
+        self.assertItemsEqual(message.to,
+                              ['alice@example.com', 'bob@example.com'])
+        self.assertIn(self.acme.country.name, message.body)
+        self.assertIn(self.acme.account.uid, message.body)
+        self.assertIn(self.acme.account.password, message.body)
 
 
 class PersonEditTest(TestCase):
