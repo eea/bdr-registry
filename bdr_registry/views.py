@@ -13,7 +13,6 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseForbidden
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
-from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect

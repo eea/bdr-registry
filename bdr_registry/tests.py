@@ -103,7 +103,7 @@ class OrganisationEditTest(TestCase):
         self.user.is_superuser = True
         self.user.save()
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
-        resp = self.client.post(self.update_url, org_form)
+        self.client.post(self.update_url, org_form)
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "teh new name")
 
@@ -114,7 +114,7 @@ class OrganisationEditTest(TestCase):
         account = models.Account.objects.create(uid='fgas12345')
         org_form = dict(ORG_FIXTURE, country=self.dk.pk,
                         obligation=fgas.pk, account=account.pk)
-        resp = self.client.post(self.update_url, org_form)
+        self.client.post(self.update_url, org_form)
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertIsNone(new_org.obligation)
         self.assertIsNone(new_org.account)
@@ -152,7 +152,7 @@ class PersonEditTest(TestCase):
         self.user.is_superuser = True
         self.user.save()
         person_form = dict(PERSON_FIXTURE, phone='555 9876')
-        resp = self.client.post(self.update_url, person_form)
+        self.client.post(self.update_url, person_form)
         new_person = models.Person.objects.get(pk=self.person.pk)
         self.assertEqual(new_person.phone, '555 9876')
 
@@ -162,7 +162,7 @@ class PersonEditTest(TestCase):
         org2 = models.Organisation.objects.create(country=self.dk,
                                                   obligation=self.fgas)
         person_form = dict(PERSON_FIXTURE, organisation=org2.pk)
-        resp = self.client.post(self.update_url, person_form)
+        self.client.post(self.update_url, person_form)
         new_person = models.Person.objects.get(pk=self.person.pk)
         self.assertEqual(new_person.organisation, self.acme)
 
@@ -186,8 +186,8 @@ class PersonEditTest(TestCase):
         account = models.Account.objects.create(uid=self.user.username)
         self.acme.account = account
         self.acme.save()
-        resp = self.client.post('/organisation/%d/add_person' % self.acme.pk,
-                                dict(PERSON_FIXTURE, first_name='Smith'))
+        self.client.post('/organisation/%d/add_person' % self.acme.pk,
+                         dict(PERSON_FIXTURE, first_name='Smith'))
         new_person = models.Person.objects.get(first_name='Smith')
         self.assertEqual(new_person.organisation, self.acme)
 
@@ -195,7 +195,7 @@ class PersonEditTest(TestCase):
         account = models.Account.objects.create(uid=self.user.username)
         self.acme.account = account
         self.acme.save()
-        resp = self.client.post('/person/%d/delete' % self.person.pk)
+        self.client.post('/person/%d/delete' % self.person.pk)
         self.assertItemsEqual(self.acme.people.all(), [])
 
     def test_random_account_is_not_allowed_to_delete(self):
@@ -224,12 +224,12 @@ class ApiTest(TestCase):
         kwargs = dict(ORG_FIXTURE, country=dk,
                       account=account, obligation=fgas)
         org = models.Organisation.objects.create(**kwargs)
-        person = models.Person.objects.create(organisation=org,
-                                              first_name="Joe",
-                                              family_name="Smith",
-                                              email="joe.smith@example.com",
-                                              phone="555 1234",
-                                              fax="555 6789")
+        models.Person.objects.create(organisation=org,
+                                     first_name="Joe",
+                                     family_name="Smith",
+                                     email="joe.smith@example.com",
+                                     phone="555 1234",
+                                     fax="555 6789")
 
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
@@ -260,7 +260,7 @@ class ApiTest(TestCase):
         kwargs = dict(ORG_FIXTURE, country=dk, obligation=fgas)
         account1 = models.Account.objects.create(uid='fgas0001')
         account2 = models.Account.objects.create(uid='fgas0002')
-        org1 = models.Organisation.objects.create(account=account1, **kwargs)
+        models.Organisation.objects.create(account=account1, **kwargs)
         org2 = models.Organisation.objects.create(account=account2, **kwargs)
 
         resp = self.client.get('/organisation/all'
