@@ -48,6 +48,7 @@ class AccountManager(models.Manager):
 class Account(models.Model):
 
     uid = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
         return u"uid={p.uid}".format(p=self)
