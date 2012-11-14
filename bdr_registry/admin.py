@@ -30,6 +30,10 @@ def reset_password(modeladmin, request, queryset):
             n += 1
         messages.add_message(request, messages.INFO,
                              "%d passwords have been reset." % n)
+
+        if request.POST.get('email'):
+            return send_password_email(modeladmin, request, queryset)
+
         return
 
     return TemplateResponse(request, 'organisation_reset_password.html', {
