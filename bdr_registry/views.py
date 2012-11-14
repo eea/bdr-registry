@@ -62,10 +62,8 @@ class OrganisationUpdate(UpdateView):
         return reverse('organisation_update', args=[self.object.pk])
 
 
-class Organisation(DetailView):
-
-    model = models.Organisation
-    template_name = 'organisation.html'
+def organisation_view(request, pk):
+    return redirect(reverse('organisation_update', args=[pk]))
 
 
 def api_key_required(view):
