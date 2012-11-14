@@ -1,6 +1,7 @@
 from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.auth.models import User
+from django.contrib.admin import helpers
 from bdr_registry import models
 
 
@@ -141,6 +142,29 @@ class OrganisationEditTest(TestCase):
         resp = self.client.post(self.update_url, org_form)
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
+
+
+class OrganisationPasswordTest(TestCase):
+
+    def setUp(self):
+        self.dk = models.Country.objects.get(name="Denmark")
+        self.fgas = models.Obligation.objects.get(code='fgas')
+        self.account = models.Account.objects.create_for_obligation(self.fgas)
+        self.acme = models.Organisation.objects.create(country=self.dk,
+                                                       obligation=self.fgas,
+                                                       account=self.account)
+
+    def test_password_reset_changes_password(self):
+        password = self.account.password
+        create_user_and_login(self.client, superuser=True, staff=True)
+        self.client.post('/admin/bdr_registry/organisation/', {
+            helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
+            'action': 'reset_password',
+            'perform_reset': 'yes',
+        })
+
+        new_password = models.Account.objects.get(pk=self.account.pk).password
+        self.assertNotEqual(password, new_password)
 
 
 class PersonEditTest(TestCase):

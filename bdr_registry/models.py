@@ -64,6 +64,10 @@ class Account(models.Model):
         ldap_user = _LDAPUser(backend, username=self.uid)
         return bool(ldap_user.dn is not None)
 
+    def set_random_password(self):
+        self.password = generate_key(size=8)
+        self.save()
+
     objects = AccountManager()
 
 

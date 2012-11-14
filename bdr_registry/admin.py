@@ -22,6 +22,9 @@ def reset_password(modeladmin, request, queryset):
 
     if request.POST.get('perform_reset'):
         n = 0
+        for organisation in organisations_with_account:
+            organisation.account.set_random_password()
+            n += 1
         messages.add_message(request, messages.INFO,
                              "%d passwords have been reset." % n)
         return
