@@ -5,9 +5,10 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 
 
-def generate_key():
+def generate_key(size=20):
+    crypto_random = random.SystemRandom()
     vocabulary = string.ascii_lowercase + string.digits
-    return ''.join(random.choice(vocabulary) for c in range(20))
+    return ''.join(crypto_random.choice(vocabulary) for c in range(size))
 
 
 class ApiKey(models.Model):
