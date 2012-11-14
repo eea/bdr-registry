@@ -8,16 +8,31 @@ from django.template.loader import render_to_string
 import models
 
 
-def generate_account(modeladmin, request, queryset):
-    n = 0
-    for organisation in queryset:
-        obligation = organisation.obligation
-        account = models.Account.objects.create_for_obligation(obligation)
-        organisation.account = account
-        organisation.save()
-        n += 1
-    messages.add_message(request, messages.INFO,
-                         "Generated %d accounts." % n)
+def create_accounts(modeladmin, request, queryset):
+    organisations_without_account = [o for o in queryset if o.account is None]
+
+    if request.POST.get('perform_create'):
+        n = 0
+        for organisation in organisations_without_account:
+            obligation = organisation.obligation
+            account = models.Account.objects.create_for_obligation(obligation)
+            organisation.account = account
+            organisation.save()
+            n += 1
+        messages.add_message(request, messages.INFO,
+                             "Created %d accounts." % n)
+
+        if request.POST.get('passwords'):
+            return reset_password(modeladmin, request,
+                                  organisations_without_account)
+
+        return
+
+    return TemplateResponse(request, 'organisation_create_accounts.html', {
+        'organisations_without_account': organisations_without_account,
+        'queryset': queryset,
+        'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
+    })
 
 
 def reset_password(modeladmin, request, queryset):
@@ -80,7 +95,7 @@ class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
     list_display = ['__unicode__', 'obligation', 'account']
-    actions = [generate_account, reset_password, send_password_email]
+    actions = [create_accounts, reset_password, send_password_email]
 
 
 admin.site.register(models.Country)
