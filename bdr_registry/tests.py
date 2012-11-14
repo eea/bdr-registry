@@ -24,6 +24,18 @@ PERSON_FIXTURE = {
 LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
 
 
+def create_user_and_login(client,
+                          username='test_user', password='pw',
+                          staff=False, superuser=False):
+    user_data = dict(username=username, password=password)
+    user = User.objects.create_user(**user_data)
+    user.is_superuser = superuser
+    user.is_staff = staff
+    user.save()
+    client.login(**user_data)
+    return user
+
+
 class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
@@ -91,25 +103,20 @@ class FormSubmitTest(TransactionTestCase):
 class OrganisationEditTest(TestCase):
 
     def setUp(self):
-        user_data = dict(username='test_user', password='pw')
-        self.user = User.objects.create_user(**user_data)
-        self.client.login(**user_data)
         self.dk = models.Country.objects.get(name="Denmark")
         org_data = dict(ORG_FIXTURE, country_id=self.dk.pk)
         self.org = models.Organisation.objects.create(**org_data)
         self.update_url = '/organisation/%d/update' % self.org.pk
 
     def test_model_updated_from_organisation_edit(self):
-        self.user.is_superuser = True
-        self.user.save()
+        create_user_and_login(self.client, superuser=True)
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
         self.client.post(self.update_url, org_form)
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "teh new name")
 
     def test_modifying_obligation_or_account_is_ignored(self):
-        self.user.is_superuser = True
-        self.user.save()
+        create_user_and_login(self.client, superuser=True)
         fgas = models.Obligation.objects.get(code='fgas')
         account = models.Account.objects.create(uid='fgas12345')
         org_form = dict(ORG_FIXTURE, country=self.dk.pk,
@@ -120,7 +127,8 @@ class OrganisationEditTest(TestCase):
         self.assertIsNone(new_org.account)
 
     def test_organisation_account_is_allowed_to_edit(self):
-        self.org.account = models.Account.objects.create(uid=self.user.username)
+        user = create_user_and_login(self.client)
+        self.org.account = models.Account.objects.create(uid=user.username)
         self.org.save()
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
         resp = self.client.post(self.update_url, org_form)
@@ -138,9 +146,6 @@ class OrganisationEditTest(TestCase):
 class PersonEditTest(TestCase):
 
     def setUp(self):
-        user_data = dict(username='test_user', password='pw')
-        self.user = User.objects.create_user(**user_data)
-        self.client.login(**user_data)
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.acme = models.Organisation.objects.create(country=self.dk,
@@ -149,16 +154,14 @@ class PersonEditTest(TestCase):
         self.update_url = '/person/%d/update' % self.person.pk
 
     def test_person_information_is_updated(self):
-        self.user.is_superuser = True
-        self.user.save()
+        create_user_and_login(self.client, superuser=True)
         person_form = dict(PERSON_FIXTURE, phone='555 9876')
         self.client.post(self.update_url, person_form)
         new_person = models.Person.objects.get(pk=self.person.pk)
         self.assertEqual(new_person.phone, '555 9876')
 
     def test_modifying_organisation_is_ignored(self):
-        self.user.is_superuser = True
-        self.user.save()
+        create_user_and_login(self.client, superuser=True)
         org2 = models.Organisation.objects.create(country=self.dk,
                                                   obligation=self.fgas)
         person_form = dict(PERSON_FIXTURE, organisation=org2.pk)
@@ -167,7 +170,8 @@ class PersonEditTest(TestCase):
         self.assertEqual(new_person.organisation, self.acme)
 
     def test_organisation_account_is_allowed_to_edit(self):
-        account = models.Account.objects.create(uid=self.user.username)
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
         person_form = dict(PERSON_FIXTURE, phone='555 9876')
@@ -177,13 +181,15 @@ class PersonEditTest(TestCase):
         self.assertEqual(new_person.phone, '555 9876')
 
     def test_random_account_is_not_allowed_to_edit(self):
+        create_user_and_login(self.client)
         person_form = dict(PERSON_FIXTURE, phone='555 9876')
         resp = self.client.post(self.update_url, person_form)
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
     def test_add_person_to_organisation(self):
-        account = models.Account.objects.create(uid=self.user.username)
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
         self.client.post('/organisation/%d/add_person' % self.acme.pk,
@@ -192,13 +198,15 @@ class PersonEditTest(TestCase):
         self.assertEqual(new_person.organisation, self.acme)
 
     def test_organisation_account_can_delete_person_from_organisation(self):
-        account = models.Account.objects.create(uid=self.user.username)
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
         self.client.post('/person/%d/delete' % self.person.pk)
         self.assertItemsEqual(self.acme.people.all(), [])
 
     def test_random_account_is_not_allowed_to_delete(self):
+        create_user_and_login(self.client)
         self.client.post('/person/%d/delete' % self.person.pk)
         #self.assertEqual([p.pk for p in self.acme.people.all()],
         #                 [self.person.pk])
