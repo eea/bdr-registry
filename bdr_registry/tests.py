@@ -243,6 +243,10 @@ class PersonEditTest(TestCase):
         new_person = models.Person.objects.get(first_name='Smith')
         self.assertEqual(new_person.organisation, self.acme)
 
+    def test_add_person_to_organisation_returns_404_for_missing_org(self):
+        resp = self.client.get('/organisation/123/add_person')
+        self.assertEqual(resp.status_code, 404)
+
     def test_organisation_account_can_delete_person_from_organisation(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)

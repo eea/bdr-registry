@@ -170,7 +170,7 @@ class OrganisationAddPerson(CreateView):
     form_class = PersonForm
 
     def dispatch(self, request, pk):
-        organisation = models.Organisation.objects.get(pk=pk)
+        organisation = get_object_or_404(models.Organisation, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationAddPerson, self).dispatch
