@@ -233,6 +233,10 @@ class PersonEditTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
+    def test_person_update_returns_404_if_person_missing(self):
+        resp = self.client.get('/person/123/update')
+        self.assertEqual(resp.status_code, 404)
+
     def test_add_person_to_organisation(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)

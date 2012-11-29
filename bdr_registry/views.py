@@ -197,7 +197,7 @@ class PersonUpdate(UpdateView):
     form_class = PersonForm
 
     def dispatch(self, request, pk):
-        organisation = models.Person.objects.get(pk=pk).organisation
+        organisation = get_object_or_404(models.Person, pk=pk).organisation
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(PersonUpdate, self).dispatch
