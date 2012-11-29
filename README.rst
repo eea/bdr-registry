@@ -68,6 +68,7 @@ this at the root of the repository::
     BDR_REGISTRY_DEBUG=on
     BDR_REGISTRY_DATABASE=/tmp/db.sqlite
     BDR_EMAIL_FROM=BDR Registration <bdr-registration@eionet.europa.eu>
+    TARGET=zope@vulture:/var/local/bdr-registry
 
 .. _honcho: https://github.com/nickstenning/honcho
 .. _foreman: http://ddollar.github.com/foreman/
@@ -126,13 +127,10 @@ Deployment using `sarge`
    distributions or wheel_ files. During deployment `pip` does not
    search for packages over the network because it takes too much time.
 
-5. Deploy the application. This requires a tarball of the repository
-   which can be obtained by running ``git archive HEAD >
-   bdr-registry.tar``.
+5. Deploy the application. This can be done with the `fabric` script
+   included, provided that ``TARGET`` is set in ``.env``::
 
-   ::
-
-       $ bin/sarge deploy bdr-registry.tar web
+       $ honcho run fab deploy
 
 6. Set up a front-end web server (apache, nginx) to proxy requests to
 the application on the port configured above. The server might need to
