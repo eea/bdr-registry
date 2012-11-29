@@ -3,7 +3,7 @@ from functools import wraps
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
 from django.db import transaction
@@ -51,7 +51,7 @@ class OrganisationUpdate(UpdateView):
                                    exclude=['obligation', 'account'])
 
     def dispatch(self, request, pk):
-        organisation = models.Organisation.objects.get(pk=pk)
+        organisation = get_object_or_404(models.Organisation, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationUpdate, self).dispatch

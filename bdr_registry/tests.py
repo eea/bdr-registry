@@ -143,6 +143,10 @@ class OrganisationEditTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
+    def test_view_returns_404_for_organisation_notfound(self):
+        resp = self.client.get('/organisation/123/update')
+        self.assertEqual(resp.status_code, 404)
+
 
 class OrganisationPasswordTest(TestCase):
 
