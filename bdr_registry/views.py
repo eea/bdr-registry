@@ -220,7 +220,7 @@ class PersonDelete(DeleteView):
     template_name = 'person_confirm_delete.html'
 
     def dispatch(self, request, pk):
-        organisation = models.Person.objects.get(pk=pk).organisation
+        organisation = get_object_or_404(models.Person, pk=pk).organisation
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(PersonDelete, self).dispatch

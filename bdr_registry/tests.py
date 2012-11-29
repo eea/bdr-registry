@@ -262,6 +262,10 @@ class PersonEditTest(TestCase):
         #                 [self.person.pk])
         self.assertItemsEqual(self.acme.people.all(), [self.person])
 
+    def test_person_delete_returns_404_if_person_missing(self):
+        resp = self.client.get('/person/123/delete')
+        self.assertEqual(resp.status_code, 404)
+
 
 class ApiTest(TestCase):
 
