@@ -268,7 +268,8 @@
     "model": "bdr_registry.obligation",
     "fields": {
       "code": "ods",
-      "name": "Ozone depleting substances"
+      "name": "Ozone depleting substances",
+      "reportek_slug": "ods"
     }
   },
   {
@@ -276,7 +277,8 @@
     "model": "bdr_registry.obligation",
     "fields": {
       "code": "fgas",
-      "name": "F-gases"
+      "name": "F-gases",
+      "reportek_slug": "fgases"
     }
   }
 ]
