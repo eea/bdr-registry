@@ -52,6 +52,9 @@ Configuration variables
 ``BDR_AUTH_LDAP_SERVER``
     URL of LDAP server to use for authentication.
 
+``BDR_REPORTEK_ORGANISATION_URL``
+    URL pattern for links back to a company's reporting page.
+
 .. _sentry: http://pypi.python.org/pypi/sentry
 
 

@@ -61,6 +61,12 @@ class OrganisationUpdate(UpdateView):
     def get_success_url(self):
         return reverse('organisation_update', args=[self.object.pk])
 
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationUpdate, self).get_context_data(**kwargs)
+        url = settings.BDR_REPORTEK_ORGANISATION_URL.format(org=self.object)
+        context['reporting_url'] = url
+        return context
+
 
 def organisation_view(request, pk):
     return redirect(reverse('organisation_update', args=[pk]))

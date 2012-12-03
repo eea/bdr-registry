@@ -150,3 +150,6 @@ if _auth_ldap_server:
         'django_auth_ldap.backend.LDAPBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
+
+BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
+    'BDR_REPORTEK_ORGANISATION_URL', '#')
