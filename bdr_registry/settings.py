@@ -106,8 +106,9 @@ LOGGING = {
             'formatter': 'console',
         },
     },
-    'loggers': {
-    },
+    'root': {
+        'handlers': ['stderr'],
+    }
 }
 
 _sentry_dsn = os.environ.get('BDR_REGISTRY_SENTRY_DSN')
