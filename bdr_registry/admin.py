@@ -95,11 +95,18 @@ class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
     list_display = ['__unicode__', 'obligation', 'account']
+    search_fields = ['name', 'account__uid']
     actions = [create_accounts, reset_password, send_password_email]
+
+
+class PersonAdmin(admin.ModelAdmin):
+
+    search_fields = ['first_name', 'family_name', 'email', 'phone', 'fax',
+                     'organisation__name', 'organisation__account__uid']
 
 
 admin.site.register(models.Country)
 admin.site.register(models.Organisation, OrganisationAdmin)
-admin.site.register(models.Person)
+admin.site.register(models.Person, PersonAdmin)
 admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)
