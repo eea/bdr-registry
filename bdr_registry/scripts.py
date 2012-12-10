@@ -119,8 +119,13 @@ def update_companies_from_csv(csv_file, commit=False):
             continue
         org = models.Organisation.objects.get(account=account)
 
-        if not any([org.addr_street, org.addr_place1,
-                    org.addr_place2, org.addr_postalcode]):
+        old = [org.addr_street, org.addr_place1,
+               org.addr_place2, org.addr_postalcode]
+        new = [row('address', 'Address', 'Street'),
+               row('Place', 'City', 'Municipality'),
+               '',
+               row('Postal code', 'PostalCode')]
+        if old != new:
             org.addr_street = row('address', 'Address', 'Street')
             org.addr_place1 = row('Place', 'City', 'Municipality')
             org.addr_postalcode = row('Postal code', 'PostalCode')
@@ -129,8 +134,8 @@ def update_companies_from_csv(csv_file, commit=False):
 
         count = org.people.count()
         if count > 0:
-            log.warn("uid=%s: %d existing people", account.uid, count)
-            continue
+            log.warn("uid=%s: removing %d existing people", account.uid, count)
+            org.people.all().delete()
 
         for n in range(1, 3):
             person_data = {
