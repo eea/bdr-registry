@@ -121,9 +121,9 @@ def update_companies_from_csv(csv_file, commit=False):
 
         if not any([org.addr_street, org.addr_place1,
                     org.addr_place2, org.addr_postalcode]):
-            org.addr_street = row('address', 'Address')
-            org.addr_place1 = row('Place', 'City')
-            org.addr_postalcode = row('Postal code')
+            org.addr_street = row('address', 'Address', 'Street')
+            org.addr_place1 = row('Place', 'City', 'Municipality')
+            org.addr_postalcode = row('Postal code', 'PostalCode')
             org.save()
             log.info("uid=%s: update address", account.uid)
 
@@ -135,15 +135,20 @@ def update_companies_from_csv(csv_file, commit=False):
         for n in range(1, 3):
             person_data = {
                 'first_name': row('CP%d - first name' % n,
-                                  'first name C%d' % n),
+                                  'first name C%d' % n,
+                                  'Given_%d' % n),
                 'family_name': row('CP%d - Last name' % n,
-                                   'last name C%d' % n),
+                                   'last name C%d' % n,
+                                   'Surname_%d' % n),
                 'email': row('CP%d - e-mail' % n,
-                             'Email C%d' % n),
+                             'Email C%d' % n,
+                             'Email_%d' % n),
                 'phone': row('CP%d - Tel' % n,
-                             'Tel C%d' % n if n > 1 else 'Org Tel C%d' % n),
+                             'Tel C%d' % n if n > 1 else 'Org Tel C%d' % n,
+                             'Phone_%d' % n),
                 'fax': row('CP%d - Fax' % n,
-                           'Fax C%d' % n if n > 1 else 'Org Fax C%d' % n),
+                           'Fax C%d' % n if n > 1 else 'Org Fax C%d' % n,
+                           'Fax_%d' % n),
             }
             if not any(person_data.values()):
                 continue
