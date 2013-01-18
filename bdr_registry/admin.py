@@ -109,9 +109,11 @@ class OrganisationAdmin(admin.ModelAdmin):
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
     def name_history(self, request, pk):
+        org = get_object_or_404(models.Organisation, pk=pk)
         return TemplateResponse(request, 'organisation_name_history.html', {
-            'organisation': get_object_or_404(models.Organisation, pk=pk),
-        })
+            'organisation': org,
+            'opts': org._meta,
+        }, current_app=self.admin_site.name)
 
 
 class PersonAdmin(admin.ModelAdmin):
