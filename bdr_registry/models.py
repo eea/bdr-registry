@@ -97,6 +97,17 @@ class Organisation(models.Model):
         return self.name
 
 
+class OrganisationNameHistory(models.Model):
+
+    name = models.CharField(max_length=255)
+    organisation = models.ForeignKey(Organisation, related_name='namehistory')
+    user = models.ForeignKey('auth.User', null=True, blank=True)
+    time = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        return u"{h.name} {h.time} {h.user}".format(h=self)
+
+
 class Person(models.Model):
 
     title = models.CharField(max_length=255, verbose_name="Title")
