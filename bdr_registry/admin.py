@@ -5,6 +5,8 @@ from django.contrib.admin import helpers
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
+from django.conf.urls import patterns
+from django.shortcuts import get_object_or_404
 import models
 
 
@@ -97,6 +99,21 @@ class OrganisationAdmin(admin.ModelAdmin):
     list_display = ['__unicode__', 'obligation', 'account']
     search_fields = ['name', 'account__uid']
     actions = [create_accounts, reset_password, send_password_email]
+
+    def get_urls(self):
+        print 'get_urls'
+        my_urls = patterns('',
+            (r'^(?P<pk>\d+)/name_history/$',
+                self.admin_site.admin_view(self.name_history)),
+        )
+        return my_urls + super(OrganisationAdmin, self).get_urls()
+
+    def name_history(self, request, pk):
+        org = get_object_or_404(models.Organisation, pk=pk)
+        return TemplateResponse(request, 'organisation_name_history.html', {
+            'organisation': org,
+            'opts': org._meta,
+        }, current_app=self.admin_site.name)
 
 
 class PersonAdmin(admin.ModelAdmin):
