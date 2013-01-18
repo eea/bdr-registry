@@ -148,6 +148,38 @@ class OrganisationEditTest(TestCase):
         self.assertEqual(resp.status_code, 404)
 
 
+class OrganisationNameHistoryTest(TestCase):
+
+    def setUp(self):
+        self.fgas = models.Obligation.objects.get(code='fgas')
+        self.dk = models.Country.objects.get(name="Denmark")
+
+    def test_new_organisation_creates_record_in_history(self):
+        user = create_user_and_login(self.client)
+        form_data = dict(ORG_FIXTURE, country=self.dk.pk)
+        self.client.post('/organisation/add', form_data)
+        self.assertEqual(models.OrganisationNameHistory.objects.count(), 1)
+        [hist0] = models.OrganisationNameHistory.objects.all()
+        self.assertEqual(hist0.name, ORG_FIXTURE['name'])
+        self.assertEqual(hist0.organisation, models.Organisation.objects.get())
+        self.assertEqual(hist0.user, user)
+
+    def test_updating_organisation_name_creates_record_in_history(self):
+        org_data = dict(ORG_FIXTURE, country_id=self.dk.pk)
+        form_data = dict(ORG_FIXTURE, country=self.dk.pk)
+        org = models.Organisation.objects.create(**org_data)
+
+        user = create_user_and_login(self.client, superuser=True, staff=True)
+        update_url = '/organisation/%d/update' % org.pk
+        form_data['name'] = "Teh other company"
+        self.client.post(update_url, form_data)
+        self.assertEqual(models.OrganisationNameHistory.objects.count(), 2)
+        [hist0, hist1] = models.OrganisationNameHistory.objects.all()
+        self.assertEqual(hist1.name, form_data['name'])
+        self.assertEqual(hist1.organisation, models.Organisation.objects.get())
+        self.assertEqual(hist1.user, user)
+
+
 class OrganisationPasswordTest(TestCase):
 
     def setUp(self):

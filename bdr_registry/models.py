@@ -3,6 +3,7 @@ import string
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
+import local
 
 
 def generate_key(size=20):
@@ -95,6 +96,24 @@ class Organisation(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+def organisation_loaded(instance, **extra):
+    instance._initial_name = '' if instance.pk is None else instance.name
+
+
+def organisation_saved(instance, **extra):
+    if instance._initial_name != instance.name:
+        user = local.get_request().user
+        if user is not None and user.is_authenticated():
+            user_id = user.id
+        else:
+            user_id = None
+        instance.namehistory.create(name=instance.name, user_id=user_id)
+
+
+models.signals.post_init.connect(organisation_loaded, sender=Organisation)
+models.signals.post_save.connect(organisation_saved, sender=Organisation)
 
 
 class OrganisationNameHistory(models.Model):
