@@ -1,0 +1,27 @@
+{% extends "admin/base_site.html" %}
+
+
+{% block content %}
+<h1>History of name updates for <em>{{ organisation.name }}</em></h1>
+
+<table>
+
+  <thead>
+    <td>Time</td>
+    <td>User</td>
+    <td>Name</td>
+  </thead>
+
+  <tbody>
+    {% for item in organisation.namehistory.all %}
+      <tr>
+        <td>{{ item.time }}</td>
+        <td>{% firstof item.user '(automated script)' %}</td>
+        <td>{{ item.name }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+
+</table>
+
+{% endblock %}
