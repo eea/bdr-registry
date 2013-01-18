@@ -55,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'bdr_registry.local.ThreadLocalRequestMiddleware',
 )
 
 ROOT_URLCONF = 'bdr_registry.urls'
