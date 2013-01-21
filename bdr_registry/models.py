@@ -39,12 +39,20 @@ class Obligation(models.Model):
     def __unicode__(self):
         return self.name
 
+    def generate_account_id(self):
+        query = NextAccountId.objects.select_for_update()
+        next_account_id = query.filter(obligation=self)[0]
+        value = next_account_id.next_id
+        next_account_id.next_id += 1
+        next_account_id.save()
+        return value
+
 
 class AccountManager(models.Manager):
 
     def create_for_obligation(self, obligation):
-        rand = ''.join(str(random.randint(0, 9)) for c in range(5))
-        uid = u"{o.code}{rand}".format(o=obligation, rand=rand)
+        next_id = obligation.generate_account_id()
+        uid = u"{o.code}{next_id}".format(o=obligation, next_id=next_id)
         return self.create(uid=uid)
 
 
