@@ -280,5 +280,21 @@
       "name": "F-gases",
       "reportek_slug": "fgases"
     }
+  },
+  {
+    "pk": 1,
+    "model": "bdr_registry.nextaccountid",
+    "fields": {
+      "next_id": 30000,
+      "obligation": 1
+    }
+  },
+  {
+    "pk": 2,
+    "model": "bdr_registry.nextaccountid",
+    "fields": {
+      "next_id": 30000,
+      "obligation": 2
+    }
   }
 ]
