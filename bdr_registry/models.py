@@ -79,7 +79,7 @@ class Organisation(models.Model):
                                    null=True, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
-    account = models.ForeignKey(Account, null=True, blank=True)
+    account = models.OneToOneField(Account, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})
