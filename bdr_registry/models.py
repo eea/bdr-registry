@@ -62,7 +62,11 @@ class Account(models.Model):
     password = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
-        return u"uid={p.uid}".format(p=self)
+        try:
+            org_name = self.organisation.name
+        except Organisation.DoesNotExist:
+            org_name = None
+        return u"uid={p.uid} ({org_name})".format(p=self, org_name=org_name)
 
     def set_random_password(self):
         self.password = generate_key(size=8)
