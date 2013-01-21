@@ -1,6 +1,10 @@
+import logging
 import ldap
 import hashlib
 import base64
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 def encrypt_password(password):
@@ -36,10 +40,12 @@ class LdapEditor(object):
             result = self.conn.add_s(self._account_dn(uid), attrs)
 
         except ldap.ALREADY_EXISTS:
+            log.debug("Account uid=%s already exists.", uid)
             return False
 
         else:
             assert result == (ldap.RES_ADD, [])
+            log.info("Created account uid=%s.", uid)
             return True
 
     def reset_password(self, uid, password):
@@ -48,6 +54,7 @@ class LdapEditor(object):
         ]
         result = self.conn.modify_s(self._account_dn(uid), attrs)
         assert result == (ldap.RES_MODIFY, [])
+        log.info("Password reset for uid=%s.", uid)
 
 
 def create_ldap_editor():
