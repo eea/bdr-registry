@@ -47,8 +47,12 @@ class OrganisationUpdate(UpdateView):
 
     model = models.Organisation
     template_name = 'organisation_update.html'
-    form_class = modelform_factory(models.Organisation,
-                                   exclude=['obligation', 'account'])
+
+    def get_form_class(self):
+        exclude = ['obligation', 'account']
+        if not self.request.user.is_superuser:
+            exclude.append('name')
+        return modelform_factory(models.Organisation, exclude=exclude)
 
     def dispatch(self, request, pk):
         organisation = get_object_or_404(models.Organisation, pk=pk)

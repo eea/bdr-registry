@@ -111,10 +111,10 @@ class OrganisationEditTest(TestCase):
 
     def test_model_updated_from_organisation_edit(self):
         create_user_and_login(self.client, superuser=True)
-        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         self.client.post(self.update_url, org_form)
         new_org = models.Organisation.objects.get(pk=self.org.pk)
-        self.assertEqual(new_org.name, "teh new name")
+        self.assertEqual(new_org.addr_street, "Sesame")
 
     def test_modifying_obligation_or_account_is_ignored(self):
         create_user_and_login(self.client, superuser=True)
@@ -131,14 +131,14 @@ class OrganisationEditTest(TestCase):
         user = create_user_and_login(self.client)
         self.org.account = models.Account.objects.create(uid=user.username)
         self.org.save()
-        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         resp = self.client.post(self.update_url, org_form)
         self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
         new_org = models.Organisation.objects.get(pk=self.org.pk)
-        self.assertEqual(new_org.name, "teh new name")
+        self.assertEqual(new_org.addr_street, "Sesame")
 
     def test_random_account_is_not_allowed_to_edit(self):
-        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="teh new name")
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         resp = self.client.post(self.update_url, org_form)
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
@@ -146,6 +146,24 @@ class OrganisationEditTest(TestCase):
     def test_view_returns_404_for_organisation_notfound(self):
         resp = self.client.get('/organisation/123/update')
         self.assertEqual(resp.status_code, 404)
+
+    def test_admin_can_change_name(self):
+        user = create_user_and_login(self.client, superuser=True, staff=True)
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="Rebranded")
+        resp = self.client.post(self.update_url, org_form)
+        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertEqual(new_org.name, "Rebranded")
+
+    def test_owner_cant_change_name(self):
+        user = create_user_and_login(self.client)
+        self.org.account = models.Account.objects.create(uid=user.username)
+        self.org.save()
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="Rebranded")
+        resp = self.client.post(self.update_url, org_form)
+        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertEqual(new_org.name, "Teh company")
 
 
 class OrganisationNameHistoryTest(TestCase):
