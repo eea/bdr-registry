@@ -56,16 +56,6 @@ class Account(models.Model):
     def __unicode__(self):
         return u"uid={p.uid}".format(p=self)
 
-    def exists_in_ldap(self):
-        LDAP_AUTH_BACKEND = 'django_auth_ldap.backend.LDAPBackend'
-        if LDAP_AUTH_BACKEND not in settings.AUTHENTICATION_BACKENDS:
-            raise RuntimeError("LDAP authentication backend is not enabled")
-        from django.contrib.auth import load_backend
-        from django_auth_ldap.backend import _LDAPUser
-        backend = load_backend(LDAP_AUTH_BACKEND)
-        ldap_user = _LDAPUser(backend, username=self.uid)
-        return bool(ldap_user.dn is not None)
-
     def set_random_password(self):
         self.password = generate_key(size=8)
         self.save()
