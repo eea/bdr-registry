@@ -36,14 +36,17 @@ def create_accounts(modeladmin, request, queryset):
 
     if request.POST.get('perform_create'):
         n = 0
+        new_accounts = []
         for organisation in organisations_without_account:
             obligation = organisation.obligation
             account = models.Account.objects.create_for_obligation(obligation)
             organisation.account = account
+            new_accounts.append(account)
             organisation.save()
             n += 1
-        messages.add_message(request, messages.INFO,
-                             "Created %d accounts." % n)
+        counters = sync_accounts_with_ldap(new_accounts)
+        msg = "Created %d accounts. LDAP: %r." % (n, counters)
+        messages.add_message(request, messages.INFO, msg)
 
         if request.POST.get('passwords'):
             return reset_password(modeladmin, request,
@@ -63,11 +66,14 @@ def reset_password(modeladmin, request, queryset):
 
     if request.POST.get('perform_reset'):
         n = 0
+        reset_accounts = []
         for organisation in organisations_with_account:
             organisation.account.set_random_password()
+            reset_accounts.append(organisation.account)
             n += 1
-        messages.add_message(request, messages.INFO,
-                             "%d passwords have been reset." % n)
+        counters = sync_accounts_with_ldap(reset_accounts)
+        msg = "%d passwords have been reset. LDAP: %r." % (n, counters)
+        messages.add_message(request, messages.INFO, msg)
 
         if request.POST.get('email'):
             return send_password_email(modeladmin, request, queryset)
