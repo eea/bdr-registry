@@ -2,6 +2,7 @@ import os
 
 DEBUG = bool(os.environ.get('BDR_REGISTRY_DEBUG'))
 TEMPLATE_DEBUG = DEBUG
+BDR_ALL_TABLES = (DEBUG or os.environ.get('BDR_ALL_TABLES') == 'on')
 
 ADMINS = ()
 
