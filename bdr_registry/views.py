@@ -50,6 +50,8 @@ class OrganisationUpdate(UpdateView):
 
     def get_form_class(self):
         exclude = ['obligation', 'account']
+        if not self.request.user.is_superuser:
+            exclude.append('name')
         return modelform_factory(models.Organisation, exclude=exclude)
 
     def dispatch(self, request, pk):

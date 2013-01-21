@@ -155,6 +155,16 @@ class OrganisationEditTest(TestCase):
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "Rebranded")
 
+    def test_owner_cant_change_name(self):
+        user = create_user_and_login(self.client)
+        self.org.account = models.Account.objects.create(uid=user.username)
+        self.org.save()
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="Rebranded")
+        resp = self.client.post(self.update_url, org_form)
+        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
+        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        self.assertEqual(new_org.name, "Teh company")
+
 
 class OrganisationNameHistoryTest(TestCase):
 
