@@ -63,6 +63,15 @@ class Account(models.Model):
     objects = AccountManager()
 
 
+class NextAccountId(models.Model):
+
+    next_id = models.IntegerField()
+    obligation = models.OneToOneField(Obligation, null=True, blank=True)
+
+    def __unicode__(self):
+        return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
+
+
 class Organisation(models.Model):
 
     name = models.CharField(max_length=255,
