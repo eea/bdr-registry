@@ -39,12 +39,20 @@ class Obligation(models.Model):
     def __unicode__(self):
         return self.name
 
+    def generate_account_id(self):
+        query = NextAccountId.objects.select_for_update()
+        next_account_id = query.filter(obligation=self)[0]
+        value = next_account_id.next_id
+        next_account_id.next_id += 1
+        next_account_id.save()
+        return value
+
 
 class AccountManager(models.Manager):
 
     def create_for_obligation(self, obligation):
-        rand = ''.join(str(random.randint(0, 9)) for c in range(5))
-        uid = u"{o.code}{rand}".format(o=obligation, rand=rand)
+        next_id = obligation.generate_account_id()
+        uid = u"{o.code}{next_id}".format(o=obligation, next_id=next_id)
         return self.create(uid=uid)
 
 
@@ -54,23 +62,26 @@ class Account(models.Model):
     password = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
-        return u"uid={p.uid}".format(p=self)
-
-    def exists_in_ldap(self):
-        LDAP_AUTH_BACKEND = 'django_auth_ldap.backend.LDAPBackend'
-        if LDAP_AUTH_BACKEND not in settings.AUTHENTICATION_BACKENDS:
-            raise RuntimeError("LDAP authentication backend is not enabled")
-        from django.contrib.auth import load_backend
-        from django_auth_ldap.backend import _LDAPUser
-        backend = load_backend(LDAP_AUTH_BACKEND)
-        ldap_user = _LDAPUser(backend, username=self.uid)
-        return bool(ldap_user.dn is not None)
+        try:
+            org_name = self.organisation.name
+        except Organisation.DoesNotExist:
+            org_name = None
+        return u"uid={p.uid} ({org_name})".format(p=self, org_name=org_name)
 
     def set_random_password(self):
         self.password = generate_key(size=8)
         self.save()
 
     objects = AccountManager()
+
+
+class NextAccountId(models.Model):
+
+    next_id = models.IntegerField()
+    obligation = models.OneToOneField(Obligation, null=True, blank=True)
+
+    def __unicode__(self):
+        return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
 
 
 class Organisation(models.Model):
@@ -89,7 +100,7 @@ class Organisation(models.Model):
                                    null=True, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
-    account = models.ForeignKey(Account, null=True, blank=True)
+    account = models.OneToOneField(Account, null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})

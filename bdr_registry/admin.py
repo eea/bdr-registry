@@ -101,7 +101,6 @@ class OrganisationAdmin(admin.ModelAdmin):
     actions = [create_accounts, reset_password, send_password_email]
 
     def get_urls(self):
-        print 'get_urls'
         my_urls = patterns('',
             (r'^(?P<pk>\d+)/name_history/$',
                 self.admin_site.admin_view(self.name_history)),
@@ -127,3 +126,6 @@ admin.site.register(models.Organisation, OrganisationAdmin)
 admin.site.register(models.Person, PersonAdmin)
 admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)
+if settings.BDR_ALL_TABLES:
+    admin.site.register(models.Account)
+    admin.site.register(models.NextAccountId)
