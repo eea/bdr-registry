@@ -45,5 +45,5 @@ def proxy_middleware(app):
 
     return proxy_fix
 
-if os.environ.get('BDR_REVERSE_PROXY'):
+if os.environ.get('REVERSE_PROXY'):
     application = proxy_middleware(application)

@@ -246,7 +246,7 @@ class PersonDelete(DeleteView):
 
 def send_notification_email(context):
     mail_from = settings.BDR_EMAIL_FROM
-    mail_to = [settings.BDR_ADMIN_EMAIL]
+    mail_to = [settings.BDR_HELPDESK_EMAIL]
     html = render_to_string('self_register_mail.html', context)
     message = mail.EmailMessage("BDR Registration", html, mail_from, mail_to)
     message.content_subtype = 'html'

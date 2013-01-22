@@ -126,6 +126,6 @@ admin.site.register(models.Organisation, OrganisationAdmin)
 admin.site.register(models.Person, PersonAdmin)
 admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)
-if settings.BDR_ALL_TABLES:
+if settings.ADMIN_ALL_BDR_TABLES:
     admin.site.register(models.Account)
     admin.site.register(models.NextAccountId)

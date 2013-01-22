@@ -1,8 +1,8 @@
 import os
 
-DEBUG = bool(os.environ.get('BDR_REGISTRY_DEBUG'))
+DEBUG = bool(os.environ.get('DEBUG'))
 TEMPLATE_DEBUG = DEBUG
-BDR_ALL_TABLES = (DEBUG or os.environ.get('BDR_ALL_TABLES') == 'on')
+ADMIN_ALL_BDR_TABLES = (DEBUG or os.environ.get('ADMIN_ALL_BDR_TABLES') == 'on')
 
 ADMINS = ()
 
@@ -11,7 +11,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('BDR_REGISTRY_DATABASE', 'db.sqlite'),
+        'NAME': os.environ.get('DATABASE', 'db.sqlite'),
     }
 }
 
@@ -31,9 +31,9 @@ MEDIA_ROOT = ''
 
 MEDIA_URL = ''
 
-STATIC_ROOT = os.environ.get('BDR_STATIC_ROOT', '')
+STATIC_ROOT = os.environ.get('STATIC_ROOT', '')
 
-STATIC_URL = os.environ.get('BDR_STATIC_URL', '/static/')
+STATIC_URL = os.environ.get('STATIC_URL', '/static/')
 
 STATICFILES_DIRS = ()
 
@@ -42,7 +42,7 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-SECRET_KEY = os.environ.get('BDR_REGISTRY_DJANGO_SECRET', 'asdf')
+SECRET_KEY = os.environ.get('DJANGO_SECRET', 'asdf')
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -113,25 +113,25 @@ LOGGING = {
     }
 }
 
-_sentry_dsn = os.environ.get('BDR_REGISTRY_SENTRY_DSN')
+_sentry_dsn = os.environ.get('SENTRY_DSN')
 if _sentry_dsn:
     INSTALLED_APPS += ('raven.contrib.django',)
     RAVEN_CONFIG = {
         'dsn': _sentry_dsn,
     }
 
-BDR_ADMIN_EMAIL = os.environ.get('BDR_ADMIN_EMAIL', '')
-BDR_SMTP = os.environ.get('BDR_SMTP', '')
-if BDR_SMTP:
+BDR_HELPDESK_EMAIL = os.environ.get('BDR_HELPDESK_EMAIL', '')
+_email_server = os.environ.get('EMAIL_SERVER', '')
+if _email_server:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST, _email_port = BDR_SMTP.split(':')
+    EMAIL_HOST, _email_port = _email_server.split(':')
     EMAIL_PORT = int(_email_port)
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 BDR_EMAIL_FROM = os.environ.get('BDR_EMAIL_FROM', 'bdr@localhost')
 
-_auth_ldap_server = os.environ.get('BDR_AUTH_LDAP_SERVER')
+_auth_ldap_server = os.environ.get('AUTH_LDAP_SERVER')
 if _auth_ldap_server:
     AUTH_LDAP_SERVER_URI = _auth_ldap_server
     AUTH_LDAP_BIND_DN = ""

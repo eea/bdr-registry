@@ -19,17 +19,17 @@ Configuration variables
 -----------------------
 `bdr-registry` understands the following environment variables:
 
-``BDR_REGISTRY_DEBUG``
+``DEBUG``
     Set Django's ``DEBUG`` flag.
 
-``BDR_REGISTRY_DATABASE``
+``DATABASE``
     Path to SQLite database.
 
-``BDR_ADMIN_EMAIL``
+``BDR_HELPDESK_EMAIL``
     Email address which receives notifications of newly self-registered
     organisations.
 
-``BDR_SMTP``
+``EMAIL_SERVER``
     SMTP server for outgoing email (for example ``localhost:25``). If
     blank or missing, email messages will be printed to `stdout`
     instead.
@@ -37,19 +37,19 @@ Configuration variables
 ``BDR_EMAIL_FROM``
     Address used in `From:` field of outgoing email messages.
 
-``BDR_REGISTRY_SENTRY_DSN``
+``SENTRY_DSN``
     DSN of sentry_ server (optional.
 
-``BDR_REGISTRY_DJANGO_SECRET``
+``DJANGO_SECRET``
     Secret key used by Django for sessions.
 
-``BDR_REVERSE_PROXY``
+``REVERSE_PROXY``
     Set this to ``on`` when Django is behind a reverse proxy.
 
-``BDR_STATIC_URL``
+``STATIC_URL``
     URL where static files are served.
 
-``BDR_AUTH_LDAP_SERVER``
+``AUTH_LDAP_SERVER``
     URL of LDAP server to use for authentication.
 
 ``BDR_REPORTEK_ORGANISATION_URL``
@@ -106,11 +106,11 @@ Deployment using `sarge`
 2. Upload a configuration file in ``$SARGE_HOME/etc/app/config.json``::
 
        {
-         "BDR_REGISTRY_DATABASE": "/var/local/bdr-registry/var/db/db.sqlite",
-         "BDR_ADMIN_EMAIL": "bdr.helpdesk@eea.europa.eu",
+         "DATABASE": "/var/local/bdr-registry/var/db/db.sqlite",
+         "BDR_HELPDESK_EMAIL": "bdr.helpdesk@eea.europa.eu",
          "BDR_EMAIL_FROM": "BDR Registration <bdr-registration@eionet.europa.eu>",
-         "BDR_REGISTRY_DJANGO_SECRET": "some random string",
-         "BDR_REVERSE_PROXY": "on"
+         "DJANGO_SECRET": "some random string",
+         "REVERSE_PROXY": "on"
        }
 
 3. Configure an external (stable) port number and a range of ports for
