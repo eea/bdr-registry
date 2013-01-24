@@ -3,6 +3,7 @@ from django.core import mail
 from django.contrib.auth.models import User
 from django.contrib.admin import helpers
 from bdr_registry import models
+from mock import patch
 
 
 ORG_FIXTURE = {
@@ -208,6 +209,9 @@ class OrganisationPasswordTest(TestCase):
         self.acme = models.Organisation.objects.create(country=self.dk,
                                                        obligation=self.fgas,
                                                        account=self.account)
+        ldap_editor_patch = patch('bdr_registry.admin.create_ldap_editor')
+        ldap_editor_patch.start()
+        self.addCleanup(ldap_editor_patch.stop)
 
     def test_password_reset_changes_password(self):
         password = self.account.password

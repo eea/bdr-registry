@@ -154,5 +154,11 @@ if _auth_ldap_server:
         'django.contrib.auth.backends.ModelBackend',
     )
 
+_ldap_edit_server = os.environ.get('LDAP_EDIT_SERVER')
+if _ldap_edit_server:
+    LDAP_EDIT_SERVER = _ldap_edit_server
+    (LDAP_EDIT_DN, LDAP_EDIT_PASSWORD) = \
+        os.environ.get('LDAP_EDIT_LOGIN').split(':')
+
 BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
     'BDR_REPORTEK_ORGANISATION_URL', '#')
