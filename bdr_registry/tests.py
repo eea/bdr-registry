@@ -329,6 +329,8 @@ class ApiTest(TestCase):
 
     def setUp(self):
         self.apikey = models.ApiKey.objects.create().key
+        self.dk = models.Country.objects.get(name="Denmark")
+        self.fgas = models.Obligation.objects.get(code='fgas')
 
     def test_response_empty_when_no_organisations_in_db(self):
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
@@ -338,11 +340,9 @@ class ApiTest(TestCase):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_single_organisation_from_db(self):
-        dk = models.Country.objects.get(name="Denmark")
-        fgas = models.Obligation.objects.get(code='fgas')
         account = models.Account.objects.create(uid='fgas12345')
-        kwargs = dict(ORG_FIXTURE, country=dk,
-                      account=account, obligation=fgas)
+        kwargs = dict(ORG_FIXTURE, country=self.dk,
+                      account=account, obligation=self.fgas)
         org = models.Organisation.objects.create(**kwargs)
         models.Person.objects.create(organisation=org,
                                      first_name="Joe",
@@ -375,9 +375,7 @@ class ApiTest(TestCase):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_organisation_with_matching_uid(self):
-        dk = models.Country.objects.get(name="Denmark")
-        fgas = models.Obligation.objects.get(code='fgas')
-        kwargs = dict(ORG_FIXTURE, country=dk, obligation=fgas)
+        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.fgas)
         account1 = models.Account.objects.create(uid='fgas0001')
         account2 = models.Account.objects.create(uid='fgas0002')
         models.Organisation.objects.create(account=account1, **kwargs)
