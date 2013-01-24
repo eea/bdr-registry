@@ -38,7 +38,7 @@ Configuration variables
     Address used in `From:` field of outgoing email messages.
 
 ``SENTRY_DSN``
-    DSN of sentry_ server (optional.
+    DSN of sentry_ server (optional).
 
 ``DJANGO_SECRET``
     Secret key used by Django for sessions.
@@ -54,6 +54,12 @@ Configuration variables
 
 ``BDR_REPORTEK_ORGANISATION_URL``
     URL pattern for links back to a company's reporting page.
+
+``LDAP_EDIT_SERVER``, ``LDAP_EDIT_LOGIN``
+    Server and credentials for modifying LDAP company accounts.
+
+``ADMIN_ALL_BDR_TABLES``
+    If set to ``on``, show `account` table in the Django admin.
 
 .. _sentry: http://pypi.python.org/pypi/sentry
 
