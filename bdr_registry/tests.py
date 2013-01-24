@@ -329,6 +329,8 @@ class ApiTest(TestCase):
 
     def setUp(self):
         self.apikey = models.ApiKey.objects.create().key
+        self.dk = models.Country.objects.get(name="Denmark")
+        self.fgas = models.Obligation.objects.get(code='fgas')
 
     def test_response_empty_when_no_organisations_in_db(self):
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
@@ -338,11 +340,9 @@ class ApiTest(TestCase):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_single_organisation_from_db(self):
-        dk = models.Country.objects.get(name="Denmark")
-        fgas = models.Obligation.objects.get(code='fgas')
         account = models.Account.objects.create(uid='fgas12345')
-        kwargs = dict(ORG_FIXTURE, country=dk,
-                      account=account, obligation=fgas)
+        kwargs = dict(ORG_FIXTURE, country=self.dk,
+                      account=account, obligation=self.fgas)
         org = models.Organisation.objects.create(**kwargs)
         models.Person.objects.create(organisation=org,
                                      first_name="Joe",
@@ -374,10 +374,49 @@ class ApiTest(TestCase):
                     '</organisations>')
         self.assertEqual(resp.content, expected)
 
+    def test_response_contains_all_person_data(self):
+        account = models.Account.objects.create(uid='fgas12345')
+        kwargs = dict(ORG_FIXTURE, country=self.dk,
+                      account=account, obligation=self.fgas)
+        org = models.Organisation.objects.create(**kwargs)
+        models.Person.objects.create(organisation=org,
+                                     first_name="Joe",
+                                     family_name="Smith",
+                                     email="joe.smith@example.com",
+                                     email2="joe2.smith@example.com",
+                                     phone="555 1234",
+                                     phone2="556 1234",
+                                     phone3="557 1234",
+                                     fax="555 6789")
+
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+        expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
+                    '<organisations>'
+                      '<organisation>'
+                        '<pk>' + str(org.pk) + '</pk>'
+                        '<name>Teh company</name>'
+                        '<addr_street>teh street</addr_street>'
+                        '<addr_postalcode>123456</addr_postalcode>'
+                        '<addr_place1>Copenhagen</addr_place1>'
+                        '<addr_place2>Hovedstaden</addr_place2>'
+                        '<account>fgas12345</account>'
+                        '<obligation name="F-gases">fgas</obligation>'
+                        '<country name="Denmark">dk</country>'
+                        '<person>'
+                          '<name>Joe Smith</name>'
+                          '<email>joe.smith@example.com</email>'
+                          '<email>joe2.smith@example.com</email>'
+                          '<phone>555 1234</phone>'
+                          '<phone>556 1234</phone>'
+                          '<phone>557 1234</phone>'
+                          '<fax>555 6789</fax>'
+                        '</person>'
+                      '</organisation>'
+                    '</organisations>')
+        self.assertEqual(resp.content, expected)
+
     def test_response_contains_organisation_with_matching_uid(self):
-        dk = models.Country.objects.get(name="Denmark")
-        fgas = models.Obligation.objects.get(code='fgas')
-        kwargs = dict(ORG_FIXTURE, country=dk, obligation=fgas)
+        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.fgas)
         account1 = models.Account.objects.create(uid='fgas0001')
         account2 = models.Account.objects.create(uid='fgas0002')
         models.Organisation.objects.create(account=account1, **kwargs)

@@ -143,10 +143,20 @@ class Person(models.Model):
     title = models.CharField(max_length=255, verbose_name="Title")
     family_name = models.CharField(max_length=255, verbose_name="Family name")
     first_name = models.CharField(max_length=255, verbose_name="First name")
+
     email = models.EmailField(verbose_name="Email address")
+    email2 = models.EmailField(verbose_name="Email address 2",
+                               null=True, blank=True)
+
     phone = models.CharField(max_length=255, verbose_name="Telephone")
+    phone2 = models.CharField(max_length=255, verbose_name="Telephone 2",
+                              null=True, blank=True)
+    phone3 = models.CharField(max_length=255, verbose_name="Telephone 3",
+                              null=True, blank=True)
+
     fax = models.CharField(max_length=255, verbose_name="Fax",
                            null=True, blank=True)
+
     organisation = models.ForeignKey(Organisation, related_name='people')
 
     def __unicode__(self):

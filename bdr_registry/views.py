@@ -110,12 +110,16 @@ def organisation_all(request):
             '@name': organisation.country.name,
             '#text': organisation.country.code,
         }
-        item['person'] = [OrderedDict([
+        def person_data(person):
+            emails = [person.email, person.email2]
+            phones = [person.phone, person.phone2, person.phone3]
+            return OrderedDict([
                 ('name', u"{p.first_name} {p.family_name}".format(p=person)),
-                ('email', person.email),
-                ('phone', person.phone),
+                ('email', [e for e in emails if e]),
+                ('phone', [p for p in phones if p]),
                 ('fax', person.fax),
-            ]) for person in organisation.people.all()]
+            ])
+        item['person'] = [person_data(p) for p in organisation.people.all()]
         data.append(item)
     xml = xmltodict.unparse({'organisations': {'organisation': data}})
     return HttpResponse(xml, content_type='application/xml')
