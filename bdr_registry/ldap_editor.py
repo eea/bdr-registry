@@ -37,6 +37,7 @@ class LdapEditor(object):
         ]
 
         try:
+            log.debug("conn.add_s(%r, %r)", self._account_dn(uid), attrs)
             result = self.conn.add_s(self._account_dn(uid), attrs)
 
         except ldap.ALREADY_EXISTS:
@@ -52,6 +53,7 @@ class LdapEditor(object):
         attrs = [
             (ldap.MOD_REPLACE, 'userPassword', [encrypt_password(password)]),
         ]
+        log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
         result = self.conn.modify_s(self._account_dn(uid), attrs)
         assert result == (ldap.RES_MODIFY, [])
         log.info("Password reset for uid=%s.", uid)
