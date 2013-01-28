@@ -67,7 +67,11 @@ class OrganisationUpdate(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(OrganisationUpdate, self).get_context_data(**kwargs)
-        url = settings.BDR_REPORTEK_ORGANISATION_URL.format(org=self.object)
+        try:
+            tmpl = settings.BDR_REPORTEK_ORGANISATION_URL
+            url = tmpl.format(org=self.object)
+        except:
+            url = None
         context['reporting_url'] = url
         return context
 
