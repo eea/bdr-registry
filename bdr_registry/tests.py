@@ -1,3 +1,5 @@
+import logging
+from contextlib import contextmanager
 from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.auth.models import User
@@ -37,6 +39,17 @@ def create_user_and_login(client,
     with patch('django_auth_ldap.config._LDAPConfig.ldap') as p:
         client.login(**user_data)
     return user
+
+
+@contextmanager
+def quiet_request_logging():
+    logger = logging.getLogger('django.request')
+    previous_level = logger.getEffectiveLevel()
+    logger.setLevel(logging.ERROR)
+    try:
+        yield
+    finally:
+        logger.setLevel(previous_level)
 
 
 class FormSubmitTest(TransactionTestCase):
@@ -146,7 +159,8 @@ class OrganisationEditTest(TestCase):
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
     def test_view_returns_404_for_organisation_notfound(self):
-        resp = self.client.get('/organisation/123/update')
+        with quiet_request_logging():
+            resp = self.client.get('/organisation/123/update')
         self.assertEqual(resp.status_code, 404)
 
     def test_admin_can_change_name(self):
@@ -289,7 +303,8 @@ class PersonEditTest(TestCase):
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
     def test_person_update_returns_404_if_person_missing(self):
-        resp = self.client.get('/person/123/update')
+        with quiet_request_logging():
+            resp = self.client.get('/person/123/update')
         self.assertEqual(resp.status_code, 404)
 
     def test_add_person_to_organisation(self):
@@ -303,7 +318,8 @@ class PersonEditTest(TestCase):
         self.assertEqual(new_person.organisation, self.acme)
 
     def test_add_person_to_organisation_returns_404_for_missing_org(self):
-        resp = self.client.get('/organisation/123/add_person')
+        with quiet_request_logging():
+            resp = self.client.get('/organisation/123/add_person')
         self.assertEqual(resp.status_code, 404)
 
     def test_organisation_account_can_delete_person_from_organisation(self):
@@ -322,7 +338,8 @@ class PersonEditTest(TestCase):
         self.assertItemsEqual(self.acme.people.all(), [self.person])
 
     def test_person_delete_returns_404_if_person_missing(self):
-        resp = self.client.get('/person/123/delete')
+        with quiet_request_logging():
+            resp = self.client.get('/person/123/delete')
         self.assertEqual(resp.status_code, 404)
 
 
