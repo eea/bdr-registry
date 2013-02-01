@@ -61,6 +61,17 @@
     </tr>
 
   {% endfor %}
+
+  <tr>
+      <td>
+        <label for="id_country" class="question">Country</label>
+      </td>
+      <td>
+        <input id="id_country" value="{{ object.country.name }}" readonly>
+      </td>
+    </tr>
+  </tr>
+
   </table>
 
   <button type="submit">Save</button>
