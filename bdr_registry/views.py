@@ -245,11 +245,20 @@ class PersonDelete(DeleteView):
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
-    def get_success_url(self):
-        messages.add_message(self.request, messages.INFO,
-                             u"Person deleted: %s" % self.object)
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.organisation.people.count() == 1:
+            messages.add_message(self.request, messages.ERROR,
+                                 u"Can't delete last person")
+
+        else:
+            self.object.delete()
+            messages.add_message(self.request, messages.INFO,
+                                 u"Person deleted: %s" % self.object)
+
         organisation = self.object.organisation
-        return reverse('organisation_update', args=[organisation.pk])
+        url = reverse('organisation_update', args=[organisation.pk])
+        return HttpResponseRedirect(url)
 
 
 def send_notification_email(context):

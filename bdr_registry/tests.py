@@ -323,12 +323,21 @@ class PersonEditTest(TestCase):
         self.assertEqual(resp.status_code, 404)
 
     def test_organisation_account_can_delete_person_from_organisation(self):
+        self.person2 = models.Person.objects.create(organisation=self.acme)
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
         self.client.post('/person/%d/delete' % self.person.pk)
-        self.assertItemsEqual(self.acme.people.all(), [])
+        self.assertItemsEqual(self.acme.people.all(), [self.person2])
+
+    def test_organisation_account_cant_delete_last_person(self):
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
+        self.acme.account = account
+        self.acme.save()
+        self.client.post('/person/%d/delete' % self.person.pk)
+        self.assertItemsEqual(self.acme.people.all(), [self.person])
 
     def test_random_account_is_not_allowed_to_delete(self):
         create_user_and_login(self.client)
