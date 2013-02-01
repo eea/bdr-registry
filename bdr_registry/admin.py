@@ -123,7 +123,7 @@ def send_password_email(modeladmin, request, queryset):
 class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
-    list_display = ['__unicode__', 'obligation', 'account']
+    list_display = ['__unicode__', 'obligation', 'account', 'country']
     search_fields = ['name', 'account__uid']
     actions = [create_accounts, reset_password, send_password_email]
 
