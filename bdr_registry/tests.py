@@ -34,7 +34,8 @@ def create_user_and_login(client,
     user.is_superuser = superuser
     user.is_staff = staff
     user.save()
-    client.login(**user_data)
+    with patch('django_auth_ldap.config._LDAPConfig.ldap') as p:
+        client.login(**user_data)
     return user
 
 
