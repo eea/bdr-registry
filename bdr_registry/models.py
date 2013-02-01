@@ -98,6 +98,8 @@ class Organisation(models.Model):
     addr_place2 = models.CharField(max_length=255,
                                    verbose_name="Place 2 / Region",
                                    null=True, blank=True)
+    vat_number = models.CharField(max_length=17, verbose_name="VAT number",
+                                  null=True, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True)
