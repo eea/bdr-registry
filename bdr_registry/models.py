@@ -62,11 +62,7 @@ class Account(models.Model):
     password = models.CharField(max_length=255, null=True, blank=True)
 
     def __unicode__(self):
-        try:
-            org_name = self.organisation.name
-        except Organisation.DoesNotExist:
-            org_name = None
-        return u"uid={p.uid} ({org_name})".format(p=self, org_name=org_name)
+        return self.uid
 
     def set_random_password(self):
         self.password = generate_key(size=8)
@@ -89,6 +85,7 @@ class Organisation(models.Model):
     name = models.CharField(max_length=255,
                             verbose_name="Company name")
     date_registered = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
     addr_street = models.CharField(max_length=255,
                                    verbose_name="Street and nr")
     addr_place1 = models.CharField(max_length=255,
@@ -103,6 +100,8 @@ class Organisation(models.Model):
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True)
+
+    comments = models.TextField(null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})
