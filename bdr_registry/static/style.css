@@ -1,0 +1,8 @@
+.formtable input {
+    width: 270px;
+    margin: 2px;
+}
+
+.bdr-error {
+    color: red;
+}

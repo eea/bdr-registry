@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.views.generic.base import TemplateView
 from django.views.generic.simple import redirect_to
 from django.core.urlresolvers import reverse_lazy
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import views
 
 admin.autodiscover()
@@ -37,3 +38,5 @@ urlpatterns = patterns('',
      url(r'^crashme$', views.crashme),
      url(r'^ping$', views.ping),
 )
+
+urlpatterns += staticfiles_urlpatterns()
