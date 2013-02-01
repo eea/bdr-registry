@@ -89,6 +89,7 @@ class Organisation(models.Model):
     name = models.CharField(max_length=255,
                             verbose_name="Company name")
     date_registered = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=True)
     addr_street = models.CharField(max_length=255,
                                    verbose_name="Street and nr")
     addr_place1 = models.CharField(max_length=255,
