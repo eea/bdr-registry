@@ -72,6 +72,7 @@ class OrganisationUpdate(UpdateView):
         except:
             url = None
         kwargs['reporting_url'] = url
+        kwargs['helpdesk_email'] = settings.BDR_HELPDESK_EMAIL
         return super(OrganisationUpdate, self).get_context_data(**kwargs)
 
 

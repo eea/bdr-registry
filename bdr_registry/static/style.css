@@ -6,3 +6,9 @@
 .bdr-error {
     color: red;
 }
+
+/* Fixes for Eionet CSS */
+
+.input-hint a {
+    vertical-align: inherit;
+}

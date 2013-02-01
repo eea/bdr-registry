@@ -26,7 +26,25 @@
 
   <table class="formtable">
   <col style="width:10em"/>
+
+  {% if not form.fields.name %}
+    <tr>
+      <td>
+        <label for="id_name" class="question">Company name</label>
+      </td>
+      <td>
+        <input id="id_name" value="{{ object.name }}" readonly>
+        <br>
+        <span class="input-hint">
+          To modify company name, please contact
+          <a href="{{ helpdesk_email }}">helpdesk</a>.
+        </span>
+      </td>
+    </tr>
+  {% endif %}
+
   {% for field in form %}
+
     <tr>
       <td>
         <label for="id_{{ field.name }}" class="question
@@ -41,6 +59,7 @@
         {{ field }}
       </td>
     </tr>
+
   {% endfor %}
   </table>
 
