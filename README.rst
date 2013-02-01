@@ -61,6 +61,13 @@ Configuration variables
 ``ADMIN_ALL_BDR_TABLES``
     If set to ``on``, show `account` table in the Django admin.
 
+``BDR_API_URL``
+    URL for the BDR API. Currently ``https://bdr.eionet.europa.eu/api``.
+
+``BDR_API_AUTH``
+    Username and password for authentication to BDR API, separated by
+    ``:``, for example ``joe:s3cr37``.
+
 .. _sentry: http://pypi.python.org/pypi/sentry
 
 

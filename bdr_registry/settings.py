@@ -162,3 +162,5 @@ if _ldap_edit_server:
 
 BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
     'BDR_REPORTEK_ORGANISATION_URL', '#')
+BDR_API_URL = os.environ.get('BDR_API_URL')
+BDR_API_AUTH = os.environ.get('BDR_API_AUTH')
