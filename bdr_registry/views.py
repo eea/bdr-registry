@@ -49,7 +49,7 @@ class OrganisationUpdate(UpdateView):
     template_name = 'organisation_update.html'
 
     def get_form_class(self):
-        exclude = ['obligation', 'account', 'country']
+        exclude = ['obligation', 'account', 'country', 'active', 'comments']
         if not self.request.user.is_superuser:
             exclude.append('name')
         return modelform_factory(models.Organisation, exclude=exclude)
