@@ -105,6 +105,8 @@ class Organisation(models.Model):
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True)
 
+    comments = models.TextField(null=True, blank=True)
+
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})
 
