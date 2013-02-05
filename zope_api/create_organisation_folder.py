@@ -25,6 +25,7 @@ if folder is None:
         descr='', locality='',
         partofyear='', year='', endyear='')
     folder = dict(country.objectItems()).get(account_uid)
+    folder.manage_setLocalRoles(account_uid, ['Owner'])
     created = 'true'
 
 else:
