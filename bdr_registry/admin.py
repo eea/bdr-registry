@@ -18,10 +18,12 @@ def sync_accounts_with_ldap(accounts):
     for account in accounts:
         if ldap_editor.create_account(account.uid,
                                       account.organisation.name,
-                                      account.organisation.country.name):
+                                      account.organisation.country.name,
+                                      account.password):
             counters['create'] += 1
-        ldap_editor.reset_password(account.uid, account.password)
-        counters['password'] += 1
+        else:
+            ldap_editor.reset_password(account.uid, account.password)
+            counters['password'] += 1
     return dict(counters)
 
 
@@ -40,6 +42,7 @@ def create_accounts(modeladmin, request, queryset):
         for organisation in organisations_without_account:
             obligation = organisation.obligation
             account = models.Account.objects.create_for_obligation(obligation)
+            account.set_random_password()
             organisation.account = account
             new_accounts.append(account)
             organisation.save()
@@ -48,9 +51,9 @@ def create_accounts(modeladmin, request, queryset):
         msg = "Created %d accounts. LDAP: %r." % (n, counters)
         messages.add_message(request, messages.INFO, msg)
 
-        if request.POST.get('passwords'):
-            return reset_password(modeladmin, request,
-                                  organisations_without_account)
+        if request.POST.get('email'):
+            return send_password_email(modeladmin, request,
+                                       organisations_without_account)
 
         return
 

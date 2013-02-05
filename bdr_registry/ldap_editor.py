@@ -26,14 +26,14 @@ class LdapEditor(object):
     def _account_dn(self, uid):
         return 'uid=' + uid + ',' + self.users_dn
 
-    def create_account(self, uid, org_name, country_name):
+    def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
         attrs = [
             ('uid', [uid.encode(self.encoding)]),
             ('cn', [name.encode(self.encoding)]),
             ('objectClass', ['top', 'organizationalRole',
                              'simpleSecurityObject', 'uidObject']),
-            ('userPassword', [encrypt_password('')]),
+            ('userPassword', [encrypt_password(password)]),
         ]
 
         try:
