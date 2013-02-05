@@ -6,3 +6,4 @@ raven==2.0.7.1
 python-ldap==2.4.10
 django-auth-ldap==1.1.2
 xmltodict==0.2
+requests==1.1.0

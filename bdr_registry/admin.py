@@ -1,3 +1,4 @@
+import logging
 from collections import defaultdict
 from django.contrib import admin
 from django.contrib import messages
@@ -8,8 +9,12 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
+import requests
 import models
 from ldap_editor import create_ldap_editor
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 
 def sync_accounts_with_ldap(accounts):
@@ -123,12 +128,62 @@ def send_password_email(modeladmin, request, queryset):
     })
 
 
+def create_reporting_folder(modeladmin, request, queryset):
+    if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
+        messages.add_message(request, messages.ERROR,
+                             "BDR_API_URL and BDR_API_AUTH not configured")
+        return
+
+    created = []
+    existing = []
+    errors = []
+
+    for org in queryset:
+        url = settings.BDR_API_URL + '/create_organisation_folder'
+        auth = tuple(settings.BDR_API_AUTH.split(':', 1))
+        form = {
+            'country_code': org.country.code,
+            'obligation_code': org.obligation.code,
+            'account_uid': org.account.uid,
+            'organisation_name': org.name,
+        }
+        resp = requests.post(url, data=form, auth=auth)
+        if resp.status_code != 200:
+            logging.error("BDR API request failed: %r", resp)
+            errors.append(org.account.uid)
+            continue
+
+        rv = resp.json()
+        success = rv['success']
+        if success:
+            if rv['created']:
+                created.append(rv['path'])
+            else:
+                existing.append(rv['path'])
+        else:
+            msg = "%s: %s" % (org.account.uid, rv['error'])
+            messages.add_message(request, messages.ERROR, msg)
+
+    if created:
+        msg = "%d folders created: %s" % (len(created), ', '.join(created))
+        messages.add_message(request, messages.INFO, msg)
+
+    if existing:
+        msg = "%d already existing: %s" % (len(existing), ', '.join(existing))
+        messages.add_message(request, messages.INFO, msg)
+
+    if errors:
+        msg = "%d errors: %s" % (len(errors), ', '.join(errors))
+        messages.add_message(request, messages.ERROR, msg)
+
+
 class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
     list_display = ['__unicode__', 'obligation', 'account', 'country']
     search_fields = ['name', 'account__uid']
-    actions = [create_accounts, reset_password, send_password_email]
+    actions = [create_accounts, reset_password, send_password_email,
+               create_reporting_folder]
 
     def get_urls(self):
         my_urls = patterns('',
