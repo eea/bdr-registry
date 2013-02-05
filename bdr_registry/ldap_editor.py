@@ -2,6 +2,7 @@ import logging
 import ldap
 import hashlib
 import base64
+import audit
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -38,6 +39,7 @@ class LdapEditor(object):
 
         try:
             log.debug("conn.add_s(%r, %r)", self._account_dn(uid), attrs)
+            audit.log("Creatig LDAP account for uid=%s", uid)
             result = self.conn.add_s(self._account_dn(uid), attrs)
 
         except ldap.ALREADY_EXISTS:
@@ -54,6 +56,7 @@ class LdapEditor(object):
             (ldap.MOD_REPLACE, 'userPassword', [encrypt_password(password)]),
         ]
         log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
+        audit.log("Resetting LDAP password for uid=%s", uid)
         result = self.conn.modify_s(self._account_dn(uid), attrs)
         assert result == (ldap.RES_MODIFY, [])
         log.info("Password reset for uid=%s.", uid)

@@ -1,4 +1,5 @@
 import os
+import logging
 
 DEBUG = bool(os.environ.get('DEBUG'))
 TEMPLATE_DEBUG = DEBUG
@@ -164,3 +165,6 @@ BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
     'BDR_REPORTEK_ORGANISATION_URL', '#')
 BDR_API_URL = os.environ.get('BDR_API_URL')
 BDR_API_AUTH = os.environ.get('BDR_API_AUTH')
+
+
+BDR_AUDIT_LOG_FILE = os.environ.get('AUDIT_LOG_FILE')

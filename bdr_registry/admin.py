@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 import requests
 import models
 from ldap_editor import create_ldap_editor
+import audit
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -147,6 +148,7 @@ def create_reporting_folder(modeladmin, request, queryset):
             'account_uid': org.account.uid,
             'organisation_name': org.name,
         }
+        audit.log("Creatig zope folder for uid=%s", org.account.uid)
         resp = requests.post(url, data=form, auth=auth)
         if resp.status_code != 200:
             logging.error("BDR API request failed: %r", resp)

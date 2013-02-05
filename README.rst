@@ -68,6 +68,11 @@ Configuration variables
     Username and password for authentication to BDR API, separated by
     ``:``, for example ``joe:s3cr37``.
 
+``AUDIT_LOG_FILE``
+    Log file to write audit trail for sensitive operations (e.g.
+    changing company passwords, creating reporting folders).
+
+
 .. _sentry: http://pypi.python.org/pypi/sentry
 
 
