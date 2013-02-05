@@ -37,10 +37,18 @@ class CanEdit(object):
         return False
 
 
+ORG_CREATE_EXCLUDE = ('account', 'active', 'comments')
+ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')
+
+
 class OrganisationCreate(CreateView):
 
     model = models.Organisation
     template_name = 'organisation_add.html'
+
+    def get_form_class(self):
+        return modelform_factory(models.Organisation,
+                                 exclude=ORG_CREATE_EXCLUDE)
 
 
 class OrganisationUpdate(UpdateView):
@@ -49,9 +57,9 @@ class OrganisationUpdate(UpdateView):
     template_name = 'organisation_update.html'
 
     def get_form_class(self):
-        exclude = ['obligation', 'account', 'country', 'active', 'comments']
+        exclude = ORG_ADMIN_EXCLUDE
         if not self.request.user.is_superuser:
-            exclude.append('name')
+            exclude = exclude + ('name',)
         return modelform_factory(models.Organisation, exclude=exclude)
 
     def dispatch(self, request, pk):
@@ -136,7 +144,7 @@ class OrganisationForm(ModelForm):
 
     class Meta:
         model = models.Organisation
-        exclude = ['account']
+        exclude = ORG_CREATE_EXCLUDE
 
 
 PersonForm = modelform_factory(models.Person, exclude=['organisation'])
