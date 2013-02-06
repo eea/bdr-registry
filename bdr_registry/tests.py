@@ -181,6 +181,16 @@ class OrganisationEditTest(TestCase):
         new_org = models.Organisation.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "Teh company")
 
+    def test_landing_page_redirects_to_organisation_edit(self):
+        self.org.account = models.Account.objects.create(uid='ods123')
+        self.org.save()
+        url1 = ('http://testserver/edit_organisation?uid={org.account.uid}'
+                .format(org=self.org))
+        url2 = ('http://testserver/organisation/{org.pk}/update'
+                .format(org=self.org))
+        resp = self.client.get(url1)
+        self.assertEqual(resp['location'], url2)
+
 
 class OrganisationNameHistoryTest(TestCase):
 

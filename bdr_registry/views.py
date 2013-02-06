@@ -10,7 +10,8 @@ from django.db import transaction
 from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import (HttpResponse, HttpResponseForbidden,
+                         HttpResponseNotFound)
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
@@ -82,6 +83,16 @@ class OrganisationUpdate(UpdateView):
         kwargs['reporting_url'] = url
         kwargs['helpdesk_email'] = settings.BDR_HELPDESK_EMAIL
         return super(OrganisationUpdate, self).get_context_data(**kwargs)
+
+
+def edit_organisation(request):
+    uid = request.GET.get('uid')
+    if not uid:
+        return HttpResponseNotFound()
+    account = get_object_or_404(models.Account, uid=uid)
+    org = get_object_or_404(models.Organisation, account=account)
+    location = reverse('organisation_update', args=[org.pk])
+    return HttpResponseRedirect(location)
 
 
 def organisation_view(request, pk):
