@@ -144,7 +144,7 @@ def create_reporting_folder(modeladmin, request, queryset):
         auth = tuple(settings.BDR_API_AUTH.split(':', 1))
         form = {
             'country_code': org.country.code,
-            'obligation_code': org.obligation.code,
+            'obligation_folder_name': org.obligation.reportek_slug,
             'account_uid': org.account.uid,
             'organisation_name': org.name,
         }

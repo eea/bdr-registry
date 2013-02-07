@@ -1,12 +1,12 @@
 # Python script at /api/create_organisation_folder
 request = container.REQUEST
 country_code = request.form['country_code']
-obligation_code = request.form['obligation_code']
+obligation_folder_name = request.form['obligation_folder_name']
 account_uid = request.form['account_uid']
 organisation_name = request.form['organisation_name']
 
 root = container.restrictedTraverse('/')
-obligation = dict(root.objectItems()).get(obligation_code)
+obligation = dict(root.objectItems()).get(obligation_folder_name)
 if obligation is None:
     return '{"success": false, "error": "obligation folder missing"}'
 
