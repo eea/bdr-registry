@@ -9,8 +9,7 @@ import views
 admin.autodiscover()
 
 urlpatterns = patterns('',
-     url(r'^$', redirect_to, {'url': reverse_lazy('self_register')},
-            name='home'),
+     url(r'^$', views.home, name='home'),
      url(r'^accounts/login/$', 'django.contrib.auth.views.login',
             {'template_name': 'login.html'},
             name='login'),

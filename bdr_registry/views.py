@@ -17,6 +17,7 @@ from django.contrib.auth import logout
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
+from django.template.response import TemplateResponse
 import xmltodict
 import models
 
@@ -36,6 +37,10 @@ class CanEdit(object):
                 return True
 
         return False
+
+
+def home(request):
+    return TemplateResponse(request, 'home.html', {})
 
 
 ORG_CREATE_EXCLUDE = ('account', 'active', 'comments')
