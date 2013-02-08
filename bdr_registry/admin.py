@@ -141,7 +141,6 @@ def create_reporting_folder(modeladmin, request, queryset):
 
     for org in queryset:
         url = settings.BDR_API_URL + '/create_organisation_folder'
-        auth = tuple(settings.BDR_API_AUTH.split(':', 1))
         form = {
             'country_code': org.country.code,
             'obligation_folder_name': org.obligation.reportek_slug,
@@ -149,7 +148,7 @@ def create_reporting_folder(modeladmin, request, queryset):
             'organisation_name': org.name,
         }
         audit.log("Creatig zope folder for uid=%s", org.account.uid)
-        resp = requests.post(url, data=form, auth=auth, verify=False)
+        resp = requests.post(url, data=form, auth=BDR_API_AUTH, verify=False)
         if resp.status_code != 200:
             logging.error("BDR API request failed: %r", resp)
             errors.append(org.account.uid)

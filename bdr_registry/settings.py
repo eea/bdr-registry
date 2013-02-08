@@ -1,6 +1,16 @@
 import os
 import logging
 
+
+class secure_str(str):
+    """
+    A string that doesn't print its contents on `repr()`. Useful to
+    protect passwords.
+    """
+    __slots__ = ()
+    __repr__ = object.__repr__
+
+
 DEBUG = bool(os.environ.get('DEBUG'))
 TEMPLATE_DEBUG = DEBUG
 ADMIN_ALL_BDR_TABLES = (DEBUG or os.environ.get('ADMIN_ALL_BDR_TABLES') == 'on')
@@ -161,13 +171,19 @@ if _auth_ldap_server:
 _ldap_edit_server = os.environ.get('LDAP_EDIT_SERVER')
 if _ldap_edit_server:
     LDAP_EDIT_SERVER = _ldap_edit_server
-    (LDAP_EDIT_DN, LDAP_EDIT_PASSWORD) = \
-        os.environ.get('LDAP_EDIT_LOGIN').split(':')
+    (LDAP_EDIT_DN, _password) = os.environ.get('LDAP_EDIT_LOGIN').split(':')
+    LDAP_EDIT_PASSWORD = secure_str(_password)
 
 BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
     'BDR_REPORTEK_ORGANISATION_URL', '#')
+
 BDR_API_URL = os.environ.get('BDR_API_URL')
-BDR_API_AUTH = os.environ.get('BDR_API_AUTH')
+_bdr_api_auth = os.environ.get('BDR_API_AUTH')
+if _bdr_api_auth:
+    (_username, _password) = _bdr_api_auth.split(':', 1)
+    BDR_API_AUTH = (_username, secure_str(_password))
+else:
+    BDR_API_AUTH = None
 
 
 BDR_AUDIT_LOG_FILE = os.environ.get('AUDIT_LOG_FILE')
