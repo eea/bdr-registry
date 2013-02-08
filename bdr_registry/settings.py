@@ -43,6 +43,9 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
+SITE_URL = os.environ.get('SITE_URL', '/')
+LOGIN_REDIRECT_URL = SITE_URL
+
 SECRET_KEY = os.environ.get('DJANGO_SECRET', 'asdf')
 
 TEMPLATE_LOADERS = (
