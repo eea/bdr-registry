@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from functools import wraps
+import base64
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.detail import DetailView
@@ -13,7 +14,7 @@ from django.template.loader import render_to_string
 from django.http import (HttpResponse, HttpResponseForbidden,
                          HttpResponseNotFound)
 from django.contrib.auth.decorators import user_passes_test
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -90,7 +91,23 @@ class OrganisationUpdate(UpdateView):
         return super(OrganisationUpdate, self).get_context_data(**kwargs)
 
 
+def attempt_basic_auth(request):
+    if request.user.is_authenticated():
+        return
+    authorization = request.META.get('HTTP_AUTHORIZATION')
+    if not authorization:
+        return
+    authorization = authorization.lstrip('Basic ')
+    username, password = base64.b64decode(authorization).split(':', 1)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        login(request, user)
+        messages.add_message(request, messages.INFO,
+                             u"Logged in as %s" % user.id)
+
+
 def edit_organisation(request):
+    attempt_basic_auth(request)
     uid = request.GET.get('uid')
     if not uid:
         return HttpResponseNotFound()
