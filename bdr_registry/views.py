@@ -103,7 +103,7 @@ def attempt_basic_auth(request):
     if user is not None:
         login(request, user)
         messages.add_message(request, messages.INFO,
-                             u"Logged in as %s" % user.id)
+                             u"Logged in as %s" % user.username)
 
 
 def edit_organisation(request):
