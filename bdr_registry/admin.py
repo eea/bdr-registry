@@ -1,4 +1,6 @@
 import logging
+from cStringIO import StringIO
+import csv
 from collections import defaultdict
 from django.contrib import admin
 from django.contrib import messages
@@ -9,6 +11,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 import requests
 import models
 from ldap_editor import create_ldap_editor
@@ -205,6 +208,28 @@ class PersonAdmin(admin.ModelAdmin):
 
     search_fields = ['first_name', 'family_name', 'email', 'phone', 'fax',
                      'organisation__name', 'organisation__account__uid']
+
+    def get_urls(self):
+        my_urls = patterns('',
+            (r'^export$', self.admin_site.admin_view(self.export)),
+        )
+        return my_urls + super(PersonAdmin, self).get_urls()
+
+    def export(self, request):
+        of = StringIO()
+        out = csv.writer(of)
+        out.writerow(['userid', 'companyname', 'country',
+                      'contactname', 'contactemail'])
+        for person in models.Person.objects.all():
+            org = person.organisation
+            out.writerow([v.encode('utf-8') for v in [
+                org.account.uid,
+                org.name,
+                org.country.name,
+                u"{p.title} {p.first_name} {p.family_name}".format(p=person),
+                person.email,
+            ]])
+        return HttpResponse(of.getvalue(), content_type="text/plain")
 
 
 class AccountAdmin(admin.ModelAdmin):
