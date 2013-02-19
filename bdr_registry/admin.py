@@ -222,8 +222,11 @@ class PersonAdmin(admin.ModelAdmin):
                       'contactname', 'contactemail'])
         for person in models.Person.objects.all():
             org = person.organisation
+            account = org.account
+            if account is None:
+                continue
             out.writerow([v.encode('utf-8') for v in [
-                org.account.uid,
+                account.uid,
                 org.name,
                 org.country.name,
                 u"{p.title} {p.first_name} {p.family_name}".format(p=person),
