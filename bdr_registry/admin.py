@@ -104,11 +104,12 @@ def send_password_email_to_people(organisations):
     for organisation in organisations:
         mail_from = settings.BDR_EMAIL_FROM
         mail_to = [person.email for person in organisation.people.all()]
+        mail_bcc = [settings.BDR_HELPDESK_EMAIL]
         html = render_to_string('organisation_password_mail.html', {
             'organisation': organisation,
         })
         message = mail.EmailMessage("BDR password reminder",
-                                    html, mail_from, mail_to)
+                                    html, mail_from, mail_to, mail_bcc)
         message.content_subtype = 'html'
         message.send(fail_silently=False)
         n += len(mail_to)
