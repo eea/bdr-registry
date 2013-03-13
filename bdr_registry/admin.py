@@ -195,6 +195,7 @@ class OrganisationAdmin(admin.ModelAdmin):
         my_urls = patterns('',
             (r'^(?P<pk>\d+)/name_history/$',
                 self.admin_site.admin_view(self.name_history)),
+            (r'^export$', self.admin_site.admin_view(self.export)),
         )
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
@@ -204,6 +205,31 @@ class OrganisationAdmin(admin.ModelAdmin):
             'organisation': org,
             'opts': org._meta,
         }, current_app=self.admin_site.name)
+
+    def export(self, request):
+        of = StringIO()
+        out = csv.writer(of)
+        out.writerow(['userid', 'name', 'date_registered', 'active',
+                      'addr_street', 'addr_place1', 'addr_postalcode',
+                      'addr_place2', 'country', 'vat_number',
+                      'obligation', 'comments'])
+        for org in models.Organisation.objects.all():
+            account = org.account
+            out.writerow([v.encode('utf-8') for v in [
+                '' if account is None else account.uid,
+                org.name,
+                org.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
+                'on' if org.active else '',
+                org.addr_street,
+                org.addr_place1,
+                org.addr_postalcode,
+                org.addr_place2,
+                org.country.name,
+                org.vat_number or '',
+                org.obligation.code,
+                org.comments or '',
+            ]])
+        return HttpResponse(of.getvalue(), content_type="text/plain")
 
 
 class PersonAdmin(admin.ModelAdmin):
