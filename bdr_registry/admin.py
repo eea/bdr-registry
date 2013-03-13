@@ -185,8 +185,9 @@ def create_reporting_folder(modeladmin, request, queryset):
 class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
-    list_display = ['__unicode__', 'obligation', 'account', 'country']
-    search_fields = ['name', 'account__uid']
+    list_display = ['__unicode__', 'obligation', 'account', 'country',
+                    'addr_postalcode', 'vat_number']
+    search_fields = ['name', 'account__uid', 'addr_postalcode', 'vat_number']
     actions = [create_accounts, reset_password, send_password_email,
                create_reporting_folder]
 
