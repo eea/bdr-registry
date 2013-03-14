@@ -259,10 +259,9 @@ class OrganisationPasswordTest(TestCase):
             'action': 'send_password_email',
             'perform_send': 'yes',
         })
-        self.assertEqual(len(mail.outbox), 1)
-        [message] = mail.outbox
-        self.assertItemsEqual(message.to,
-                              ['alice@example.com', 'bob@example.com'])
+        self.assertEqual(len(mail.outbox), 2)
+        message = mail.outbox[1]
+        self.assertItemsEqual(message.to, ['bob@example.com'])
         self.assertIn(self.acme.country.name, message.body)
         self.assertIn(self.acme.account.uid, message.body)
         self.assertIn(self.acme.account.password, message.body)

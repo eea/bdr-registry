@@ -165,5 +165,9 @@ class Person(models.Model):
 
     organisation = models.ForeignKey(Organisation, related_name='people')
 
+    @property
+    def formal_name(self):
+        return u"{p.title} {p.first_name} {p.family_name}".format(p=self)
+
     def __unicode__(self):
         return u"{p.first_name} {p.family_name} <{p.email}>".format(p=self)
