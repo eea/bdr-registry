@@ -104,15 +104,27 @@ def send_password_email_to_people(organisations):
     mail_from = settings.BDR_EMAIL_FROM
     mail_bcc = [settings.BDR_HELPDESK_EMAIL]
     for organisation in organisations:
-        mail_to = [person.email for person in organisation.people.all()]
-        html = render_to_string('organisation_password_mail.html', {
-            'organisation': organisation,
-        })
-        message = mail.EmailMessage("BDR password reminder",
-                                    html, mail_from, mail_to, mail_bcc)
-        message.content_subtype = 'html'
-        message.send(fail_silently=False)
-        n += len(mail_to)
+        for person in organisation.people.all():
+            if organisation.obligation.code == 'ods':
+                subject = u"Reporting data on ODS covering 2012"
+                html = render_to_string('email_organisation_ods.html', {
+                    'person': person,
+                    'organisation': organisation,
+                })
+
+            elif organisation.obligation.code == 'fgas':
+                raise NotImplementedError
+
+            else:
+                raise RuntimeError("Unknown obligation %r" %
+                                   organisation.obligation.code)
+
+            mail_to = [person.email]
+            message = mail.EmailMessage(subject, html,
+                                        mail_from, mail_to, mail_bcc)
+            message.content_subtype = 'html'
+            message.send(fail_silently=False)
+            n += len(mail_to)
 
     return n
 
