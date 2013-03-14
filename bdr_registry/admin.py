@@ -101,10 +101,10 @@ def reset_password(modeladmin, request, queryset):
 
 def send_password_email_to_people(organisations):
     n = 0
+    mail_from = settings.BDR_EMAIL_FROM
+    mail_bcc = [settings.BDR_HELPDESK_EMAIL]
     for organisation in organisations:
-        mail_from = settings.BDR_EMAIL_FROM
         mail_to = [person.email for person in organisation.people.all()]
-        mail_bcc = [settings.BDR_HELPDESK_EMAIL]
         html = render_to_string('organisation_password_mail.html', {
             'organisation': organisation,
         })
