@@ -40,11 +40,16 @@ class Obligation(models.Model):
         return self.name
 
     def generate_account_id(self):
-        query = NextAccountId.objects.select_for_update()
-        next_account_id = query.filter(obligation=self)[0]
-        value = next_account_id.next_id
-        next_account_id.next_id += 1
-        next_account_id.save()
+        query = (NextAccountId.objects.select_for_update()
+                 .filter(obligation=self))
+        try:
+            next_row = query[0]
+        except IndexError:
+            next_row = NextAccountId(obligation=self, next_id=3000)
+            next_row.save()
+        value = next_row.next_id
+        next_row.next_id += 1
+        next_row.save()
         return value
 
 
