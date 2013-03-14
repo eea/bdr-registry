@@ -113,7 +113,11 @@ def send_password_email_to_people(organisations):
                 })
 
             elif organisation.obligation.code == 'fgas':
-                raise NotImplementedError
+                subject = u"Reporting data on F-Gases covering 2012"
+                html = render_to_string('email_organisation_fgas.html', {
+                    'person': person,
+                    'organisation': organisation,
+                })
 
             else:
                 raise RuntimeError("Unknown obligation %r" %
