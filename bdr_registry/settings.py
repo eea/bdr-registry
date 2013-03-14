@@ -145,6 +145,11 @@ else:
 
 BDR_EMAIL_FROM = os.environ.get('BDR_EMAIL_FROM', 'bdr@localhost')
 
+
+BDR_ORGEMAIL_ODS_BCC = os.environ.get('BDR_ORGEMAIL_ODS_BCC', '').split()
+BDR_ORGEMAIL_FGAS_BCC = os.environ.get('BDR_ORGEMAIL_FGAS_BCC', '').split()
+
+
 _auth_ldap_server = os.environ.get('AUTH_LDAP_SERVER')
 if _auth_ldap_server:
     AUTH_LDAP_SERVER_URI = _auth_ldap_server

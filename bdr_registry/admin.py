@@ -102,7 +102,6 @@ def reset_password(modeladmin, request, queryset):
 def send_password_email_to_people(organisations):
     n = 0
     mail_from = settings.BDR_EMAIL_FROM
-    mail_bcc = [settings.BDR_HELPDESK_EMAIL]
     for organisation in organisations:
         for person in organisation.people.all():
             if organisation.obligation.code == 'ods':
@@ -111,6 +110,7 @@ def send_password_email_to_people(organisations):
                     'person': person,
                     'organisation': organisation,
                 })
+                mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
             elif organisation.obligation.code == 'fgas':
                 subject = u"Reporting data on F-Gases covering 2012"
@@ -118,6 +118,7 @@ def send_password_email_to_people(organisations):
                     'person': person,
                     'organisation': organisation,
                 })
+                mail_bcc = settings.BDR_ORGEMAIL_FGAS_BCC
 
             else:
                 raise RuntimeError("Unknown obligation %r" %
