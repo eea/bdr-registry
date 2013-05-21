@@ -199,6 +199,12 @@ def create_reporting_folder(modeladmin, request, queryset):
         messages.add_message(request, messages.ERROR, msg)
 
 
+class PersonInline(admin.StackedInline):
+
+    model = models.Person
+    extra = 0
+
+
 class OrganisationAdmin(admin.ModelAdmin):
 
     list_filter = ['obligation', 'country']
@@ -207,6 +213,8 @@ class OrganisationAdmin(admin.ModelAdmin):
     search_fields = ['name', 'account__uid', 'addr_postalcode', 'vat_number']
     actions = [create_accounts, reset_password, send_password_email,
                create_reporting_folder]
+
+    inlines = [PersonInline]
 
     def get_urls(self):
         my_urls = patterns('',
