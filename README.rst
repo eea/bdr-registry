@@ -1,7 +1,12 @@
 BDR Company Registry
 ====================
 
-A registry of company contacts for BDR_ environment reporting.
+A registry of company contacts for BDR_ environment reporting. Reporters
+from companies can self-register and then manage a list of contacts for
+their company. Site administrators can generate passwords (one LDAP
+account per company) and update the LDAP database with those accounts
+and passwords. Administrators can also download CSV reports of companies
+from the database.
 
 .. _BDR: https://bdr.eionet.europa.eu/
 
