@@ -3,17 +3,33 @@ BDR Company Registry
 
 A registry of company contacts for BDR_ environment reporting. Reporters
 from companies can self-register and then manage a list of contacts for
-their company. Site administrators can generate passwords (one LDAP
-account per company) and update the LDAP database with those accounts
-and passwords. Administrators can also download CSV reports of companies
-from the database.
+their company. BDR helpdesk can manage accounts and passwords and
+download CSV reports of companies.
 
 .. _BDR: https://bdr.eionet.europa.eu/
 
 
+Company reporters
+-----------------
+Companies designate one or more contact persons who are listed in the
+database along with the company. There is one LDAP account per company,
+it can be used to log into the main BDR website, and to modify company
+details and contacts in the registry (this website).
+
+
+Eionet administrators
+---------------------
+Several people at EEA have administration permissions. They are assigned
+to the "BDR helpdesk" Django user group. This allows viewing/modifying
+company and person records and downloading of reports. It also allows
+generating LDAP accounts for new companies, resetting passwords, pushing
+the account info to LDAP, and sending password reminder emails to a
+company's contacts. All administration actions are done from the Django
+admin interface.
+
+
 Deployment
 ----------
-
 BDR is a Django app that is most easily deployed in a twelve-factor_
 environment. The configuration comes from environment variables, logging
 goes to `stderr`, and the web server is started by the command listed in
