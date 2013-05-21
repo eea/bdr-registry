@@ -5,14 +5,16 @@ A registry of company contacts for BDR_ environment reporting.
 
 .. _BDR: https://bdr.eionet.europa.eu/
 
+
+Deployment
+----------
+
 BDR is a Django app that is most easily deployed in a twelve-factor_
 environment. The configuration comes from environment variables, logging
 goes to `stderr`, and the web server is started by the command listed in
-``Procfile``. Currently the project is deployed in production using
-sarge_.
+``Procfile``.
 
 .. _twelve-factor: http://www.12factor.net/
-.. _sarge: http://mgax.github.com/sarge/
 
 
 Configuration variables
@@ -106,57 +108,3 @@ Run a management command, e.g. database initialization and migrations::
 
     $ honcho run './manage.py syncdb'
     $ honcho run './manage.py migrate'
-
-
-Deployment using `sarge`
-------------------------
-1. First of all, install sarge_ in a folder on the server. We'll call it
-   ``$SARGE_HOME`` below. A good choice is ``/var/local/bdr-registry``.
-   Don't forget to set up an init script that starts
-   ``$SARGE_HOME/bin/supervisord`` at boot.
-
-   ::
-
-       $ sudo mkdir $SARGE_HOME; sudo chown `whoami`: $SARGE_HOME
-       $ python <(curl -fsSL raw.github.com/mgax/sarge/master/install_sarge.py) $SARGE_HOME
-       $ cd $SARGE_HOME
-
-2. Upload a configuration file in ``$SARGE_HOME/etc/app/config.json``::
-
-       {
-         "DATABASE": "/var/local/bdr-registry/var/db/db.sqlite",
-         "BDR_HELPDESK_EMAIL": "bdr.helpdesk@eea.europa.eu",
-         "BDR_EMAIL_FROM": "BDR Registration <bdr-registration@eionet.europa.eu>",
-         "DJANGO_SECRET": "some random string",
-         "REVERSE_PROXY": "on"
-       }
-
-3. Configure an external (stable) port number and a range of ports for
-   deployments. Add the following two lines to
-   ``$SARGE_HOME/etc/sarge.yaml`` changing the numbers as needed. At
-   deployment, `sarge` will allocate a new port number from
-   `port_range`, and proxy connections from the stable port (the one in
-   `port_map`).
-
-   ::
-
-       "port_map": {"web": "0.0.0.0:12300"},
-       "port_range": [12310, 12349]
-
-
-4. Copy all dependencies to ``$SARGE_HOME/dist``, either as source
-   distributions or wheel_ files. During deployment `pip` does not
-   search for packages over the network because it takes too much time.
-
-5. Deploy the application. This can be done with the `fabric` script
-   included, provided that ``TARGET`` is set in ``.env``::
-
-       $ honcho run fab deploy
-
-6. Set up a front-end web server (apache, nginx) to proxy requests to
-the application on the port configured above. The server might need to
-set ``X-Forwarded-Script-Name`` and ``X-Forwarded-Proto`` so the
-application generates correct URLs.
-
-.. _wheel: http://wheel.readthedocs.org/
-.. _sarge: http://mgax.github.com/sarge/
