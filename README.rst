@@ -185,6 +185,10 @@ Install dependencies::
 
     $ pip install -r requirements-dev.txt
 
+Run the testsuite::
+
+    $ ./manage.py test bdr_registry
+
 Start the server locally::
 
     $ honcho start
