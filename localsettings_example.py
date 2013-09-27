@@ -1,7 +1,7 @@
 from bdr_registry.settings import *
 
 
-DEBUG = TEMPLATE_DEBUG = True
+# DEBUG = TEMPLATE_DEBUG = True
 
 DATABASES = {
     'default': {
@@ -15,6 +15,7 @@ STATIC_URL = '/static/'
 SITE_URL = '/'
 LOGIN_REDIRECT_URL = SITE_URL
 SECRET_KEY = 'foo'  # replace this with a random string
+# BDR_REVERSE_PROXY = True  # enable this when behind a reverse proxy
 
 
 ## email addresses
