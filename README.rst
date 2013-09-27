@@ -1,31 +1,95 @@
-BDR Company Registry
-====================
+BDR Organisations Registry
+==========================
 
-A registry of company contacts for BDR_ environment reporting. Reporters
-from companies can self-register and then manage a list of contacts for
-their company. BDR helpdesk can manage accounts and passwords and
-download CSV reports of companies.
+`bdr-registry`_ is a registry of organisation contacts (implemented as a
+Django application) for the reporting process which is handled by the
+`BDR Zope`_ application. Reporters from organisations can self-register
+and then manage a list of contacts for their organisation. BDR helpdesk
+can manage accounts and passwords and download CSV reports of
+organisations.
 
-.. _BDR: https://bdr.eionet.europa.eu/
-
-
-Company reporters
------------------
-Companies designate one or more contact persons who are listed in the
-database along with the company. There is one LDAP account per company,
-it can be used to log into the main BDR website, and to modify company
-details and contacts in the registry (this website).
+.. _bdr-registry: https://bdr.eionet.europa.eu/registry/
+.. _BDR Zope: https://bdr.eionet.europa.eu/
 
 
-Eionet administrators
----------------------
-Several people at EEA have administration permissions. They are assigned
-to the "BDR helpdesk" Django user group. This allows viewing/modifying
-company and person records and downloading of reports. It also allows
-generating LDAP accounts for new companies, resetting passwords, pushing
-the account info to LDAP, and sending password reminder emails to a
-company's contacts. All administration actions are done from the Django
-admin interface.
+Workflows
+---------
+
+Organisation reporters
+~~~~~~~~~~~~~~~~~~~~~~
+Starting from the BDR homepage, reporters click on "Self-registration",
+which takes them to a registration form on `bdr-registry`. The
+information is saved in the `bdr-registry` database pending review by
+helpdesk.
+
+After they receive an account, reporters can follow a link on the
+reporting folder, which takes them to a page in `bdr-registry`, where
+they can update the organisation's contact details.
+
+Helpdesk
+~~~~~~~~
+All helpdesk actions are performed via the `Django admin pages`_.
+
+.. _Django admin pages: https://bdr.eionet.europa.eu/registry/admin/
+
+Helpdesk reviews self-registered organisations and creates LDAP accounts
+and BDR reporting folders for them. These actions are performed via the
+"action" menu after selecting one or more organisations. Optionally,
+email notifications, containing the LDAP username and password, can be
+sent to organisation contacts when the accounts are created, or at a
+later time.
+
+Helpdesk can download CSV reports of organisations_ and `contact
+persons`_.
+
+.. _organisations: https://bdr.eionet.europa.eu/registry/admin/bdr_registry/organisation/export
+.. _contact persons: https://bdr.eionet.europa.eu/registry/admin/bdr_registry/person/export
+
+
+Architecture
+------------
+
+Authentication
+~~~~~~~~~~~~~~
+Authentication is performed using the Django authentication system
+against the same LDAP server as the `BDR Zope` application.
+
+User permissions for `bdr-registry` are configured via the `admin
+interface`_. The `helpdesk` group grants permission to can edit/delete
+any organisation, create/update LDAP accounts, reset passwords, and
+create reporting folders in the `BDR Zope` application.
+
+.. _admin interface: https://bdr.eionet.europa.eu/registry/admin/
+
+Organisation accounts have no special roles configured in
+`bdr-registry`; they can edit their own organisation's contact details
+based on the user id. They are however granted owner rights on their
+reporting folder in the `BDR Zope` application, so they can upload files
+and follow the envelope workflow steps.
+
+Integration with other services
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+`bdr-registry` creates/updates LDAP accounts using a privileged user,
+configured using the ``LDAP_EDIT_SERVER`` and ``LDAP_EDIT_LOGIN``
+settings.
+
+The `BDR Zope` application exposes an API to allow `bdr-registry` to
+create folders for newly registered organisations. The endpoint is
+configured using the ``BDR_API_URL`` and ``BDR_API_AUTH`` settings. The
+API is deployed in Zope as a `Script (Python)` (source code at
+``zope_api/create_organisation_folder.py``); the ``BDR_API_AUTH`` user
+is granted Manager role on the entire `BDR Zope` application so it can
+create reporting folders.
+
+`WebQ`_ calls a `bdr-registry` API to fetch organisation details. This
+API is protected using access tokens configured in the admin interface.
+
+When a user visits `bdr-registry` coming from the `BDR Zope`
+application, and the user is not yet authenticated in `bdr-registry`,
+the `HTTP Basic access authentication` information is used to log them
+into `bdr-registry`.
+
+.. _WebQ: http://webq.eionet.europa.eu/
 
 
 Deployment
@@ -76,10 +140,10 @@ Configuration variables
     URL of LDAP server to use for authentication.
 
 ``BDR_REPORTEK_ORGANISATION_URL``
-    URL pattern for links back to a company's reporting page.
+    URL pattern for links back to a organisation's reporting page.
 
 ``LDAP_EDIT_SERVER``, ``LDAP_EDIT_LOGIN``
-    Server and credentials for modifying LDAP company accounts.
+    Server and credentials for modifying LDAP organisation accounts.
 
 ``ADMIN_ALL_BDR_TABLES``
     If set to ``on``, show `account` table in the Django admin.
@@ -93,7 +157,7 @@ Configuration variables
 
 ``AUDIT_LOG_FILE``
     Log file to write audit trail for sensitive operations (e.g.
-    changing company passwords, creating reporting folders).
+    changing organisation passwords, creating reporting folders).
 
 
 .. _sentry: http://pypi.python.org/pypi/sentry
