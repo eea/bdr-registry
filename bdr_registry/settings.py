@@ -1,7 +1,3 @@
-import os
-import logging
-
-
 class secure_str(str):
     """
     A string that doesn't print its contents on `repr()`. Useful to
@@ -11,20 +7,13 @@ class secure_str(str):
     __repr__ = object.__repr__
 
 
-DEBUG = bool(os.environ.get('DEBUG'))
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
-ADMIN_ALL_BDR_TABLES = (DEBUG or os.environ.get('ADMIN_ALL_BDR_TABLES') == 'on')
+ADMIN_ALL_BDR_TABLES = DEBUG
 
 ADMINS = ()
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('DATABASE', 'db.sqlite'),
-    }
-}
 
 TIME_ZONE = 'Europe/Copenhagen'
 
@@ -42,9 +31,9 @@ MEDIA_ROOT = ''
 
 MEDIA_URL = ''
 
-STATIC_ROOT = os.environ.get('STATIC_ROOT', '')
+STATIC_ROOT = ''
 
-STATIC_URL = os.environ.get('STATIC_URL', '/static/')
+STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ()
 
@@ -53,10 +42,8 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
-SITE_URL = os.environ.get('SITE_URL', '/')
+SITE_URL = '/'
 LOGIN_REDIRECT_URL = SITE_URL
-
-SECRET_KEY = os.environ.get('DJANGO_SECRET', 'asdf')
 
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -127,68 +114,22 @@ LOGGING = {
     }
 }
 
-_sentry_dsn = os.environ.get('SENTRY_DSN')
-if _sentry_dsn:
-    INSTALLED_APPS += ('raven.contrib.django',)
-    RAVEN_CONFIG = {
-        'dsn': _sentry_dsn,
-    }
 
-BDR_HELPDESK_EMAIL = os.environ.get('BDR_HELPDESK_EMAIL', '')
-_email_server = os.environ.get('EMAIL_SERVER', '')
-if _email_server:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST, _email_port = _email_server.split(':')
-    EMAIL_PORT = int(_email_port)
-else:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+BDR_HELPDESK_EMAIL = ''
 
-BDR_EMAIL_FROM = os.environ.get('BDR_EMAIL_FROM', 'bdr@localhost')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+BDR_EMAIL_FROM = 'bdr@localhost'
+
+BDR_ORGEMAIL_ODS_BCC = []
+BDR_ORGEMAIL_FGAS_BCC = []
 
 
-BDR_ORGEMAIL_ODS_BCC = os.environ.get('BDR_ORGEMAIL_ODS_BCC', '').split()
-BDR_ORGEMAIL_FGAS_BCC = os.environ.get('BDR_ORGEMAIL_FGAS_BCC', '').split()
+
+BDR_REPORTEK_ORGANISATION_URL = '#'
+
+BDR_API_URL = None
+BDR_API_AUTH = None
 
 
-_auth_ldap_server = os.environ.get('AUTH_LDAP_SERVER')
-if _auth_ldap_server:
-    AUTH_LDAP_SERVER_URI = _auth_ldap_server
-    AUTH_LDAP_BIND_DN = ""
-    AUTH_LDAP_BIND_PASSWORD = ""
-
-    import ldap
-    from django_auth_ldap.config import LDAPSearch
-    AUTH_LDAP_USER_SEARCH = LDAPSearch("o=EIONET,l=Europe",
-                                       ldap.SCOPE_SUBTREE,
-                                       "(uid=%(user)s)")
-
-    AUTH_LDAP_USER_ATTR_MAP = {
-        "first_name": "givenName",
-        "last_name": "sn",
-        "email": "mail",
-    }
-
-    AUTHENTICATION_BACKENDS = (
-        'django_auth_ldap.backend.LDAPBackend',
-        'django.contrib.auth.backends.ModelBackend',
-    )
-
-_ldap_edit_server = os.environ.get('LDAP_EDIT_SERVER')
-if _ldap_edit_server:
-    LDAP_EDIT_SERVER = _ldap_edit_server
-    (LDAP_EDIT_DN, _password) = os.environ.get('LDAP_EDIT_LOGIN').split(':')
-    LDAP_EDIT_PASSWORD = secure_str(_password)
-
-BDR_REPORTEK_ORGANISATION_URL = os.environ.get(
-    'BDR_REPORTEK_ORGANISATION_URL', '#')
-
-BDR_API_URL = os.environ.get('BDR_API_URL')
-_bdr_api_auth = os.environ.get('BDR_API_AUTH')
-if _bdr_api_auth:
-    (_username, _password) = _bdr_api_auth.split(':', 1)
-    BDR_API_AUTH = (_username, secure_str(_password))
-else:
-    BDR_API_AUTH = None
-
-
-BDR_AUDIT_LOG_FILE = os.environ.get('AUDIT_LOG_FILE')
+BDR_AUDIT_LOG_FILE = None
