@@ -45,5 +45,6 @@ def proxy_middleware(app):
 
     return proxy_fix
 
-if os.environ.get('REVERSE_PROXY'):
+from django.conf import settings
+if settings.BDR_REVERSE_PROXY:
     application = proxy_middleware(application)
