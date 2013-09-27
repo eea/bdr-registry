@@ -45,6 +45,8 @@ STATICFILES_FINDERS = (
 SITE_URL = '/'
 LOGIN_REDIRECT_URL = SITE_URL
 
+BDR_REVERSE_PROXY = False
+
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
