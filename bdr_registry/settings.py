@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'bdr_registry',
     'south',
     'gunicorn',
+    'raven.contrib.django',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -135,3 +136,9 @@ BDR_API_AUTH = None
 
 
 BDR_AUDIT_LOG_FILE = None
+
+
+try:
+    from localsettings import *
+except ImportError:
+    pass
