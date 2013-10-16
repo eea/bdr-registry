@@ -1,6 +1,15 @@
 from bdr_registry.settings import *
 
 
+class secure_str(str):
+    """
+    A string that doesn't print its contents on `repr()`. Useful to
+    protect passwords.
+    """
+    __slots__ = ()
+    __repr__ = object.__repr__
+
+
 # DEBUG = TEMPLATE_DEBUG = True
 
 DATABASES = {

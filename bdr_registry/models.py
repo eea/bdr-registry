@@ -91,7 +91,7 @@ class NextAccountId(models.Model):
 class Organisation(models.Model):
 
     EORI_LABEL = "Economic Operators Registration and Identification number" \
-                 "(EORI)"
+                 " (EORI)"
 
     name = models.CharField(max_length=255,
                             verbose_name="Company name")
@@ -106,8 +106,8 @@ class Organisation(models.Model):
     addr_place2 = models.CharField(max_length=255,
                                    verbose_name="Place 2 / Region",
                                    null=True, blank=True)
-    eori = models.CharField(max_length=17, verbose_name=EORI_LABEL,
-                            null=True, blank=True)
+    eori = models.CharField(max_length=17, verbose_name='EORI number',
+                            help_text=EORI_LABEL, null=True, blank=True)
     vat_number = models.CharField(max_length=17, verbose_name="VAT number",
                                   null=True, blank=True)
     country = models.ForeignKey(Country)

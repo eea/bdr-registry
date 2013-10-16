@@ -1,4 +1,5 @@
 {% extends "bdr_layout.html" %}
+{% load widget_tweaks %}
 
 
 {% block content %}
@@ -60,7 +61,17 @@
           {% for err in field.errors %}
             <div class="bdr-error">{{ err }}</div>
           {% endfor %}
-          {{ field }}
+          {% if field.help_text %}
+            {% render_field field title=field.help_text %}
+          {% else %}
+            {{ field }}
+          {% endif %}
+          {% if field.name == 'eori' %}
+            <div>
+              <a href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+                <small>About EORI number</small></a>
+            </div>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}
@@ -86,7 +97,11 @@
           {% for err in field.errors %}
             <div class="bdr-error">{{ err }}</div>
           {% endfor %}
-          {{ field }}
+          {% if field.help_text %}
+            {% render_field field title=field.help_text %}
+          {% else %}
+            {{ field }}
+          {% endif %}
         </td>
       </tr>
     {% endfor %}

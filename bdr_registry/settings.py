@@ -1,11 +1,3 @@
-class secure_str(str):
-    """
-    A string that doesn't print its contents on `repr()`. Useful to
-    protect passwords.
-    """
-    __slots__ = ()
-    __repr__ = object.__repr__
-
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -80,6 +72,7 @@ INSTALLED_APPS = (
     'south',
     'gunicorn',
     'raven.contrib.django',
+    'widget_tweaks',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [
