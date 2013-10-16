@@ -143,7 +143,8 @@ def organisation_all(request):
                 continue
         item = OrderedDict((k, getattr(organisation, k))
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
-                          'addr_place1', 'addr_place2'])
+                          'eori', 'vat_number', 'addr_place1',
+                          'addr_place2'])
         if organisation.account is not None:
             item['account'] = organisation.account.uid
         if organisation.obligation is not None:
