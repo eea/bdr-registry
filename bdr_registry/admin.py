@@ -21,6 +21,35 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
+
+class ReadOnlyAdmin(admin.ModelAdmin):
+
+
+    def get_actions(self, request):
+
+        actions = super(ReadOnlyAdmin, self).get_actions(request)
+        if self.__user_is_readonly(request):
+            actions = []
+        return actions
+
+    def change_view(self, request, object_id, extra_context=None):
+
+        if self.__user_is_readonly(request):
+            self.readonly_fields = self.user_readonly
+            self.inlines = self.user_readonly_inlines
+
+            extra_context = extra_context or {}
+            extra_context['has_change_permission'] = False
+
+        return super(ReadOnlyAdmin, self).change_view(
+            request, object_id, extra_context=extra_context)
+
+    def __user_is_readonly(self, request):
+        groups = [ x.name for x in request.user.groups.all() ]
+
+        return "readonly" in groups
+
+
 def sync_accounts_with_ldap(accounts):
     ldap_editor = create_ldap_editor()
     counters = defaultdict(int)
@@ -205,7 +234,19 @@ class PersonInline(admin.StackedInline):
     extra = 0
 
 
-class OrganisationAdmin(admin.ModelAdmin):
+class PersonReadOnlyInline(PersonInline):
+
+    readonly_fields = ['title', 'family_name', 'first_name', 'email',
+                       'email2', 'phone', 'phone2', 'phone3', 'fax', 'organisation']
+
+
+class OrganisationAdmin(ReadOnlyAdmin):
+
+    user_readonly = ['EORI_LABEL', 'name', 'date_registered', 'active',
+                     'addr_street', 'addr_place1', 'addr_postalcode',
+                     'addr_place2', 'eori', 'vat_number', 'country',
+                     'obligation', 'account', 'comments']
+    user_readonly_inlines = [PersonReadOnlyInline]
 
     list_filter = ['obligation', 'country']
     list_display = ['__unicode__', 'obligation', 'account', 'country',
@@ -257,7 +298,13 @@ class OrganisationAdmin(admin.ModelAdmin):
         return HttpResponse(of.getvalue(), content_type="text/plain")
 
 
-class PersonAdmin(admin.ModelAdmin):
+class PersonAdmin(ReadOnlyAdmin):
+
+    user_readonly = ['title', 'family_name', 'first_name',
+                     'email', 'email2', 'phone', 'phone2', 'phone3',
+                     'fax', 'organisation']
+
+    user_readonly_inlines = []
 
     search_fields = ['first_name', 'family_name', 'email', 'phone', 'fax',
                      'organisation__name', 'organisation__account__uid']
