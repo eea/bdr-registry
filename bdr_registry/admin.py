@@ -28,23 +28,26 @@ class ReadOnlyAdmin(admin.ModelAdmin):
     def get_actions(self, request):
 
         actions = super(ReadOnlyAdmin, self).get_actions(request)
-        if self.__user_is_readonly(request):
+        if self._user_is_readonly(request):
             actions = []
         return actions
 
     def change_view(self, request, object_id, extra_context=None):
 
-        if self.__user_is_readonly(request):
+        if self._user_is_readonly(request):
             self.readonly_fields = self.user_readonly
             self.inlines = self.user_readonly_inlines
 
             extra_context = extra_context or {}
-            extra_context['has_change_permission'] = False
+
+        else:
+            self.readonly_fields = []
+            self.inlines = []
 
         return super(ReadOnlyAdmin, self).change_view(
             request, object_id, extra_context=extra_context)
 
-    def __user_is_readonly(self, request):
+    def _user_is_readonly(self, request):
         groups = [ x.name for x in request.user.groups.all() ]
 
         return "readonly" in groups
