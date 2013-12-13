@@ -48,7 +48,7 @@ class Obligation(models.Model):
         try:
             next_row = query[0]
         except IndexError:
-            next_row = NextAccountId(obligation=self, next_id=3000)
+            next_row = NextAccountId(obligation=self, next_id=1)
             next_row.save()
         value = next_row.next_id
         next_row.next_id += 1
