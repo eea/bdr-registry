@@ -280,8 +280,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
         out = csv.writer(of)
         out.writerow(['userid', 'name', 'date_registered', 'active',
                       'addr_street', 'addr_place1', 'addr_postalcode',
-                      'addr_place2', 'country', 'vat_number',
-                      'obligation', 'comments'])
+                      'addr_place2', 'country', 'vat_number', 'obligation'])
         for org in models.Organisation.objects.all():
             account = org.account
             out.writerow([v.encode('utf-8') for v in [
@@ -295,8 +294,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
                 org.addr_place2,
                 org.country.name,
                 org.vat_number or '',
-                org.obligation.code,
-                org.comments or '',
+                org.obligation.code if org.obligation else '',
             ]])
         return HttpResponse(of.getvalue(), content_type="text/plain")
 

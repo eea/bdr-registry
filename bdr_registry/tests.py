@@ -25,6 +25,8 @@ PERSON_FIXTURE = {
     'phone': "555 1234",
 }
 
+OBLIGATON_CODE = "fgas"
+
 LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
 
 
@@ -114,6 +116,28 @@ class FormSubmitTest(TransactionTestCase):
     def test_mail_is_sent_after_successful_self_registration(self):
         self.client.post('/self_register', self.prepare_form_data())
         self.assertEqual(len(mail.outbox), 1)
+
+
+class OrganisationExportTest(TestCase):
+
+    def setUp(self):
+        self.dk = models.Country.objects.get(name="Denmark")
+        user = create_user_and_login(self.client, superuser=True, staff=True)
+        form_data = dict(ORG_FIXTURE, country=self.dk.pk)
+        self.client.post('/organisation/add', form_data)
+
+    def test_export_csv_no_obligation(self):
+        resp = self.client.get('/admin/bdr_registry/organisation/export')
+        self.assertIn(ORG_FIXTURE['name'], resp.content)
+
+    def test_export_csv_with_obligation(self):
+        fgas = models.Obligation.objects.get(code='fgas')
+        org_form = dict(ORG_FIXTURE, country=self.dk.pk, obligation=fgas.pk)
+        resp = self.client.post('/admin/bdr_registry/organisation/1/',
+                                org_form)
+        self.assertEqual(resp.status_code, 302)
+        resp = self.client.get('/admin/bdr_registry/organisation/export')
+        self.assertIn(OBLIGATON_CODE, resp.content)
 
 
 class OrganisationEditTest(TestCase):
