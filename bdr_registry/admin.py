@@ -253,8 +253,9 @@ class OrganisationAdmin(ReadOnlyAdmin):
 
     list_filter = ['obligation', 'country']
     list_display = ['__unicode__', 'obligation', 'account', 'country',
-                    'addr_postalcode', 'vat_number']
-    search_fields = ['name', 'account__uid', 'addr_postalcode', 'vat_number']
+                    'addr_postalcode', 'vat_number', 'eori']
+    search_fields = ['name', 'account__uid', 'addr_postalcode',
+                     'vat_number', 'eori']
     actions = [create_accounts, reset_password, send_password_email,
                create_reporting_folder]
 
