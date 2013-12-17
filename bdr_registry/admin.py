@@ -252,8 +252,10 @@ class OrganisationAdmin(ReadOnlyAdmin):
     user_readonly_inlines = [PersonReadOnlyInline]
 
     list_filter = ['obligation', 'country']
-    list_display = ['__unicode__', 'obligation', 'account', 'country',
+    list_display = ['id', 'name', 'obligation', 'account', 'country',
                     'addr_postalcode', 'vat_number', 'eori']
+    list_display_links = ('name',)
+
     search_fields = ['name', 'account__uid', 'addr_postalcode',
                      'vat_number', 'eori']
     actions = [create_accounts, reset_password, send_password_email,
@@ -298,6 +300,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
                 org.obligation.code if org.obligation else '',
             ]])
         return HttpResponse(of.getvalue(), content_type="text/plain")
+
 
 
 class PersonAdmin(ReadOnlyAdmin):
