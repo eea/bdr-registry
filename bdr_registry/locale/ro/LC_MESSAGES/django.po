@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-13 11:52+0100\n"
+"POT-Creation-Date: 2014-02-13 16:49+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -105,7 +105,7 @@ msgstr ""
 msgid "Update organisation"
 msgstr ""
 
-#: templates/organisation_update.html:23 templates/self_register.html:38
+#: templates/organisation_update.html:23 templates/self_register.html:37
 msgid "Company details"
 msgstr ""
 
@@ -117,7 +117,7 @@ msgstr ""
 msgid "helpdesk"
 msgstr ""
 
-#: templates/organisation_update.html:68 templates/self_register.html:63
+#: templates/organisation_update.html:68 templates/self_register.html:62
 msgid "About EORI number"
 msgstr ""
 
@@ -177,25 +177,28 @@ msgstr ""
 "de asistență la: %(helpdesk_email)s."
 
 #: templates/self_register.html:20
-msgid "self-registration form"
-msgstr ""
-
-#: templates/self_register.html:21
-#, python-format
+#, fuzzy
 msgid ""
 "In case your undertaking is a first time reporter and has therefore not yet "
-"received a username and password, please proceed to the "
-"%(registration_form)s below."
+"received a username and password, please proceed to the"
 msgstr ""
 "În cazul în care întreprinderea este un reporter prima dată și, prin urmare, "
 "nu a primit încă un nume de utilizator și parolă, vă rugăm să treceți la "
 "%(registration_form)s urmatoare."
 
-#: templates/self_register.html:25
+#: templates/self_register.html:20
+msgid "self-registration form"
+msgstr ""
+
+#: templates/self_register.html:20
+msgid "below"
+msgstr ""
+
+#: templates/self_register.html:24
 msgid "Self-registration form"
 msgstr ""
 
-#: templates/self_register.html:27
+#: templates/self_register.html:26
 #, python-format
 msgid ""
 "Please note that this registration form should only be used if your company "
@@ -209,7 +212,7 @@ msgstr ""
 "sau în cazul unei schimbări de detalii reporter, vă rugăm să contactați "
 "biroul de asistență la: %(helpdesk_email)s."
 
-#: templates/self_register.html:31
+#: templates/self_register.html:30
 msgid ""
 "For undertakings reporting for the first time, the account request will be "
 "evaluated and login and password will be provided."
@@ -217,14 +220,22 @@ msgstr ""
 "Pentru întreprinderile de raportare, pentru prima dată, cererea de cont vor "
 "fi evaluate și vor fi furnizate de conectare și parola."
 
-#: templates/self_register.html:74
+#: templates/self_register.html:73
 msgid "Designated company reporter nr 1"
 msgstr ""
 
-#: templates/self_register.html:103
+#: templates/self_register.html:102
 msgid "Request account"
 msgstr ""
 
 #: templates/self_register_done.html:8
-msgid "Success!"
+msgid ""
+"The request for registration was completed successfully. An email was sent "
+"to your account with the registration details. The BDR team will review your "
+"request and take the appropriate actions."
+msgstr ""
+
+#: templates/self_register_done.html:10
+#, python-format
+msgid "For questions please contact the %(helpdesk_email)s."
 msgstr ""

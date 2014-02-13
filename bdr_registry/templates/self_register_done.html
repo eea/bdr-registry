@@ -5,6 +5,8 @@
 
 <h1>{% trans "Self registration" %}</h1>
 
-<p>{% trans "Success!" %}</p>
+<p>{% blocktrans %}The request for registration was completed successfully. An email was sent to your account with the registration details. The BDR team will review your request and take the appropriate actions.{% endblocktrans %}</p>
+
+<p>{% blocktrans with helpdesk_email="<a href='mailto:bdr.helpdesk@eea.europa.eu'>bdr.helpdesk@eea.europa.eu</a>" %}For questions please contact the {{ helpdesk_email }}.{% endblocktrans %}</p>
 
 {% endblock %}
