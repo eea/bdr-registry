@@ -1,7 +1,7 @@
 {% extends "bdr_layout.html" %}
 {% load static from staticfiles %}
 {% load widget_tweaks %}
-
+{% load i18n %}
 
 {% block content %}
 
@@ -11,16 +11,16 @@
     {% if reporting_url %}
     <li><a href="{{ reporting_url }}"
            title="Go back to the collection for this organisation"
-           >Back to reporting</a></li>
+           >{% trans "Back to reporting" %}</a></li>
     {% endif %}
   </ul>
 </div>
 
 
-<h1>Update organisation <em>{{ object.name }}</em></h1>
+<h1>{% trans "Update organisation" %} <em>{{ object.name }}</em></h1>
 
 
-<h2>Company details</h2>
+<h2>{% trans "Company details" %}</h2>
 
 <form method="post">
   {% csrf_token %}
@@ -31,14 +31,14 @@
   {% if not form.fields.name %}
     <tr>
       <td>
-        <label for="id_name" class="question">Company name</label>
+        <label for="id_name" class="question">{% trans "Company name" %}</label>
       </td>
       <td>
         <input id="id_name" value="{{ object.name }}" readonly>
         <br>
         <span class="input-hint">
-          To modify company name, please contact
-          <a href="mailto:{{ helpdesk_email }}">helpdesk</a>.
+          {% trans "To modify company name, please contact" %}
+          <a href="mailto:{{ helpdesk_email }}">{% trans "helpdesk" %}</a>.
         </span>
       </td>
     </tr>
@@ -65,7 +65,7 @@
         {% if field.name == 'eori' %}
           <div>
             <a href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
-              <small>About EORI number</small></a>
+              <small>{% trans "About EORI number" %}</small></a>
           </div>
         {% endif %}
       </td>
@@ -75,7 +75,7 @@
 
   <tr>
       <td>
-        <label for="id_country" class="question">Country</label>
+        <label for="id_country" class="question">{% trans "Country" %}</label>
       </td>
       <td>
         <input id="id_country" value="{{ object.country.name }}" readonly>
@@ -85,7 +85,7 @@
 
   <tr>
       <td>
-        <label for="id_account" class="question">Account name</label>
+        <label for="id_account" class="question">{% trans "Account name" %}</label>
       </td>
       <td>
         <input id="id_account" value="{{ object.account.uid }}" readonly>
@@ -95,7 +95,7 @@
 
   <tr>
       <td>
-        <label for="id_obligation" class="question">Obligation</label>
+        <label for="id_obligation" class="question">{% trans "Obligation" %}</label>
       </td>
       <td>
         <input id="id_obligation" value="{{ object.obligation.name }}" readonly>
@@ -105,12 +105,12 @@
 
   </table>
 
-  <button type="submit">Save</button>
+  <button type="submit">{% trans "Save" %}</button>
 
 </form>
 
 
-<h2>People</h2>
+<h2>{% trans "People" %}</h2>
 
 <ul>
 {% for person in organisation.people.all %}
@@ -124,7 +124,7 @@
 </ul>
 
 <form action="{% url organisation_add_person organisation.pk %}">
-  <button type="submit">New person</button>
+  <button type="submit">{% trans "New person" %}</button>
 </form>
 
 

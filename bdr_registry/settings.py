@@ -1,4 +1,3 @@
-
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ADMIN_ALL_BDR_TABLES = DEBUG
@@ -51,6 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'bdr_registry.local.ThreadLocalRequestMiddleware',
 )
 

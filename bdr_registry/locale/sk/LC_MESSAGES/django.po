@@ -1,0 +1,217 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-02-13 11:52+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2\n"
+
+#: models.py:93
+msgid "Economic Operators Registration and Identification number (EORI)"
+msgstr ""
+
+#: models.py:95 templates/organisation_update.html:34
+msgid "Company name"
+msgstr ""
+
+#: models.py:98
+msgid "Street and nr"
+msgstr ""
+
+#: models.py:99
+msgid "Place 1 / Municipality"
+msgstr ""
+
+#: models.py:100
+msgid "Postal code"
+msgstr ""
+
+#: models.py:101
+msgid "Place 2 / Region"
+msgstr ""
+
+#: models.py:103
+msgid "EORI number"
+msgstr ""
+
+#: models.py:105
+msgid "VAT number"
+msgstr ""
+
+#: models.py:151
+msgid "Title"
+msgstr ""
+
+#: models.py:152
+msgid "Family name"
+msgstr ""
+
+#: models.py:153
+msgid "First name"
+msgstr ""
+
+#: models.py:155
+msgid "Email address"
+msgstr ""
+
+#: models.py:156
+msgid "Email address 2"
+msgstr ""
+
+#: models.py:158
+msgid "Telephone"
+msgstr ""
+
+#: models.py:159
+msgid "Telephone 2"
+msgstr ""
+
+#: models.py:161
+msgid "Telephone 3"
+msgstr ""
+
+#: models.py:164
+msgid "Fax"
+msgstr ""
+
+#: templates/organisation_add_person.html:6
+msgid "Add person"
+msgstr ""
+
+#: templates/organisation_add_person.html:31
+#: templates/organisation_update.html:108 templates/person_update.html:31
+msgid "Save"
+msgstr ""
+
+#: templates/organisation_add_person.html:33 templates/person_update.html:33
+msgid "Back"
+msgstr ""
+
+#: templates/organisation_name_history.html:9
+msgid "Home"
+msgstr ""
+
+#: templates/organisation_update.html:14
+msgid "Back to reporting"
+msgstr ""
+
+#: templates/organisation_update.html:20
+msgid "Update organisation"
+msgstr ""
+
+#: templates/organisation_update.html:23 templates/self_register.html:38
+msgid "Company details"
+msgstr ""
+
+#: templates/organisation_update.html:40
+msgid "To modify company name, please contact"
+msgstr ""
+
+#: templates/organisation_update.html:41
+msgid "helpdesk"
+msgstr ""
+
+#: templates/organisation_update.html:68 templates/self_register.html:63
+msgid "About EORI number"
+msgstr ""
+
+#: templates/organisation_update.html:78
+msgid "Country"
+msgstr ""
+
+#: templates/organisation_update.html:88
+msgid "Account name"
+msgstr ""
+
+#: templates/organisation_update.html:98
+msgid "Obligation"
+msgstr ""
+
+#: templates/organisation_update.html:113
+msgid "People"
+msgstr ""
+
+#: templates/organisation_update.html:127
+msgid "New person"
+msgstr ""
+
+#: templates/person_update.html:6
+msgid "Update person details"
+msgstr ""
+
+#: templates/self_register.html:7 templates/self_register_done.html:6
+msgid "Self registration"
+msgstr ""
+
+#: templates/self_register.html:8
+msgid "Reporting undertakings"
+msgstr ""
+
+#: templates/self_register.html:11
+msgid ""
+"Designated reporters of an undertaking, who have to report in accordance "
+"with Article 6 of the F-Gas Regulation or Article 27 of the ODS Regulation, "
+"should register in order to be able to report."
+msgstr ""
+
+#: templates/self_register.html:16
+#, python-format
+msgid ""
+"In case you or another person in your company already have received a "
+"username and password but have forgotten it or in case you need further "
+"assistance logging in, please contact the helpdesk at: %(helpdesk_email)s."
+msgstr ""
+
+#: templates/self_register.html:20
+msgid "self-registration form"
+msgstr ""
+
+#: templates/self_register.html:21
+#, python-format
+msgid ""
+"In case your undertaking is a first time reporter and has therefore not yet "
+"received a username and password, please proceed to the "
+"%(registration_form)s below."
+msgstr ""
+
+#: templates/self_register.html:25
+msgid "Self-registration form"
+msgstr ""
+
+#: templates/self_register.html:27
+#, python-format
+msgid ""
+"Please note that this registration form should only be used if your company "
+"has not yet received a login and a password. In the case of a forgotten "
+"login or password or in the case of a change of reporter details, please "
+"contact the helpdesk at: %(helpdesk_email)s."
+msgstr ""
+
+#: templates/self_register.html:31
+msgid ""
+"For undertakings reporting for the first time, the account request will be "
+"evaluated and login and password will be provided."
+msgstr ""
+
+#: templates/self_register.html:74
+msgid "Designated company reporter nr 1"
+msgstr ""
+
+#: templates/self_register.html:103
+msgid "Request account"
+msgstr ""
+
+#: templates/self_register_done.html:8
+msgid "Success!"
+msgstr ""

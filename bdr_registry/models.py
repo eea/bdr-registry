@@ -4,7 +4,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
 import local
-
+from django.utils.translation import ugettext_lazy as _
 
 def generate_key(size=20):
     crypto_random = random.SystemRandom()
@@ -90,26 +90,20 @@ class NextAccountId(models.Model):
 
 class Organisation(models.Model):
 
-    EORI_LABEL = "Economic Operators Registration and Identification number" \
-                 " (EORI)"
+    EORI_LABEL = _('Economic Operators Registration and Identification number (EORI)')
 
-    name = models.CharField(max_length=255,
-                            verbose_name="Company name")
+    name = models.CharField(_('Company name'), max_length=255)
     date_registered = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-    addr_street = models.CharField(max_length=255,
-                                   verbose_name="Street and nr")
-    addr_place1 = models.CharField(max_length=255,
-                                   verbose_name="Place 1 / Municipality")
-    addr_postalcode = models.CharField(max_length=255,
-                                   verbose_name="Postal code")
-    addr_place2 = models.CharField(max_length=255,
-                                   verbose_name="Place 2 / Region",
-                                   null=True, blank=True)
-    eori = models.CharField(max_length=17, verbose_name='EORI number',
-                            help_text=EORI_LABEL, null=True, blank=True)
-    vat_number = models.CharField(max_length=17, verbose_name="VAT number",
-                                  null=True, blank=True)
+    addr_street = models.CharField(_('Street and nr'), max_length=255)
+    addr_place1 = models.CharField(_('Place 1 / Municipality'), max_length=255)
+    addr_postalcode = models.CharField(_('Postal code'), max_length=255)
+    addr_place2 = models.CharField(_('Place 2 / Region'),
+                            max_length=255, null=True, blank=True)
+    eori = models.CharField(_('EORI number'), help_text=EORI_LABEL,
+                            max_length=17, null=True, blank=True)
+    vat_number = models.CharField(_('VAT number'),
+                            max_length=17, null=True, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True)
@@ -154,22 +148,21 @@ class OrganisationNameHistory(models.Model):
 
 class Person(models.Model):
 
-    title = models.CharField(max_length=255, verbose_name="Title")
-    family_name = models.CharField(max_length=255, verbose_name="Family name")
-    first_name = models.CharField(max_length=255, verbose_name="First name")
+    title = models.CharField(_('Title'), max_length=255)
+    family_name = models.CharField(_('Family name'), max_length=255)
+    first_name = models.CharField(_('First name'), max_length=255)
 
-    email = models.EmailField(verbose_name="Email address")
-    email2 = models.EmailField(verbose_name="Email address 2",
-                               null=True, blank=True)
+    email = models.EmailField(_('Email address'))
+    email2 = models.EmailField(_('Email address 2'), null=True, blank=True)
 
-    phone = models.CharField(max_length=255, verbose_name="Telephone")
-    phone2 = models.CharField(max_length=255, verbose_name="Telephone 2",
-                              null=True, blank=True)
-    phone3 = models.CharField(max_length=255, verbose_name="Telephone 3",
-                              null=True, blank=True)
+    phone = models.CharField(_('Telephone'), max_length=255)
+    phone2 = models.CharField(_('Telephone 2'),
+                            max_length=255, null=True, blank=True)
+    phone3 = models.CharField(_('Telephone 3'),
+                            max_length=255, null=True, blank=True)
 
-    fax = models.CharField(max_length=255, verbose_name="Fax",
-                           null=True, blank=True)
+    fax = models.CharField(_('Fax'),
+                            max_length=255, null=True, blank=True)
 
     organisation = models.ForeignKey(Organisation, related_name='people')
 

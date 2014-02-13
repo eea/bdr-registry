@@ -1,9 +1,9 @@
 {% extends "bdr_layout.html" %}
-
+{% load i18n %}
 
 {% block content %}
 
-<h1>Update person details</h1>
+<h1>{% trans "Update person details" %}</h1>
 
 <form method="post">
   {% csrf_token %}
@@ -28,9 +28,9 @@
   {% endfor %}
   </table>
 
-  <button type="submit">Save</button>
+  <button type="submit">{% trans "Save" %}</button>
 
-  <a href="{% url organisation_update person.organisation.pk %}">Back</a>
+  <a href="{% url organisation_update person.organisation.pk %}">{% trans "Back" %}</a>
 
 </form>
 
