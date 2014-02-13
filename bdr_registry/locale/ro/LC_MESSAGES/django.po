@@ -177,14 +177,12 @@ msgstr ""
 "de asistență la: %(helpdesk_email)s."
 
 #: templates/self_register.html:20
-#, fuzzy
 msgid ""
 "In case your undertaking is a first time reporter and has therefore not yet "
 "received a username and password, please proceed to the"
 msgstr ""
 "În cazul în care întreprinderea este un reporter prima dată și, prin urmare, "
 "nu a primit încă un nume de utilizator și parolă, vă rugăm să treceți la "
-"%(registration_form)s urmatoare."
 
 #: templates/self_register.html:20
 msgid "self-registration form"
