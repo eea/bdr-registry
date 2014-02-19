@@ -42,7 +42,6 @@ class ReadOnlyAdmin(admin.ModelAdmin):
 
         else:
             self.readonly_fields = []
-            self.inlines = []
 
         return super(ReadOnlyAdmin, self).change_view(
             request, object_id, extra_context=extra_context)
