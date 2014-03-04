@@ -106,7 +106,7 @@ Run the testsuite::
 
 Start the server locally::
 
-    $ DJANGO_SETTINGS_MODULE=localsettings ./manage.py
+    $ DJANGO_SETTINGS_MODULE=localsettings ./manage.py runserver
 
 Run a management command, e.g. database initialization and migrations::
 
