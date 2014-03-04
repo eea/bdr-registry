@@ -133,6 +133,14 @@ class OrganisationExportTest(TestCase):
     def test_export_csv_with_obligation(self):
         fgas = models.Obligation.objects.get(code='fgas')
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, obligation=fgas.pk)
+
+        # we need to refer the form that is tested.
+        # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
+        org_form.update({
+                'people-INITIAL_FORMS': 0,
+                'people-TOTAL_FORMS': 2
+        })
+
         resp = self.client.post('/admin/bdr_registry/organisation/1/',
                                 org_form)
         self.assertEqual(resp.status_code, 302)
