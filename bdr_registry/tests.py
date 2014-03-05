@@ -137,8 +137,8 @@ class OrganisationExportTest(TestCase):
         # we need to refer the form that is tested.
         # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
         org_form.update({
-                'people-INITIAL_FORMS': 0,
-                'people-TOTAL_FORMS': 2
+            'people-INITIAL_FORMS': '0',
+            'people-TOTAL_FORMS': '2'
         })
 
         resp = self.client.post('/admin/bdr_registry/organisation/1/',
