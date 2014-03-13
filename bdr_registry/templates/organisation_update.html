@@ -34,7 +34,7 @@
         <label for="id_name" class="question">{% trans "Company name" %}</label>
       </td>
       <td>
-        <input id="id_name" value="{{ object.name }}" readonly>
+        <input id="id_name" value="{{ object.name }}" disabled>
         <br>
         <span class="input-hint">
           {% trans "To modify company name, please contact" %}
@@ -78,7 +78,7 @@
         <label for="id_country" class="question">{% trans "Country" %}</label>
       </td>
       <td>
-        <input id="id_country" value="{{ object.country.name }}" readonly>
+        <input id="id_country" value="{{ object.country.name }}" disabled>
       </td>
     </tr>
   </tr>
@@ -88,7 +88,7 @@
         <label for="id_account" class="question">{% trans "Account name" %}</label>
       </td>
       <td>
-        <input id="id_account" value="{{ object.account.uid }}" readonly>
+        <input id="id_account" value="{{ object.account.uid }}" disabled>
       </td>
     </tr>
   </tr>
@@ -98,7 +98,7 @@
         <label for="id_obligation" class="question">{% trans "Obligation" %}</label>
       </td>
       <td>
-        <input id="id_obligation" value="{{ object.obligation.name }}" readonly>
+        <input id="id_obligation" value="{{ object.obligation.name }}" disabled>
       </td>
     </tr>
   </tr>
