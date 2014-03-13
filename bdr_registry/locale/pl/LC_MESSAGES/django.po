@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-13 16:49+0100\n"
+"POT-Creation-Date: 2014-03-06 17:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,85 +18,95 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2)\n"
 
-#: models.py:93
+#: models.py:95
 msgid "Economic Operators Registration and Identification number (EORI)"
 msgstr ""
 
-#: models.py:95 templates/organisation_update.html:34
+#: models.py:97 templates/organisation_update.html:34
 msgid "Company name"
 msgstr ""
 
-#: models.py:98
+#: models.py:100
 msgid "Street and nr"
 msgstr ""
 
-#: models.py:99
+#: models.py:101
 msgid "Place 1 / Municipality"
 msgstr ""
 
-#: models.py:100
+#: models.py:102
 msgid "Postal code"
 msgstr ""
 
-#: models.py:101
+#: models.py:103
 msgid "Place 2 / Region"
 msgstr ""
 
-#: models.py:103
+#: models.py:105
 msgid "EORI number"
 msgstr ""
 
-#: models.py:105
+#: models.py:107
 msgid "VAT number"
 msgstr ""
 
-#: models.py:151
+#: models.py:152
 msgid "Title"
 msgstr ""
 
-#: models.py:152
+#: models.py:153
 msgid "Family name"
 msgstr ""
 
-#: models.py:153
+#: models.py:154
 msgid "First name"
 msgstr ""
 
-#: models.py:155
+#: models.py:156
 msgid "Email address"
 msgstr ""
 
-#: models.py:156
+#: models.py:157
 msgid "Email address 2"
 msgstr ""
 
-#: models.py:158
+#: models.py:159
 msgid "Telephone"
 msgstr ""
 
-#: models.py:159
+#: models.py:160
 msgid "Telephone 2"
 msgstr ""
 
-#: models.py:161
+#: models.py:162
 msgid "Telephone 3"
 msgstr ""
 
-#: models.py:164
+#: models.py:165
 msgid "Fax"
 msgstr ""
 
-#: templates/organisation_add_person.html:6
-msgid "Add person"
+#: templates/comment_update.html:6
+msgid "Update comment"
 msgstr ""
 
+#: templates/comment_update.html:32 templates/organisation_add_comment.html:31
 #: templates/organisation_add_person.html:31
 #: templates/organisation_update.html:108 templates/person_update.html:31
 msgid "Save"
 msgstr ""
 
+#: templates/comment_update.html:34 templates/organisation_add_comment.html:33
 #: templates/organisation_add_person.html:33 templates/person_update.html:33
 msgid "Back"
+msgstr ""
+
+#: templates/organisation_add_comment.html:6
+msgid "Add comment"
+msgstr ""
+
+#: templates/organisation_add_person.html:6
+msgid "Add person"
 msgstr ""
 
 #: templates/organisation_name_history.html:9
@@ -140,10 +150,18 @@ msgid "Obligation"
 msgstr ""
 
 #: templates/organisation_update.html:113
-msgid "People"
+msgid "Comments"
 msgstr ""
 
 #: templates/organisation_update.html:127
+msgid "New comment"
+msgstr ""
+
+#: templates/organisation_update.html:131
+msgid "People"
+msgstr ""
+
+#: templates/organisation_update.html:145
 msgid "New person"
 msgstr ""
 

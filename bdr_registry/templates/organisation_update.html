@@ -110,22 +110,41 @@
 </form>
 
 
-<h2>{% trans "People" %}</h2>
+<h2>{% trans "Comments" %}</h2>
 
 <ul>
-{% for person in organisation.people.all %}
+{% for comment in organisation.comments.all %}
   <li>
-    <a href="{% url person_update person.pk %}">{{ person }}</a>
-    <a class="delete" href="{% url person_delete person.pk %}">
+    <a href="{% url 'comment_update' comment.pk %}">
+        {{ comment.created|date:"d F Y" }}: {{ comment.text|safe }}
+    </a>
+    <a class="delete" href="{% url 'comment_delete' comment.pk %}">
       <img src="{% static "admin/img/icon_deletelink.gif" %}">
     </a>
   </li>
 {% endfor %}
 </ul>
 
-<form action="{% url organisation_add_person organisation.pk %}">
-  <button type="submit">{% trans "New person" %}</button>
+<form action="{% url 'organisation_add_comment' organisation.pk %}">
+  <button type="submit">{% trans "New comment" %}</button>
 </form>
 
+
+<h2>{% trans "People" %}</h2>
+
+<ul>
+{% for person in organisation.people.all %}
+  <li>
+    <a href="{% url 'person_update' person.pk %}">{{ person }}</a>
+    <a class="delete" href="{% url 'person_delete' person.pk %}">
+      <img src="{% static "admin/img/icon_deletelink.gif" %}">
+    </a>
+  </li>
+{% endfor %}
+</ul>
+
+<form action="{% url 'organisation_add_person' organisation.pk %}">
+  <button type="submit">{% trans "New person" %}</button>
+</form>
 
 {% endblock %}

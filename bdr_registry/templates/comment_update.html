@@ -1,0 +1,37 @@
+{% extends "bdr_layout.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
+
+<h1>{% trans "Update comment" %}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.media }}
+  <p>
+    {% for field in form %}
+      <label for="id_{{ field.name }}" class="question
+          {% if field.field.required %}required{% endif %}">
+        {{ field.label }}
+      </label>
+      {% for err in field.errors %}
+        <div class="bdr-error">{{ err }}</div>
+      {% endfor %}
+      {{ field }}
+    {% endfor %}
+  </p>
+  <button type="submit">{% trans "Save" %}</button>
+
+  <a href="{% url 'organisation_update' comment.organisation.pk %}">{% trans "Back" %}</a>
+
+  <script>
+    CKEDITOR.config.enterMode = CKEDITOR.ENTER_BR;
+    CKEDITOR.config.width = '60%';
+    CKEDITOR.replace('id_text');
+  </script>
+
+</form>
+
+{% endblock %}

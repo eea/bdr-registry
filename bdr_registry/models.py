@@ -2,9 +2,9 @@ import random
 import string
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.conf import settings
 import local
 from django.utils.translation import ugettext_lazy as _
+
 
 def generate_key(size=20):
     crypto_random = random.SystemRandom()
@@ -107,8 +107,7 @@ class Organisation(models.Model):
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True)
-
-    comments = models.TextField(null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('organisation', kwargs={'pk': self.pk})
@@ -153,7 +152,6 @@ class Person(models.Model):
     first_name = models.CharField(_('First name'), max_length=255)
 
     email = models.EmailField(_('Email address'))
-    email2 = models.EmailField(_('Email address 2'), null=True, blank=True)
 
     phone = models.CharField(_('Telephone'), max_length=255)
     phone2 = models.CharField(_('Telephone 2'),
@@ -172,3 +170,12 @@ class Person(models.Model):
 
     def __unicode__(self):
         return u"{p.first_name} {p.family_name} <{p.email}>".format(p=self)
+
+
+class Comment(models.Model):
+    text = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    organisation = models.ForeignKey(Organisation, related_name='comments')
+
+    def __unicode__(self):
+        return u"{0}: {1}".format(self.created.strftime('%d %B %Y'), self.text)
