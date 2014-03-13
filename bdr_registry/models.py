@@ -147,7 +147,7 @@ class OrganisationNameHistory(models.Model):
 
 class Person(models.Model):
 
-    title = models.CharField(_('Title'), max_length=255)
+    title = models.CharField(_('Title'), max_length=255, null=True, blank=True)
     family_name = models.CharField(_('Family name'), max_length=255)
     first_name = models.CharField(_('First name'), max_length=255)
 
