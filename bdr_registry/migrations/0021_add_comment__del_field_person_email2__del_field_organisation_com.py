@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import datetime
 from south.db import db
 from south.v2 import SchemaMigration
-from django.db import models
 
 
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        db.rename_column(u'bdr_registry_organisation', 'comments',
+                         'original_comments')
+
         # Adding model 'Comment'
         db.create_table(u'bdr_registry_comment', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -20,31 +21,27 @@ class Migration(SchemaMigration):
         # Deleting field 'Person.email2'
         db.delete_column(u'bdr_registry_person', 'email2')
 
-        # Deleting field 'Organisation.comments'
-        db.delete_column(u'bdr_registry_organisation', 'comments')
-
         # Adding field 'Organisation.website'
         db.add_column(u'bdr_registry_organisation', 'website',
                       self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True),
                       keep_default=False)
 
+        # Data migration
+        if not db.dry_run:
+            for org in orm.Organisation.objects.all():
+                orm.Comment.objects.create(
+                    text=org.original_comments,
+                    organisation=org
+                )
+
+            for comm in orm.Comment.objects.all():
+                comm.created = comm.organisation.date_registered
+                comm.save()
+
+        db.delete_column(u'bdr_registry_organisation', 'original_comments')
 
     def backwards(self, orm):
-        # Deleting model 'Comment'
-        db.delete_table(u'bdr_registry_comment')
-
-        # Adding field 'Person.email2'
-        db.add_column(u'bdr_registry_person', 'email2',
-                      self.gf('django.db.models.fields.EmailField')(max_length=75, null=True, blank=True),
-                      keep_default=False)
-
-        # Adding field 'Organisation.comments'
-        db.add_column(u'bdr_registry_organisation', 'comments',
-                      self.gf('django.db.models.fields.TextField')(null=True, blank=True),
-                      keep_default=False)
-
-        # Deleting field 'Organisation.website'
-        db.delete_column(u'bdr_registry_organisation', 'website')
+        raise RuntimeError("Cannot reverse this migration.")
 
 
     models = {
@@ -130,7 +127,8 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'obligation': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['bdr_registry.Obligation']", 'null': 'True', 'blank': 'True'}),
             'vat_number': ('django.db.models.fields.CharField', [], {'max_length': '17', 'null': 'True', 'blank': 'True'}),
-            'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'})
+            'website': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'original_comments': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         },
         u'bdr_registry.organisationnamehistory': {
             'Meta': {'object_name': 'OrganisationNameHistory'},
@@ -161,5 +159,4 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
-
     complete_apps = ['bdr_registry']
