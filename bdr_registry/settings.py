@@ -130,6 +130,7 @@ BDR_API_AUTH = None
 
 BDR_AUDIT_LOG_FILE = None
 
+REPORTING_YEAR = 2014
 
 try:
     from localsettings import *
