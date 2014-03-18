@@ -174,12 +174,12 @@ class Person(models.Model):
 
 
 class Comment(models.Model):
-    text = models.TextField()
+    text = models.TextField(_('Text'))
     created = models.DateTimeField(auto_now_add=True)
     organisation = models.ForeignKey(Organisation,
-                                     related_name='comments', 
+                                     related_name='comments',
                                      null=True,
                                      blank=True)
 
     def __unicode__(self):
-        return u"{0}: {1}".format(self.created.strftime('%d %B %Y'), self.text)
+        return self.created.strftime('%d %B %Y')

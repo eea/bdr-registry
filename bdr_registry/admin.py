@@ -246,16 +246,28 @@ class PersonInline(admin.StackedInline):
 class PersonReadOnlyInline(PersonInline):
 
     readonly_fields = ['title', 'family_name', 'first_name', 'email',
-                       'email2', 'phone', 'phone2', 'phone3', 'fax', 'organisation']
+                       'phone', 'phone2', 'phone3', 'fax', 'organisation']
+
+
+class CommentInline(admin.StackedInline):
+
+    model = models.Comment
+    extra = 0
+
+
+class CommentReadOnlyInline(CommentInline):
+
+    readonly_fields = ['text']
+
 
 
 class OrganisationAdmin(ReadOnlyAdmin):
 
     user_readonly = ['EORI_LABEL', 'name', 'date_registered', 'active',
                      'addr_street', 'addr_place1', 'addr_postalcode',
-                     'addr_place2', 'eori', 'vat_number', 'country',
+                     'addr_place2', 'website', 'eori', 'vat_number', 'country',
                      'obligation', 'account', 'comments']
-    user_readonly_inlines = [PersonReadOnlyInline]
+    user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
 
     list_filter = ['obligation', 'country']
     list_display = ['id', 'name', 'obligation', 'account', 'country',
@@ -267,7 +279,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
     actions = [create_accounts, reset_password, send_password_email,
                create_reporting_folder]
 
-    inlines = [PersonInline]
+    inlines = [CommentInline, PersonInline]
 
     def get_urls(self):
         my_urls = patterns('',
@@ -312,7 +324,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
 class PersonAdmin(ReadOnlyAdmin):
 
     user_readonly = ['title', 'family_name', 'first_name',
-                     'email', 'email2', 'phone', 'phone2', 'phone3',
+                     'email', 'phone', 'phone2', 'phone3',
                      'fax', 'organisation']
 
     user_readonly_inlines = []

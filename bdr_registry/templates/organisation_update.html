@@ -116,11 +116,14 @@
 {% for comment in organisation.comments.all %}
   <li>
     <a href="{% url 'comment_update' comment.pk %}">
-        {{ comment.created|date:"d F Y" }}: {{ comment.text|safe }}
+        {{ comment.created|date:"d F Y" }}
     </a>
     <a class="delete" href="{% url 'comment_delete' comment.pk %}">
       <img src="{% static "admin/img/icon_deletelink.gif" %}">
     </a>
+    <p>
+    {{ comment.text |linebreaksbr }}
+    </p>
   </li>
 {% endfor %}
 </ul>
