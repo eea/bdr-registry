@@ -1,9 +1,9 @@
 from collections import OrderedDict
 from functools import wraps
 import base64
+
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
@@ -156,16 +156,24 @@ def organisation_all(request):
             '@name': organisation.country.name,
             '#text': organisation.country.code,
         }
+
         def person_data(person):
-            emails = [person.email, person.email2]
             phones = [person.phone, person.phone2, person.phone3]
             return OrderedDict([
                 ('name', u"{p.first_name} {p.family_name}".format(p=person)),
-                ('email', [e for e in emails if e]),
+                ('email', person.email),
                 ('phone', [p for p in phones if p]),
                 ('fax', person.fax),
             ])
         item['person'] = [person_data(p) for p in organisation.people.all()]
+
+        def comment_data(comment):
+            return OrderedDict([
+                ('text', comment.text),
+                ('created', comment.created)
+            ])
+        item['comment'] = [comment_data(c) for c in organisation.comments.all()]
+
         data.append(item)
     xml = xmltodict.unparse({'organisations': {'organisation': data}})
     return HttpResponse(xml, content_type='application/xml')
@@ -182,6 +190,7 @@ class OrganisationForm(ModelForm):
 
 
 PersonForm = modelform_factory(models.Person, exclude=['organisation'])
+CommentForm = modelform_factory(models.Comment, exclude=['organisation'])
 
 
 class SelfRegister(View):
@@ -190,7 +199,8 @@ class SelfRegister(View):
         return (OrganisationForm(post_data, prefix='organisation'),
                 PersonForm(post_data, prefix='person'))
 
-    def render_forms(self, request, organisation_form, person_form):
+    def render_forms(self, request, organisation_form,
+                     person_form):
         return render(request, 'self_register.html', {
             'organisation_form': organisation_form,
             'person_form': person_form,
@@ -297,6 +307,82 @@ class PersonDelete(DeleteView):
             self.object.delete()
             messages.add_message(self.request, messages.INFO,
                                  u"Person deleted: %s" % self.object)
+
+        organisation = self.object.organisation
+        url = reverse('organisation_update', args=[organisation.pk])
+        return HttpResponseRedirect(url)
+
+
+class OrganisationAddComment(CreateView):
+
+    template_name = 'organisation_add_comment.html'
+    model = models.Comment
+    form_class = CommentForm
+
+    def dispatch(self, request, pk):
+        organisation = get_object_or_404(models.Organisation, pk=pk)
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(OrganisationAddComment, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationAddComment, self).get_context_data(**kwargs)
+        context['organisation_pk'] = self.kwargs['pk']
+        return context
+
+    def form_valid(self, form):
+        comment = form.save(commit=False)
+        pk = self.kwargs['pk']
+        comment.organisation = models.Organisation.objects.get(pk=pk)
+        comment.save()
+        return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
+
+
+class CommentUpdate(UpdateView):
+
+    template_name = 'comment_update.html'
+    model = models.Comment
+    form_class = CommentForm
+
+    def dispatch(self, request, pk):
+        organisation = get_object_or_404(models.Comment, pk=pk).organisation
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(CommentUpdate, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def get_success_url(self):
+        organisation = self.object.organisation
+        return reverse('organisation_update', args=[organisation.pk])
+
+    def form_valid(self, form):
+        messages.add_message(self.request, messages.INFO,
+                             u"Details saved: %s" % self.object)
+        return super(CommentUpdate, self).form_valid(form)
+
+
+class CommentDelete(DeleteView):
+
+    model = models.Comment
+    template_name = 'comment_confirm_delete.html'
+
+    def dispatch(self, request, pk):
+        organisation = get_object_or_404(models.Comment, pk=pk).organisation
+        can_edit = CanEdit(organisation)
+        login_url = reverse('login')
+        dispatch = super(CommentDelete, self).dispatch
+        wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
+        return wrapped_dispatch(request, pk=pk)
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.add_message(self.request, messages.INFO,
+                             u"Comment from %s successfully deleted" %
+                             self.object.created.strftime('%d %B %Y'))
 
         organisation = self.object.organisation
         url = reverse('organisation_update', args=[organisation.pk])

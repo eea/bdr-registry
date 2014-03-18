@@ -25,6 +25,10 @@ PERSON_FIXTURE = {
     'phone': "555 1234",
 }
 
+COMMENT_FIXTURE = {
+    'text': "This is a comment"
+}
+
 OBLIGATON_CODE = "fgas"
 
 LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
@@ -86,6 +90,8 @@ class FormSubmitTest(TransactionTestCase):
             form_data['organisation-' + key] = value
         for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
+        for key, value in COMMENT_FIXTURE.items():
+            form_data['comment-' + key] = value
         return form_data
 
     def test_submitted_organisation_and_person_are_saved(self):
@@ -124,7 +130,9 @@ class OrganisationExportTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         user = create_user_and_login(self.client, superuser=True, staff=True)
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        self.client.post('/organisation/add', form_data)
+        resp = self.client.post('/organisation/add', form_data)
+        self.assertEqual(resp.status_code, 302)
+
 
     def test_export_csv_no_obligation(self):
         resp = self.client.get('/admin/bdr_registry/organisation/export')
@@ -133,16 +141,18 @@ class OrganisationExportTest(TestCase):
     def test_export_csv_with_obligation(self):
         fgas = models.Obligation.objects.get(code='fgas')
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, obligation=fgas.pk)
+        org_pk = models.Organisation.objects.all()[0].pk
 
         # we need to refer the form that is tested.
         # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
         org_form.update({
             'people-INITIAL_FORMS': '0',
-            'people-TOTAL_FORMS': '2'
+            'people-TOTAL_FORMS': '2',
         })
 
-        resp = self.client.post('/admin/bdr_registry/organisation/1/',
-                                org_form)
+        resp = self.client.post(
+            '/admin/bdr_registry/organisation/{0}/'.format(org_pk),
+            org_form)
         self.assertEqual(resp.status_code, 302)
         resp = self.client.get('/admin/bdr_registry/organisation/export')
         self.assertIn(OBLIGATON_CODE, resp.content)
@@ -152,8 +162,9 @@ class OrganisationEditTest(TestCase):
 
     def setUp(self):
         self.dk = models.Country.objects.get(name="Denmark")
-        org_data = dict(ORG_FIXTURE, country_id=self.dk.pk)
-        self.org = models.Organisation.objects.create(**org_data)
+        org_data = dict(ORG_FIXTURE, country=self.dk.pk)
+        self.client.post('/organisation/add', org_data)
+        self.org = models.Organisation.objects.all()[0]
         self.update_url = '/organisation/%d/update' % self.org.pk
 
     def test_model_updated_from_organisation_edit(self):
@@ -241,9 +252,9 @@ class OrganisationNameHistoryTest(TestCase):
         self.assertEqual(hist0.user, user)
 
     def test_updating_organisation_name_creates_record_in_history(self):
-        org_data = dict(ORG_FIXTURE, country_id=self.dk.pk)
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        org = models.Organisation.objects.create(**org_data)
+        self.client.post('/organisation/add', form_data)
+        org = models.Organisation.objects.all()[0]
 
         user = create_user_and_login(self.client, superuser=True, staff=True)
         update_url = '/organisation/%d/update' % org.pk
@@ -393,6 +404,87 @@ class PersonEditTest(TestCase):
         self.assertEqual(resp.status_code, 404)
 
 
+class CommentEditTest(TestCase):
+
+    def setUp(self):
+        self.dk = models.Country.objects.get(name="Denmark")
+        self.fgas = models.Obligation.objects.get(code='fgas')
+        self.acme = models.Organisation.objects.create(country=self.dk,
+                                                       obligation=self.fgas)
+        self.comment = models.Comment.objects.create(organisation=self.acme)
+        self.update_url = '/comment/%d/update' % self.comment.pk
+
+    def test_comment_information_is_updated(self):
+        create_user_and_login(self.client, superuser=True)
+        self.client.post(self.update_url, COMMENT_FIXTURE)
+        new_comment = models.Comment.objects.get(pk=self.comment.pk)
+        self.assertEqual(new_comment.text, COMMENT_FIXTURE['text'])
+
+    def test_modifying_organisation_is_ignored(self):
+        create_user_and_login(self.client, superuser=True)
+        org2 = models.Organisation.objects.create(country=self.dk,
+                                                  obligation=self.fgas)
+        comment_form = dict(COMMENT_FIXTURE, organisation=org2.pk)
+        self.client.post(self.update_url, comment_form)
+        new_comment = models.Comment.objects.get(pk=self.comment.pk)
+        self.assertEqual(new_comment.organisation, self.acme)
+
+    def test_organisation_account_is_allowed_to_edit(self):
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
+        self.acme.account = account
+        self.acme.save()
+        resp = self.client.post(self.update_url, COMMENT_FIXTURE)
+        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
+        new_comment = models.Comment.objects.get(pk=self.comment.pk)
+        self.assertEqual(new_comment.text, COMMENT_FIXTURE['text'])
+
+    def test_random_account_is_not_allowed_to_edit(self):
+        create_user_and_login(self.client)
+        resp = self.client.post(self.update_url, COMMENT_FIXTURE)
+        self.assertEqual(resp.status_code, 302)
+        self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
+
+    def test_comment_update_returns_404_if_comment_missing(self):
+        with quiet_request_logging():
+            resp = self.client.get('/comment/123/update')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_add_comment_to_organisation(self):
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
+        self.acme.account = account
+        self.acme.save()
+        self.client.post('/organisation/%d/add_comment' % self.acme.pk,
+                         COMMENT_FIXTURE)
+        new_comment = models.Comment.objects.get(text=COMMENT_FIXTURE['text'])
+        self.assertEqual(new_comment.organisation, self.acme)
+
+    def test_add_comment_to_organisation_returns_404_for_missing_org(self):
+        with quiet_request_logging():
+            resp = self.client.get('/organisation/123/add_comment')
+        self.assertEqual(resp.status_code, 404)
+
+    def test_organisation_account_can_delete_comment_from_organisation(self):
+        self.comment2 = models.Comment.objects.create(organisation=self.acme)
+        user = create_user_and_login(self.client)
+        account = models.Account.objects.create(uid=user.username)
+        self.acme.account = account
+        self.acme.save()
+        self.client.post('/comment/%d/delete' % self.comment.pk)
+        self.assertItemsEqual(self.acme.comments.all(), [self.comment2])
+
+    def test_random_account_is_not_allowed_to_delete(self):
+        create_user_and_login(self.client)
+        self.client.post('/comment/%d/delete' % self.comment.pk)
+        self.assertItemsEqual(self.acme.comments.all(), [self.comment])
+
+    def test_comment_delete_returns_404_if_comment_missing(self):
+        with quiet_request_logging():
+            resp = self.client.get('/comment/123/delete')
+        self.assertEqual(resp.status_code, 404)
+
+
 class ApiTest(TestCase):
 
     def setUp(self):
@@ -419,7 +511,16 @@ class ApiTest(TestCase):
                                      phone="555 1234",
                                      fax="555 6789")
 
+        comment_text = "A comment"
+        comment = models.Comment.objects.create(organisation=org,
+                                                text=comment_text)
+
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+
+        # By default, MySQL DateTime doesn't store fractional seconds,
+        # so we'll get them back trimmed
+        expected_comment_created = str(comment.created.replace(microsecond=0))
+
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
@@ -440,6 +541,10 @@ class ApiTest(TestCase):
                           '<phone>555 1234</phone>'
                           '<fax>555 6789</fax>'
                         '</person>'
+                        '<comment>'
+                          '<text>A comment</text>'
+                          '<created>' + expected_comment_created + '</created>'
+                        '</comment>'
                       '</organisation>'
                     '</organisations>')
         self.assertEqual(resp.content, expected)
@@ -453,7 +558,6 @@ class ApiTest(TestCase):
                                      first_name="Joe",
                                      family_name="Smith",
                                      email="joe.smith@example.com",
-                                     email2="joe2.smith@example.com",
                                      phone="555 1234",
                                      phone2="556 1234",
                                      phone3="557 1234",
@@ -477,7 +581,6 @@ class ApiTest(TestCase):
                         '<person>'
                           '<name>Joe Smith</name>'
                           '<email>joe.smith@example.com</email>'
-                          '<email>joe2.smith@example.com</email>'
                           '<phone>555 1234</phone>'
                           '<phone>556 1234</phone>'
                           '<phone>557 1234</phone>'

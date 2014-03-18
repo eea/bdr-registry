@@ -2,6 +2,7 @@ import logging
 from cStringIO import StringIO
 import csv
 from collections import defaultdict
+
 from django.contrib import admin
 from django.contrib import messages
 from django.template.response import TemplateResponse
@@ -16,6 +17,7 @@ import requests
 import models
 from ldap_editor import create_ldap_editor
 import audit
+
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -133,21 +135,26 @@ def reset_password(modeladmin, request, queryset):
 def send_password_email_to_people(organisations):
     n = 0
     mail_from = settings.BDR_EMAIL_FROM
+    reporting_year = settings.REPORTING_YEAR
     for organisation in organisations:
         for person in organisation.people.all():
             if organisation.obligation.code == 'ods':
-                subject = u"Reporting data on ODS covering 2012"
+                subject = u"Reporting data on ODS covering %s" % reporting_year
                 html = render_to_string('email_organisation_ods.html', {
                     'person': person,
                     'organisation': organisation,
+                    'reporting_year': reporting_year,
+                    'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
             elif organisation.obligation.code == 'fgas':
-                subject = u"Reporting data on F-Gases covering 2012"
+                subject = u"Reporting data on F-Gases covering %s" % reporting_year
                 html = render_to_string('email_organisation_fgas.html', {
                     'person': person,
                     'organisation': organisation,
+                    'reporting_year': reporting_year,
+                    'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_FGAS_BCC
 

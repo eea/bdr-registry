@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.base import TemplateView
-from django.views.generic.simple import redirect_to
-from django.core.urlresolvers import reverse_lazy
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import views
 
@@ -15,6 +13,10 @@ urlpatterns = patterns('',
             name='login'),
      url(r'^accounts/logout/$', views.logout_view, name='logout'),
      url(r'^admin/', include(admin.site.urls)),
+     url(r'^comment/(?P<pk>\d+)/delete$', views.CommentDelete.as_view(),
+            name='comment_delete'),
+     url(r'^comment/(?P<pk>\d+)/update$', views.CommentUpdate.as_view(),
+            name='comment_update'),
      url(r'^organisation/add$', views.OrganisationCreate.as_view()),
      url(r'^organisation/(?P<pk>\d+)$', views.organisation_view,
             name='organisation'),
@@ -29,6 +31,9 @@ urlpatterns = patterns('',
             name='person_update'),
      url(r'^person/(?P<pk>\d+)/delete$', views.PersonDelete.as_view(),
             name='person_delete'),
+     url(r'^organisation/(?P<pk>\d+)/add_comment$',
+            views.OrganisationAddComment.as_view(),
+            name='organisation_add_comment'),
      url(r'^organisation/all$', views.organisation_all),
      url(r'^self_register$', views.SelfRegister.as_view(),
             name='self_register'),
