@@ -276,7 +276,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
 
     search_fields = ['name', 'account__uid', 'addr_postalcode',
                      'vat_number', 'eori']
-    actions = [create_accounts, reset_password, create_reporting_folder]
+    actions = [create_accounts, reset_password, send_password_email, create_reporting_folder]
 
     inlines = [CommentInline, PersonInline]
 
