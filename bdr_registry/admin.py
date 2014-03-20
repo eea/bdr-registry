@@ -109,6 +109,9 @@ def create_accounts(modeladmin, request, queryset):
 def reset_password(modeladmin, request, queryset):
     organisations_with_account = [o for o in queryset if o.account is not None]
 
+    if request.POST.get('perform_send'):
+        return send_password_email(modeladmin, request, queryset)
+
     if request.POST.get('perform_reset'):
         n = 0
         reset_accounts = []
@@ -276,7 +279,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
 
     search_fields = ['name', 'account__uid', 'addr_postalcode',
                      'vat_number', 'eori']
-    actions = [create_accounts, reset_password, send_password_email, create_reporting_folder]
+    actions = [create_accounts, reset_password, create_reporting_folder]
 
     inlines = [CommentInline, PersonInline]
 
