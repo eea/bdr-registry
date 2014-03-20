@@ -1,0 +1,30 @@
+{% extends 'management_base.html' %}
+{% load utils %}
+
+
+{% block content %}
+
+  {% url 'management:organisations_filter' as url %}
+  {% assign '["id", "name", "obligation", "account", "country", "addr_postalcode", "vat_number", "eori"]' as columns %}
+  {% assign '' as column_defs %}
+
+  <table data-toggle='datatable' data-source='{{ url }}'
+         data-columns='{{ columns }}'
+         data-column-defs='{{ column_defs }}'>
+
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Company name</th>
+        <th>Obligation</th>
+        <th>Account</th>
+        <th>Country</th>
+        <th>Postal code</th>
+        <th>VAT number</th>
+        <th>EORI number</th>
+      </tr>
+    </thead>
+
+  </table>
+
+{% endblock %}

@@ -42,6 +42,8 @@ urlpatterns = patterns('',
             name='self_register_done'),
      url(r'^crashme$', views.crashme),
      url(r'^ping$', views.ping),
+
+     url(r'^management/', include('management.urls', namespace='management')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

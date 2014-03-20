@@ -1,0 +1,16 @@
+{% extends 'bdr_layout.html' %}
+{% load assets %}
+
+
+{% block head %}
+
+  {% assets "management_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+
+  {% assets "management_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+{% endblock %}
+
