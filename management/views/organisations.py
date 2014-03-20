@@ -1,17 +1,22 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.db.models import Q
+from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
 from bdr_registry.models import Organisation
 from management.base import FilterView
 
 
-class Organisations(TemplateView):
+class Organisations(LoginRequiredMixin,
+                    StaffuserRequiredMixin,
+                    TemplateView):
 
     template_name = 'organisations.html'
 
 
-class OrganisationsFilter(FilterView):
+class OrganisationsFilter(LoginRequiredMixin,
+                          StaffuserRequiredMixin,
+                          FilterView):
 
     def get_queryset(self, opt):
         queryset = Organisation.objects.all()
