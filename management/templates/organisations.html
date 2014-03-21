@@ -5,11 +5,11 @@
 {% block content %}
 
   {% url 'management:organisations_filter' as url %}
+
   {% assign '["id", "name", "obligation", "account", "country", "addr_postalcode", "vat_number", "eori"]' as columns %}
   {% assign '' as column_defs %}
 
   <table data-toggle='datatable' data-source='{{ url }}'
-         data-header-source='{{ header_url }}'
          data-columns='{{ columns }}'
          data-column-defs='{{ column_defs }}'>
 
