@@ -11,6 +11,8 @@
 
   <h1>Organisations</h1>
 
+  {% include '_organisation_filters.html' %}
+
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'
          data-column-defs='{{ column_defs }}'>

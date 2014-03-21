@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.db.models import Q
-from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
-                          AjaxResponseMixin)
+from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
 from bdr_registry.models import Organisation
+from management.forms.organisation_filters import OrganisationFilters
 from management.base import FilterView, ModelTableView
 
 
@@ -13,6 +12,11 @@ class Organisations(LoginRequiredMixin,
                     TemplateView):
 
     template_name = 'organisations.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(Organisations, self).get_context_data(**kwargs)
+        context['form'] = OrganisationFilters()
+        return context
 
 
 class OrganisationsFilter(LoginRequiredMixin,
@@ -46,5 +50,3 @@ class OrganisationView(LoginRequiredMixin,
                        ModelTableView):
 
     model = Organisation
-
-
