@@ -4,6 +4,7 @@ from django_assets import Bundle, register
 
 MANAGEMENT_JS_ASSETS = (
     'js/jquery.dataTables.js',
+    'js/jquery.customDataTable.js',
     'js/main.js',
 )
 
