@@ -5,7 +5,7 @@ from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           AjaxResponseMixin)
 
 from bdr_registry.models import Organisation
-from management.base import FilterView
+from management.base import FilterView, ModelTableView
 
 
 class Organisations(LoginRequiredMixin,
@@ -39,5 +39,12 @@ class OrganisationsFilter(LoginRequiredMixin,
             return queryset.count()
 
         return queryset[opt['offset']: opt['limit']]
+
+
+class OrganisationView(LoginRequiredMixin,
+                       StaffuserRequiredMixin,
+                       ModelTableView):
+
+    model = Organisation
 
 

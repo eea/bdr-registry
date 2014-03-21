@@ -1,6 +1,7 @@
 
 from django.db.models import Model
-from django.views.generic import View
+from django.views.generic import View, TemplateView
+from django.core.exceptions import ImproperlyConfigured
 
 from braces.views import AjaxResponseMixin, JSONResponseMixin
 
@@ -73,3 +74,28 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
             'aaData': table_data,
 
         })
+
+
+class ModelTableView(TemplateView):
+
+    template_name = 'view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ModelTableView, self).get_context_data(**kwargs)
+        return context
+
+    def _get_model_fields(self):
+        model = getattr(self, 'model', None)
+        fields = set(getattr(self, 'fields', []))
+        exclude = set(getattr(self, 'exclude', []))
+
+        if not model:
+            raise ImproperlyConfigured(
+                'ModelTableView requires a definition of model')
+        model_fields = set(model._meta.fields)
+        if fields:
+            model_fields = model_fields & fields
+        if exclude:
+            model_fields = model_fields - fields
+        return model_fields
+
