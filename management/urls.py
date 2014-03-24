@@ -1,11 +1,8 @@
 from django.conf.urls import patterns, url
-<<<<<<< HEAD
-from management.views.organisations import Organisations, OrganisationsFilter
-from management.views.persons import Persons, PersonsFilter
-=======
+
 from management.views import (Organisations, OrganisationsFilter,
-                              OrganisationsView)
->>>>>>> Implemented detail view for organisation
+                              OrganisationsView,)
+from management.views import Persons, PersonsFilter
 
 
 urlpatterns = patterns(

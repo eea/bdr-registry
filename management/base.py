@@ -80,12 +80,12 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
         })
 
 
-class ModelTableView(DetailView):
+class ModelTableMixin(object):
 
     template_name = 'view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ModelTableView, self).get_context_data(**kwargs)
+        context = super(ModelTableMixin, self).get_context_data(**kwargs)
         context['fields'] = self._get_model_fields()
         return context
 
@@ -96,7 +96,7 @@ class ModelTableView(DetailView):
 
         if not model:
             raise ImproperlyConfigured(
-                'ModelTableView requires a definition of model')
+                'ModelTableMixin requires a definition of model')
         model_fields = model._meta.fields
         if fields:
             model_fields = filter(lambda x: x.name in fields,

@@ -1,17 +1,21 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.db.models import Q
 from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
 from bdr_registry.models import Person
-from management.base import FilterView, ModelTableView
+from management.base import FilterView, ModelTableMixin
 
 
-class Persons(LoginRequiredMixin, StaffuserRequiredMixin, TemplateView):
+class Persons(LoginRequiredMixin,
+              StaffuserRequiredMixin,
+              TemplateView):
 
     template_name = 'persons.html'
 
 
-class PersonsFilter(LoginRequiredMixin, StaffuserRequiredMixin, FilterView):
+class PersonsFilter(LoginRequiredMixin,
+                    StaffuserRequiredMixin,
+                    FilterView):
 
     def get_queryset(self, opt):
         queryset = Person.objects.all()
@@ -33,6 +37,9 @@ class PersonsFilter(LoginRequiredMixin, StaffuserRequiredMixin, FilterView):
         return queryset[opt['offset']: opt['limit']]
 
 
-class PersonView(LoginRequiredMixin, StaffuserRequiredMixin, ModelTableView):
+class PersonView(LoginRequiredMixin,
+                 StaffuserRequiredMixin,
+                 ModelTableMixin,
+                 DetailView):
 
     model = Person

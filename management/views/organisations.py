@@ -1,10 +1,10 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView
 from django.db.models import Q
 from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
 from bdr_registry.models import Organisation
 from management.forms.organisation_filters import OrganisationFilters
-from management.base import FilterView, ModelTableView
+from management.base import FilterView, ModelTableMixin
 
 
 class Organisations(LoginRequiredMixin,
@@ -55,7 +55,8 @@ class OrganisationsFilter(LoginRequiredMixin,
 
 class OrganisationsView(LoginRequiredMixin,
                         StaffuserRequiredMixin,
-                        ModelTableView):
+                        ModelTableMixin,
+                        DetailView):
 
     model = Organisation
     exclude = ('id', )
