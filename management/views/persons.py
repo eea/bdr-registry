@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView, DetailView
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
@@ -16,6 +17,20 @@ class Persons(LoginRequiredMixin,
 class PersonsFilter(LoginRequiredMixin,
                     StaffuserRequiredMixin,
                     FilterView):
+
+    @staticmethod
+    def _process_column(obj, val):
+        url = reverse('management:persons_view',
+                      kwargs={'pk': obj.pk})
+        return '<a href="%s">%s</a>' % (url, val)
+
+    @staticmethod
+    def process_first_name(obj, val):
+        return PersonsFilter._process_column(obj, val)
+
+    @staticmethod
+    def process_family_name(obj, val):
+        return PersonsFilter._process_column(obj, val)
 
     def get_queryset(self, opt):
         queryset = Person.objects.all()
