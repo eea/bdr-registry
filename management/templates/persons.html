@@ -1,0 +1,29 @@
+{% extends '_management_base.html' %}
+{% load utils %}
+
+
+{% block content %}
+
+  {% url 'management:persons_filter' as url %}
+
+  {% assign '["first_name", "family_name", "email"]' as columns %}
+
+  {% assign '' as column_defs %}
+
+  <h1>Persons</h1>
+
+  <table data-toggle='datatable' data-source='{{ url }}'
+         data-columns='{{ columns }}'
+         data-column-defs='{{ column_defs }}'>
+
+    <thead>
+      <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+
+  </table>
+
+{% endblock %}
