@@ -3,6 +3,7 @@ from django.conf.urls import patterns, url
 from management.views import (Organisations, OrganisationsFilter,
                               OrganisationsView,)
 from management.views import Persons, PersonsFilter, PersonsView
+from management.views import Obligations, ObligationsFilter, ObligationsView
 
 
 urlpatterns = patterns(
@@ -18,5 +19,11 @@ urlpatterns = patterns(
         name='persons_filter'),
     url(r'^persons/(?P<pk>\d+)$', PersonsView.as_view(),
         name='persons_view'),
+
+    url(r'^obligations$', Obligations.as_view(), name='obligations'),
+    url(r'^obligations/filter$', ObligationsFilter.as_view(),
+        name='obligations_filter'),
+    url(r'^obligations/(?P<pk>\d+)$', ObligationsView.as_view(),
+        name='obligations_view'),
 
 )
