@@ -12,3 +12,11 @@
 .input-hint a {
     vertical-align: inherit;
 }
+
+.datatable .scope-pad {
+    padding-left: 10px;
+}
+
+.datatable .scope-row {
+    padding-right: 10px;
+}

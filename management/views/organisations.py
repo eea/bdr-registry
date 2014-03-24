@@ -53,8 +53,9 @@ class OrganisationsFilter(LoginRequiredMixin,
         return queryset[opt['offset']: opt['limit']]
 
 
-class OrganisationView(LoginRequiredMixin,
-                       StaffuserRequiredMixin,
-                       ModelTableView):
+class OrganisationsView(LoginRequiredMixin,
+                        StaffuserRequiredMixin,
+                        ModelTableView):
 
     model = Organisation
+    exclude = ('id', )
