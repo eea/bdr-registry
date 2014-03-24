@@ -37,9 +37,10 @@ class PersonsFilter(LoginRequiredMixin,
         return queryset[opt['offset']: opt['limit']]
 
 
-class PersonView(LoginRequiredMixin,
-                 StaffuserRequiredMixin,
-                 ModelTableMixin,
-                 DetailView):
+class PersonsView(LoginRequiredMixin,
+                  StaffuserRequiredMixin,
+                  ModelTableMixin,
+                  DetailView):
 
     model = Person
+    exclude = ('id', )

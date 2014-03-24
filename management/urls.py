@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from management.views import (Organisations, OrganisationsFilter,
                               OrganisationsView,)
-from management.views import Persons, PersonsFilter
+from management.views import Persons, PersonsFilter, PersonsView
 
 
 urlpatterns = patterns(
@@ -16,5 +16,7 @@ urlpatterns = patterns(
     url(r'^persons$', Persons.as_view(), name='persons'),
     url(r'^persons/filter$', PersonsFilter.as_view(),
         name='persons_filter'),
+    url(r'^persons/(?P<pk>\d+)$', PersonsView.as_view(),
+        name='persons_view'),
 
 )
