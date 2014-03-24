@@ -1,3 +1,14 @@
-<form id="organisationFilters">
-  {{ form.as_table }}
+{% load widget_tweaks %}
+
+
+<form id="organisation-filters">
+
+  <label for="{{ form.country.auto_id }}">
+    {{ form.country.label }}</label>
+  {% render_field form.country data-column-index=4 class='filter_data' %}
+
+  <label for="{{ form.obligation.auto_id }}">
+    {{ form.obligation.label }}</label>
+  {% render_field form.obligation data-column-index=2 class='filter_data' %}
+
 </form>
