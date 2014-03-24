@@ -39,6 +39,14 @@ class OrganisationsFilter(LoginRequiredMixin,
             )
             queryset = queryset.filter(search_filters)
 
+        filters = opt.get('filters', {})
+        if 'country' in filters:
+            queryset = queryset.filter(
+                country__name=filters['country'])
+        if 'obligation' in filters:
+            queryset = queryset.filter(
+                obligation__name=filters['obligation'])
+
         if opt['count']:
             return queryset.count()
 

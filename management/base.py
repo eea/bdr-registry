@@ -18,8 +18,8 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
 
     def get_ajax(self, request):
         args = request.GET
-        columns = args['sColumns'].split(',')
 
+        columns = args['sColumns'].split(',')
         limit = (int(args.get('iDisplayLength', 10)) +
                  int(args.get('iDisplayStart', 0)))
         get_rows = {
@@ -42,6 +42,10 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
         no_filter = {
             'search': '',
         }
+
+        filters = {columns[i]: args.get('sSearch_%s' % i)
+                   for i in range(len(columns)) if args.get('sSearch_%s' % i)}
+        with_filter['filters'] = filters
 
         nr_of_sorting_cols = args.get('iSortingCols', 0)
         if nr_of_sorting_cols > 0:
