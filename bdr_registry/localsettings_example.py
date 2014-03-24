@@ -81,3 +81,5 @@ SECRET_KEY = 'foo'  # replace this with a random string
 # BDR_API_URL = 'http://example.com/api'
 # BDR_API_AUTH = ('apiuser', secure_str('apipassword'))
 # BDR_AUDIT_LOG_FILE = './bdr_audit.log'
+
+REPORTING_YEAR = 2014
