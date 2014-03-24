@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView, DetailView
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
 
@@ -22,6 +23,11 @@ class Organisations(LoginRequiredMixin,
 class OrganisationsFilter(LoginRequiredMixin,
                           StaffuserRequiredMixin,
                           FilterView):
+
+    def process_name(self, object, val):
+        url = reverse('management:organisations_view',
+                      kwargs={'pk': object.pk})
+        return '<a href="%s">%s</a>' % (url, val)
 
     def get_queryset(self, opt):
         queryset = Organisation.objects.all()
