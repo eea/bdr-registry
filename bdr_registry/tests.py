@@ -1,5 +1,6 @@
 import logging
 from contextlib import contextmanager
+
 from django.test import TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.auth.models import User
@@ -147,7 +148,9 @@ class OrganisationExportTest(TestCase):
         # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
         org_form.update({
             'people-INITIAL_FORMS': '0',
-            'people-TOTAL_FORMS': '2',
+            'people-TOTAL_FORMS': '0',
+            'comments-INITIAL_FORMS': '0',
+            'comments-TOTAL_FORMS': '0'
         })
 
         resp = self.client.post(
