@@ -70,8 +70,8 @@ class OrganisationsView(LoginRequiredMixin,
 
     def dispatch_request(self, request, pk):
         super(OrganisationsView, self).dispatch_request(request, pk)
-        self.edit_url = reverse_lazy('management:organisations_edit',
-                                     kwargs={'pk': pk})
+        self.edit_url = reverse('management:organisations_edit',
+                                kwargs={'pk': pk})
 
 
 class OrganisationsEdit(LoginRequiredMixin,
