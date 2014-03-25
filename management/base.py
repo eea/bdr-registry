@@ -82,8 +82,6 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
 
 class ModelTableMixin(object):
 
-    template_name = 'view.html'
-
     def get_context_data(self, **kwargs):
         context = super(ModelTableMixin, self).get_context_data(**kwargs)
         context['fields'] = self._get_model_fields()
@@ -112,4 +110,9 @@ class ModelTableMixin(object):
 class ModelTableEditMixin(ModelTableMixin):
 
     template_name = 'edit.html'
+
+
+class ModelTableViewMixin(ModelTableMixin):
+
+    template_name = 'view.html'
 

@@ -7,7 +7,7 @@ from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
 
 from bdr_registry.models import Organisation
 from management.forms.organisation_filters import OrganisationFilters
-from management.base import FilterView, ModelTableMixin, ModelTableEditMixin
+from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
 
 
 class Organisations(LoginRequiredMixin,
@@ -63,7 +63,7 @@ class OrganisationsFilter(LoginRequiredMixin,
 
 class OrganisationsView(LoginRequiredMixin,
                         StaffuserRequiredMixin,
-                        ModelTableMixin,
+                        ModelTableViewMixin,
                         DetailView):
 
     model = Organisation
@@ -84,6 +84,9 @@ class OrganisationsEdit(LoginRequiredMixin,
 
     group_required = 'BDR helpdesk'
     model = Organisation
+
+    def get_success_url(self):
+        return reverse('management:organisations_edit', kwargs=self.kwargs)
 
 
 class OrganisationDelete(LoginRequiredMixin,

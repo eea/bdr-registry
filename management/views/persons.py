@@ -6,7 +6,7 @@ from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
 
 from bdr_registry.models import Person
-from management.base import FilterView, ModelTableMixin, ModelTableEditMixin
+from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
 
 
 class Persons(LoginRequiredMixin,
@@ -56,7 +56,7 @@ class PersonsFilter(LoginRequiredMixin,
 
 class PersonsView(LoginRequiredMixin,
                   StaffuserRequiredMixin,
-                  ModelTableMixin,
+                  ModelTableViewMixin,
                   DetailView):
 
     model = Person
@@ -77,6 +77,9 @@ class PersonEdit(LoginRequiredMixin,
 
     group_required = 'BDR helpdesk'
     model = Person
+
+    def get_success_url(self):
+        return reverse('management:persons_edit', kwargs=self.kwargs)
 
 
 class PersonDelete(LoginRequiredMixin,
