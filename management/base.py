@@ -87,6 +87,7 @@ class ModelTableMixin(object):
     def get_context_data(self, **kwargs):
         context = super(ModelTableMixin, self).get_context_data(**kwargs)
         context['fields'] = self._get_model_fields()
+        context['delete_url'] = getattr(self, 'delete_url', None)
         return context
 
     def _get_model_fields(self):
