@@ -1,4 +1,5 @@
-from django.views.generic import TemplateView, DetailView, UpdateView
+from django.views.generic import (TemplateView, DetailView,
+                                  UpdateView)
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
@@ -68,10 +69,12 @@ class OrganisationsView(LoginRequiredMixin,
     model = Organisation
     exclude = ('id', )
 
-    def dispatch_request(self, request, pk):
-        super(OrganisationsView, self).dispatch_request(request, pk)
+    def dispatch(self, request, pk):
         self.edit_url = reverse('management:organisations_edit',
                                 kwargs={'pk': pk})
+        self.delete_url = reverse('management:organisations_delete',
+                                  kwargs={'pk': pk})
+        return super(OrganisationsView, self).dispatch(request, pk)
 
 
 class OrganisationsEdit(LoginRequiredMixin,
