@@ -1,11 +1,12 @@
-from django.views.generic import TemplateView, DetailView
+from django.views.generic import TemplateView, DetailView, UpdateView
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from braces.views import LoginRequiredMixin, StaffuserRequiredMixin
+from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
+                          GroupRequiredMixin)
 
 from bdr_registry.models import Organisation
 from management.forms.organisation_filters import OrganisationFilters
-from management.base import FilterView, ModelTableMixin
+from management.base import FilterView, ModelTableMixin, ModelTableEditMixin
 
 
 class Organisations(LoginRequiredMixin,
@@ -66,3 +67,19 @@ class OrganisationsView(LoginRequiredMixin,
 
     model = Organisation
     exclude = ('id', )
+
+    def dispatch_request(self, request, pk):
+        super(OrganisationsView, self).dispatch_request(request, pk)
+        self.edit_url = reverse_lazy('management:organisations_edit',
+                                     kwargs={'pk': pk})
+
+
+class OrganisationsEdit(LoginRequiredMixin,
+                        GroupRequiredMixin,
+                        ModelTableEditMixin,
+                        UpdateView):
+
+    group_required = 'BDR helpdesk'
+    model = Organisation
+
+

@@ -87,6 +87,7 @@ class ModelTableMixin(object):
     def get_context_data(self, **kwargs):
         context = super(ModelTableMixin, self).get_context_data(**kwargs)
         context['fields'] = self._get_model_fields()
+        context['edit_url'] = getattr(self, 'edit_url', None)
         context['delete_url'] = getattr(self, 'delete_url', None)
         return context
 
@@ -106,3 +107,10 @@ class ModelTableMixin(object):
             model_fields = filter(lambda x: x.name not in exclude,
                                   model_fields)
         return model_fields
+
+
+
+class ModelTableEditMixin(ModelTableMixin):
+
+    template_name = 'edit.html'
+
