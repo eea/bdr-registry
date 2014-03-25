@@ -12,12 +12,12 @@ from django.core import mail
 from django.conf import settings
 from django.template.loader import render_to_string
 from django.http import (HttpResponse, HttpResponseForbidden,
-                         HttpResponseNotFound)
+                         HttpResponseNotFound, HttpResponseRedirect)
+from django.http.request import HttpRequest
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 import xmltodict
 import models
@@ -91,23 +91,32 @@ class OrganisationUpdate(UpdateView):
         return super(OrganisationUpdate, self).get_context_data(**kwargs)
 
 
-def attempt_basic_auth(request):
-    if request.user.is_authenticated():
-        return
-    authorization = request.META.get('HTTP_AUTHORIZATION')
-    if not authorization:
-        return
-    authorization = authorization.lstrip('Basic ')
-    username, password = base64.b64decode(authorization).split(':', 1)
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        login(request, user)
-        messages.add_message(request, messages.INFO,
-                             u"Logged in as %s" % user.username)
 
+def attempt_basic_auth(func):
+    def wrapper(*args):
+        request = None
+        # for methods request comes second
+        for arg in args:
+            if isinstance(arg, HttpRequest):
+                request = arg
+                break
 
+        if request and not request.user.is_authenticated():
+            authorization = request.META.get('HTTP_AUTHORIZATION')
+            if authorization:
+                authorization = authorization.lstrip('Basic ')
+                username, password = base64.b64decode(authorization).split(':', 1)
+                user = authenticate(username=username, password=password)
+                if user is not None:
+                    login(request, user)
+                    messages.add_message(request, messages.INFO,
+                                        u"Logged in as %s" % user.username)
+        return func(*args)
+
+    return wrapper
+
+@attempt_basic_auth
 def edit_organisation(request):
-    attempt_basic_auth(request)
     uid = request.GET.get('uid')
     if not uid:
         return HttpResponseNotFound()
@@ -206,9 +215,11 @@ class SelfRegister(View):
             'person_form': person_form,
         })
 
+    @attempt_basic_auth
     def get(self, request):
         return self.render_forms(request, *self.make_forms())
 
+    @attempt_basic_auth
     def post(self, request):
         organisation_form, person_form = self.make_forms(request.POST.dict())
 
@@ -410,6 +421,19 @@ def ping(request):
     return HttpResponse("bdr-registry is ok\n")
 
 
+def login_zope_view(request):
+    domain = request.META['HTTP_HOST']
+    if ':' in domain:
+        domain = domain.rsplit(':', 1)[0]
+    here = request.GET.get('next')
+    url = 'http://{domain}/{bdr_login}?came_from={bdr_reg_path}{from_where}'.format(
+        domain=domain, bdr_login=settings.BDR_LOGIN_PATH, from_where=here,
+        bdr_reg_path=settings.BDR_REGISTRY_PATH)
+    response = HttpResponseRedirect(url)
+    return response
+
+
+# TODO fix this to got through zope, see login_zope_view above
 def logout_view(request):
     logout(request)
     messages.add_message(request, messages.INFO, "You have logged out.")

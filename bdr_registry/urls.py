@@ -8,9 +8,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
      url(r'^$', views.home, name='home'),
-     url(r'^accounts/login/$', 'django.contrib.auth.views.login',
-            {'template_name': 'login.html'},
-            name='login'),
+     url(r'^accounts/login/$', views.login_zope_view, name='login'),
      url(r'^accounts/logout/$', views.logout_view, name='logout'),
      url(r'^admin/', include(admin.site.urls)),
      url(r'^comment/(?P<pk>\d+)/delete$', views.CommentDelete.as_view(),

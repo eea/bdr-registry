@@ -32,7 +32,8 @@
         </div>
         <div id="righttools">
           {% if user.is_anonymous %}
-            <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">Login</a>
+          <!-- this would be better of using FORCE_SCRIPT_NAME -->
+          <a id="loginlink" href="/registry{% url 'login' %}?next={{ request.get_full_path }}">Login</a>
           {% else %}
             <a id="logoutlink" href="{% url 'logout' %}"
               >Logout ({{ user.username }})</a>

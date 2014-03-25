@@ -26,6 +26,10 @@ LOGIN_REDIRECT_URL = SITE_URL
 SECRET_KEY = 'foo'  # replace this with a random string
 # BDR_REVERSE_PROXY = True  # enable this when behind a reverse proxy
 
+DEPLOYMENT = 'BDR'
+BDR_REGISTRY_PATH = 'registry'
+BDR_LOGIN_PATH = 'loggedin'
+#FORCE_SCRIPT_NAME = '/'+BDR_REGISTRY_PATH
 
 ## email addresses
 # BDR_HELPDESK_EMAIL = 'helpdesk@example.com'
