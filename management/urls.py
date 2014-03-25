@@ -1,8 +1,10 @@
 from django.conf.urls import patterns, url
 
 from management.views import (Organisations, OrganisationsFilter,
-                              OrganisationsView, OrganisationsEdit)
-from management.views import Persons, PersonsFilter, PersonsView
+                              OrganisationsView, OrganisationsEdit,
+                              OrganisationDelete)
+from management.views import (Persons, PersonsFilter, PersonsView,
+                              PersonEdit, PersonDelete)
 
 
 urlpatterns = patterns(
@@ -14,11 +16,17 @@ urlpatterns = patterns(
         name='organisations_view'),
     url(r'^organisations/(?P<pk>\d+)/edit$', OrganisationsEdit.as_view(),
         name='organisations_edit'),
+    url(r'^organisations/(?P<pk>\d+)/delete', OrganisationDelete.as_view(),
+        name='organisations_delete'),
 
     url(r'^persons$', Persons.as_view(), name='persons'),
     url(r'^persons/filter$', PersonsFilter.as_view(),
         name='persons_filter'),
     url(r'^persons/(?P<pk>\d+)$', PersonsView.as_view(),
         name='persons_view'),
+    url(r'^persons/(?P<pk>\d+)/edit$', PersonEdit.as_view(),
+        name='persons_edit'),
+    url(r'^persons/(?P<pk>\d+)/delete', PersonDelete.as_view(),
+        name='persons_delete'),
 
 )

@@ -1,6 +1,6 @@
 
 from django.db.models import Model
-from django.views.generic import View, DetailView
+from django.views.generic import View
 from django.core.exceptions import ImproperlyConfigured
 
 from braces.views import AjaxResponseMixin, JSONResponseMixin
@@ -107,7 +107,6 @@ class ModelTableMixin(object):
             model_fields = filter(lambda x: x.name not in exclude,
                                   model_fields)
         return model_fields
-
 
 
 class ModelTableEditMixin(ModelTableMixin):

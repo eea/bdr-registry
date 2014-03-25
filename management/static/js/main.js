@@ -13,4 +13,12 @@ $(function () {
         }
     });
 
+    $('.delete-link').on('click', function(e) {
+        e.preventDefault();
+        var userConfirmed = confirm('Are you sure?');
+        if (userConfirmed) {
+            $('#delete-form').submit();
+        }
+    });
+
 });

@@ -1,6 +1,6 @@
 from django.views.generic import (TemplateView, DetailView,
-                                  UpdateView)
-from django.core.urlresolvers import reverse
+                                  UpdateView, DeleteView)
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
@@ -86,3 +86,11 @@ class OrganisationsEdit(LoginRequiredMixin,
     model = Organisation
 
 
+class OrganisationDelete(LoginRequiredMixin,
+                         GroupRequiredMixin,
+                         ModelTableEditMixin,
+                         DeleteView):
+
+    group_required = 'BDR helpdesk'
+    model = Organisation
+    success_url = reverse_lazy('management:organisations')
