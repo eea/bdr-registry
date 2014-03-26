@@ -6,6 +6,13 @@
 
   <form method="post">
     {% csrf_token %}
+
+    {% if form.errors %}
+      <div class="error-msg">
+        <strong>Please correct invalid fields before continuing.</strong>
+      </div>
+    {% endif %}
+
     <h2>{{ object }}</h2>
 
     <table>
@@ -21,7 +28,7 @@
               </label>
             </td>
             <td>
-              {{ field }}
+              {{ field|add_error_class:"error" }}
             </td>
           </tr>
         {% endfor %}
