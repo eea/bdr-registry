@@ -1,6 +1,6 @@
 import random
 import string
-import datetime
+
 from django.db import models
 from django.core.urlresolvers import reverse
 import local
@@ -107,7 +107,8 @@ class Organisation(models.Model):
                             max_length=17, null=True, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
-    account = models.OneToOneField(Account, null=True, blank=True)
+    account = models.OneToOneField(Account, null=True, blank=True,
+                                   related_name='organisation')
     website = models.URLField(null=True, blank=True)
 
     def get_absolute_url(self):
@@ -177,9 +178,7 @@ class Comment(models.Model):
     text = models.TextField(_('Text'))
     created = models.DateTimeField(auto_now_add=True)
     organisation = models.ForeignKey(Organisation,
-                                     related_name='comments',
-                                     null=True,
-                                     blank=True)
+                                     related_name='comments')
 
     def __unicode__(self):
         return self.created.strftime('%d %B %Y')
