@@ -20,25 +20,26 @@ class PersonsFilter(LoginRequiredMixin,
                     StaffuserRequiredMixin,
                     FilterView):
 
-    @staticmethod
-    def _process_column(obj, val):
+    def process_name(self, obj, val):
         url = reverse('management:persons_view',
                       kwargs={'pk': obj.pk})
-        return '<a href="%s">%s</a>' % (url, val)
 
-    @staticmethod
-    def process_first_name(obj, val):
-        return PersonsFilter._process_column(obj, val)
+        name = obj.first_name + ' ' + obj.family_name
+        name = name.strip()
 
-    @staticmethod
-    def process_family_name(obj, val):
-        return PersonsFilter._process_column(obj, val)
+        if name:
+            result = '<a href="%s">%s</a>' % (url, name)
+        else:
+            result = '<a href="%s"><i>Unknown Name</i></a>' % url
+
+        return result
 
     def get_queryset(self, opt):
         queryset = Person.objects.all()
 
         if 'order_by' in opt and opt['order_by']:
-            queryset = queryset.order_by(opt['order_by'])
+            queryset = queryset.order_by(
+                opt['order_by'].replace('name', 'family_name'))
 
         if 'search' in opt and opt['search']:
             search_filters = (
