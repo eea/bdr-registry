@@ -5,7 +5,7 @@ from bdr_registry.models import Country, Obligation
 class OrganisationFilters(Form):
 
     country = ModelChoiceField(queryset=Country.objects.all(),
-                               empty_label='(Nothing)')
+                               empty_label='(All)')
 
     obligation = ModelChoiceField(queryset=Obligation.objects.all(),
-                                  empty_label='(Nothing)')
+                                  empty_label='(All)')
