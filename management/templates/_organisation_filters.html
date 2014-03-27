@@ -4,11 +4,15 @@
 <form id="organisation-filters">
 
   <label for="{{ form.country.auto_id }}">
-    {{ form.country.label }}</label>
-  {% render_field form.country data-column-index=4 class='filter_data' %}
+    <small><b>{{ form.country.label }}</b></small></label>
+  {% render_field form.country data-column-index=4 data-value='text' class='filter_data' %}
 
   <label for="{{ form.obligation.auto_id }}">
-    {{ form.obligation.label }}</label>
-  {% render_field form.obligation data-column-index=2 class='filter_data' %}
+    <small><b>{{ form.obligation.label }}</b></small></label>
+  {% render_field form.obligation data-column-index=2 data-value='text' class='filter_data' %}
+
+  <label for="{{ form.account.auto_id }}">
+    <small><b>{{ form.account.label }}</b></small></label>
+  {% render_field form.account data-column-index=3 data-value='val' class='filter_data' %}
 
 </form>

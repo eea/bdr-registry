@@ -33,3 +33,16 @@
     border-left: 1px solid #ccc;
     padding-left: 10px;
 }
+
+.filters {
+    background: #f0f4f5;
+    text-align: center;
+    margin: 15px 0;
+    padding: 7px;
+}
+.filters label {
+    padding-right: 5px;
+}
+.filters select {
+    margin-right: 10px;
+}

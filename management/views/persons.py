@@ -6,7 +6,8 @@ from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
 
 from bdr_registry.models import Person
-from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
+from management.base import (FilterView, ModelTableViewMixin,
+                             ModelTableEditMixin)
 
 
 class Persons(LoginRequiredMixin,
@@ -70,6 +71,14 @@ class PersonsView(LoginRequiredMixin,
         self.delete_url = reverse('management:persons_delete',
                                   kwargs={'pk': pk})
         return super(PersonsView, self).dispatch(request, pk)
+
+    def get_edit_url(self):
+        return reverse('management:persons_edit',
+                       kwargs={'pk': self.kwargs['pk']})
+
+    def get_delete_url(self):
+        return reverse('management:persons_delete',
+                       kwargs={'pk': self.kwargs['pk']})
 
 
 class PersonEdit(LoginRequiredMixin,
