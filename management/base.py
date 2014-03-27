@@ -85,9 +85,19 @@ class ModelTableMixin(object):
     def get_context_data(self, **kwargs):
         context = super(ModelTableMixin, self).get_context_data(**kwargs)
         context['fields'] = self._get_model_fields()
-        context['edit_url'] = getattr(self, 'edit_url', None)
-        context['delete_url'] = getattr(self, 'delete_url', None)
+        context['edit_url'] = self.get_edit_url()
+        context['delete_url'] = self.get_delete_url()
+        context['back_url'] = self.get_back_url()
         return context
+
+    def get_edit_url(self):
+        return getattr(self, 'edit_url', None)
+
+    def get_delete_url(self):
+        return getattr(self, 'delete_url', None)
+
+    def get_back_url(self):
+        return getattr(self, 'back_url', None)
 
     def _get_model_fields(self):
         model = getattr(self, 'model', None)

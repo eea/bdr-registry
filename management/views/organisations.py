@@ -68,13 +68,15 @@ class OrganisationsView(LoginRequiredMixin,
 
     model = Organisation
     exclude = ('id', )
+    back_url = reverse_lazy('management:organisations')
 
-    def dispatch(self, request, pk):
-        self.edit_url = reverse('management:organisations_edit',
-                                kwargs={'pk': pk})
-        self.delete_url = reverse('management:organisations_delete',
-                                  kwargs={'pk': pk})
-        return super(OrganisationsView, self).dispatch(request, pk)
+    def get_edit_url(self):
+        return reverse('management:organisations_edit',
+                       kwargs={'pk': self.kwargs['pk']})
+
+    def get_delete_url(self):
+        return reverse('management:organisations_delete',
+                       kwargs={'pk': self.kwargs['pk']})
 
 
 class OrganisationsEdit(LoginRequiredMixin,

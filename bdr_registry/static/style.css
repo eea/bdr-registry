@@ -20,3 +20,16 @@
 .datatable .scope-row {
     padding-right: 10px;
 }
+
+
+.actions {
+    margin: 10px 0;
+}
+
+.actions a {
+    margin-right: 5px;
+}
+.actions .back {
+    border-left: 1px solid #ccc;
+    padding-left: 10px;
+}
