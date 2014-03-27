@@ -119,8 +119,6 @@ class Organisation(models.Model):
     def __unicode__(self):
         return self.name
 
-    class Meta:
-        ordering = ['name']
 
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
