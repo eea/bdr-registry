@@ -62,6 +62,7 @@ class PersonsView(LoginRequiredMixin,
 
     model = Person
     exclude = ('id', )
+    back_url = reverse_lazy('management:persons')
 
     def dispatch(self, request, pk):
         self.edit_url = reverse('management:persons_edit',
