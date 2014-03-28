@@ -17,12 +17,9 @@
 
         init: function() {
             var el = this.$element,
-                hidden_columns = $.map(el.data('hidden-columns'), function (el) {
-                    return { sName: el, bVisible: false };
-                }),
                 columns = $.map(el.data('columns'), function (el) {
                     return { sName: el };
-                }).concat(hidden_columns),
+                }),
                 column_defs = el.data('column-defs') || [],
                 column_sorting = el.data('column-sorting') || [];
 
