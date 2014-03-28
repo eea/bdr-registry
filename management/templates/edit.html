@@ -14,6 +14,9 @@
     {% endif %}
 
     <h2>{{ object }}</h2>
+    {% if back_url %}
+      <a href="{{ back_url }}" class="back">Back</a> <br><br>
+    {% endif %}
 
     <table>
       <tbody>
