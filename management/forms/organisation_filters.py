@@ -10,6 +10,14 @@ class OrganisationFilters(Form):
         ('1', 'With account'),
     )
 
+    CREATED_CHOICES = (
+        ('', 'Any'),
+        ('0', 'Today'),
+        ('1', 'Last 7 days'),
+        ('2', 'This month'),
+        ('3', 'This year')
+    )
+
     country = ModelChoiceField(queryset=Country.objects.all(),
                                empty_label='(All)')
 
@@ -17,3 +25,5 @@ class OrganisationFilters(Form):
                                   empty_label='(All)')
 
     account = ChoiceField(choices=ACCOUNT_CHOICES)
+
+    created = ChoiceField(choices=CREATED_CHOICES)

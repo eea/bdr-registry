@@ -15,4 +15,8 @@
     <small><b>{{ form.account.label }}</b></small></label>
   {% render_field form.account data-column-index=3 data-value='val' class='filter_data' %}
 
+  <label for="{{ form.created.auto_id }}">
+    <small><b>{{ form.created.label }}</b></small></label>
+  {% render_field form.created data-column-index=8 data-value='val' class='filter_data' %}
+
 </form>

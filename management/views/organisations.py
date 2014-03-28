@@ -1,10 +1,11 @@
+from datetime import date, timedelta
+
 from django.views.generic import (TemplateView, DetailView,
                                   UpdateView, DeleteView)
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
-
 from bdr_registry.models import Organisation
 from management.forms.organisation_filters import OrganisationFilters
 from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
@@ -30,6 +31,8 @@ class OrganisationsFilter(LoginRequiredMixin,
         url = reverse('management:organisations_view',
                       kwargs={'pk': object.pk})
         return '<a href="%s">%s</a>' % (url, val)
+
+
 
     def get_queryset(self, opt):
         queryset = Organisation.objects.all()
@@ -59,11 +62,27 @@ class OrganisationsFilter(LoginRequiredMixin,
                 queryset = queryset.exclude(account__isnull=False)
             else:
                 queryset = queryset.exclude(account__isnull=True)
+        if 'date_registered' in filters:
+            start_date = self._get_startdate(filters['date_registered'])
+            queryset = queryset.exclude(date_registered__lt=start_date)
 
         if opt['count']:
             return queryset.count()
 
         return queryset[opt['offset']: opt['limit']]
+
+    @staticmethod
+    def _get_startdate(selected_option):
+        today = date.today()
+        if selected_option == '0':
+            start_date = today
+        elif selected_option == '1':
+            start_date = today - timedelta(days=7)
+        elif selected_option == '2':
+            start_date = date(today.year, today.month, 1)
+        else:
+            start_date = date(today.year, 1, 1)
+        return start_date
 
 
 class OrganisationsView(LoginRequiredMixin,

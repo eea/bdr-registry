@@ -7,14 +7,15 @@
   {% url 'management:persons_filter' as url %}
 
   {% assign '["name", "email"]' as columns %}
-
   {% assign '' as column_defs %}
+  {% assign '' as hidden_columns %}
 
   <h1>Persons</h1>
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'
-         data-column-defs='{{ column_defs }}'>
+         data-column-defs='{{ column_defs }}'
+         data-hidden-columns='{{ hidden_columns }}'>
 
     <thead>
       <tr>
