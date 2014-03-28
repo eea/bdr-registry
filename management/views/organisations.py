@@ -58,7 +58,7 @@ class OrganisationsFilter(LoginRequiredMixin,
             queryset = queryset.filter(
                 obligation__name=filters['obligation'])
         if 'account' in filters:
-            if filters['account'] == '0':
+            if filters['account'] == OrganisationFilters.WITH_ACCOUNT:
                 queryset = queryset.exclude(account__isnull=False)
             else:
                 queryset = queryset.exclude(account__isnull=True)
@@ -74,11 +74,11 @@ class OrganisationsFilter(LoginRequiredMixin,
     @staticmethod
     def _get_startdate(selected_option):
         today = date.today()
-        if selected_option == '0':
+        if selected_option == OrganisationFilters.TODAY:
             start_date = today
-        elif selected_option == '1':
+        elif selected_option == OrganisationFilters.LAST_7_DAYS:
             start_date = today - timedelta(days=7)
-        elif selected_option == '2':
+        elif selected_option == OrganisationFilters.THIS_MONTH:
             start_date = date(today.year, today.month, 1)
         else:
             start_date = date(today.year, 1, 1)

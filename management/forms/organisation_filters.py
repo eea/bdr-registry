@@ -4,25 +4,33 @@ from bdr_registry.models import Country, Obligation
 
 class OrganisationFilters(Form):
 
+    WITHOUT_ACCOUNT = 'without-account'
+    WITH_ACCOUNT = 'with-account'
+
     ACCOUNT_CHOICES = (
         ('', 'All'),
-        ('0', 'Without account'),
-        ('1', 'With account'),
+        (WITHOUT_ACCOUNT, 'Without account'),
+        (WITH_ACCOUNT, 'With account'),
     )
+
+    TODAY = 'today'
+    LAST_7_DAYS = 'last-7-days'
+    THIS_MONTH = 'this-month'
+    THIS_YEAR = 'this-year'
 
     CREATED_CHOICES = (
         ('', 'Any'),
-        ('0', 'Today'),
-        ('1', 'Last 7 days'),
-        ('2', 'This month'),
-        ('3', 'This year')
+        (TODAY, 'Today'),
+        (LAST_7_DAYS, 'Last 7 days'),
+        (THIS_MONTH, 'This month'),
+        (THIS_YEAR, 'This year')
     )
 
     country = ModelChoiceField(queryset=Country.objects.all(),
-                               empty_label='(All)')
+                               empty_label='All')
 
     obligation = ModelChoiceField(queryset=Obligation.objects.all(),
-                                  empty_label='(All)')
+                                  empty_label='All')
 
     account = ChoiceField(choices=ACCOUNT_CHOICES)
 
