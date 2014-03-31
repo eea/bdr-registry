@@ -1,14 +1,19 @@
 {% extends '_management_base.html' %}
+{% load utils %}
+
 
 {% block content %}
 
   {% include 'view.html' %}
 
   <h2>Comments</h2>
-
-  <a href="{% url 'management:comment_add' object.pk %}">Add comment</a>
+  <div class="sub-actions">
+    <a href="{% url 'management:comment_add' object.pk %}" class="button">
+      Add comment</a>
+  </div>
 
   {% for comment in object.comments.all %}
+
     <table class="datatable" style="width: 100%">
       <tbody>
         <tr>
@@ -22,6 +27,29 @@
       </tbody>
     </table>
     <a class='delete-link' href="{% url 'management:comment_delete' organisation_id=object.pk pk=comment.pk %}">Delete comment</a>
+
+  {% empty %}
+
+    <p>There are no comments for this organisation.</p>
+
   {% endfor %}
+
+  <h2>Persons</h2>
+  <div class="sub-actions">
+    <a href="{% url 'management:persons_add' pk=object.pk %}"
+       class="button">
+      Add a new person</a>
+  </div>
+
+  <ul>
+    {% for person in object.people.all %}
+
+      <li>
+        <a href="{% url 'management:persons_view' pk=person.pk %}">
+          {{ person.formal_name }}</a>
+      </li>
+
+    {% endfor %}
+  </ul>
 
 {% endblock %}

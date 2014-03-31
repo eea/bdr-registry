@@ -3,8 +3,10 @@ from django.conf.urls import patterns, url
 from management.views import (Organisations, OrganisationsFilter,
                               OrganisationsView, OrganisationsEdit,
                               OrganisationDelete)
+
 from management.views import (Persons, PersonsFilter, PersonsView,
-                              PersonEdit, PersonDelete)
+                              PersonAdd, PersonEdit, PersonDelete)
+
 from management.views.comments import CommentCreate, CommentDelete
 
 
@@ -19,6 +21,8 @@ urlpatterns = patterns(
         name='organisations_edit'),
     url(r'^organisations/(?P<pk>\d+)/delete', OrganisationDelete.as_view(),
         name='organisations_delete'),
+    url(r'^organisations/(?P<pk>\d+)/persons/add$', PersonAdd.as_view(),
+        name='persons_add'),
 
     url(r'^organisations/(?P<pk>\d+)/comment/add', CommentCreate.as_view(),
         name='comment_add'),

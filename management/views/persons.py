@@ -1,5 +1,4 @@
-from django.views.generic import (TemplateView, DetailView,
-                                  UpdateView, DeleteView)
+from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
@@ -12,7 +11,7 @@ from management.base import (FilterView, ModelTableViewMixin,
 
 class Persons(LoginRequiredMixin,
               StaffuserRequiredMixin,
-              TemplateView):
+              generic.TemplateView):
 
     template_name = 'persons.html'
 
@@ -59,7 +58,7 @@ class PersonsFilter(LoginRequiredMixin,
 class PersonsView(LoginRequiredMixin,
                   StaffuserRequiredMixin,
                   ModelTableViewMixin,
-                  DetailView):
+                  generic.DetailView):
 
     model = Person
     exclude = ('id', )
@@ -80,11 +79,23 @@ class PersonsView(LoginRequiredMixin,
         return reverse('management:persons_delete',
                        kwargs={'pk': self.kwargs['pk']})
 
+class PersonAdd(LoginRequiredMixin,
+                GroupRequiredMixin,
+                ModelTableEditMixin,
+                generic.CreateView):
+
+    group_required = 'BDR helpdesk'
+    model = Person
+
+    def get_success_url(self):
+        return reverse('management:persons_view',
+                       kwargs={'pk': self.object.pk})
+
 
 class PersonEdit(LoginRequiredMixin,
                  GroupRequiredMixin,
                  ModelTableEditMixin,
-                 UpdateView):
+                 generic.UpdateView):
 
     group_required = 'BDR helpdesk'
     model = Person
@@ -96,7 +107,7 @@ class PersonEdit(LoginRequiredMixin,
 class PersonDelete(LoginRequiredMixin,
                    GroupRequiredMixin,
                    ModelTableEditMixin,
-                   DeleteView):
+                   generic.DeleteView):
 
     group_required = 'BDR helpdesk'
     model = Person
