@@ -1,10 +1,24 @@
 {% extends '_management_base.html' %}
 
-
 {% block content %}
 
   {% include 'view.html' %}
 
   <h2>Comments</h2>
+
+    {% for comment in object.comments.all %}
+      <table class="datatable">
+        <tbody>
+          <tr>
+            <th class="scope-row">Created</th>
+            <td class="scope-pad">{{ comment.created }}</td>
+          </tr>
+          <tr>
+            <th class="scope-row">Text</th>
+            <td class="scope-pad">{{ comment.text }}</td>
+          </tr>
+        </tbody>
+      </table>
+    {% endfor %}
 
 {% endblock %}
