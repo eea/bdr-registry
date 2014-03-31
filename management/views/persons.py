@@ -60,16 +60,10 @@ class PersonsView(LoginRequiredMixin,
                   ModelTableViewMixin,
                   generic.DetailView):
 
+    template_name = 'person_view.html'
     model = Person
     exclude = ('id', )
     back_url = reverse_lazy('management:persons')
-
-    def dispatch(self, request, pk):
-        self.edit_url = reverse('management:persons_edit',
-                                kwargs={'pk': pk})
-        self.delete_url = reverse('management:persons_delete',
-                                  kwargs={'pk': pk})
-        return super(PersonsView, self).dispatch(request, pk)
 
     def get_edit_url(self):
         return reverse('management:persons_edit',
@@ -78,6 +72,7 @@ class PersonsView(LoginRequiredMixin,
     def get_delete_url(self):
         return reverse('management:persons_delete',
                        kwargs={'pk': self.kwargs['pk']})
+
 
 class PersonAdd(LoginRequiredMixin,
                 GroupRequiredMixin,
@@ -109,7 +104,10 @@ class PersonEdit(LoginRequiredMixin,
     model = Person
 
     def get_success_url(self):
-        return reverse('management:persons_edit', kwargs=self.kwargs)
+        return reverse('management:persons_view', kwargs=self.kwargs)
+
+    def get_back_url(self):
+        return reverse('management:persons_view', kwargs=self.kwargs)
 
 
 class PersonDelete(LoginRequiredMixin,
