@@ -72,8 +72,7 @@ class OrganisationsFilter(LoginRequiredMixin,
 
         return queryset[opt['offset']: opt['limit']]
 
-    @staticmethod
-    def _get_startdate(selected_option):
+    def _get_startdate(self, selected_option):
         today = date.today()
         if selected_option == OrganisationFilters.TODAY:
             start_date = today
