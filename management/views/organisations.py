@@ -33,7 +33,7 @@ class OrganisationsFilter(LoginRequiredMixin,
         return '<a href="%s">%s</a>' % (url, val)
 
     def process_date_registered(self, object, val):
-        return val.strftime("%d %B %Y")
+        return val.strftime("%d %b %Y")
 
     def get_queryset(self, opt):
         queryset = Organisation.objects.all()

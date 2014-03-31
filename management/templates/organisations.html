@@ -6,8 +6,9 @@
 
   {% url 'management:organisations_filter' as url %}
 
-  {% assign '["id", "name", "obligation", "account", "country", "addr_postalcode", "vat_number", "eori", "date_registered"]' as columns %}
+  {% assign '["id", "name", "obligation", "account", "country", "vat_number", "date_registered"]' as columns %}
   {% assign '' as column_defs %}
+  {% assign '[[7, "desc"]]' as column_sorting %}
 
   <h1>Organisations</h1>
 
@@ -17,7 +18,8 @@
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'
-         data-column-defs='{{ column_defs }}'>
+         data-column-defs='{{ column_defs }}'
+         data-column-sorting='{{ column_sorting }}'>
 
     <thead>
       <tr>
@@ -26,9 +28,7 @@
         <th>Obligation</th>
         <th>Account</th>
         <th>Country</th>
-        <th>Postal code</th>
         <th>VAT number</th>
-        <th>EORI number</th>
         <th>Date registered</th>
       </tr>
     </thead>
