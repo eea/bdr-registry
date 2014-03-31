@@ -1,12 +1,14 @@
 from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
+from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
 
-from bdr_registry.models import Person
+from bdr_registry.models import Person, Organisation
 from management.base import (FilterView, ModelTableViewMixin,
                              ModelTableEditMixin)
+from management.forms import PersonForm
 
 
 class Persons(LoginRequiredMixin,
@@ -81,13 +83,22 @@ class PersonAdd(LoginRequiredMixin,
 
     group_required = 'BDR helpdesk'
     model = Person
+    form_class = PersonForm
+
+    def dispatch(self, *args, **kwargs):
+        self.organisation = get_object_or_404(Organisation, **self.kwargs)
+        return super(PersonAdd, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('management:persons_view',
-                       kwargs={'pk': self.object.pk})
+        return reverse('management:organisations_view', kwargs=self.kwargs)
 
     def get_back_url(self):
-        return reverse('management:organisations_view', kwargs=self.kwargs)
+        return self.get_success_url()
+
+    def get_form_kwargs(self, **kwargs):
+        data = super(PersonAdd, self).get_form_kwargs(**kwargs)
+        data['initial']['organisation'] = self.organisation
+        return data
 
     def get_context_data(self, **kwargs):
         context = super(PersonAdd, self).get_context_data(**kwargs)

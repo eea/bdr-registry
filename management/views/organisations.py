@@ -6,8 +6,9 @@ from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
                           GroupRequiredMixin)
 from bdr_registry.models import Organisation
-from management.forms.organisation_filters import OrganisationFilters
-from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
+from management.forms import OrganisationFilters
+from management.base import (FilterView, ModelTableViewMixin,
+                             ModelTableEditMixin)
 
 
 class Organisations(LoginRequiredMixin,
