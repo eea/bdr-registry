@@ -111,7 +111,7 @@ class OrganisationsEdit(LoginRequiredMixin,
     model = Organisation
 
     def get_success_url(self):
-        return reverse('management:organisations_edit', kwargs=self.kwargs)
+        return reverse('management:organisations_view', kwargs=self.kwargs)
 
     def get_back_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
