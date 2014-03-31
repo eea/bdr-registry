@@ -59,7 +59,7 @@ class OrganisationsFilter(LoginRequiredMixin,
             queryset = queryset.filter(
                 obligation__name=filters['obligation'])
         if 'account' in filters:
-            if filters['account'] == OrganisationFilters.WITH_ACCOUNT:
+            if filters['account'] == OrganisationFilters.WITHOUT_ACCOUNT:
                 queryset = queryset.exclude(account__isnull=False)
             else:
                 queryset = queryset.exclude(account__isnull=True)
