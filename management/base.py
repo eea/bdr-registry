@@ -88,6 +88,7 @@ class ModelTableMixin(object):
         context['edit_url'] = self.get_edit_url()
         context['delete_url'] = self.get_delete_url()
         context['back_url'] = self.get_back_url()
+        context['title'] = context.get('object', '')
         return context
 
     def get_edit_url(self):

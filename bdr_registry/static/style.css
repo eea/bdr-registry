@@ -21,7 +21,7 @@
     padding-right: 10px;
 }
 
-a.button {
+.button {
     font-size: 11px;
     background-color: #F2F2F2 !important;
     border: 1px solid #BBBBBB !important;
@@ -42,8 +42,7 @@ a.button {
     box-shadow: 0px 1px 0px #000;
     font-weight: bold;
 }
-
-a.button:hover {
+.button:hover {
     background-color: #EEEEEE;
     background: -moz-linear-gradient(top, #E4E5E5, #F7F7F7);
     background: -webkit-gradient(linear,
@@ -53,9 +52,33 @@ a.button:hover {
     color: #111111 !important;
     cursor: pointer;
 }
-
-a.button:focus {
+.button:focus {
     background-color: #E2E2E2;
+}
+
+.primary_button {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 11px;
+    border: 1px solid #BBBBBB !important;
+    color: #333333 !important;
+    padding: 5px !important;
+    text-decoration: none !important;
+    display: inline !important;
+    /* Mozilla: */
+    background: -moz-linear-gradient(top, #FFFFFF, #EFEFEF);
+    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    /* Chrome, Safari:*/
+    background: -webkit-gradient(linear,
+        left top, left bottom, from(#FFFFFF), to(#EFEFEF));
+    -webkit-box-shadow: 0px 1px 0px #000;
+    /* MSIE */
+    filter: progid:DXImageTransform.Microsoft.Gradient(
+        StartColorStr='#FFFFFF', EndColorStr='#EFEFEF', GradientType=0);
+    box-shadow: 0px 1px 0px #000;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .actions {
@@ -67,13 +90,9 @@ a.button:focus {
 .actions a {
     margin-right: 5px;
 }
-.actions .back {
-    border-left: 1px solid #ccc;
-    padding-left: 10px;
-}
 
 .sub-actions {
-    padding: 0.3em 0 1em 0.7em;
+    padding: 0.3em 0 1em 0.5em;
 }
 
 .filters {

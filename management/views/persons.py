@@ -91,6 +91,14 @@ class PersonAdd(LoginRequiredMixin,
         return reverse('management:persons_view',
                        kwargs={'pk': self.object.pk})
 
+    def get_back_url(self):
+        return reverse('management:organisations_view', kwargs=self.kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(PersonAdd, self).get_context_data(**kwargs)
+        context['title'] = 'Add a new person'
+        return context
+
 
 class PersonEdit(LoginRequiredMixin,
                  GroupRequiredMixin,

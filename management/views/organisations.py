@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
-from django.views.generic import (TemplateView, DetailView,
-                                  UpdateView, DeleteView)
+from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
@@ -13,7 +12,7 @@ from management.base import FilterView, ModelTableViewMixin, ModelTableEditMixin
 
 class Organisations(LoginRequiredMixin,
                     StaffuserRequiredMixin,
-                    TemplateView):
+                    generic.TemplateView):
 
     template_name = 'organisations.html'
 
@@ -88,7 +87,7 @@ class OrganisationsFilter(LoginRequiredMixin,
 class OrganisationsView(LoginRequiredMixin,
                         StaffuserRequiredMixin,
                         ModelTableViewMixin,
-                        DetailView):
+                        generic.DetailView):
 
     template_name = 'organisation_view.html'
     model = Organisation
@@ -105,7 +104,7 @@ class OrganisationsView(LoginRequiredMixin,
 class OrganisationsEdit(LoginRequiredMixin,
                         GroupRequiredMixin,
                         ModelTableEditMixin,
-                        UpdateView):
+                        generic.UpdateView):
 
     group_required = 'BDR helpdesk'
     model = Organisation
@@ -120,7 +119,7 @@ class OrganisationsEdit(LoginRequiredMixin,
 class OrganisationDelete(LoginRequiredMixin,
                          GroupRequiredMixin,
                          ModelTableEditMixin,
-                         DeleteView):
+                         generic.DeleteView):
 
     group_required = 'BDR helpdesk'
     model = Organisation
