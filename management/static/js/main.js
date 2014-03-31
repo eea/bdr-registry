@@ -20,6 +20,9 @@ $(function () {
         e.preventDefault();
         var userConfirmed = confirm('Are you sure?');
         if (userConfirmed) {
+            var deleteForm = $('#delete-form');
+            var postUrl = $(this).attr('href');
+            deleteForm.attr('action', postUrl);
             $('#delete-form').submit();
         }
     });

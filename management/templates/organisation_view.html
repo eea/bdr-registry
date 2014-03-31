@@ -6,6 +6,8 @@
 
   <h2>Comments</h2>
 
+  <a href="{% url 'management:comment_add' object.pk %}">Add comment</a>
+
   {% for comment in object.comments.all %}
     <table class="datatable" style="width: 100%">
       <tbody>
@@ -19,6 +21,7 @@
         </tr>
       </tbody>
     </table>
+    <a class='delete-link' href="{% url 'management:comment_delete' organisation_id=object.pk pk=comment.pk %}">Delete comment</a>
   {% endfor %}
 
 {% endblock %}

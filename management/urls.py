@@ -5,6 +5,7 @@ from management.views import (Organisations, OrganisationsFilter,
                               OrganisationDelete)
 from management.views import (Persons, PersonsFilter, PersonsView,
                               PersonEdit, PersonDelete)
+from management.views.comments import CommentCreate, CommentDelete
 
 
 urlpatterns = patterns(
@@ -18,6 +19,11 @@ urlpatterns = patterns(
         name='organisations_edit'),
     url(r'^organisations/(?P<pk>\d+)/delete', OrganisationDelete.as_view(),
         name='organisations_delete'),
+
+    url(r'^organisations/(?P<pk>\d+)/comment/add', CommentCreate.as_view(),
+        name='comment_add'),
+    url(r'^organisations/(?P<organisation_id>\d+)/comment/(?P<pk>\d+)/delete$',
+        CommentDelete.as_view(), name='comment_delete'),
 
     url(r'^persons$', Persons.as_view(), name='persons'),
     url(r'^persons/filter$', PersonsFilter.as_view(),
