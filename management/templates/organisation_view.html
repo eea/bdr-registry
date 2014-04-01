@@ -12,27 +12,31 @@
       Add comment</a>
   </div>
 
-  {% for comment in object.comments.all %}
+  <table class="comment no-border">
+    <tbody>
 
-    <table class="datatable" style="width: 100%">
-      <tbody>
-        <tr>
-          <th class="scope-row">Created</th>
-          <td class="scope-pad">{{ comment.created }}</td>
-        </tr>
-        <tr>
-          <th class="scope-row">Text</th>
-          <td class="scope-pad">{{ comment.text|linebreaksbr }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <a class='delete-link' href="{% url 'management:comment_delete' organisation_id=object.pk pk=comment.pk %}">Delete comment</a>
+    {% for comment in object.comments.all %}
+      <tr>
+        <td class="content">
+          <p>{{ comment.text|linebreaksbr }}</p>
+          <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
+        </td>
+        <td class="action">
+          <a class='delete-link' href="{% url 'management:comment_delete' organisation_id=object.pk pk=comment.pk %}">
+            <small>Delete comment</small>
+          </a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr>
+        <td colspan="2">
+          <p>There are no comments for this organisation.</p>
+        </td>
+      </tr>
+    {% endfor %}
 
-  {% empty %}
-
-    <p>There are no comments for this organisation.</p>
-
-  {% endfor %}
+    </tbody>
+  </table>
 
   <h2>Persons</h2>
   <div class="sub-actions">
@@ -42,14 +46,14 @@
   </div>
 
   <ul>
-    {% for person in object.people.all %}
 
+    {% for person in object.people.all %}
       <li>
         <a href="{% url 'management:persons_view' pk=person.pk %}">
           {{ person.formal_name }}</a>
       </li>
-
     {% endfor %}
+
   </ul>
 
 {% endblock %}

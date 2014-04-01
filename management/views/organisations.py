@@ -3,16 +3,14 @@ from datetime import date, timedelta
 from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
-                          GroupRequiredMixin)
+from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
 from bdr_registry.models import Organisation
 from management.forms import OrganisationFilters
 from management.base import (FilterView, ModelTableViewMixin,
                              ModelTableEditMixin)
 
 
-class Organisations(LoginRequiredMixin,
-                    StaffuserRequiredMixin,
+class Organisations(StaffuserRequiredMixin,
                     generic.TemplateView):
 
     template_name = 'organisations.html'
@@ -23,8 +21,7 @@ class Organisations(LoginRequiredMixin,
         return context
 
 
-class OrganisationsFilter(LoginRequiredMixin,
-                          StaffuserRequiredMixin,
+class OrganisationsFilter(StaffuserRequiredMixin,
                           FilterView):
 
     def process_name(self, object, val):
@@ -85,8 +82,7 @@ class OrganisationsFilter(LoginRequiredMixin,
         return start_date
 
 
-class OrganisationsView(LoginRequiredMixin,
-                        StaffuserRequiredMixin,
+class OrganisationsView(StaffuserRequiredMixin,
                         ModelTableViewMixin,
                         generic.DetailView):
 
@@ -102,8 +98,7 @@ class OrganisationsView(LoginRequiredMixin,
         return reverse('management:organisations_delete', kwargs=self.kwargs)
 
 
-class OrganisationsEdit(LoginRequiredMixin,
-                        GroupRequiredMixin,
+class OrganisationsEdit(GroupRequiredMixin,
                         ModelTableEditMixin,
                         generic.UpdateView):
 
@@ -117,8 +112,7 @@ class OrganisationsEdit(LoginRequiredMixin,
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
 
-class OrganisationDelete(LoginRequiredMixin,
-                         GroupRequiredMixin,
+class OrganisationDelete(GroupRequiredMixin,
                          ModelTableEditMixin,
                          generic.DeleteView):
 

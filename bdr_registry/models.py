@@ -160,9 +160,8 @@ class Person(models.Model):
                             max_length=255, null=True, blank=True)
     phone3 = models.CharField(_('Telephone 3'),
                             max_length=255, null=True, blank=True)
-
     fax = models.CharField(_('Fax'),
-                            max_length=255, null=True, blank=True)
+                           max_length=255, null=True, blank=True)
 
     organisation = models.ForeignKey(Organisation, related_name='people')
 
@@ -175,7 +174,7 @@ class Person(models.Model):
 
 
 class Comment(models.Model):
-    text = models.TextField(_('Text'))
+    text = models.TextField(_('Comment'))
     created = models.DateTimeField(auto_now_add=True)
     organisation = models.ForeignKey(Organisation,
                                      related_name='comments')

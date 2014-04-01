@@ -2,8 +2,7 @@ from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
-from braces.views import (LoginRequiredMixin, StaffuserRequiredMixin,
-                          GroupRequiredMixin)
+from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
 
 from bdr_registry.models import Person, Organisation
 from management.base import (FilterView, ModelTableViewMixin,
@@ -11,15 +10,13 @@ from management.base import (FilterView, ModelTableViewMixin,
 from management.forms import PersonForm
 
 
-class Persons(LoginRequiredMixin,
-              StaffuserRequiredMixin,
+class Persons(StaffuserRequiredMixin,
               generic.TemplateView):
 
     template_name = 'persons.html'
 
 
-class PersonsFilter(LoginRequiredMixin,
-                    StaffuserRequiredMixin,
+class PersonsFilter(StaffuserRequiredMixin,
                     FilterView):
 
     def process_name(self, obj, val):
@@ -57,8 +54,7 @@ class PersonsFilter(LoginRequiredMixin,
         return queryset[opt['offset']: opt['limit']]
 
 
-class PersonsView(LoginRequiredMixin,
-                  StaffuserRequiredMixin,
+class PersonsView(StaffuserRequiredMixin,
                   ModelTableViewMixin,
                   generic.DetailView):
 
@@ -76,8 +72,7 @@ class PersonsView(LoginRequiredMixin,
                        kwargs={'pk': self.kwargs['pk']})
 
 
-class PersonAdd(LoginRequiredMixin,
-                GroupRequiredMixin,
+class PersonAdd(GroupRequiredMixin,
                 ModelTableEditMixin,
                 generic.CreateView):
 
@@ -106,8 +101,7 @@ class PersonAdd(LoginRequiredMixin,
         return context
 
 
-class PersonEdit(LoginRequiredMixin,
-                 GroupRequiredMixin,
+class PersonEdit(GroupRequiredMixin,
                  ModelTableEditMixin,
                  generic.UpdateView):
 
@@ -121,8 +115,7 @@ class PersonEdit(LoginRequiredMixin,
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 
-class PersonDelete(LoginRequiredMixin,
-                   GroupRequiredMixin,
+class PersonDelete(GroupRequiredMixin,
                    ModelTableEditMixin,
                    generic.DeleteView):
 

@@ -1,6 +1,6 @@
 .formtable input {
-    width: 270px;
-    margin: 2px;
+    width: 18.750em;
+    margin: 0.139em;
 }
 
 .bdr-error {
@@ -14,11 +14,11 @@
 }
 
 .datatable .scope-pad {
-    padding-left: 10px;
+    padding-left: 0.694em;
 }
 
 .datatable .scope-row {
-    padding-right: 10px;
+    padding-right: 0.694em;
 }
 
 .button {
@@ -84,11 +84,11 @@
 .actions {
     background-color: #F7F7F7;
     padding: 0.7em 0 1em 0.7em;
-    margin: 10px 0;
+    margin: 0.694em 0;
 }
 
 .actions a {
-    margin-right: 5px;
+    margin-right: 0.347em;
 }
 
 .sub-actions {
@@ -98,12 +98,33 @@
 .filters {
     background: #f0f4f5;
     text-align: center;
-    margin: 15px 0;
-    padding: 7px;
+    margin: 1.042em 0;
+    padding: 0.486em;
 }
 .filters label {
-    padding-right: 5px;
+    padding-right: 0.347em;
 }
 .filters select {
-    margin-right: 10px;
+    margin-right: 0.694em;
 }
+
+.comment {
+    padding-bottom: 0.694em;
+    padding-left: 0.5em;
+    width: 100%;
+}
+.comment p {
+    line-height: 1.389em;
+    margin-bottom: 0;
+}
+.comment .content {
+    padding-right: 1.736em;
+}
+.comment .action {
+    width: 20%;
+}
+
+table.no-border td {
+    border: none;
+}
+

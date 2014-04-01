@@ -1,0 +1,33 @@
+{% extends 'edit.html' %}
+{% load widget_tweaks %}
+
+
+{% block head %}
+
+  <style type="text/css">
+    label {
+      padding-bottom: 7px;
+      display: block;
+    }
+    .comment {
+      width: 100%;
+    }
+  </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+  {% include 'edit_title.html' %}
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="{{ form.text.auto_id }}">
+      <strong>{{ form.text.label }}</strong></label>
+    {% render_field form.text class='comment' %}<br><br>
+    <button type="submit" class="primary_button">Save</button>
+
+  </form>
+
+{% endblock %}
