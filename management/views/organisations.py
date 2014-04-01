@@ -3,8 +3,11 @@ from datetime import date, timedelta
 from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
+from django.conf import settings
+
 from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
 from bdr_registry.models import Organisation
+
 from management.forms import OrganisationFilters
 from management.base import (FilterView, ModelTableViewMixin,
                              ModelTableEditMixin)
@@ -30,7 +33,7 @@ class OrganisationsFilter(StaffuserRequiredMixin,
         return '<a href="%s">%s</a>' % (url, val)
 
     def process_date_registered(self, object, val):
-        return val.strftime("%d %b %Y")
+        return val.strftime(settings.DATE_FORMAT)
 
     def get_queryset(self, opt):
         queryset = Organisation.objects.all()

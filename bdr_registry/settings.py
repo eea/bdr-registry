@@ -131,6 +131,7 @@ BDR_AUDIT_LOG_FILE = None
 
 REPORTING_YEAR = 2014
 
+DATE_FORMAT = '%d %b %Y'
 
 try:
     from localsettings import *

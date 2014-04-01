@@ -25,7 +25,8 @@
       {% for field in fields %}
         <tr>
           <th class="scope-row">{{ field.verbose_name|capfirst }}</th>
-          <td class="scope-pad">{{ object|getattribute:field.name|urlize }}</td>
+          <td class="scope-pad">
+            {{ object|getattribute:field.name|process_field }}</td>
         </tr>
       {% endfor %}
     </tbody>

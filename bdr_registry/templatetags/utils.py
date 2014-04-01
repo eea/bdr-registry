@@ -1,5 +1,8 @@
 import re
+from datetime import datetime
 from django import template
+from django.conf import settings
+from django.template.defaultfilters import urlize
 
 
 register = template.Library()
@@ -20,3 +23,10 @@ def getattribute(value, arg):
     if isinstance(value, dict) and arg in value:
         return value[arg]
     return None
+
+
+@register.filter
+def process_field(value):
+    if isinstance(value, datetime):
+        return value.strftime(settings.DATE_FORMAT)
+    return urlize(value)
