@@ -78,7 +78,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'bdr_registry',
     'django_assets',
-    'management',
+    'bdr_management',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [

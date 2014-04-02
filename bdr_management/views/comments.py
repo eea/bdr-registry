@@ -4,8 +4,8 @@ from django.shortcuts import get_object_or_404
 
 from bdr_registry.models import Organisation, Comment
 from braces.views import GroupRequiredMixin
-from management.base import ModelTableEditMixin
-from management.forms import CommentForm
+from bdr_management.base import ModelTableEditMixin
+from bdr_management.forms import CommentForm
 
 
 class CommentCreate(GroupRequiredMixin,

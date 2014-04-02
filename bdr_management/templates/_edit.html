@@ -1,4 +1,5 @@
 {% load utils %}
+{% load i18n %}
 {% load widget_tweaks %}
 
 
@@ -17,6 +18,12 @@
         </td>
         <td>
           {{ field|add_error_class:"error" }}
+          {% if field.name == 'eori' %}
+            <div>
+              <a href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+                <small>{% trans "About EORI number" %}</small></a>
+            </div>
+          {% endif %}
         </td>
       </tr>
     {% endfor %}

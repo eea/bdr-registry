@@ -1,13 +1,13 @@
 from django.conf.urls import patterns, url
 
-from management.views import (Organisations, OrganisationsFilter,
-                              OrganisationsView, OrganisationsEdit,
+from bdr_management.views import (Organisations, OrganisationsFilter,
+                              OrganisationsManagementView, OrganisationsEdit,
                               OrganisationDelete)
 
-from management.views import (Persons, PersonsFilter, PersonsView,
+from bdr_management.views import (Persons, PersonsFilter, PersonsView,
                               PersonAdd, PersonEdit, PersonDelete)
 
-from management.views.comments import CommentCreate, CommentDelete
+from bdr_management.views.comments import CommentCreate, CommentDelete
 
 
 urlpatterns = patterns(
@@ -15,8 +15,9 @@ urlpatterns = patterns(
     url(r'^organisations$', Organisations.as_view(), name='organisations'),
     url(r'^organisations/filter$', OrganisationsFilter.as_view(),
         name='organisations_filter'),
-    url(r'^organisations/(?P<pk>\d+)$', OrganisationsView.as_view(),
+    url(r'^organisations/(?P<pk>\d+)$', OrganisationsManagementView.as_view(),
         name='organisations_view'),
+
     url(r'^organisations/(?P<pk>\d+)/edit$', OrganisationsEdit.as_view(),
         name='organisations_edit'),
     url(r'^organisations/(?P<pk>\d+)/delete', OrganisationDelete.as_view(),

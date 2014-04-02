@@ -5,9 +5,9 @@ from django.db.models import Q
 from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
 
 from bdr_registry.models import Person, Organisation
-from management.base import (FilterView, ModelTableViewMixin,
+from bdr_management.base import (FilterView, ModelTableViewMixin,
                              ModelTableEditMixin)
-from management.forms import PersonForm
+from bdr_management.forms import PersonForm
 
 
 class Persons(StaffuserRequiredMixin,

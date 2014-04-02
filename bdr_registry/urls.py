@@ -4,6 +4,8 @@ from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import views
 
+from bdr_management.views import OrganisationsUpdateView
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -18,7 +20,7 @@ urlpatterns = patterns('',
      url(r'^comment/(?P<pk>\d+)/update$', views.CommentUpdate.as_view(),
             name='comment_update'),
      url(r'^organisation/add$', views.OrganisationCreate.as_view()),
-     url(r'^organisation/(?P<pk>\d+)$', views.organisation_view,
+     url(r'^organisation/(?P<pk>\d+)$', OrganisationsUpdateView.as_view(),
             name='organisation'),
      url(r'^edit_organisation$', views.edit_organisation),
      url(r'^organisation/(?P<pk>\d+)/update$',
@@ -43,7 +45,7 @@ urlpatterns = patterns('',
      url(r'^crashme$', views.crashme),
      url(r'^ping$', views.ping),
 
-     url(r'^management/', include('management.urls', namespace='management')),
+     url(r'^management/', include('bdr_management.urls', namespace='management')),
 )
 
 urlpatterns += staticfiles_urlpatterns()

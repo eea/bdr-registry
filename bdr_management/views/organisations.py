@@ -1,31 +1,62 @@
 from datetime import date, timedelta
 
 from django.views import generic
+from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
-from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
+from braces import views
+from braces.views._access import AccessMixin
+
 from bdr_registry.models import Organisation
-
-from management.forms import OrganisationFilters
-from management.base import (FilterView, ModelTableViewMixin,
-                             ModelTableEditMixin)
+from bdr_management import base, forms
 
 
-class Organisations(StaffuserRequiredMixin,
+class OrganisationUserRequiredMixin(AccessMixin):
+
+    group_required = 'BDR helpdesk'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.organisation = get_object_or_404(Organisation, **self.kwargs)
+
+        if not self._check_perm():
+            return redirect_to_login(request.get_full_path(),
+                                     self.get_login_url(),
+                                     self.get_redirect_field_name())
+
+        return super(OrganisationUserRequiredMixin, self) \
+            .dispatch(request, *args, **kwargs)
+
+    def _check_perm(self):
+        if self.request.user.is_superuser:
+            return True
+
+        group = self.group_required
+        if group in self.request.user.groups.values_list('name', flat=True):
+            return True
+
+        account = self.organisation.account
+        if account == self.request.user.username:
+            return True
+        return False
+
+
+class Organisations(views.StaffuserRequiredMixin,
                     generic.TemplateView):
 
     template_name = 'organisations.html'
 
     def get_context_data(self, **kwargs):
         context = super(Organisations, self).get_context_data(**kwargs)
-        context['form'] = OrganisationFilters()
+        context['form'] = forms.OrganisationFilters()
         return context
 
 
-class OrganisationsFilter(StaffuserRequiredMixin,
-                          FilterView):
+class OrganisationsFilter(views.StaffuserRequiredMixin,
+                          base.FilterView):
 
     def process_name(self, object, val):
         url = reverse('management:organisations_view',
@@ -59,7 +90,7 @@ class OrganisationsFilter(StaffuserRequiredMixin,
             queryset = queryset.filter(
                 obligation__name=filters['obligation'])
         if 'account' in filters:
-            if filters['account'] == OrganisationFilters.WITHOUT_ACCOUNT:
+            if filters['account'] == forms.OrganisationFilters.WITHOUT_ACCOUNT:
                 queryset = queryset.exclude(account__isnull=False)
             else:
                 queryset = queryset.exclude(account__isnull=True)
@@ -74,20 +105,19 @@ class OrganisationsFilter(StaffuserRequiredMixin,
 
     def _get_startdate(self, selected_option):
         today = date.today()
-        if selected_option == OrganisationFilters.TODAY:
+        if selected_option == forms.OrganisationFilters.TODAY:
             start_date = today
-        elif selected_option == OrganisationFilters.LAST_7_DAYS:
+        elif selected_option == forms.OrganisationFilters.LAST_7_DAYS:
             start_date = today - timedelta(days=7)
-        elif selected_option == OrganisationFilters.THIS_MONTH:
+        elif selected_option == forms.OrganisationFilters.THIS_MONTH:
             start_date = date(today.year, today.month, 1)
         else:
             start_date = date(today.year, 1, 1)
         return start_date
 
 
-class OrganisationsView(StaffuserRequiredMixin,
-                        ModelTableViewMixin,
-                        generic.DetailView):
+class OrganisationsBaseView(base.ModelTableViewMixin,
+                            generic.DetailView):
 
     template_name = 'organisation_view.html'
     model = Organisation
@@ -100,8 +130,18 @@ class OrganisationsView(StaffuserRequiredMixin,
         return reverse('management:organisations_delete', kwargs=self.kwargs)
 
 
-class OrganisationsEdit(GroupRequiredMixin,
-                        ModelTableEditMixin,
+class OrganisationsManagementView(views.StaffuserRequiredMixin,
+                                  OrganisationsBaseView):
+    pass
+
+
+class OrganisationsUpdateView(OrganisationUserRequiredMixin,
+                              OrganisationsBaseView):
+    pass
+
+
+class OrganisationsEdit(views.GroupRequiredMixin,
+                        base.ModelTableEditMixin,
                         generic.UpdateView):
 
     template_name = 'organisation_edit.html'
@@ -112,8 +152,8 @@ class OrganisationsEdit(GroupRequiredMixin,
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
 
-class OrganisationDelete(GroupRequiredMixin,
-                         ModelTableEditMixin,
+class OrganisationDelete(views.GroupRequiredMixin,
+                         base.ModelTableEditMixin,
                          generic.DeleteView):
 
     group_required = 'BDR helpdesk'
