@@ -24,9 +24,6 @@ class CommentCreate(GroupRequiredMixin,
     def get_success_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
-    def get_back_url(self):
-        return self.get_success_url()
-
     def get_form_kwargs(self, **kwargs):
         data = super(CommentCreate, self).get_form_kwargs(**kwargs)
         data['initial']['organisation'] = self.organisation
@@ -35,6 +32,7 @@ class CommentCreate(GroupRequiredMixin,
     def get_context_data(self, **kwargs):
         context = super(CommentCreate, self).get_context_data(**kwargs)
         context['title'] = 'Add a new comment'
+        context['object'] = self.organisation
         return context
 
 

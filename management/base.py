@@ -120,10 +120,10 @@ class ModelTableMixin(object):
 
 class ModelTableEditMixin(ModelTableMixin):
 
-    template_name = 'edit.html'
+    template_name = '_edit.html'
 
 
 class ModelTableViewMixin(ModelTableMixin):
 
-    template_name = 'view.html'
+    template_name = '_view.html'
 

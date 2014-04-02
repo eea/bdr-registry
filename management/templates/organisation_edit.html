@@ -9,12 +9,17 @@
   </div>
 
   <div class="breadcrumbitem">
-    <a href="{% url 'management:persons' %}">
-      Persons</a>
+    <a href="{% url 'management:organisations' %}">
+      Organisations</a>
+  </div>
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'management:organisations_view' pk=object.pk %}">
+      {{ object }}</a>
   </div>
 
   <div class="breadcrumbitemlast">
-    {{ object }}
+    Edit {{ object }}
   </div>
 
 {% endblock %}
@@ -22,6 +27,6 @@
 
 {% block content %}
 
-  {% include '_view.html' %}
+  {% include '_edit.html' %}
 
 {% endblock %}

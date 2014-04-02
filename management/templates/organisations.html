@@ -2,6 +2,19 @@
 {% load utils %}
 
 
+{% block breadcrumbs %}
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'home' %}">Registry</a>
+  </div>
+
+  <div class="breadcrumbitemlast">
+    Organisations
+  </div>
+
+{% endblock %}
+
+
 {% block content %}
 
   {% url 'management:organisations_filter' as url %}

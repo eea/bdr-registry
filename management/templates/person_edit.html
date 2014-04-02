@@ -1,5 +1,5 @@
 {% extends '_management_base.html' %}
-{% load utils %}
+{% load widget_tweaks %}
 
 
 {% block breadcrumbs %}
@@ -9,19 +9,25 @@
   </div>
 
   <div class="breadcrumbitem">
-    <a href="{% url 'management:persons' %}">
+    <a href="{% url 'management:organisations' %}">
       Persons</a>
   </div>
 
+  <div class="breadcrumbitem">
+    <a href="{% url 'management:persons_view' pk=object.pk %}">
+      {{ object }}</a>
+  </div>
+
   <div class="breadcrumbitemlast">
-    {{ object }}
+    Edit person
   </div>
 
 {% endblock %}
 
 
+
 {% block content %}
 
-  {% include '_view.html' %}
+  {% include '_edit.html' %}
 
 {% endblock %}

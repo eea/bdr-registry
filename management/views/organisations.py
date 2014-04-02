@@ -92,7 +92,6 @@ class OrganisationsView(StaffuserRequiredMixin,
     template_name = 'organisation_view.html'
     model = Organisation
     exclude = ('id', )
-    back_url = reverse_lazy('management:organisations')
 
     def get_edit_url(self):
         return reverse('management:organisations_edit', kwargs=self.kwargs)
@@ -105,13 +104,11 @@ class OrganisationsEdit(GroupRequiredMixin,
                         ModelTableEditMixin,
                         generic.UpdateView):
 
+    template_name = 'organisation_edit.html'
     group_required = 'BDR helpdesk'
     model = Organisation
 
     def get_success_url(self):
-        return reverse('management:organisations_view', kwargs=self.kwargs)
-
-    def get_back_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
 

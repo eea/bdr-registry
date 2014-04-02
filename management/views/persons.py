@@ -61,7 +61,6 @@ class PersonsView(StaffuserRequiredMixin,
     template_name = 'person_view.html'
     model = Person
     exclude = ('id', )
-    back_url = reverse_lazy('management:persons')
 
     def get_edit_url(self):
         return reverse('management:persons_edit',
@@ -76,6 +75,7 @@ class PersonAdd(GroupRequiredMixin,
                 ModelTableEditMixin,
                 generic.CreateView):
 
+    template_name = 'person_add.html'
     group_required = 'BDR helpdesk'
     model = Person
     form_class = PersonForm
@@ -87,9 +87,6 @@ class PersonAdd(GroupRequiredMixin,
     def get_success_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
-    def get_back_url(self):
-        return self.get_success_url()
-
     def get_form_kwargs(self, **kwargs):
         data = super(PersonAdd, self).get_form_kwargs(**kwargs)
         data['initial']['organisation'] = self.organisation
@@ -98,6 +95,7 @@ class PersonAdd(GroupRequiredMixin,
     def get_context_data(self, **kwargs):
         context = super(PersonAdd, self).get_context_data(**kwargs)
         context['title'] = 'Add a new person'
+        context['object'] = self.organisation
         return context
 
 
@@ -105,13 +103,11 @@ class PersonEdit(GroupRequiredMixin,
                  ModelTableEditMixin,
                  generic.UpdateView):
 
+    template_name = 'person_edit.html'
     group_required = 'BDR helpdesk'
     model = Person
 
     def get_success_url(self):
-        return reverse('management:persons_view', kwargs=self.kwargs)
-
-    def get_back_url(self):
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 

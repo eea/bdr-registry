@@ -2,9 +2,27 @@
 {% load utils %}
 
 
+{% block breadcrumbs %}
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'home' %}">Registry</a>
+  </div>
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'management:organisations' %}">
+      Organisations</a>
+  </div>
+
+  <div class="breadcrumbitemlast">
+    {{ object }}
+  </div>
+
+{% endblock %}
+
+
 {% block content %}
 
-  {% include 'view.html' %}
+  {% include '_view.html' %}
 
   <h2>Comments</h2>
   <div class="sub-actions">
