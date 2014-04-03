@@ -1,0 +1,27 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+
+
+{% block breadcrumbs %}
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'home' %}">Registry</a>
+  </div>
+
+  <div class="breadcrumbitem">
+    <a href="{% url 'management:persons' %}">
+      Persons</a>
+  </div>
+
+  <div class="breadcrumbitemlast">
+    {{ object }}
+  </div>
+
+{% endblock %}
+
+
+{% block content %}
+
+  {% include 'bdr_management/_view.html' %}
+
+{% endblock %}

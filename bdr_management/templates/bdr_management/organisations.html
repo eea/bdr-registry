@@ -1,4 +1,4 @@
-{% extends '_management_base.html' %}
+{% extends 'bdr_management/_management_base.html' %}
 {% load utils %}
 
 
@@ -26,7 +26,13 @@
   <h1>Organisations</h1>
 
   <div class="filters">
-    {% include '_organisation_filters.html' %}
+    {% include 'bdr_management/_organisation_filters.html' %}
+  </div>
+
+  <div class="actions">
+    {% if user.is_superuser %}
+      <a href="{% url 'management:organisations_add' %}" class="button">Add a new organisation</a>
+    {% endif %}
   </div>
 
   <table data-toggle='datatable' data-source='{{ url }}'

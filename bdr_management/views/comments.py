@@ -16,7 +16,7 @@ class CommentCreate(GroupRequiredMixin,
                     SuccessMessageMixin,
                     generic.CreateView):
 
-    template_name = 'comment_edit.html'
+    template_name = 'bdr_management/comment_edit.html'
     form_class = CommentForm
     model = Comment
     group_required = 'BDR helpdesk'

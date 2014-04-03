@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, url
 
 from bdr_management.views import (Organisations, OrganisationsFilter,
-                              OrganisationsManagementView, OrganisationsEdit,
-                              OrganisationDelete)
+                                  OrganisationsManagementView,
+                                  OrganisationsEdit, OrganisationDelete,
+                                  OrganisationAdd)
 
 from bdr_management.views import (Persons, PersonsFilter, PersonsView,
                               PersonAdd, PersonEdit, PersonDelete)
@@ -18,6 +19,8 @@ urlpatterns = patterns(
     url(r'^organisations/(?P<pk>\d+)$', OrganisationsManagementView.as_view(),
         name='organisations_view'),
 
+    url(r'^organisations/add$', OrganisationAdd.as_view(),
+        name='organisations_add'),
     url(r'^organisations/(?P<pk>\d+)/edit$', OrganisationsEdit.as_view(),
         name='organisations_edit'),
     url(r'^organisations/(?P<pk>\d+)/delete', OrganisationDelete.as_view(),

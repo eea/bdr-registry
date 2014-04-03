@@ -1,5 +1,7 @@
 from datetime import date, timedelta
 
+from bdr_management.forms.organisations import OrganisationForm
+from braces.views import SuperuserRequiredMixin
 from django.views import generic
 from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -9,10 +11,8 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-
 from braces import views
 from braces.views._access import AccessMixin
-
 from bdr_registry.models import Organisation
 from bdr_management import base, forms
 
@@ -50,7 +50,7 @@ class OrganisationUserRequiredMixin(AccessMixin):
 class Organisations(views.StaffuserRequiredMixin,
                     generic.TemplateView):
 
-    template_name = 'organisations.html'
+    template_name = 'bdr_management/organisations.html'
 
     def get_context_data(self, **kwargs):
         context = super(Organisations, self).get_context_data(**kwargs)
@@ -122,7 +122,7 @@ class OrganisationsFilter(views.StaffuserRequiredMixin,
 class OrganisationsBaseView(base.ModelTableViewMixin,
                             generic.DetailView):
 
-    template_name = 'organisation_view.html'
+    template_name = 'bdr_management/organisation_view.html'
     model = Organisation
     exclude = ('id', )
 
@@ -148,7 +148,7 @@ class OrganisationsEdit(views.GroupRequiredMixin,
                         SuccessMessageMixin,
                         generic.UpdateView):
 
-    template_name = 'organisation_edit.html'
+    template_name = 'bdr_management/organisation_edit.html'
     group_required = 'BDR helpdesk'
     model = Organisation
     success_message = _('Organisation edited successfully')
@@ -168,3 +168,20 @@ class OrganisationDelete(views.GroupRequiredMixin,
     def delete(self, request, *args, **kwargs):
         messages.success(request, _('Organisation deleted'))
         return super(OrganisationDelete, self).delete(request, *args, **kwargs)
+
+
+class OrganisationAdd(SuperuserRequiredMixin,
+                      generic.CreateView):
+
+    template_name = 'bdr_management/organisation_add.html'
+    model = Organisation
+    form_class = OrganisationForm
+    success_message = _('Organisation created successfully')
+
+    def get_success_url(self):
+        return reverse('management:organisations')
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationAdd, self).get_context_data(**kwargs)
+        context['title'] = 'Add a new organisation'
+        return context

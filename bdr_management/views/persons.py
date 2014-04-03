@@ -16,7 +16,7 @@ from bdr_management.forms import PersonForm
 class Persons(StaffuserRequiredMixin,
               generic.TemplateView):
 
-    template_name = 'persons.html'
+    template_name = 'bdr_management/persons.html'
 
 
 class PersonsFilter(StaffuserRequiredMixin,
@@ -61,7 +61,7 @@ class PersonsView(StaffuserRequiredMixin,
                   base.ModelTableViewMixin,
                   generic.DetailView):
 
-    template_name = 'person_view.html'
+    template_name = 'bdr_management/person_view.html'
     model = Person
     exclude = ('id', )
 
@@ -79,7 +79,7 @@ class PersonAdd(GroupRequiredMixin,
                 SuccessMessageMixin,
                 generic.CreateView):
 
-    template_name = 'person_add.html'
+    template_name = 'bdr_management/person_add.html'
     group_required = 'BDR helpdesk'
     model = Person
     form_class = PersonForm
@@ -109,7 +109,7 @@ class PersonEdit(GroupRequiredMixin,
                  SuccessMessageMixin,
                  generic.UpdateView):
 
-    template_name = 'person_edit.html'
+    template_name = 'bdr_management/person_edit.html'
     group_required = 'BDR helpdesk'
     model = Person
     success_message = _('Person edited successfully')
