@@ -16,6 +16,16 @@ $(function () {
         }
     });
 
+    $('#reset-filters').on('click', function(e) {
+        e.preventDefault();
+        $('.filter_data').each(function() {
+            var optionElem = $(this);
+            if (optionElem.val() != '') {
+                optionElem.val('').change();
+            }
+        });
+    });
+
     $('.delete-link').on('click', function(e) {
         e.preventDefault();
         var userConfirmed = confirm('Are you sure?');
