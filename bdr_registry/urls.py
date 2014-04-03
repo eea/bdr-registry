@@ -13,14 +13,12 @@ admin.autodiscover()
 organisation_patterns = patterns(
     '',
 
-    url(r'^organisation/add$',
+    url(r'^add$',
         views.OrganisationCreate.as_view()),
-    url(r'^organisation/(?P<pk>\d+)$',
+    url(r'^(?P<pk>\d+)$',
         OrganisationsUpdateView.as_view(),
         name='organisation'),
-    url(r'^edit_organisation$',
-        views.edit_organisation),
-    url(r'^organisation/(?P<pk>\d+)/add_person$',
+    url(r'^(?P<pk>\d+)/add_person$',
         views.OrganisationAddPerson.as_view(),
         name='organisation_add_person'),
     url(r'^(?P<pk>\d+)/update$',
@@ -43,6 +41,9 @@ urlpatterns = patterns(
         name='comment_delete'),
     url(r'^comment/(?P<pk>\d+)/update$', views.CommentUpdate.as_view(),
         name='comment_update'),
+
+    url(r'^edit_organisation$',
+        views.edit_organisation),
 
     url(r'^person/(?P<pk>\d+)/update$', views.PersonUpdate.as_view(),
         name='person_update'),

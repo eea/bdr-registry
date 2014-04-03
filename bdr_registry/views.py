@@ -113,12 +113,8 @@ def edit_organisation(request):
         return HttpResponseNotFound()
     account = get_object_or_404(models.Account, uid=uid)
     org = get_object_or_404(models.Organisation, account=account)
-    location = reverse('organisation_update', args=[org.pk])
+    location = reverse('organisation', kwargs={'pk': org.pk})
     return HttpResponseRedirect(location)
-
-
-def organisation_view(request, pk):
-    return redirect(reverse('organisation_update', args=[pk]))
 
 
 def api_key_required(view):
