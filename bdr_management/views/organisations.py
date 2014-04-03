@@ -171,6 +171,7 @@ class OrganisationDelete(views.GroupRequiredMixin,
 
 
 class OrganisationAdd(SuperuserRequiredMixin,
+                      SuccessMessageMixin,
                       generic.CreateView):
 
     template_name = 'bdr_management/organisation_add.html'
