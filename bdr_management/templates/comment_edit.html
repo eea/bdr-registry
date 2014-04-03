@@ -27,13 +27,12 @@
 
 {% block head %}
 
+  <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
+
   <style type="text/css">
     label {
       padding-bottom: 7px;
       display: block;
-    }
-    .comment {
-      width: 100%;
     }
   </style>
 
@@ -48,8 +47,10 @@
     {% csrf_token %}
     <label for="{{ form.text.auto_id }}">
       <strong>{{ form.text.label }}</strong></label>
-    {% render_field form.text class='comment' %}<br><br>
+    {% render_field form.text %}<br><br>
     <button type="submit" class="primary_button">Save</button>
+
+  <script>CKEDITOR.replace('id_text')</script>
 
   </form>
 

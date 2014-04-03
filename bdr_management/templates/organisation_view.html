@@ -36,7 +36,7 @@
     {% for comment in object.comments.all %}
       <tr>
         <td class="content">
-          <p>{{ comment.text|linebreaksbr }}</p>
+          <p>{{ comment.text|safe }}</p>
           <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
         </td>
         <td class="action">
