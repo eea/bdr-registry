@@ -6,6 +6,9 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.conf import settings
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 from braces import views
 from braces.views._access import AccessMixin
@@ -142,11 +145,13 @@ class OrganisationsUpdateView(OrganisationUserRequiredMixin,
 
 class OrganisationsEdit(views.GroupRequiredMixin,
                         base.ModelTableEditMixin,
+                        SuccessMessageMixin,
                         generic.UpdateView):
 
     template_name = 'organisation_edit.html'
     group_required = 'BDR helpdesk'
     model = Organisation
+    success_message = _('Organisation edited successfully')
 
     def get_success_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
@@ -159,3 +164,7 @@ class OrganisationDelete(views.GroupRequiredMixin,
     group_required = 'BDR helpdesk'
     model = Organisation
     success_url = reverse_lazy('management:organisations')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, _('Organisation deleted'))
+        return super(OrganisationDelete, self).delete(request, *args, **kwargs)

@@ -1,6 +1,9 @@
 from django.core.urlresolvers import reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 
 from bdr_registry.models import Organisation, Comment
 from braces.views import GroupRequiredMixin
@@ -10,12 +13,14 @@ from bdr_management.forms import CommentForm
 
 class CommentCreate(GroupRequiredMixin,
                     ModelTableEditMixin,
+                    SuccessMessageMixin,
                     generic.CreateView):
 
     template_name = 'comment_edit.html'
     form_class = CommentForm
     model = Comment
     group_required = 'BDR helpdesk'
+    success_message = _("Comment added successfully")
 
     def dispatch(self, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation, **self.kwargs)
@@ -54,3 +59,7 @@ class CommentDelete(GroupRequiredMixin,
     def get_object(self):
         return get_object_or_404(Comment, pk=self.kwargs['pk'],
                                  organisation=self.organisation)
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, _("Comment deleted"))
+        return super(CommentDelete, self).delete(request, *args, **kwargs)

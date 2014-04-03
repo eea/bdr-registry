@@ -2,11 +2,14 @@ from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.utils.translation import ugettext as _
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib import messages
+
 from braces.views import StaffuserRequiredMixin, GroupRequiredMixin
 
 from bdr_registry.models import Person, Organisation
-from bdr_management.base import (FilterView, ModelTableViewMixin,
-                             ModelTableEditMixin)
+from bdr_management import base
 from bdr_management.forms import PersonForm
 
 
@@ -17,7 +20,7 @@ class Persons(StaffuserRequiredMixin,
 
 
 class PersonsFilter(StaffuserRequiredMixin,
-                    FilterView):
+                    base.FilterView):
 
     def process_name(self, obj, val):
         url = reverse('management:persons_view',
@@ -55,7 +58,7 @@ class PersonsFilter(StaffuserRequiredMixin,
 
 
 class PersonsView(StaffuserRequiredMixin,
-                  ModelTableViewMixin,
+                  base.ModelTableViewMixin,
                   generic.DetailView):
 
     template_name = 'person_view.html'
@@ -72,13 +75,15 @@ class PersonsView(StaffuserRequiredMixin,
 
 
 class PersonAdd(GroupRequiredMixin,
-                ModelTableEditMixin,
+                base.ModelTableEditMixin,
+                SuccessMessageMixin,
                 generic.CreateView):
 
     template_name = 'person_add.html'
     group_required = 'BDR helpdesk'
     model = Person
     form_class = PersonForm
+    success_message = _('Person created successfully')
 
     def dispatch(self, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation, **self.kwargs)
@@ -100,21 +105,27 @@ class PersonAdd(GroupRequiredMixin,
 
 
 class PersonEdit(GroupRequiredMixin,
-                 ModelTableEditMixin,
+                 base.ModelTableEditMixin,
+                 SuccessMessageMixin,
                  generic.UpdateView):
 
     template_name = 'person_edit.html'
     group_required = 'BDR helpdesk'
     model = Person
+    success_message = _('Person edited successfully')
 
     def get_success_url(self):
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 
 class PersonDelete(GroupRequiredMixin,
-                   ModelTableEditMixin,
+                   base.ModelTableEditMixin,
                    generic.DeleteView):
 
     group_required = 'BDR helpdesk'
     model = Person
     success_url = reverse_lazy('management:persons')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, _("Person deleted"))
+        return super(PersonDelete, self).delete(request, *args, **kwargs)
