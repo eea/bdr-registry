@@ -29,11 +29,11 @@
     {% include 'bdr_management/_organisation_filters.html' %}
   </div>
 
-  <div class="actions">
-    {% if user.is_superuser %}
+  {% if user.is_superuser %}
+    <div class="actions">
       <a href="{% url 'management:organisations_add' %}" class="button">Add a new organisation</a>
-    {% endif %}
-  </div>
+    </div>
+  {% endif %}
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'
