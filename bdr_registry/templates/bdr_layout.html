@@ -74,8 +74,21 @@
   <div class="breadcrumbitem">
     <a href="https://bdr.eionet.europa.eu">BDR</a>
   </div>
+
   {% block breadcrumbs %}
-    <div class="breadcrumbitemlast">Registry</div>
+
+    {% for breadcrumb in breadcrumbs %}
+      <div class="breadcrumbitem{% if forloop.last %}last{% endif %}">
+        {% if not forloop.last %}
+          <a href="{{ breadcrumb.url }}">{{ breadcrumb.title }}</a>
+        {% else %}
+          {{ breadcrumb.title }}
+        {% endif %}
+      </div>
+    {% empty %}
+      <div class="breadcrumbitemlast">Registry</div>
+    {% endfor %}
+
   {% endblock %}
 
 </div> {# ./breadcrumbtrail #}

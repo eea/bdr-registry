@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from collections import namedtuple
 
 from bdr_management.forms.organisations import OrganisationForm
 from braces.views import SuperuserRequiredMixin
@@ -15,6 +16,9 @@ from braces import views
 from braces.views._access import AccessMixin
 from bdr_registry.models import Organisation
 from bdr_management import base, forms
+
+
+Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
 
 
 class OrganisationUserRequiredMixin(AccessMixin):
@@ -126,35 +130,96 @@ class OrganisationsBaseView(base.ModelTableViewMixin,
     model = Organisation
     exclude = ('id', )
 
-    def get_edit_url(self):
-        return reverse('management:organisations_edit', kwargs=self.kwargs)
-
     def get_delete_url(self):
         return reverse('management:organisations_delete', kwargs=self.kwargs)
 
 
 class OrganisationsManagementView(views.StaffuserRequiredMixin,
                                   OrganisationsBaseView):
-    pass
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:organisations'),
+                       _('Organisations')),
+            Breadcrumb('', self.object)
+        ]
+        data = super(OrganisationsManagementView, self) \
+            .get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_edit_url(self):
+        return reverse('management:organisations_edit', kwargs=self.kwargs)
 
 
 class OrganisationsUpdateView(OrganisationUserRequiredMixin,
                               OrganisationsBaseView):
-    pass
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb('', self.object)
+        ]
+        data = super(OrganisationsUpdateView, self) \
+            .get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_edit_url(self):
+        return reverse('organisation_update', kwargs=self.kwargs)
 
 
-class OrganisationsEdit(views.GroupRequiredMixin,
-                        base.ModelTableEditMixin,
-                        SuccessMessageMixin,
-                        generic.UpdateView):
+class OragnisationBaseEdit(base.ModelTableViewMixin,
+                           SuccessMessageMixin,
+                           generic.UpdateView):
 
     template_name = 'bdr_management/organisation_edit.html'
-    group_required = 'BDR helpdesk'
     model = Organisation
     success_message = _('Organisation edited successfully')
 
+
+class OrganisationsManagementEdit(views.GroupRequiredMixin,
+                                  OragnisationBaseEdit):
+
+    group_required = 'BDR helpdesk'
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations_view',
+                               kwargs={'pk': self.object.pk}),
+                       self.object),
+            Breadcrumb('', _('Edit %s' % self.object))
+        ]
+        data = super(OrganisationsManagementEdit, self) \
+            .get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
     def get_success_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
+
+
+class OrganisationsUpdate(OrganisationUserRequiredMixin,
+                          OragnisationBaseEdit):
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), _('Registry')),
+            Breadcrumb(reverse('organisation',
+                               kwargs={'pk': self.object.pk}),
+                       self.object),
+            Breadcrumb('', _('Edit %s' % self.object))
+        ]
+        data = super(OrganisationsUpdate, self) \
+            .get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_success_url(self):
+        return reverse('organisation', kwargs=self.kwargs)
 
 
 class OrganisationDelete(views.GroupRequiredMixin,

@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from bdr_registry import views
-from bdr_management.views import OrganisationsUpdateView
+from bdr_management import views as management_views
 
 
 admin.autodiscover()
@@ -16,13 +16,13 @@ organisation_patterns = patterns(
     url(r'^add$',
         views.OrganisationCreate.as_view()),
     url(r'^(?P<pk>\d+)$',
-        OrganisationsUpdateView.as_view(),
+        management_views.OrganisationsUpdateView.as_view(),
         name='organisation'),
     url(r'^(?P<pk>\d+)/add_person$',
         views.OrganisationAddPerson.as_view(),
         name='organisation_add_person'),
     url(r'^(?P<pk>\d+)/update$',
-        views.OrganisationUpdate.as_view(),
+        management_views.OrganisationsUpdate.as_view(),
         name='organisation_update'),
 
 )

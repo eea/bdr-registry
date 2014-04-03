@@ -126,4 +126,3 @@ class ModelTableEditMixin(ModelTableMixin):
 class ModelTableViewMixin(ModelTableMixin):
 
     template_name = 'bdr_management/_view.html'
-
