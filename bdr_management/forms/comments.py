@@ -2,7 +2,6 @@ from django.forms import ModelForm
 from bdr_registry.models import Comment
 
 
-
 class CommentForm(ModelForm):
 
     class Meta():

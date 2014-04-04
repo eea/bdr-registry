@@ -1,23 +1,23 @@
-from django.core.urlresolvers import reverse
-from django.views import generic
-from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
+from django.views import generic
 
-from bdr_registry.models import Organisation, Comment
 from braces.views import GroupRequiredMixin
-from bdr_management.base import ModelTableEditMixin
-from bdr_management.forms import CommentForm
+
+from bdr_management import base, forms
+from bdr_registry.models import Organisation, Comment
 
 
 class CommentCreate(GroupRequiredMixin,
-                    ModelTableEditMixin,
+                    base.ModelTableEditMixin,
                     SuccessMessageMixin,
                     generic.CreateView):
 
     template_name = 'bdr_management/comment_edit.html'
-    form_class = CommentForm
+    form_class = forms.CommentForm
     model = Comment
     group_required = 'BDR helpdesk'
     success_message = _("Comment added successfully")

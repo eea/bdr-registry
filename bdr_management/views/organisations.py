@@ -1,20 +1,20 @@
 from datetime import date, timedelta
 
-from django.views import generic
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.db.models import Q
 from django.conf import settings
-from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Q
+from django.utils.translation import ugettext as _
+from django.views import generic
 
 from braces import views
 from braces.views import SuperuserRequiredMixin
 
-from bdr_registry.models import Organisation
 from bdr_management import base, forms
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.organisations import OrganisationForm
+from bdr_registry.models import Organisation
 
 
 class Organisations(views.StaffuserRequiredMixin,
