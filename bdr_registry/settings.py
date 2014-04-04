@@ -1,4 +1,5 @@
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -133,7 +134,15 @@ REPORTING_YEAR = 2014
 
 DATE_FORMAT = '%d %b %Y'
 
+
 try:
     from localsettings import *
 except ImportError:
     pass
+
+
+if 'test' in sys.argv:
+    try:
+        from test_settings import *
+    except ImportError:
+        pass

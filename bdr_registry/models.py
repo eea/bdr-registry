@@ -124,7 +124,10 @@ def organisation_loaded(instance, **extra):
 
 def organisation_saved(instance, **extra):
     if instance._initial_name != instance.name:
-        user = local.get_request().user
+        try:
+            user = local.get_request().user
+        except AttributeError:
+            user = None
         if user is not None and user.is_authenticated():
             user_id = user.id
         else:

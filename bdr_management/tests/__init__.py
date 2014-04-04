@@ -1,1 +1,1 @@
-from .test_organisations import *
+from .test_organisations_perms import *
