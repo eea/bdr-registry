@@ -1,54 +1,18 @@
 from datetime import date, timedelta
-from collections import namedtuple
 
+from bdr_management.base import Breadcrumb, OrganisationUserRequiredMixin
 from bdr_management.forms.organisations import OrganisationForm
 from braces.views import SuperuserRequiredMixin
 from django.views import generic
-from django.contrib.auth.views import redirect_to_login
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.conf import settings
-from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from braces import views
-from braces.views._access import AccessMixin
 from bdr_registry.models import Organisation
 from bdr_management import base, forms
-
-
-Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
-
-
-class OrganisationUserRequiredMixin(AccessMixin):
-
-    group_required = 'BDR helpdesk'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.request = request
-        self.organisation = get_object_or_404(Organisation, **self.kwargs)
-
-        if not self._check_perm():
-            return redirect_to_login(request.get_full_path(),
-                                     self.get_login_url(),
-                                     self.get_redirect_field_name())
-
-        return super(OrganisationUserRequiredMixin, self) \
-            .dispatch(request, *args, **kwargs)
-
-    def _check_perm(self):
-        if self.request.user.is_superuser:
-            return True
-
-        group = self.group_required
-        if group in self.request.user.groups.values_list('name', flat=True):
-            return True
-
-        account = self.organisation.account
-        if account == self.request.user.username:
-            return True
-        return False
 
 
 class Organisations(views.StaffuserRequiredMixin,
