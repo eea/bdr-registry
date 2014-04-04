@@ -1,8 +1,5 @@
 from datetime import date, timedelta
 
-from bdr_management.base import Breadcrumb, OrganisationUserRequiredMixin
-from bdr_management.forms.organisations import OrganisationForm
-from braces.views import SuperuserRequiredMixin
 from django.views import generic
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
@@ -10,9 +7,14 @@ from django.conf import settings
 from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
+
 from braces import views
+from braces.views import SuperuserRequiredMixin
+
 from bdr_registry.models import Organisation
 from bdr_management import base, forms
+from bdr_management.base import Breadcrumb
+from bdr_management.forms.organisations import OrganisationForm
 
 
 class Organisations(views.StaffuserRequiredMixin,
@@ -117,7 +119,7 @@ class OrganisationsManagementView(views.StaffuserRequiredMixin,
         return reverse('management:organisations_edit', kwargs=self.kwargs)
 
 
-class OrganisationsUpdateView(OrganisationUserRequiredMixin,
+class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
                               OrganisationsBaseView):
 
     def get_context_data(self, **kwargs):
@@ -151,7 +153,8 @@ class OrganisationsManagementEdit(views.GroupRequiredMixin,
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations'),
+                       _('Organisations')),
             Breadcrumb(reverse('management:organisations_view',
                                kwargs={'pk': self.object.pk}),
                        self.object),
@@ -166,7 +169,7 @@ class OrganisationsManagementEdit(views.GroupRequiredMixin,
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
 
-class OrganisationsUpdate(OrganisationUserRequiredMixin,
+class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
                           OragnisationBaseEdit):
 
     def get_context_data(self, **kwargs):
