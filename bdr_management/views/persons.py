@@ -1,16 +1,17 @@
-from django.views import generic
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import get_object_or_404
-from django.db.models import Q
-from django.utils.translation import ugettext as _
-from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
+from django.core.urlresolvers import reverse, reverse_lazy
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext as _
+from django.views import generic
 
 from braces import views
 
-from bdr_registry.models import Person, Organisation
 from bdr_management import base
+from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonForm
+from bdr_registry.models import Person, Organisation
 
 
 class Persons(views.StaffuserRequiredMixin,
@@ -73,10 +74,10 @@ class PersonsManagementView(views.StaffuserRequiredMixin,
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
-            base.Breadcrumb(reverse('home'), title=_('Registry')),
-            base.Breadcrumb(reverse('management:persons'),
-                            _('Persons')),
-            base.Breadcrumb('', self.object)
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:persons'),
+                       _('Persons')),
+            Breadcrumb('', self.object)
         ]
         data = super(PersonsManagementView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
@@ -91,8 +92,8 @@ class PersonsUpdateView(base.OrganisationUserRequiredMixin,
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
-            base.Breadcrumb(reverse('home'), title=_('Registry')),
-            base.Breadcrumb('', self.object)
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb('', self.object)
         ]
         data = super(PersonsUpdateView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
@@ -118,13 +119,13 @@ class PersonsManagementEdit(views.GroupRequiredMixin,
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
-            base.Breadcrumb(reverse('home'), title=_('Registry')),
-            base.Breadcrumb(reverse('management:persons'),
-                            _('Persons')),
-            base.Breadcrumb(reverse('management:persons_view',
-                            kwargs={'pk': self.object.pk}),
-                            self.object),
-            base.Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:persons'),
+                       _('Persons')),
+            Breadcrumb(reverse('management:persons_view',
+                       kwargs={'pk': self.object.pk}),
+                       self.object),
+            Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(PersonsManagementEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
@@ -139,10 +140,10 @@ class PersonsUpdate(base.OrganisationUserRequiredMixin,
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
-            base.Breadcrumb(reverse('home'), _('Registry')),
-            base.Breadcrumb(reverse('person', kwargs={'pk': self.object.pk}),
-                            self.object),
-            base.Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb(reverse('home'), _('Registry')),
+            Breadcrumb(reverse('person', kwargs={'pk': self.object.pk}),
+                       self.object),
+            Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(PersonsUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
