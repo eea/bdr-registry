@@ -59,3 +59,61 @@ class OrganisationTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
+    def test_organisation_edit_by_staff(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_edit',
+                           pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_organisation_edit_by_anonymous(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_edit',
+                           pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_organisation_edit_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('organisation', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisation_edit_by_superuser(self):
+        user = factories.SuperUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('organisation', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisation_update_by_staff(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('organisation_update', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_organisation_update_by_owner(self):
+        user = factories.UserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        organisation = factories.OrganisationFactory(account=account)
+        url = self.reverse('organisation_update', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisation_update_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('organisation_update', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisation_update_by_superuser(self):
+        user = factories.SuperUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('organisation_update', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
