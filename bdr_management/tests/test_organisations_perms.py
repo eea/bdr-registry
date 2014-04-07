@@ -117,3 +117,30 @@ class OrganisationTests(BaseWebTest):
         url = self.reverse('organisation_update', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+
+    def test_organisation_delete_by_staff(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_delete',
+                           pk=organisation.pk)
+        resp = self.app.delete(url, user=user.username)
+        resp.follow()
+
+    def test_organisation_delete_by_anonymous(self):
+        user = factories.UserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_delete',
+                           pk=organisation.pk)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(
+            resp,
+            '/accounts/login/?next=/management/organisations/1/delete')
+
+    def test_organisation_delete_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_delete',
+                           pk=organisation.pk)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(resp, '/management/organisations')
+

@@ -31,6 +31,8 @@ class SuperUserFactory(UserFactory):
 
 class BDRGroupUserFactory(UserFactory):
 
+    is_staff = True
+
     @classmethod
     def _prepare(cls, create, **kwargs):
         group = BDRGroupFactory()
