@@ -73,3 +73,13 @@ class OrganisationFactory(django.DjangoModelFactory):
 
     name = fuzzy.FuzzyText()
     country = factory.SubFactory(CountryFactory)
+
+
+class PersonFactory(django.DjangoModelFactory):
+
+    FACTORY_FOR = 'bdr_registry.Person'
+    FACTORY_DJANGO_GET_OR_CREATE = ('family_name', 'first_name')
+
+    first_name = fuzzy.FuzzyText()
+    family_name = fuzzy.FuzzyText()
+    organisation = factory.SubFactory(OrganisationFactory)

@@ -3,16 +3,98 @@ from .base import BaseWebTest
 from bdr_management.tests import factories
 
 
-class OrganisationTests(BaseWebTest):
+class PersonTests(BaseWebTest):
 
-    def setUp(self):
-        self.staff = factories.StaffUserFactory()
-
-    def test_organisations_view_by_staff_user(self):
+    def test_persons_view_by_staff_user(self):
+        user = factories.StaffUserFactory()
         resp = self.app.get(self.reverse('management:persons'),
-                            user=self.staff.username)
+                            user=user.username)
         self.assertEqual(200, resp.status_int)
 
-    def test_organisations_view_by_anonymous_user_fail(self):
+    def test_persons_view_by_anonymous(self):
         resp = self.app.get(self.reverse('management:persons'))
         resp.follow()
+
+    def test_person_view_by_staff(self):
+        user = factories.StaffUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_view',
+                           pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_view_by_anonymous_(self):
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_view', pk=person.pk)
+        resp = self.app.get(url, user=None)
+        resp.follow()
+
+    def test_person_edit_by_staff(self):
+        user = factories.StaffUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_edit', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_person_edit_by_anonymous(self):
+        user = factories.StaffUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_edit', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_person_update_by_staff(self):
+        user = factories.StaffUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('person_update', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        resp.follow()
+
+    def test_person_update_by_owner(self):
+        user = factories.UserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        organisation = factories.OrganisationFactory(account=account)
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person_update', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_update_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('person_update', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_update_by_superuser(self):
+        user = factories.SuperUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('person_update', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_delete_by_staff(self):
+        user = factories.StaffUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_delete',
+                           pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        resp.follow()
+
+    def test_person_delete_by_anonymous(self):
+        user = factories.UserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_delete',
+                           pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(
+            resp,
+            '/accounts/login/?next=/management/persons/%s/delete' % person.pk)
+
+    def test_person_delete_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:persons_delete',
+                           pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(resp, '/management/persons')
