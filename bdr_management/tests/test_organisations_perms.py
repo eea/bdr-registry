@@ -124,7 +124,9 @@ class OrganisationTests(BaseWebTest):
         url = self.reverse('management:organisations_delete',
                            pk=organisation.pk)
         resp = self.app.delete(url, user=user.username)
-        resp.follow()
+        self.assertRedirects(
+            resp,
+            '/accounts/login/?next=/management/organisations/1/delete')
 
     def test_organisation_delete_by_anonymous(self):
         user = factories.UserFactory()
