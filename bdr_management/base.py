@@ -38,7 +38,7 @@ class OrganisationUserRequiredMixin(AccessMixin):
             return True
 
         account = self.organisation.account
-        if account == self.request.user.username:
+        if account and (account.uid == self.request.user.username):
             return True
         return False
 

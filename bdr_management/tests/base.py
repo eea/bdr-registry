@@ -1,3 +1,4 @@
+import functools
 
 from django.db.models import Model
 from django.core.urlresolvers import reverse
@@ -6,6 +7,7 @@ from django.db.models.loading import get_model
 from django_webtest import WebTest
 from webtest import AppError
 from webtest.forms import Select, MultipleSelect
+from factory import base
 
 
 class BaseWebTest(WebTest):
@@ -64,3 +66,59 @@ class BaseWebTest(WebTest):
             self.fail('Object "{}" with kwargs {} does not exist'.format(
                 model, str(kwargs)
             ))
+
+
+class mute_signals(object):
+    """Temporarily disables and then restores any django signals.
+
+        Args:
+        *signals (django.dispatch.dispatcher.Signal): any django signals
+
+        Examples:
+        with mute_signals(pre_init):
+        user = UserFactory.build()
+        ...
+
+        @mute_signals(pre_save, post_save)
+        class UserFactory(factory.Factory):
+        ...
+
+        @mute_signals(post_save)
+        def generate_users():
+        UserFactory.create_batch(10)
+        """
+
+    def __init__(self, *signals):
+        self.signals = signals
+        self.paused = {}
+
+    def __enter__(self):
+        for signal in self.signals:
+            self.paused[signal] = signal.receivers
+            signal.receivers = []
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        for signal, receivers in self.paused.items():
+            signal.receivers = receivers
+        self.paused = {}
+
+    def __call__(self, callable_obj):
+        if isinstance(callable_obj, base.FactoryMetaClass):
+            # Retrieve __func__, the *actual* callable object.
+            generate_method = callable_obj._generate.__func__
+
+            @classmethod
+            @functools.wraps(generate_method)
+            def wrapped_generate(*args, **kwargs):
+                with self:
+                    return generate_method(*args, **kwargs)
+
+            callable_obj._generate = wrapped_generate
+            return callable_obj
+
+        else:
+            @functools.wraps(callable_obj)
+            def wrapper(*args, **kwargs):
+                with self:
+                    return callable_obj(*args, **kwargs)
+            return wrapper
