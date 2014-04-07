@@ -118,6 +118,7 @@ class OrganisationsManagementView(views.StaffuserRequiredMixin,
                                          kwargs=self.kwargs)
         data['comment_add_url'] = reverse('management:comment_add',
                                           kwargs=self.kwargs)
+        data['comment_delete_route'] = 'management:comment_delete'
 
         return data
 
@@ -141,6 +142,7 @@ class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
                                          kwargs=self.kwargs)
         data['comment_add_url'] = reverse('organisation_add_comment',
                                           kwargs=self.kwargs)
+        data['comment_delete_route'] = 'comment_delete'
 
         return data
 

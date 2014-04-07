@@ -30,7 +30,7 @@ urlpatterns = patterns(
         name='persons_add'),
 
     url(r'^organisations/(?P<pk>\d+)/comment/add',
-        views.CommentCreate.as_view(),
+        views.CommentManagementCreate.as_view(),
         name='comment_add'),
     url(r'^organisations/(?P<organisation_id>\d+)/comment/(?P<pk>\d+)/delete$',
         views.CommentDelete.as_view(),

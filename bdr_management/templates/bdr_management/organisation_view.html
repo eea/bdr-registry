@@ -21,7 +21,7 @@
           <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
         </td>
         <td class="action">
-          <a class='delete-link' href="{% url 'management:comment_delete' organisation_id=object.pk pk=comment.pk %}">
+          <a class='delete-link' href="{% url comment_delete_route organisation_id=object.pk pk=comment.pk %}">
             <small>Delete comment</small>
           </a>
         </td>
