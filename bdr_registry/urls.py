@@ -18,13 +18,12 @@ organisation_patterns = patterns(
     url(r'^(?P<pk>\d+)$',
         management_views.OrganisationsUpdateView.as_view(),
         name='organisation'),
-    url(r'^(?P<pk>\d+)/add_person$',
+    url(r'^(?P<pk>\d+)/persons/add$',
         management_views.PersonAdd.as_view(),
         name='organisation_add_person'),
     url(r'^(?P<pk>\d+)/update$',
         management_views.OrganisationsUpdate.as_view(),
         name='organisation_update'),
-
 )
 
 
