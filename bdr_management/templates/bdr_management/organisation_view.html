@@ -40,9 +40,7 @@
 
   <h2>Persons</h2>
   <div class="sub-actions">
-    <a href="{% url 'management:persons_add' pk=object.pk %}"
-       class="button">
-      Add a new person</a>
+    <a href="{{ person_add_url }}" class="button">Add a new person</a>
   </div>
 
   <ul>
