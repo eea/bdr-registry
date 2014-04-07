@@ -38,11 +38,11 @@ class ReadOnlyAdmin(admin.ModelAdmin):
 
         if self._user_is_readonly(request):
             self.readonly_fields = self.user_readonly
-            self.inlines = self.user_readonly_inlines
-
+            self.inlines = self._user_readonly_inlines
             extra_context = extra_context or {}
 
         else:
+            self.inlines = self._inlines
             self.readonly_fields = []
 
         return super(ReadOnlyAdmin, self).change_view(
@@ -296,7 +296,9 @@ class OrganisationAdmin(ReadOnlyAdmin):
                      'addr_street', 'addr_place1', 'addr_postalcode',
                      'addr_place2', 'website', 'eori', 'vat_number', 'country',
                      'obligation', 'account', 'comments']
-    user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
+
+    _user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
+    _inlines = [CommentInline, PersonInline]
 
     list_filter = [
         ('date_registered', admin.DateFieldListFilter),
@@ -313,7 +315,6 @@ class OrganisationAdmin(ReadOnlyAdmin):
                      'vat_number', 'eori']
     actions = [create_accounts, reset_password, create_reporting_folder]
 
-    inlines = [CommentInline, PersonInline]
 
     def get_urls(self):
         my_urls = patterns('',
@@ -361,7 +362,8 @@ class PersonAdmin(ReadOnlyAdmin):
                      'email', 'phone', 'phone2', 'phone3',
                      'fax', 'organisation']
 
-    user_readonly_inlines = []
+    _user_readonly_inlines = []
+    _inlines = []
 
     search_fields = ['first_name', 'family_name', 'email', 'phone', 'fax',
                      'organisation__name', 'organisation__account__uid']
