@@ -136,7 +136,7 @@ class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
         return reverse('organisation_update', kwargs=self.kwargs)
 
 
-class OragnisationBaseEdit(base.ModelTableViewMixin,
+class OrganisationBaseEdit(base.ModelTableViewMixin,
                            SuccessMessageMixin,
                            generic.UpdateView):
 
@@ -146,7 +146,7 @@ class OragnisationBaseEdit(base.ModelTableViewMixin,
 
 
 class OrganisationsManagementEdit(views.GroupRequiredMixin,
-                                  OragnisationBaseEdit):
+                                  OrganisationBaseEdit):
 
     group_required = 'BDR helpdesk'
 
@@ -170,7 +170,7 @@ class OrganisationsManagementEdit(views.GroupRequiredMixin,
 
 
 class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
-                          OragnisationBaseEdit):
+                          OrganisationBaseEdit):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
