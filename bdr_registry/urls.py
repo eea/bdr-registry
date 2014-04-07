@@ -26,6 +26,17 @@ organisation_patterns = patterns(
         name='organisation_update'),
 )
 
+person_patterns = patterns(
+    '',
+
+    url(r'^(?P<pk>\d+)$', management_views.PersonsUpdateView.as_view(),
+        name='person'),
+    url(r'^(?P<pk>\d+)/update$', management_views.PersonsUpdateView.as_view(),
+        name='person_update'),
+    url(r'^(?P<pk>\d+)/delete$', management_views.PersonDelete.as_view(),
+        name='person_delete'),
+)
+
 
 urlpatterns = patterns(
     '',
@@ -44,11 +55,6 @@ urlpatterns = patterns(
     url(r'^edit_organisation$',
         views.edit_organisation),
 
-    url(r'^person/(?P<pk>\d+)/update$',
-        management_views.PersonsUpdateView.as_view(),
-        name='person_update'),
-    url(r'^person/(?P<pk>\d+)/delete$', management_views.PersonDelete.as_view(),
-        name='person_delete'),
     url(r'^organisation/(?P<pk>\d+)/add_comment$',
         management_views.CommentCreate.as_view(),
         name='organisation_add_comment'),
@@ -64,5 +70,6 @@ urlpatterns = patterns(
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
     url(r'^organisation/', include(organisation_patterns)),
+    url(r'^person/', include(person_patterns)),
 )
 urlpatterns += staticfiles_urlpatterns()

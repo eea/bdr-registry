@@ -87,7 +87,7 @@ class PersonsManagementView(views.StaffuserRequiredMixin,
         return reverse('management:persons_edit', kwargs=self.kwargs)
 
 
-class PersonsUpdateView(base.OrganisationUserRequiredMixin,
+class PersonsUpdateView(base.PersonUserRequiredMixin,
                         PersonsBaseView):
 
     def get_context_data(self, **kwargs):
@@ -135,7 +135,7 @@ class PersonsManagementEdit(views.GroupRequiredMixin,
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 
-class PersonsUpdate(base.OrganisationUserRequiredMixin,
+class PersonsUpdate(base.PersonUserRequiredMixin,
                     PersonsBaseView):
 
     def get_context_data(self, **kwargs):

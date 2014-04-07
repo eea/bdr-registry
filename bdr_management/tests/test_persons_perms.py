@@ -23,11 +23,20 @@ class PersonTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
-    def test_person_view_by_anonymous_(self):
+    def test_person_view_by_anonymous(self):
         person = factories.PersonFactory()
         url = self.reverse('management:persons_view', pk=person.pk)
         resp = self.app.get(url, user=None)
         resp.follow()
+
+    def test_person_view_by_owner(self):
+        user = factories.UserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        organisation = factories.OrganisationFactory(id=100, account=account)
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person', pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
 
     def test_person_edit_by_staff(self):
         user = factories.StaffUserFactory()

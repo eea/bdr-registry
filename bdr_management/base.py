@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from bdr_registry.models import Organisation
+from bdr_registry.models import Organisation, Person
 from braces.views._access import AccessMixin
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Model
@@ -13,20 +13,20 @@ from braces.views import AjaxResponseMixin, JSONResponseMixin
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
 
 
-class OrganisationUserRequiredMixin(AccessMixin):
+class OrganisationUserRequiredBaseMixin(AccessMixin):
 
     group_required = 'BDR helpdesk'
 
     def dispatch(self, request, *args, **kwargs):
         self.request = request
-        self.organisation = get_object_or_404(Organisation, **self.kwargs)
+        self.organisation = self.get_organisation()
 
         if not self._check_perm():
             return redirect_to_login(request.get_full_path(),
                                      self.get_login_url(),
                                      self.get_redirect_field_name())
 
-        return super(OrganisationUserRequiredMixin, self) \
+        return super(OrganisationUserRequiredBaseMixin, self) \
             .dispatch(request, *args, **kwargs)
 
     def _check_perm(self):
@@ -41,6 +41,19 @@ class OrganisationUserRequiredMixin(AccessMixin):
         if account and (account.uid == self.request.user.username):
             return True
         return False
+
+
+class OrganisationUserRequiredMixin(OrganisationUserRequiredBaseMixin):
+
+    def get_organisation(self):
+        return get_object_or_404(Organisation, **self.kwargs)
+
+
+class PersonUserRequiredMixin(OrganisationUserRequiredBaseMixin):
+
+    def get_organisation(self):
+        person = get_object_or_404(Person, **self.kwargs)
+        return person.organisation
 
 
 class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
