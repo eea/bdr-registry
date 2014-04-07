@@ -7,8 +7,10 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
+
 from braces import views
 from braces.views import SuperuserRequiredMixin
+
 from bdr_management import base, forms
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.organisations import OrganisationForm
