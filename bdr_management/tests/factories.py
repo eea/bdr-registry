@@ -1,6 +1,9 @@
 import factory
 from factory import fuzzy, django
 
+from django.db.models import signals
+from .base import mute_signals
+
 
 class UserFactory(django.DjangoModelFactory):
 
@@ -28,6 +31,7 @@ class CountryFactory(django.DjangoModelFactory):
     code = 'RO'
 
 
+@mute_signals(signals.post_save)
 class OrganisationFactory(django.DjangoModelFactory):
 
     FACTORY_FOR = 'bdr_registry.Organisation'
