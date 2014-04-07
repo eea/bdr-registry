@@ -8,8 +8,7 @@
 
   <h2>Comments</h2>
   <div class="sub-actions">
-    <a href="{% url 'management:comment_add' object.pk %}" class="button">
-      Add comment</a>
+    <a href="{{ comment_add_url}}" class="button">Add comment</a>
   </div>
 
   <table class="comment no-border">
