@@ -12,23 +12,22 @@ class OrganisationTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_organisations_view_by_anonymous(self):
-        resp = self.app.get(self.reverse('management:organisations'))
-        resp.follow()
+        url = self.reverse('management:organisations')
+        resp = self.app.get(url)
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_view_by_staff(self):
         user = factories.StaffUserFactory()
         organisation = factories.OrganisationFactory()
-        url = self.reverse('management:organisations_view',
-                           pk=organisation.pk)
+        url = self.reverse('management:organisations_view', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
     def test_organisation_view_by_anonymous_(self):
         organisation = factories.OrganisationFactory()
-        url = self.reverse('management:organisations_view',
-                           pk=organisation.pk)
+        url = self.reverse('management:organisations_view', pk=organisation.pk)
         resp = self.app.get(url, user=None)
-        resp.follow()
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_view_update_by_owner(self):
         user = factories.UserFactory()
@@ -43,7 +42,7 @@ class OrganisationTests(BaseWebTest):
         organisation = factories.OrganisationFactory()
         url = self.reverse('organisation', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
-        resp.follow()
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_view_update_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -62,30 +61,28 @@ class OrganisationTests(BaseWebTest):
     def test_organisation_edit_by_staff(self):
         user = factories.StaffUserFactory()
         organisation = factories.OrganisationFactory()
-        url = self.reverse('management:organisations_edit',
-                           pk=organisation.pk)
+        url = self.reverse('management:organisations_edit', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
-        resp.follow()
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_edit_by_anonymous(self):
-        user = factories.StaffUserFactory()
+        user = factories.UserFactory()
         organisation = factories.OrganisationFactory()
-        url = self.reverse('management:organisations_edit',
-                           pk=organisation.pk)
+        url = self.reverse('management:organisations_edit', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
-        resp.follow()
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_edit_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         organisation = factories.OrganisationFactory()
-        url = self.reverse('organisation', pk=organisation.pk)
+        url = self.reverse('management:organisations_edit', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
     def test_organisation_edit_by_superuser(self):
         user = factories.SuperUserFactory()
         organisation = factories.OrganisationFactory()
-        url = self.reverse('organisation', pk=organisation.pk)
+        url = self.reverse('management:organisations_edit', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
@@ -124,10 +121,7 @@ class OrganisationTests(BaseWebTest):
         url = self.reverse('management:organisations_delete',
                            pk=organisation.pk)
         resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(
-            resp,
-            '/accounts/login/?next=/management/organisations/%s/delete'
-            % organisation.pk)
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_delete_by_anonymous(self):
         user = factories.UserFactory()
@@ -135,10 +129,7 @@ class OrganisationTests(BaseWebTest):
         url = self.reverse('management:organisations_delete',
                            pk=organisation.pk)
         resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(
-            resp,
-            '/accounts/login/?next=/management/organisations/%s/delete' %
-            organisation.pk)
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_organisation_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -147,4 +138,3 @@ class OrganisationTests(BaseWebTest):
                            pk=organisation.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, '/management/organisations')
-

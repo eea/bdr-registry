@@ -67,6 +67,8 @@ class BaseWebTest(WebTest):
                 model, str(kwargs)
             ))
 
+    def get_login_for_url(self, url):
+        return '/accounts/login/?next=' + url
 
 class mute_signals(object):
     """Temporarily disables and then restores any django signals.
