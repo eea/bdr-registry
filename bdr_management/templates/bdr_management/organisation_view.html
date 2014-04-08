@@ -21,7 +21,7 @@
           <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
         </td>
         <td class="action">
-          <a class='delete-link' href="{% url comment_delete_route organisation_id=object.pk pk=comment.pk %}">
+          <a class='delete-link' href="{% url comment_delete_route pk=comment.pk %}">
             <small>Delete comment</small>
           </a>
         </td>
@@ -46,7 +46,7 @@
 
     {% for person in object.people.all %}
       <li>
-        <a href="{% url 'management:persons_view' pk=person.pk %}">
+        <a href="{% url person_route pk=person.pk %}">
           {{ person.formal_name }}</a>
       </li>
     {% endfor %}

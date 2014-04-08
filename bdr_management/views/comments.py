@@ -52,19 +52,8 @@ class CommentCreate(CommentCreateBase,
 
 class CommentDeleteBase(generic.DeleteView):
 
-    def dispatch(self, *args, **kwargs):
-        self.organisation = get_object_or_404(
-            Organisation,
-            pk=self.kwargs['organisation_id'])
-        return super(CommentDeleteBase, self).dispatch(*args, **kwargs)
-
-    def get_success_url(self):
-        return reverse('management:organisations_view',
-                       kwargs={'pk': self.kwargs['organisation_id']})
-
     def get_object(self):
-        return get_object_or_404(Comment, pk=self.kwargs['pk'],
-                                 organisation=self.organisation)
+        return get_object_or_404(Comment, pk=self.kwargs['pk'])
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _("Comment deleted"))
@@ -75,7 +64,13 @@ class CommentManagementDelete(CommentDeleteBase, GroupRequiredMixin):
 
         group_required = 'BDR helpdesk'
 
+        def get_success_url(self):
+            return reverse('management:organisations_view',
+                           kwargs={'pk': self.object.organisation.pk})
+
 
 class CommentDelete(CommentDeleteBase, base.OrganisationUserRequiredMixin):
 
-    pass
+    def get_success_url(self):
+            return reverse('organisation',
+                           kwargs={'pk': self.object.organisation.pk})

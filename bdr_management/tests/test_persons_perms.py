@@ -90,8 +90,7 @@ class PersonTests(BaseWebTest):
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(
             resp,
-            '/accounts/login/?next=/management/persons/%s/delete'
-            % person.pk)
+            '/accounts/login/?next=/management/persons/%s/delete' % person.pk)
 
     def test_person_delete_by_anonymous(self):
         user = factories.UserFactory()
