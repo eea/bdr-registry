@@ -55,7 +55,7 @@ urlpatterns = patterns(
     url(r'^edit_organisation$',
         views.edit_organisation),
 
-    url(r'^organisation/(?P<pk>\d+)/add_comment$',
+    url(r'^organisation/(?P<pk>\d+)/comment/add',
         management_views.CommentCreate.as_view(),
         name='organisation_add_comment'),
     url(r'^organisation/all$', views.organisation_all),
