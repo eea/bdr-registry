@@ -166,30 +166,42 @@ class PersonDelete(views.GroupRequiredMixin,
         return super(PersonDelete, self).delete(request, *args, **kwargs)
 
 
-class PersonAdd(views.GroupRequiredMixin,
-                SuccessMessageMixin,
-                generic.CreateView):
+class PersonBaseAdd(SuccessMessageMixin,
+                    generic.CreateView):
 
     template_name = 'bdr_management/person_add.html'
-    group_required = 'BDR helpdesk'
     model = Person
     form_class = PersonForm
     success_message = _('Person created successfully')
 
     def dispatch(self, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation, **self.kwargs)
-        return super(PersonAdd, self).dispatch(*args, **kwargs)
-
-    def get_success_url(self):
-        return reverse('management:organisations_view', kwargs=self.kwargs)
+        return super(PersonBaseAdd, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self, **kwargs):
-        data = super(PersonAdd, self).get_form_kwargs(**kwargs)
+        data = super(PersonBaseAdd, self).get_form_kwargs(**kwargs)
         data['initial']['organisation'] = self.organisation
         return data
 
     def get_context_data(self, **kwargs):
-        context = super(PersonAdd, self).get_context_data(**kwargs)
+        context = super(PersonBaseAdd, self).get_context_data(**kwargs)
         context['title'] = 'Add a new person'
         context['object'] = self.organisation
         return context
+
+
+class PersonManagementAdd(views.GroupRequiredMixin,
+                          PersonBaseAdd):
+
+    group_required = 'BDR helpdesk'
+
+    def get_success_url(self):
+        return reverse('management:organisations_view', kwargs=self.kwargs)
+
+
+class PersonAdd(base.OrganisationUserRequiredMixin,
+                PersonBaseAdd):
+
+    def get_success_url(self):
+        return reverse('organisation', kwargs=self.kwargs)
+

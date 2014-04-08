@@ -15,25 +15,36 @@ organisation_patterns = patterns(
 
     url(r'^add$',
         views.OrganisationCreate.as_view()),
+    url(r'^all$',
+        views.organisation_all),
+
     url(r'^(?P<pk>\d+)$',
         management_views.OrganisationsUpdateView.as_view(),
         name='organisation'),
-    url(r'^(?P<pk>\d+)/persons/add$',
-        management_views.PersonAdd.as_view(),
-        name='organisation_add_person'),
     url(r'^(?P<pk>\d+)/update$',
         management_views.OrganisationsUpdate.as_view(),
         name='organisation_update'),
+
+    url(r'^(?P<pk>\d+)/persons/add$',
+        management_views.PersonAdd.as_view(),
+        name='organisation_add_person'),
+
+    url(r'^(?P<pk>\d+)/comment/add',
+        management_views.CommentCreate.as_view(),
+        name='organisation_add_comment'),
 )
 
 person_patterns = patterns(
     '',
 
-    url(r'^(?P<pk>\d+)$', management_views.PersonsUpdateView.as_view(),
+    url(r'^(?P<pk>\d+)$',
+        management_views.PersonsUpdateView.as_view(),
         name='person'),
-    url(r'^(?P<pk>\d+)/update$', management_views.PersonsUpdateView.as_view(),
+    url(r'^(?P<pk>\d+)/update$',
+        management_views.PersonsUpdateView.as_view(),
         name='person_update'),
-    url(r'^(?P<pk>\d+)/delete$', management_views.PersonDelete.as_view(),
+    url(r'^(?P<pk>\d+)/delete$',
+        management_views.PersonDelete.as_view(),
         name='person_delete'),
 )
 
@@ -53,13 +64,6 @@ urlpatterns = patterns(
     url(r'^comment/(?P<pk>\d+)/update$', views.CommentUpdate.as_view(),
         name='comment_update'),
 
-    url(r'^edit_organisation$',
-        views.edit_organisation),
-
-    url(r'^organisation/(?P<pk>\d+)/comment/add',
-        management_views.CommentCreate.as_view(),
-        name='organisation_add_comment'),
-    url(r'^organisation/all$', views.organisation_all),
     url(r'^self_register$', views.SelfRegister.as_view(),
         name='self_register'),
     url(r'^self_register/done$',
@@ -70,6 +74,7 @@ urlpatterns = patterns(
 
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
+    url(r'^edit_organisation$',views.edit_organisation),
     url(r'^organisation/', include(organisation_patterns)),
     url(r'^person/', include(person_patterns)),
 )

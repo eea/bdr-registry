@@ -26,7 +26,7 @@ urlpatterns = patterns(
         views.OrganisationDelete.as_view(),
         name='organisations_delete'),
     url(r'^organisations/(?P<pk>\d+)/persons/add$',
-        views.PersonAdd.as_view(),
+        views.PersonManagementAdd.as_view(),
         name='persons_add'),
 
     url(r'^organisations/(?P<pk>\d+)/comment/add',

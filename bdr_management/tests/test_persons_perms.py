@@ -62,6 +62,61 @@ class PersonTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
+    def test_person_management_add_by_staff(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:persons_add', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_person_management_add_by_anonymous(self):
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:persons_add', pk=organisation.pk)
+        resp = self.app.get(url)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_person_management_add_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:persons_add', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_management_add_by_superuser(self):
+        user = factories.SuperUserFactory()
+        organisation = factories.OrganisationFactory()
+        url = self.reverse('management:persons_add', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_add_by_staff(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory(id=100)
+        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_person_add_by_anonymous(self):
+        organisation = factories.OrganisationFactory(id=100)
+        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        resp = self.app.get(url)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_person_add_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory(id=100)
+        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_person_add_by_owner(self):
+        user = factories.BDRGroupUserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        organisation = factories.OrganisationFactory(id=100, account=account)
+        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
     def test_person_edit_by_staff(self):
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
@@ -99,7 +154,7 @@ class PersonTests(BaseWebTest):
         person = factories.PersonFactory()
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.get(url, user=user.username)
-        resp.follow()
+        self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_update_by_owner(self):
         user = factories.UserFactory()
