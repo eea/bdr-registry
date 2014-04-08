@@ -160,6 +160,7 @@ class PersonDelete(views.GroupRequiredMixin,
     group_required = 'BDR helpdesk'
     model = Person
     success_url = reverse_lazy('management:persons')
+    template_name = 'bdr_management/person_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _("Person deleted"))

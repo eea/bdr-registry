@@ -13,7 +13,8 @@ from braces.views import SuperuserRequiredMixin
 
 from bdr_management import base, forms
 from bdr_management.base import Breadcrumb
-from bdr_management.forms.organisations import OrganisationForm
+from bdr_management.forms.organisations import OrganisationForm, \
+    OrganisationDeleteForm
 from bdr_registry.models import Organisation
 
 
@@ -212,6 +213,12 @@ class OrganisationDelete(views.GroupRequiredMixin,
     group_required = 'BDR helpdesk'
     model = Organisation
     success_url = reverse_lazy('management:organisations')
+    template_name = 'bdr_management/organisation_confirm_delete.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(OrganisationDelete, self).get_context_data(**kwargs)
+        context['form'] = OrganisationDeleteForm()
+        return context
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _('Organisation deleted'))
