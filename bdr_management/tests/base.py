@@ -68,7 +68,7 @@ class BaseWebTest(WebTest):
             ))
 
     def get_login_for_url(self, url):
-        return '/accounts/login/?next=' + url
+        return '%s?next=%s' % (self.reverse('login'), url)
 
 class mute_signals(object):
     """Temporarily disables and then restores any django signals.
