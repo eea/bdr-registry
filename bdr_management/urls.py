@@ -49,6 +49,6 @@ urlpatterns = patterns(
         views.PersonManagementUpdate.as_view(),
         name='persons_edit'),
     url(r'^persons/(?P<pk>\d+)/delete',
-        views.PersonDelete.as_view(),
+        views.PersonManagementDelete.as_view(),
         name='persons_delete'),
 )

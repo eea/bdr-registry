@@ -74,9 +74,6 @@ class PersonBaseView(base.ModelTableViewMixin,
     model = Person
     exclude = ('id', )
 
-    def get_delete_url(self):
-        return reverse('management:persons_delete', kwargs=self.kwargs)
-
 
 class PersonManagementView(views.StaffuserRequiredMixin,
                            PersonBaseView):
@@ -95,6 +92,9 @@ class PersonManagementView(views.StaffuserRequiredMixin,
     def get_edit_url(self):
         return reverse('management:persons_edit', kwargs=self.kwargs)
 
+    def get_delete_url(self):
+        return reverse('management:persons_delete', kwargs=self.kwargs)
+
 
 class PersonView(base.PersonUserRequiredMixin,
                  PersonBaseView):
@@ -110,6 +110,9 @@ class PersonView(base.PersonUserRequiredMixin,
 
     def get_edit_url(self):
         return reverse('person_update', kwargs=self.kwargs)
+
+    def get_delete_url(self):
+        return reverse('person_delete', kwargs=self.kwargs)
 
 
 class PersonUpdateBase(base.ModelTableViewMixin,
@@ -162,18 +165,31 @@ class PersonUpdate(base.PersonUserRequiredMixin,
         return reverse('person', kwargs=self.kwargs)
 
 
-class PersonDelete(views.GroupRequiredMixin,
-                   base.ModelTableEditMixin,
-                   generic.DeleteView):
+class PersonDeleteBase(base.ModelTableEditMixin,
+                       generic.DeleteView):
 
-    group_required = 'BDR helpdesk'
     model = Person
-    success_url = reverse_lazy('management:persons')
     template_name = 'bdr_management/person_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _("Person deleted"))
-        return super(PersonDelete, self).delete(request, *args, **kwargs)
+        return super(PersonDeleteBase, self).delete(request, *args, **kwargs)
+
+
+class PersonManagementDelete(views.GroupRequiredMixin,
+                             PersonDeleteBase):
+
+    group_required = 'BDR helpdesk'
+    success_url = reverse_lazy('management:persons')
+
+
+class PersonDelete(base.PersonUserRequiredMixin,
+                   PersonDeleteBase):
+
+    group_required = 'BDR helpdesk'
+
+    def get_success_url(self):
+        return reverse('organisation', kwargs={'pk': self.organisation.pk})
 
 
 class PersonCreateBase(SuccessMessageMixin,
