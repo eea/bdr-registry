@@ -19,6 +19,15 @@ class Persons(views.StaffuserRequiredMixin,
 
     template_name = 'bdr_management/persons.html'
 
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb('', _('Persons')),
+        ]
+        data = super(Persons, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
 
 class PersonsFilter(views.StaffuserRequiredMixin,
                     base.FilterView):
@@ -205,4 +214,3 @@ class PersonAdd(base.OrganisationUserRequiredMixin,
 
     def get_success_url(self):
         return reverse('organisation', kwargs=self.kwargs)
-

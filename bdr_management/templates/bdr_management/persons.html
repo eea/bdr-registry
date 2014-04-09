@@ -2,19 +2,6 @@
 {% load utils %}
 
 
-{% block breadcrumbs %}
-
-  <div class="breadcrumbitem">
-    <a href="{% url 'home' %}">Registry</a>
-  </div>
-
-  <div class="breadcrumbitemlast">
-    Persons
-  </div>
-
-{% endblock %}
-
-
 {% block content %}
 
   {% url 'management:persons_filter' as url %}
