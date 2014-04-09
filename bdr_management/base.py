@@ -46,13 +46,13 @@ class OrganisationUserRequiredBaseMixin(AccessMixin):
 class OrganisationUserRequiredMixin(OrganisationUserRequiredBaseMixin):
 
     def get_organisation(self):
-        return get_object_or_404(Organisation, **self.kwargs)
+        return get_object_or_404(Organisation, pk=self.kwargs['pk'])
 
 
 class PersonUserRequiredMixin(OrganisationUserRequiredBaseMixin):
 
     def get_organisation(self):
-        person = get_object_or_404(Person, **self.kwargs)
+        person = get_object_or_404(Person, pk=self.kwargs['pk'])
         return person.organisation
 
 

@@ -76,6 +76,7 @@ class CommentCreate(base.OrganisationUserRequiredMixin,
 class CommentDeleteBase(generic.DeleteView):
 
     pk_url_kwarg = 'comment_pk'
+    model = Comment
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation,
