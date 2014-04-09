@@ -145,10 +145,8 @@ class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
 
-        data['person_add_url'] = reverse('organisation_add_person',
-                                         kwargs=self.kwargs)
-        data['comment_add_url'] = reverse('organisation_add_comment',
-                                          kwargs=self.kwargs)
+        data['person_add_url'] = reverse('person_add', kwargs=self.kwargs)
+        data['comment_add_url'] = reverse('comment_add', kwargs=self.kwargs)
         data['comment_delete_route'] = 'comment_delete'
         data['person_route'] = 'person'
 

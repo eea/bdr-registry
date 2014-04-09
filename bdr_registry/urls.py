@@ -27,11 +27,11 @@ organisation_patterns = patterns(
 
     url(r'^(?P<pk>\d+)/persons/add$',
         management_views.PersonAdd.as_view(),
-        name='organisation_add_person'),
+        name='person_add'),
 
     url(r'^(?P<pk>\d+)/comment/add',
         management_views.CommentCreate.as_view(),
-        name='organisation_add_comment'),
+        name='comment_add'),
     url(r'^(?P<pk>\d+)/comment/(?P<comment_pk>\d+)/delete$',
         management_views.CommentDelete.as_view(),
         name='comment_delete'),
@@ -60,7 +60,6 @@ urlpatterns = patterns(
         {'template_name': 'login.html'},
         name='login'),
     url(r'^accounts/logout/$', views.logout_view, name='logout'),
-    url(r'^admin/', include(admin.site.urls)),
 
     url(r'^self_register$', views.SelfRegister.as_view(),
         name='self_register'),
@@ -75,5 +74,6 @@ urlpatterns = patterns(
     url(r'^edit_organisation$',views.edit_organisation),
     url(r'^organisation/', include(organisation_patterns)),
     url(r'^person/', include(person_patterns)),
+    url(r'^admin/', include(admin.site.urls)),
 )
 urlpatterns += staticfiles_urlpatterns()

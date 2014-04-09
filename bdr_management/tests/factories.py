@@ -86,3 +86,13 @@ class PersonFactory(django.DjangoModelFactory):
     email = factory.Sequence(lambda n: 'person_%d@eaudeweb.ro' % n)
     phone = fuzzy.FuzzyText()
     organisation = factory.SubFactory(OrganisationFactory)
+
+
+class CommentFactory(django.DjangoModelFactory):
+
+    FACTORY_FOR = 'bdr_registry.Comment'
+
+    text = fuzzy.FuzzyText()
+    organisation = factory.SubFactory(OrganisationFactory)
+
+

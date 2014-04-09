@@ -96,7 +96,7 @@ class CommentManagementDelete(GroupRequiredMixin,
 
     def get_success_url(self):
         return reverse('management:organisations_view',
-                        kwargs={'pk': self.organisation.pk})
+                       kwargs={'pk': self.organisation.pk})
 
 
 class CommentDelete(base.OrganisationUserRequiredMixin,

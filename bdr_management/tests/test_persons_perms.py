@@ -92,20 +92,20 @@ class PersonTests(BaseWebTest):
     def test_person_add_by_staff(self):
         user = factories.StaffUserFactory()
         organisation = factories.OrganisationFactory(id=100)
-        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        url = self.reverse('person_add', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_add_by_anonymous(self):
         organisation = factories.OrganisationFactory(id=100)
-        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        url = self.reverse('person_add', pk=organisation.pk)
         resp = self.app.get(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_add_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         organisation = factories.OrganisationFactory(id=100)
-        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        url = self.reverse('person_add', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
@@ -113,7 +113,7 @@ class PersonTests(BaseWebTest):
         user = factories.BDRGroupUserFactory()
         account = factories.AccountFactory(uid=user.username)
         organisation = factories.OrganisationFactory(id=100, account=account)
-        url = self.reverse('organisation_add_person', pk=organisation.pk)
+        url = self.reverse('person_add', pk=organisation.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
