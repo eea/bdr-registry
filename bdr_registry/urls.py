@@ -26,7 +26,7 @@ organisation_patterns = patterns(
         name='organisation_update'),
 
     url(r'^(?P<pk>\d+)/persons/add$',
-        management_views.PersonAdd.as_view(),
+        management_views.PersonCreate.as_view(),
         name='person_add'),
 
     url(r'^(?P<pk>\d+)/comment/add',
@@ -41,10 +41,10 @@ person_patterns = patterns(
     '',
 
     url(r'^(?P<pk>\d+)$',
-        management_views.PersonsUpdateView.as_view(),
+        management_views.PersonView.as_view(),
         name='person'),
     url(r'^(?P<pk>\d+)/update$',
-        management_views.PersonsUpdate.as_view(),
+        management_views.PersonUpdate.as_view(),
         name='person_update'),
     url(r'^(?P<pk>\d+)/delete$',
         management_views.PersonDelete.as_view(),

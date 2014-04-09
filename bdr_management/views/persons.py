@@ -67,8 +67,8 @@ class PersonsFilter(views.StaffuserRequiredMixin,
         return queryset[opt['offset']: opt['limit']]
 
 
-class PersonsBaseView(base.ModelTableViewMixin,
-                      generic.DetailView):
+class PersonBaseView(base.ModelTableViewMixin,
+                     generic.DetailView):
 
     template_name = 'bdr_management/person_view.html'
     model = Person
@@ -78,8 +78,8 @@ class PersonsBaseView(base.ModelTableViewMixin,
         return reverse('management:persons_delete', kwargs=self.kwargs)
 
 
-class PersonsManagementView(views.StaffuserRequiredMixin,
-                            PersonsBaseView):
+class PersonManagementView(views.StaffuserRequiredMixin,
+                           PersonBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -88,7 +88,7 @@ class PersonsManagementView(views.StaffuserRequiredMixin,
                        _('Persons')),
             Breadcrumb('', self.object)
         ]
-        data = super(PersonsManagementView, self).get_context_data(**kwargs)
+        data = super(PersonManagementView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
@@ -96,15 +96,15 @@ class PersonsManagementView(views.StaffuserRequiredMixin,
         return reverse('management:persons_edit', kwargs=self.kwargs)
 
 
-class PersonsUpdateView(base.PersonUserRequiredMixin,
-                        PersonsBaseView):
+class PersonView(base.PersonUserRequiredMixin,
+                 PersonBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb('', self.object)
         ]
-        data = super(PersonsUpdateView, self).get_context_data(**kwargs)
+        data = super(PersonView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
@@ -112,17 +112,17 @@ class PersonsUpdateView(base.PersonUserRequiredMixin,
         return reverse('person_update', kwargs=self.kwargs)
 
 
-class PersonBaseEdit(base.ModelTableViewMixin,
-                     SuccessMessageMixin,
-                     generic.UpdateView):
+class PersonUpdateBase(base.ModelTableViewMixin,
+                       SuccessMessageMixin,
+                       generic.UpdateView):
 
     template_name = 'bdr_management/person_edit.html'
     model = Person
     success_message = _('Person edited successfully')
 
 
-class PersonsManagementEdit(views.GroupRequiredMixin,
-                            PersonBaseEdit):
+class PersonManagementUpdate(views.GroupRequiredMixin,
+                             PersonUpdateBase):
 
     group_required = 'BDR helpdesk'
 
@@ -136,7 +136,7 @@ class PersonsManagementEdit(views.GroupRequiredMixin,
                        self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(PersonsManagementEdit, self).get_context_data(**kwargs)
+        data = super(PersonManagementUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
@@ -144,8 +144,8 @@ class PersonsManagementEdit(views.GroupRequiredMixin,
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 
-class PersonsUpdate(base.PersonUserRequiredMixin,
-                    PersonBaseEdit):
+class PersonUpdate(base.PersonUserRequiredMixin,
+                   PersonUpdateBase):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -154,7 +154,7 @@ class PersonsUpdate(base.PersonUserRequiredMixin,
                        self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(PersonsUpdate, self).get_context_data(**kwargs)
+        data = super(PersonUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
@@ -176,8 +176,8 @@ class PersonDelete(views.GroupRequiredMixin,
         return super(PersonDelete, self).delete(request, *args, **kwargs)
 
 
-class PersonBaseAdd(SuccessMessageMixin,
-                    generic.CreateView):
+class PersonCreateBase(SuccessMessageMixin,
+                       generic.CreateView):
 
     template_name = 'bdr_management/person_add.html'
     model = Person
@@ -186,22 +186,22 @@ class PersonBaseAdd(SuccessMessageMixin,
 
     def dispatch(self, *args, **kwargs):
         self.organisation = get_object_or_404(Organisation, **self.kwargs)
-        return super(PersonBaseAdd, self).dispatch(*args, **kwargs)
+        return super(PersonCreateBase, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self, **kwargs):
-        data = super(PersonBaseAdd, self).get_form_kwargs(**kwargs)
+        data = super(PersonCreateBase, self).get_form_kwargs(**kwargs)
         data['initial']['organisation'] = self.organisation
         return data
 
     def get_context_data(self, **kwargs):
-        context = super(PersonBaseAdd, self).get_context_data(**kwargs)
+        context = super(PersonCreateBase, self).get_context_data(**kwargs)
         context['title'] = 'Add a new person'
         context['object'] = self.organisation
         return context
 
 
-class PersonManagementAdd(views.GroupRequiredMixin,
-                          PersonBaseAdd):
+class PersonManagementCreate(views.GroupRequiredMixin,
+                             PersonCreateBase):
 
     group_required = 'BDR helpdesk'
 
@@ -217,13 +217,13 @@ class PersonManagementAdd(views.GroupRequiredMixin,
                        self.organisation),
             Breadcrumb('', _('Add comment'))
         ]
-        data = super(PersonManagementAdd, self).get_context_data(**kwargs)
+        data = super(PersonManagementCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
 
-class PersonAdd(base.OrganisationUserRequiredMixin,
-                PersonBaseAdd):
+class PersonCreate(base.OrganisationUserRequiredMixin,
+                   PersonCreateBase):
 
     def get_success_url(self):
         return reverse('organisation', kwargs=self.kwargs)
@@ -235,6 +235,6 @@ class PersonAdd(base.OrganisationUserRequiredMixin,
                        self.organisation),
             Breadcrumb('', _('Add person'))
         ]
-        data = super(PersonAdd, self).get_context_data(**kwargs)
+        data = super(PersonCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
