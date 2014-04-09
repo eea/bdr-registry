@@ -32,6 +32,9 @@ organisation_patterns = patterns(
     url(r'^(?P<pk>\d+)/comment/add',
         management_views.CommentCreate.as_view(),
         name='organisation_add_comment'),
+    url(r'^(?P<pk>\d+)/comment/(?P<comment_pk>\d+)/delete$',
+        management_views.CommentDelete.as_view(),
+        name='comment_delete'),
 )
 
 person_patterns = patterns(
@@ -58,11 +61,6 @@ urlpatterns = patterns(
         name='login'),
     url(r'^accounts/logout/$', views.logout_view, name='logout'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^comment/(?P<pk>\d+)/delete$',
-        management_views.CommentDelete.as_view(),
-        name='comment_delete'),
-    url(r'^comment/(?P<pk>\d+)/update$', views.CommentUpdate.as_view(),
-        name='comment_update'),
 
     url(r'^self_register$', views.SelfRegister.as_view(),
         name='self_register'),

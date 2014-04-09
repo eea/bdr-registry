@@ -39,8 +39,8 @@ class CommentCreateBase(SuccessMessageMixin,
         return context
 
 
-class CommentManagementCreate(CommentCreateBase,
-                              GroupRequiredMixin):
+class CommentManagementCreate(GroupRequiredMixin,
+                              CommentCreateBase):
 
     group_required = 'BDR helpdesk'
 
@@ -58,8 +58,8 @@ class CommentManagementCreate(CommentCreateBase,
         return data
 
 
-class CommentCreate(CommentCreateBase,
-                    base.OrganisationUserRequiredMixin):
+class CommentCreate(base.OrganisationUserRequiredMixin,
+                    CommentCreateBase):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -75,25 +75,31 @@ class CommentCreate(CommentCreateBase,
 
 class CommentDeleteBase(generic.DeleteView):
 
-    def get_object(self):
-        return get_object_or_404(Comment, pk=self.kwargs['pk'])
+    pk_url_kwarg = 'comment_pk'
+
+    def dispatch(self, request, *args, **kwargs):
+        self.organisation = get_object_or_404(Organisation,
+                                              pk=self.kwargs['pk'])
+        return super(CommentDeleteBase, self).dispatch(request, *args,
+                                                       **kwargs)
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _("Comment deleted"))
         return super(CommentDeleteBase, self).delete(request, *args, **kwargs)
 
 
-class CommentManagementDelete(CommentDeleteBase, GroupRequiredMixin):
+class CommentManagementDelete(GroupRequiredMixin,
+                              CommentDeleteBase):
 
-        group_required = 'BDR helpdesk'
-
-        def get_success_url(self):
-            return reverse('management:organisations_view',
-                           kwargs={'pk': self.object.organisation.pk})
-
-
-class CommentDelete(CommentDeleteBase, base.OrganisationUserRequiredMixin):
+    group_required = 'BDR helpdesk'
 
     def get_success_url(self):
-            return reverse('organisation',
-                           kwargs={'pk': self.object.organisation.pk})
+        return reverse('management:organisations_view',
+                        kwargs={'pk': self.organisation.pk})
+
+
+class CommentDelete(base.OrganisationUserRequiredMixin,
+                    CommentDeleteBase):
+
+    def get_success_url(self):
+        return reverse('organisation', kwargs={'pk': self.organisation.pk})
