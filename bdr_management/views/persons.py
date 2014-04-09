@@ -145,7 +145,7 @@ class PersonsManagementEdit(views.GroupRequiredMixin,
 
 
 class PersonsUpdate(base.PersonUserRequiredMixin,
-                    PersonsBaseView):
+                    PersonBaseEdit):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [

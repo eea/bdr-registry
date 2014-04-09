@@ -44,7 +44,7 @@ person_patterns = patterns(
         management_views.PersonsUpdateView.as_view(),
         name='person'),
     url(r'^(?P<pk>\d+)/update$',
-        management_views.PersonsUpdateView.as_view(),
+        management_views.PersonsUpdate.as_view(),
         name='person_update'),
     url(r'^(?P<pk>\d+)/delete$',
         management_views.PersonDelete.as_view(),
