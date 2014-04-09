@@ -97,9 +97,6 @@ class OrganisationsBaseView(base.ModelTableViewMixin,
     model = Organisation
     exclude = ('id', )
 
-    def get_delete_url(self):
-        return reverse('management:organisations_delete', kwargs=self.kwargs)
-
 
 class OrganisationsManagementView(views.StaffuserRequiredMixin,
                                   OrganisationsBaseView):
@@ -126,6 +123,9 @@ class OrganisationsManagementView(views.StaffuserRequiredMixin,
 
     def get_edit_url(self):
         return reverse('management:organisations_edit', kwargs=self.kwargs)
+
+    def get_delete_url(self):
+        return reverse('management:organisations_delete', kwargs=self.kwargs)
 
 
 class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
