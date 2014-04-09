@@ -1,27 +1,6 @@
 {% extends 'bdr_management/_management_base.html' %}
 {% load utils %}
 
-{% block breadcrumbs %}
-
-  <div class="breadcrumbitem">
-    <a href="{% url 'home' %}">Registry</a>
-  </div>
-
-  <div class="breadcrumbitem">
-    <a href="{% url 'management:organisations' %}">
-      Organisations</a>
-  </div>
-
-  <div class="breadcrumbitem">
-    <a href="{% url 'management:organisations_view' pk=object.pk %}">
-      {{ object }}</a>
-  </div>
-
-  <div class="breadcrumbitemlast">
-    Delete organisation
-  </div>
-
-{% endblock %}
 
 {% block content %}
 

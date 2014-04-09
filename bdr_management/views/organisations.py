@@ -24,7 +24,12 @@ class Organisations(views.StaffuserRequiredMixin,
     template_name = 'bdr_management/organisations.html'
 
     def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb('', _('Organisations'))
+        ]
         context = super(Organisations, self).get_context_data(**kwargs)
+        context['breadcrumbs'] = breadcrumbs
         context['form'] = forms.OrganisationFilters()
         return context
 
@@ -216,7 +221,16 @@ class OrganisationDelete(views.GroupRequiredMixin,
     template_name = 'bdr_management/organisation_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations_view',
+                               kwargs={'pk': self.object.pk}),
+                       self.object),
+            Breadcrumb('', _('Delete organisation'))
+        ]
         context = super(OrganisationDelete, self).get_context_data(**kwargs)
+        context['breadcrumbs'] = breadcrumbs
         context['form'] = OrganisationDeleteForm()
         return context
 
@@ -238,6 +252,12 @@ class OrganisationAdd(SuperuserRequiredMixin,
         return reverse('management:organisations')
 
     def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb('', _('Add organisation'))
+        ]
         context = super(OrganisationAdd, self).get_context_data(**kwargs)
+        context['breadcrumbs'] = breadcrumbs
         context['title'] = 'Add a new organisation'
         return context
