@@ -1,3 +1,4 @@
+from bdr_management.base import Breadcrumb
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse
@@ -43,11 +44,33 @@ class CommentManagementCreate(CommentCreateBase,
 
     group_required = 'BDR helpdesk'
 
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations_view',
+                               kwargs=self.kwargs),
+                       self.organisation),
+            Breadcrumb('', _('Add comment'))
+        ]
+        data = super(CommentManagementCreate, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
 
 class CommentCreate(CommentCreateBase,
                     base.OrganisationUserRequiredMixin):
 
-    pass
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('organisation', kwargs=self.kwargs),
+                       self.organisation),
+            Breadcrumb('', _('Add comment'))
+        ]
+        data = super(CommentCreate, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
 
 
 class CommentDeleteBase(generic.DeleteView):
