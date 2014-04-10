@@ -76,6 +76,16 @@ class OrganisationFactory(django.DjangoModelFactory):
     country = factory.SubFactory(CountryFactory)
 
 
+class OrganisationWithAccountFactory(OrganisationFactory):
+
+    @factory.post_generation
+    def account(self, create, extracted, **kwargs):
+        if not create:
+            return
+        user = extracted or SuperUserFactory()
+        self.account = AccountFactory(uid=user.username)
+
+
 class PersonFactory(django.DjangoModelFactory):
 
     FACTORY_FOR = 'bdr_registry.Person'

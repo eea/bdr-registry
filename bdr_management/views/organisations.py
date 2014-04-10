@@ -8,6 +8,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
 from django.http import Http404
+from djang.shortcuts import redirect
 
 from braces import views
 from braces.views import SuperuserRequiredMixin
@@ -222,7 +223,8 @@ class OrganisationDelete(views.GroupRequiredMixin,
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations'),
+                       _('Organisations')),
             Breadcrumb(reverse('management:organisations_view',
                                kwargs={'pk': self.object.pk}),
                        self.object),
@@ -253,7 +255,8 @@ class OrganisationAdd(SuperuserRequiredMixin,
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:organisations'),
+                       _('Organisations')),
             Breadcrumb('', _('Add organisation'))
         ]
         context = super(OrganisationAdd, self).get_context_data(**kwargs)
@@ -274,11 +277,18 @@ class ResetPassowrd(views.GroupRequiredMixin,
         resp = super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
         if not self.object.account:
             raise Http404
+        return resp
 
     def post(self, request, pk):
         self.object.account.set_random_password()
         counters = backend.sync_accounts_with_ldap([self.object.account])
-        msg = _('%d passwords have been reset. LDAP: %r.') % (n, counters)
+        msg = _('Password have been reset. LDAP: %r.') % counters
         messages.success(request, msg)
-        return redirect('management:organisations_view', pk=self.object.pk)
 
+        if request.POST.get('perform_send'):
+            n = backend.send_password_email_to_people([self.object])
+            messages.success(
+                request,
+                'Emails have been sent to %d people.' % n
+            )
+        return redirect('management:organisations_view', pk=self.object.pk)
