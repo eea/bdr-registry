@@ -1,11 +1,12 @@
-import bdr_management
-from bdr_registry.models import Organisation
 import re
 from datetime import datetime
+
 from django import template
 from django.conf import settings
 from django.template.defaultfilters import urlize
 
+import bdr_management
+from bdr_registry.models import Organisation
 
 register = template.Library()
 numeric_test = re.compile('^\d+$')
@@ -42,5 +43,5 @@ def has_permission(user, object):
     else:
         organisation = object.organisation
 
-    return bdr_management.has_permission(user, organisation)
+    return bdr_management.base.has_permission(user, organisation)
 
