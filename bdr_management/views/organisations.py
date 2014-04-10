@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
 from django.http import Http404
-from djang.shortcuts import redirect
+from django.shortcuts import redirect
 
 from braces import views
 from braces.views import SuperuserRequiredMixin

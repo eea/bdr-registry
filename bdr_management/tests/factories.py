@@ -25,7 +25,7 @@ class StaffUserFactory(UserFactory):
 
 class SuperUserFactory(UserFactory):
 
-    username = 'admmin'
+    username = 'admin'
     is_staff = True
     is_superuser = True
 
