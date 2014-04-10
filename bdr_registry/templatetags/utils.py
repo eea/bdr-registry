@@ -1,3 +1,4 @@
+import bdr_management
 from bdr_registry.models import Organisation
 import re
 from datetime import datetime
@@ -41,16 +42,5 @@ def has_permission(user, object):
     else:
         organisation = object.organisation
 
-    if user.is_superuser:
-        return True
-
-    required_group = settings.BDR_HELPDESK_GROUP
-    if required_group in user.groups.values_list('name', flat=True):
-        return True
-
-    account = organisation.account
-    if account and (account.uid == user.username):
-        return True
-
-    return False
+    return bdr_management.has_permission(user, organisation)
 

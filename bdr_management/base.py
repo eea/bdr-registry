@@ -22,26 +22,13 @@ class OrganisationUserRequiredBaseMixin(AccessMixin):
         self.request = request
         self.organisation = self.get_organisation()
 
-        if not self._check_perm():
+        if not has_permission(self.request.user, self.organisation):
             return redirect_to_login(request.get_full_path(),
                                      self.get_login_url(),
                                      self.get_redirect_field_name())
 
         return super(OrganisationUserRequiredBaseMixin, self) \
             .dispatch(request, *args, **kwargs)
-
-    def _check_perm(self):
-        if self.request.user.is_superuser:
-            return True
-
-        group = self.group_required
-        if group in self.request.user.groups.values_list('name', flat=True):
-            return True
-
-        account = self.organisation.account
-        if account and (account.uid == self.request.user.username):
-            return True
-        return False
 
 
 class OrganisationUserRequiredMixin(OrganisationUserRequiredBaseMixin):
@@ -173,3 +160,19 @@ class ModelTableEditMixin(ModelTableMixin):
 class ModelTableViewMixin(ModelTableMixin):
 
     template_name = 'bdr_management/_view.html'
+
+
+def has_permission(user, organisation):
+
+    if user.is_superuser:
+        return True
+
+    required_group = settings.BDR_HELPDESK_GROUP
+    if required_group in user.groups.values_list('name', flat=True):
+        return True
+
+    account = organisation.account
+    if account and (account.uid == user.username):
+        return True
+
+    return False
