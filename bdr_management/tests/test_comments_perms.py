@@ -140,7 +140,6 @@ class CommentTests(BaseWebTest):
         self.assertRedirects(resp, success_url)
 
     def test_comment_delete_by_anonymous(self):
-        user = factories.UserFactory()
         organisation = factories.OrganisationFactory()
         comment = factories.CommentFactory(organisation=organisation)
         url = self.reverse('comment_delete', pk=organisation.pk,
