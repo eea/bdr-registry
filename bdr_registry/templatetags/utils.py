@@ -30,3 +30,15 @@ def process_field(value):
     if isinstance(value, datetime):
         return value.strftime(settings.DATE_FORMAT)
     return urlize(value)
+
+
+@register.filter
+def group_required(user, group_name):
+    if user.is_superuser:
+        return True
+
+    if group_name in user.groups.values_list('name', flat=True):
+        return True
+
+    return False
+
