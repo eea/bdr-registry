@@ -115,7 +115,7 @@ class PersonView(base.PersonUserRequiredMixin,
         return reverse('person_delete', kwargs=self.kwargs)
 
 
-class PersonUpdateBase(base.ModelTableViewMixin,
+class PersonEditBase(base.ModelTableViewMixin,
                        SuccessMessageMixin,
                        generic.UpdateView):
 
@@ -124,8 +124,8 @@ class PersonUpdateBase(base.ModelTableViewMixin,
     success_message = _('Person edited successfully')
 
 
-class PersonManagementUpdate(views.GroupRequiredMixin,
-                             PersonUpdateBase):
+class PersonManagementEdit(views.GroupRequiredMixin,
+                             PersonEditBase):
 
     group_required = 'BDR helpdesk'
 
@@ -139,7 +139,7 @@ class PersonManagementUpdate(views.GroupRequiredMixin,
                        self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(PersonManagementUpdate, self).get_context_data(**kwargs)
+        data = super(PersonManagementEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 
@@ -147,8 +147,11 @@ class PersonManagementUpdate(views.GroupRequiredMixin,
         return reverse('management:persons_view', kwargs=self.kwargs)
 
 
-class PersonUpdate(base.PersonUserRequiredMixin,
-                   PersonUpdateBase):
+class PersonEdit(base.PersonUserRequiredMixin,
+                 PersonEditBase):
+
+    fields = ('title', 'family_name', 'first_name', 'email', 'phone',
+              'phone2', 'phone3', 'fax')
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -157,7 +160,7 @@ class PersonUpdate(base.PersonUserRequiredMixin,
                        self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(PersonUpdate, self).get_context_data(**kwargs)
+        data = super(PersonEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         return data
 

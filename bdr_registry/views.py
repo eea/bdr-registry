@@ -277,7 +277,7 @@ class PersonUpdate(UpdateView):
     def form_valid(self, form):
         messages.add_message(self.request, messages.INFO,
                              u"Details saved: %s" % self.object)
-        return super(PersonUpdate, self).form_valid(form)
+        return super(PersonEdit, self).form_valid(form)
 
 
 class PersonDelete(DeleteView):
