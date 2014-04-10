@@ -202,3 +202,38 @@ class PersonTests(BaseWebTest):
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+
+    def test_person_delete_by_staff_user(self):
+        user = factories.StaffUserFactory()
+        organisation = factories.OrganisationFactory()
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person_delete', pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_person_delete_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        organisation = factories.OrganisationFactory()
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person_delete', pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        success_url = self.reverse('organisation', pk=organisation.pk)
+        self.assertRedirects(resp, success_url)
+
+    def test_person_delete_by_owner(self):
+        user = factories.UserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        organisation = factories.OrganisationFactory(account=account)
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person_delete', pk=person.pk)
+        resp = self.app.delete(url, user=user.username)
+        success_url = self.reverse('organisation', pk=organisation.pk)
+
+        self.assertRedirects(resp, success_url)
+
+    def test_person_delete_by_anonymous(self):
+        organisation = factories.OrganisationFactory()
+        person = factories.PersonFactory(organisation=organisation)
+        url = self.reverse('person_delete', pk=person.pk)
+        resp = self.app.delete(url)
+        self.assertRedirects(resp, self.get_login_for_url(url))
