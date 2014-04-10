@@ -1,10 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+{% load i18n %}
+
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
   <head>
 
    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-   <title>BDR Company Registry</title>
+   <title>{% trans "BDR Company Registry" %}</title>
    <script src="https://bdr.eionet.europa.eu/styles/pageops.js"></script>
    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
    <link rel="stylesheet"
@@ -32,18 +35,18 @@
     <div id="container">
       <div id="toolribbon">
         <div id="lefttools">
-          <a id="eealink" href="http://www.eea.europa.eu/">EEA</a>
-          <a id="ewlink" href="http://ew.eea.europa.eu/">EnviroWindows</a>
+          <a id="eealink" href="http://www.eea.europa.eu/">{% trans "EEA" %}</a>
+          <a id="ewlink" href="http://ew.eea.europa.eu/">{% trans "EnviroWindows" %}</a>
         </div>
         <div id="righttools">
           {% if user.is_anonymous %}
-            <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">Login</a>
+            <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
           {% else %}
             <a id="logoutlink" href="{% url 'logout' %}"
-              >Logout ({{ user.username }})</a>
+              >{% trans "Logout" %} ({{ user.username }})</a>
           {% endif %}
-          <a id="printlink" title="Print this page" href="javascript:this.print();"><span>Print</span></a>
-          <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="Switch to/from full screen mode"><span>Switch to/from full screen mode</span></a>
+          <a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>
+          <a id="fullscreenlink" href="javascript:toggleFullScreenMode()" title="{% trans 'Switch to/from full screen mode' %}"><span>{% trans "Switch to/from full screen mode" %}</span></a>
 <!--
           <form action="search" method="get"><div id="freesrchform"><label for="freesrchfld">Search</label>
             <input type="text" id="freesrchfld" name="q"/>
@@ -53,9 +56,9 @@
       </div> <!-- toolribbon -->
       <div id="pagehead">
         <a href="/" accesskey="1"><img src="https://bdr.eionet.europa.eu/styles/eea-print-logo.gif" alt="Logo" id="logo" /></a>
-        <div id="networktitle">Eionet</div>
-        <div id="sitetitle">Data reporting for business</div>
-        <div id="sitetagline">This site is part of the Reportnet</div>
+        <div id="networktitle">{% trans 'Eionet' %}</div>
+        <div id="sitetitle">{% trans "Data reporting for business" %}</div>
+        <div id="sitetagline">{% trans "This site is part of the Reportnet" %}</div>
       </div> <!-- page head -->
       <div id="menuribbon">
 <!-- Last updated: 2011-03-01T10:41:29Z
@@ -68,12 +71,12 @@
 
 <div class="breadcrumbtrail">
 
-  <div class="breadcrumbhead">You are here:</div>
+  <div class="breadcrumbhead">{% trans "You are here:" %}</div>
   <div class="breadcrumbitem eionetaccronym">
-    <a href="http://www.eionet.europa.eu/">Eionet</a>
+    <a href="http://www.eionet.europa.eu/">{% trans "Eionet" %}</a>
   </div>
   <div class="breadcrumbitem">
-    <a href="https://bdr.eionet.europa.eu">BDR</a>
+    <a href="https://bdr.eionet.europa.eu">{% trans "BDR" %}</a>
   </div>
 
   {% block breadcrumbs %}
@@ -87,7 +90,7 @@
         {% endif %}
       </div>
     {% empty %}
-      <div class="breadcrumbitemlast">Registry</div>
+      <div class="breadcrumbitemlast">{% trans "Registry" %}</div>
     {% endfor %}
 
   {% endblock %}
@@ -99,25 +102,25 @@
 
   <h2>Services</h2>
   <ul>
-    <li><a href="/" title="BDR home">BDR home</a></li>
-    <li><a href="/searchdataflow" title="Search">Search</a></li>
-    <li><a href="/help" title="Introduction to Reportnet Repository">Help</a></li>
-    <li><a href="/selfregister" title="Create an account to report statistics">Self-registration</a></li>
+    <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
+    <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
+    <li><a href="/help" title="{% trans 'Introduction to Reportnet Repository' %}">{% trans "Help" %}</a></li>
+    <li><a href="/selfregister" title="{% trans 'Create an account to report statistics' %}">{% trans "Self-registration" %}</a></li>
     {% if user.is_superuser %}
-      <li><a href="{% url 'admin:index' %}" title="Account administration">Account admin</a></li>
+      <li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
     {% endif %}
   </ul>
 
   {% if user.is_staff %}
-    <h2>Management</h2>
+    <h2>{% trans "Management" %}</h2>
     <ul>
       <li>
         <a href="{% url 'management:organisations' %}">
-          Organisations</a>
+          {% trans "Organisations" %}</a>
       </li>
       <li>
         <a href="{% url 'management:persons' %}">
-          Persons</a>
+          {% trans "Persons" %}</a>
       </li>
     </ul>
 

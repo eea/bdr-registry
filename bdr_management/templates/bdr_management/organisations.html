@@ -1,5 +1,6 @@
 {% extends 'bdr_management/_management_base.html' %}
 {% load utils %}
+{% load i18n %}
 
 
 {% block content %}
@@ -10,7 +11,7 @@
   {% assign '' as column_defs %}
   {% assign '[[7, "desc"]]' as column_sorting %}
 
-  <h1>Organisations</h1>
+  <h1>{% trans "Organisations" %}</h1>
 
   <div class="filters">
     {% include 'bdr_management/_organisation_filters.html' %}
@@ -18,7 +19,7 @@
 
   {% if user.is_superuser %}
     <div class="actions">
-      <a href="{% url 'management:organisations_add' %}" class="button">Add a new organisation</a>
+      <a href="{% url 'management:organisations_add' %}" class="button">{% trans "Add a new organisation" %}</a>
     </div>
   {% endif %}
 
@@ -29,13 +30,13 @@
 
     <thead>
       <tr>
-        <th>ID</th>
-        <th>Company name</th>
-        <th>Obligation</th>
-        <th>Account</th>
-        <th>Country</th>
-        <th>VAT number</th>
-        <th>Date registered</th>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Company name" %}</th>
+        <th>{% trans "Obligation" %}</th>
+        <th>{% trans "Account" %}</th>
+        <th>{% trans "Country" %}</th>
+        <th>{% trans "VAT number" %}</th>
+        <th>{% trans "Date registered" %}</th>
       </tr>
     </thead>
 

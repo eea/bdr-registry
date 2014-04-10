@@ -1,11 +1,12 @@
 {% extends "bdr_layout.html" %}
 {% load url from future %}
+{% load i18n %}
 
 
 {% block content %}
 
-<h1>BDR company database</h1>
+<h1>{% trans "BDR company database" %}</h1>
 
-<p>Company <a href="{% url "self_register" %}">self-registration</a>.</p>
+<p>{% trans "Company" %} <a href="{% url "self_register" %}">{% trans "self-registration" %}</a>.</p>
 
 {% endblock %}

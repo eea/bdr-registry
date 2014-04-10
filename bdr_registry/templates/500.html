@@ -1,10 +1,11 @@
 {% extends "bdr_layout.html" %}
+{% load i18n %}
 
 
 {% block content %}
 
-<h1>Internal server error</h1>
+<h1>{% trans "Internal server error" %}</h1>
 
-<p>The server got mixed up. Sorry about that.</p>
+<p>{% trans "The server got mixed up. Sorry about that." %}</p>
 
 {% endblock %}

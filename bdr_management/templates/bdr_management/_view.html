@@ -1,14 +1,15 @@
 {% load utils %}
+{% load i18n %}
 
 <h1>{{ object }}</h1>
 
 {% if user|has_permission:object %}
   <div class="actions">
     {% if edit_url %}
-      <a href="{{ edit_url }}" class="button">Edit</a>
+      <a href="{{ edit_url }}" class="button">{% trans "Edit" %}</a>
     {% endif %}
     {% if delete_url %}
-      <a href="{{ delete_url }}" class="button">Delete</a>
+      <a href="{{ delete_url }}" class="button">{% trans "Delete" %}</a>
     {% endif %}
   </div>
 {% endif %}

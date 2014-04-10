@@ -1,4 +1,5 @@
 {% load widget_tweaks %}
+{% load i18n %}
 
 
 <form id="organisation-filters">
@@ -19,6 +20,6 @@
     <small><b>{{ form.created.label }}</b></small></label>
   {% render_field form.created data-column-index=8 data-value='val' class='filter_data' %}
 
-  <button id="reset-filters">Reset</button>
+  <button id="reset-filters">{% trans "Reset" %}</button>
 
 </form>

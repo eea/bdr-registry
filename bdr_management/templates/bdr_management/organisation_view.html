@@ -1,15 +1,16 @@
 {% extends 'bdr_management/_management_base.html' %}
 {% load utils %}
+{% load i18n %}
 
 
 {% block content %}
 
   {% include 'bdr_management/_view.html' %}
 
-  <h2>Comments</h2>
+  <h2>{% trans "Comments" %}</h2>
   {% if user|has_permission:object %}
     <div class="sub-actions">
-      <a href="{{ comment_add_url}}" class="button">Add comment</a>
+      <a href="{{ comment_add_url}}" class="button">{% trans "Add comment" %}</a>
     </div>
   {% endif %}
 
@@ -25,7 +26,7 @@
         {% if user|has_permission:object %}
           <td class="action">
             <a class='delete-link' href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
-              <small>Delete comment</small>
+              <small>{% trans "Delete comment" %}</small>
             </a>
           </td>
         {% endif %}
@@ -33,7 +34,7 @@
     {% empty %}
       <tr>
         <td colspan="2">
-          <p>There are no comments for this organisation.</p>
+          <p>{% trans "There are no comments for this organisation." %}</p>
         </td>
       </tr>
     {% endfor %}
@@ -41,10 +42,10 @@
     </tbody>
   </table>
 
-  <h2>Persons</h2>
+  <h2>{% trans "Persons" %}</h2>
   {% if user|has_permission:object %}
     <div class="sub-actions">
-      <a href="{{ person_add_url }}" class="button">Add a new person</a>
+      <a href="{{ person_add_url }}" class="button">{% trans "Add a new person" %}</a>
     </div>
   {% endif %}
 
