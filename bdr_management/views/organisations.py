@@ -7,11 +7,12 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
+from django.http import Http404
 
 from braces import views
 from braces.views import SuperuserRequiredMixin
 
-from bdr_management import base, forms
+from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.organisations import OrganisationForm, \
     OrganisationDeleteForm
@@ -269,5 +270,15 @@ class ResetPassowrd(views.GroupRequiredMixin,
     template_name = 'bdr_management/reset_password.html'
     model = Organisation
 
+    def dispatch(self, request, *args, **kwargs):
+        resp = super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
+        if not self.object.account:
+            raise Http404
 
+    def post(self, request, pk):
+        self.object.account.set_random_password()
+        counters = backend.sync_accounts_with_ldap([self.object.account])
+        msg = _('%d passwords have been reset. LDAP: %r.') % (n, counters)
+        messages.success(request, msg)
+        return redirect('management:organisations_view', pk=self.object.pk)
 

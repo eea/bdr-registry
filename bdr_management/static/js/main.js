@@ -37,4 +37,12 @@ $(function () {
         }
     });
 
+    $('input[name=send_mail]').on('change', function () {
+        if($(this).is(':checked')) {
+            $('#organisation-persons').show();
+        } else {
+            $('#organisation-persons').hide();
+        }
+    }).change();
+
 });
