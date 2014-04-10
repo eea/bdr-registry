@@ -1,3 +1,4 @@
+from bdr_registry.models import Organisation
 import re
 from datetime import datetime
 from django import template
@@ -33,11 +34,21 @@ def process_field(value):
 
 
 @register.filter
-def group_required(user, group_name):
+def has_permission(user, object):
+
+    if isinstance(object, Organisation):
+        organisation = object
+    else:
+        organisation = object.organisation
+
     if user.is_superuser:
         return True
 
-    if group_name in user.groups.values_list('name', flat=True):
+    if 'BDR helpdesk' in user.groups.values_list('name', flat=True):
+        return True
+
+    account = organisation.account
+    if account and (account.uid == user.username):
         return True
 
     return False
