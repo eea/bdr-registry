@@ -23,7 +23,7 @@ class OrganisationManagementTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
-    def test_organisation_view_by_anonymous_(self):
+    def test_organisation_view_by_anonymous(self):
         organisation = factories.OrganisationFactory()
         url = self.reverse('management:organisations_view', pk=organisation.pk)
         resp = self.app.get(url, user=None)
