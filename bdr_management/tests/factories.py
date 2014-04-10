@@ -1,3 +1,4 @@
+from django.conf import settings
 import factory
 from factory import fuzzy, django
 
@@ -45,7 +46,7 @@ class BDRGroupFactory(django.DjangoModelFactory):
 
     FACTORY_FOR = 'auth.Group'
 
-    name = 'BDR helpdesk'
+    name = settings.BDR_HELPDESK_GROUP
 
 
 class AccountFactory(django.DjangoModelFactory):

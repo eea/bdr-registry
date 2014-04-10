@@ -2,6 +2,7 @@ from collections import namedtuple
 
 from bdr_registry.models import Organisation, Person
 from braces.views._access import AccessMixin
+from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Model
 from django.shortcuts import get_object_or_404
@@ -15,7 +16,7 @@ Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
 
 class OrganisationUserRequiredBaseMixin(AccessMixin):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def dispatch(self, request, *args, **kwargs):
         self.request = request

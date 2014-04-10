@@ -134,6 +134,8 @@ REPORTING_YEAR = 2014
 
 DATE_FORMAT = '%d %b %Y'
 
+BDR_HELPDESK_GROUP = 'BDR helpdesk'
+
 
 try:
     from localsettings import *

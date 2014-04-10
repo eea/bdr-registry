@@ -1,4 +1,5 @@
 from bdr_management.base import Breadcrumb
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse
@@ -42,7 +43,7 @@ class CommentCreateBase(SuccessMessageMixin,
 class CommentManagementCreate(GroupRequiredMixin,
                               CommentCreateBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -92,7 +93,7 @@ class CommentDeleteBase(generic.DeleteView):
 class CommentManagementDelete(GroupRequiredMixin,
                               CommentDeleteBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
         return reverse('management:organisations_view',

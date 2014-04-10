@@ -44,7 +44,8 @@ def has_permission(user, object):
     if user.is_superuser:
         return True
 
-    if 'BDR helpdesk' in user.groups.values_list('name', flat=True):
+    required_group = settings.BDR_HELPDESK_GROUP
+    if required_group in user.groups.values_list('name', flat=True):
         return True
 
     account = organisation.account

@@ -168,7 +168,7 @@ class OrganisationBaseEdit(base.ModelTableViewMixin,
 class OrganisationsManagementEdit(views.GroupRequiredMixin,
                                   OrganisationBaseEdit):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -213,7 +213,7 @@ class OrganisationDelete(views.GroupRequiredMixin,
                          base.ModelTableEditMixin,
                          generic.DeleteView):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
     model = Organisation
     success_url = reverse_lazy('management:organisations')
     template_name = 'bdr_management/organisation_confirm_delete.html'

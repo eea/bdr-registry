@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -127,7 +128,7 @@ class PersonEditBase(base.ModelTableViewMixin,
 class PersonManagementEdit(views.GroupRequiredMixin,
                              PersonEditBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -182,14 +183,14 @@ class PersonDeleteBase(base.ModelTableEditMixin,
 class PersonManagementDelete(views.GroupRequiredMixin,
                              PersonDeleteBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
     success_url = reverse_lazy('management:persons')
 
 
 class PersonDelete(base.PersonUserRequiredMixin,
                    PersonDeleteBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
         return reverse('organisation', kwargs={'pk': self.organisation.pk})
@@ -222,7 +223,7 @@ class PersonCreateBase(SuccessMessageMixin,
 class PersonManagementCreate(views.GroupRequiredMixin,
                              PersonCreateBase):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
         return reverse('management:organisations_view', kwargs=self.kwargs)
