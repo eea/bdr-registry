@@ -259,3 +259,15 @@ class OrganisationAdd(SuperuserRequiredMixin,
         context['breadcrumbs'] = breadcrumbs
         context['title'] = 'Add a new organisation'
         return context
+
+
+class ResetPassowrd(views.GroupRequiredMixin,
+                    generic.DetailView):
+
+    group_required = 'BDR helpdesk'
+
+    template_name = 'bdr_management/reset_password.html'
+    model = Organisation
+
+
+

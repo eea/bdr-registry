@@ -36,6 +36,10 @@ urlpatterns = patterns(
         views.CommentManagementDelete.as_view(),
         name='comment_delete'),
 
+    url(r'^organisations/(?P<pk>\d+)/reset/password',
+        views.ResetPassowrd.as_view(),
+        name='reset_password'),
+
     url(r'^persons$',
         views.Persons.as_view(),
         name='persons'),
