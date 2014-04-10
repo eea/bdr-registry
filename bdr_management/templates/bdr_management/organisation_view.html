@@ -7,9 +7,11 @@
   {% include 'bdr_management/_view.html' %}
 
   <h2>Comments</h2>
-  <div class="sub-actions">
-    <a href="{{ comment_add_url}}" class="button">Add comment</a>
-  </div>
+  {% if user|has_permission:object %}
+    <div class="sub-actions">
+      <a href="{{ comment_add_url}}" class="button">Add comment</a>
+    </div>
+  {% endif %}
 
   <table class="comment no-border">
     <tbody>
@@ -20,11 +22,13 @@
           <p>{{ comment.text|safe }}</p>
           <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
         </td>
-        <td class="action">
-          <a class='delete-link' href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
-            <small>Delete comment</small>
-          </a>
-        </td>
+        {% if user|has_permission:object %}
+          <td class="action">
+            <a class='delete-link' href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
+              <small>Delete comment</small>
+            </a>
+          </td>
+        {% endif %}
       </tr>
     {% empty %}
       <tr>
@@ -38,9 +42,11 @@
   </table>
 
   <h2>Persons</h2>
-  <div class="sub-actions">
-    <a href="{{ person_add_url }}" class="button">Add a new person</a>
-  </div>
+  {% if user|has_permission:object %}
+    <div class="sub-actions">
+      <a href="{{ person_add_url }}" class="button">Add a new person</a>
+    </div>
+  {% endif %}
 
   <ul>
 
