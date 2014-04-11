@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import IntegrityError
 import requests
 import json
@@ -9,13 +10,11 @@ from bdr_registry.models import Country
 
 class Command(BaseCommand):
 
-    url = 'https://bdr.eionet.europa.eu/localities_table'
-
     help = "Gets a country list from %s and adds the ones that are not " \
-           "already present in the DB" % url
+           "already present in the DB" % settings.LOCALITIES_TABLE_URL
 
     def handle(self, *args, **options):
-        url = Command.url
+        url = settings.LOCALITIES_TABLE_URL
         r = requests.get(url)
 
         if r.status_code != 200:

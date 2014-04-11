@@ -136,6 +136,7 @@ DATE_FORMAT = '%d %b %Y'
 
 BDR_HELPDESK_GROUP = 'BDR helpdesk'
 
+LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
 
 try:
     from localsettings import *
