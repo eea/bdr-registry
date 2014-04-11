@@ -14,10 +14,6 @@ class BaseWebTest(WebTest):
 
     csrf_checks = False
 
-    def __init__(self, *args, **kwargs):
-        self.AppError = AppError
-        super(BaseWebTest, self).__init__(*args, **kwargs)
-
     def populate_fields(self, form, data):
         for field_name, field in form.field_order:
             if field_name in data:
@@ -52,8 +48,9 @@ class BaseWebTest(WebTest):
         return reverse(view_name, args=args, kwargs=kwargs)
 
     def assertObjectInDatabase(self, model, **kwargs):
-        app = kwargs.pop('app', 'live_catalogue')
         if isinstance(model, basestring):
+            app = kwargs.pop('app', None)
+            self.assertTrue(app)
             Model = get_model(app, model)
         else:
             Model = model
@@ -69,6 +66,7 @@ class BaseWebTest(WebTest):
 
     def get_login_for_url(self, url):
         return '%s?next=%s' % (self.reverse('login'), url)
+
 
 class mute_signals(object):
     """Temporarily disables and then restores any django signals.

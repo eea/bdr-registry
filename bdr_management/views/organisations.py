@@ -274,21 +274,23 @@ class ResetPassowrd(views.GroupRequiredMixin,
     model = Organisation
 
     def dispatch(self, request, *args, **kwargs):
+        self.organisation = self.get_object()
         resp = super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
-        if not self.object.account:
+        if not self.organisation.account:
             raise Http404
         return resp
 
     def post(self, request, pk):
-        self.object.account.set_random_password()
-        counters = backend.sync_accounts_with_ldap([self.object.account])
+        self.organisation.account.set_random_password()
+        counters = backend.sync_accounts_with_ldap([self.organisation.account])
         msg = _('Password have been reset. LDAP: %r.') % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people([self.object])
+            n = backend.send_password_email_to_people([self.organisation])
             messages.success(
                 request,
                 'Emails have been sent to %d people.' % n
             )
-        return redirect('management:organisations_view', pk=self.object.pk)
+        return redirect('management:organisations_view',
+                        pk=self.organisation.pk)
