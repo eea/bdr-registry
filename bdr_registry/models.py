@@ -24,8 +24,8 @@ class ApiKey(models.Model):
 
 class Country(models.Model):
 
-    name = models.CharField(max_length=255)
-    code = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
+    code = models.CharField(max_length=255, unique=True)
 
     class Meta(object):
         verbose_name_plural = 'Countries'
