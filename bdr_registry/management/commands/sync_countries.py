@@ -1,5 +1,4 @@
 from django.conf import settings
-from django.db import IntegrityError
 import requests
 import json
 
@@ -10,8 +9,8 @@ from bdr_registry.models import Country
 
 class Command(BaseCommand):
 
-    help = "Gets a country list from %s and adds the ones that are not " \
-           "already present in the DB" % settings.LOCALITIES_TABLE_URL
+    help = "Gets a country list from %s and adds to the application's DB the " \
+           "ones that are not already present." % settings.LOCALITIES_TABLE_URL
 
     def handle(self, *args, **options):
         url = settings.LOCALITIES_TABLE_URL
@@ -21,21 +20,21 @@ class Command(BaseCommand):
             raise CommandError('GET {0} returned {1}'.format(url,
                                                              r.status_code))
 
-        countries_dict = json.loads(r.text.replace("'", '"'))
-        countries = map(lambda c: Country(name=c['name'],
-                                          code=c['iso'].lower()),
-                        countries_dict)
+        countries = json.loads(r.text.replace("'", '"'))
 
         countries_added = 0
-        for country in countries:
+        for country_dict in countries:
             try:
-                country.save()
-                self.stdout.write('Added %s' % country)
-                countries_added += 1
-            except IntegrityError:
-                pass
+                country, created = Country.objects.get_or_create(
+                    name=country_dict['name'],
+                    code=country_dict['iso'].lower()
+                )
+                if created:
+                    self.stdout.write('Added new country: %s' % country)
+                    countries_added += 1
+
             except Exception as e:
-                self.stderr.write('Unexpected exception: %s' % e)
+                self.stderr.write('DB exception: %s' % e)
 
         if not countries_added:
-            self.stdout.write('No new countries added')
+            self.stdout.write('No new countries added.')
