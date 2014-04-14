@@ -12,7 +12,7 @@ LdapEditorResetPassMock.reset_password.return_value = True
 class OrganisationResetPasswordTests(base.BaseWebTest):
 
     def setUp(self):
-        self.patcher = patch('bdr_registry.ldap_editor.create_ldap_editor',
+        self.patcher = patch('bdr_management.backend.create_ldap_editor',
                              Mock(return_value=LdapEditorResetPassMock))
         self.patcher.start()
 
@@ -41,6 +41,18 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         resp = self.app.post(url, user=user.username, expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
+    # def test_reset_passowrd_get_without_obligation(self):
+    #     org = factories.OrganisationWithAccountFactory()
+    #     url = self.reverse('management:reset_password', pk=org.pk)
+    #     resp = self.app.post(url, user=user.username, expect_errors=True)
+    #     self.assertEqual(404, resp.status_int)
+
+    # def test_reset_passowrd_post_without_obligation(self):
+    #     org = factories.OrganisationWithAccountFactory()
+    #     url = self.reverse('management:reset_password', pk=org.pk)
+    #     resp = self.app.post(url, user=user.username, expect_errors=True)
+    #     self.assertEqual(404, resp.status_int)
+
     def test_reset_password(self):
         org = factories.OrganisationWithAccountFactory()
         self.assertFalse(org.account.password)
@@ -56,10 +68,14 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertEqual(0, len(mail.outbox))
 
     def test_reset_password_with_perform_send(self):
-        org = factories.OrganisationWithAccountFactory()
+        obligation = factories.ObligationFactory()
+        org = factories.OrganisationWithAccountFactory(obligation=obligation)
+        self.assertEqual(1, org.people.count())
+        email = org.people.all()[0].email
         url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.post(url, {'perform_send': '1'}, user='admin').follow()
         msg = [str(m) for m in resp.context['messages']]
         self.assertTrue(msg)
-        # self.assertEqual(1, len(mail.outbox))
+        self.assertEqual(1, len(mail.outbox))
+        self.assertIn(email, mail.outbox[0].to)
 

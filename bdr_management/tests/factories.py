@@ -66,6 +66,15 @@ class CountryFactory(django.DjangoModelFactory):
     code = 'RO'
 
 
+class ObligationFactory(django.DjangoModelFactory):
+
+    FACTORY_FOR = 'bdr_registry.Obligation'
+    FACTORY_DJANGO_GET_OR_CREATE = ('name', 'code')
+
+    name = fuzzy.FuzzyText()
+    code = factory.Iterator(['ods', 'fgas'])
+
+
 @mute_signals(signals.post_save)
 class OrganisationFactory(django.DjangoModelFactory):
 
@@ -74,16 +83,6 @@ class OrganisationFactory(django.DjangoModelFactory):
 
     name = fuzzy.FuzzyText()
     country = factory.SubFactory(CountryFactory)
-
-
-class OrganisationWithAccountFactory(OrganisationFactory):
-
-    @factory.post_generation
-    def account(self, create, extracted, **kwargs):
-        if not create:
-            return
-        user = extracted or SuperUserFactory()
-        self.account = AccountFactory(uid=user.username)
 
 
 class PersonFactory(django.DjangoModelFactory):
@@ -97,6 +96,18 @@ class PersonFactory(django.DjangoModelFactory):
     email = factory.Sequence(lambda n: 'person_%d@eaudeweb.ro' % n)
     phone = fuzzy.FuzzyText()
     organisation = factory.SubFactory(OrganisationFactory)
+
+
+class OrganisationWithAccountFactory(OrganisationFactory):
+
+    person1 = factory.RelatedFactory(PersonFactory, 'organisation')
+
+    @factory.post_generation
+    def account(self, create, extracted, **kwargs):
+        if not create:
+            return
+        user = extracted or SuperUserFactory()
+        self.account = AccountFactory(uid=user.username)
 
 
 class CommentFactory(django.DjangoModelFactory):
