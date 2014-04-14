@@ -57,7 +57,10 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         org = factories.OrganisationWithAccountFactory()
         self.assertFalse(org.account.password)
         url = self.reverse('management:reset_password', pk=org.pk)
-        resp = self.app.post(url, user='admin').follow()
+        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        resp = self.app.post(url, user='admin')
+        self.assertRedirects(resp, success_url)
+        resp = resp.follow()
         org = self.assertObjectInDatabase('Organisation', app='bdr_registry',
                                           pk=org.pk)
         self.assertTrue(org.account.password)
@@ -73,7 +76,10 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertEqual(1, org.people.count())
         email = org.people.all()[0].email
         url = self.reverse('management:reset_password', pk=org.pk)
-        resp = self.app.post(url, {'perform_send': '1'}, user='admin').follow()
+        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        resp = self.app.post(url, {'perform_send': '1'}, user='admin')
+        self.assertRedirects(resp, success_url)
+        resp = resp.follow()
         msg = [str(m) for m in resp.context['messages']]
         self.assertTrue(msg)
         self.assertEqual(1, len(mail.outbox))

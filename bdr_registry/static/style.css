@@ -124,7 +124,29 @@
     width: 20%;
 }
 
+.overflow {
+    overflow: hidden;
+}
+
+.table-object {
+    float: left;
+    width: 400px;
+}
+.table-actions {
+    margin-left: 30px!important;
+    float: left;
+    width: 150px;
+}
+.table-actions a {
+    font-weight: bold;
+    font-size: 12px;
+}
+.table-actions th,
+ .table-actions td {
+    padding-left: 15px;
+    text-align: left;
+}
+
 table.no-border td {
     border: none;
 }
-
