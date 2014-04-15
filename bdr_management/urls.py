@@ -37,7 +37,7 @@ urlpatterns = patterns(
         name='comment_delete'),
 
     url(r'^organisations/(?P<pk>\d+)/reset/password',
-        views.ResetPassowrd.as_view(),
+        views.ResetPassword.as_view(),
         name='reset_password'),
 
     url(r'^persons$',

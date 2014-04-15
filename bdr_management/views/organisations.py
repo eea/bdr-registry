@@ -265,17 +265,17 @@ class OrganisationAdd(SuperuserRequiredMixin,
         return context
 
 
-class ResetPassowrd(views.GroupRequiredMixin,
+class ResetPassword(views.GroupRequiredMixin,
                     generic.DetailView):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/reset_password.html'
     model = Organisation
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
-        resp = super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
+        resp = super(ResetPassword, self).dispatch(request, *args, **kwargs)
         if not self.organisation.account:
             raise Http404
         return resp
