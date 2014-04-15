@@ -279,7 +279,7 @@ class ResetPassword(views.GroupRequiredMixin,
         self.organisation = self.get_object()
         if not self.organisation.account:
             raise Http404
-        return super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
+        return super(ResetPassword, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
         self.organisation.account.set_random_password()
