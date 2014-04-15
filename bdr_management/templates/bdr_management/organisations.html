@@ -17,7 +17,7 @@
     {% include 'bdr_management/_organisation_filters.html' %}
   </div>
 
-  {% if user.is_superuser %}
+  {% if user|has_permission:None %}
     <div class="actions">
       <a href="{% url 'management:organisations_add' %}" class="button">{% trans "Add a new organisation" %}</a>
     </div>

@@ -38,10 +38,12 @@ def process_field(value):
 @register.filter
 def has_permission(user, object):
 
-    if isinstance(object, Organisation):
+    if object and isinstance(object, Organisation):
         organisation = object
-    else:
+    elif object and object.organisation:
         organisation = object.organisation
+    else:
+        organisation = None
 
     return bdr_management.base.has_permission(user, organisation)
 

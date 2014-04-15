@@ -240,9 +240,11 @@ class OrganisationDelete(views.GroupRequiredMixin,
         return super(OrganisationDelete, self).delete(request, *args, **kwargs)
 
 
-class OrganisationAdd(SuperuserRequiredMixin,
+class OrganisationAdd(views.GroupRequiredMixin,
                       SuccessMessageMixin,
                       generic.CreateView):
+
+    group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/organisation_add.html'
     model = Organisation

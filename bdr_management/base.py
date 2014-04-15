@@ -171,8 +171,9 @@ def has_permission(user, organisation):
     if required_group in user.groups.values_list('name', flat=True):
         return True
 
-    account = organisation.account
-    if account and (account.uid == user.username):
-        return True
+    if organisation:
+        account = organisation.account
+        if account and (account.uid == user.username):
+            return True
 
     return False
