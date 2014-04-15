@@ -1,6 +1,8 @@
 from django.core import mail
 from mock import Mock, patch
 
+from pyquery import PyQuery as pq
+
 from bdr_management.tests import base, factories
 
 
@@ -93,7 +95,23 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
     def test_reset_password_link_with_account(self):
         org = factories.OrganisationWithAccountFactory()
         url = self.reverse('management:organisations_view', pk=org.pk)
+        reset_passwd_url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.get(url, user='admin')
+        d = pq(resp.text, parser='html')
+        selector = 'a[href="%s"]' % reset_passwd_url
+        elems = d.find(selector)
+        self.assertTrue(elems)
+
+    def test_reset_password_link_without_account(self):
+        user = factories.SuperUserFactory()
+        org = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_view', pk=org.pk)
+        reset_passwd_url = self.reverse('management:reset_password', pk=org.pk)
+        resp = self.app.get(url, user=user.username)
+        d = pq(resp.text, parser='html')
+        selector = 'a[href="%s"]' % reset_passwd_url
+        elems = d.find(selector)
+        self.assertFalse(elems)
 
 
 class OrganisationCreateAccountTests(base.BaseWebTest):
