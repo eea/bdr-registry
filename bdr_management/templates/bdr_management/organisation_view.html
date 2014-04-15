@@ -17,14 +17,23 @@
         </tr>
       </thead>
       <tbody>
+        {% if object.account %}
         <tr>
           <td>
-            {% if object.account %}
             <a href="{% url 'management:reset_password' pk=object.pk %}">
-              Reset password</a>
-            {% endif %}
+              {% trans "Reset password" %}</a>
           </td>
         </tr>
+        {% endif %}
+
+        {% if not object.account %}
+        <tr>
+          <td>
+            <a href="{% url 'management:create_account' pk=object.pk %}">
+              {% trans "Create account" %}</a>
+          </td>
+        </tr>
+        {% endif %}
       </tbody>
     </table>
   </div>

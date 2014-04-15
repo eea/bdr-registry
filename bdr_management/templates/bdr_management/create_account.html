@@ -3,7 +3,7 @@
 
 {% block content %}
 
-  <h1>Reset password for {{ organisation }}</h1>
+  <h1>Create account for {{ organisation }}</h1>
 
   <p>Are you sure?</p>
 
@@ -25,7 +25,7 @@
     </div>
 
     <br><br>
-    <button type="submit">Reset password</button>
+    <button type="submit">Create account</button>
     <a href="{% url 'management:organisations_view' pk=organisation.pk %}"><small>Cancel</small></a>
   </form>
 

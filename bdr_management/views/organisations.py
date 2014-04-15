@@ -296,3 +296,38 @@ class ResetPassword(views.GroupRequiredMixin,
             )
         return redirect('management:organisations_view',
                         pk=self.organisation.pk)
+
+
+class CreateAccount(views.GroupRequiredMixin,
+                    generic.DetailView):
+
+    group_required = 'BDR helpdesk'
+
+    template_name = 'bdr_management/create_account.html'
+    model = Organisation
+
+    def dispatch(self, request, *args, **kwargs):
+        self.organisation = self.get_object()
+        resp = super(CreateAccount, self).dispatch(request, *args, **kwargs)
+        if self.organisation.account:
+            raise Http404
+        return resp
+
+    def post(self, request, pk):
+        obligation = self.organisation.obligation
+        account = Account.objects.create_for_obligation(obligation)
+        account.set_random_password()
+        self.organisation.account = account
+        self.organisation.save()
+        counters = backend.sync_accounts_with_ldap([account])
+        msg = "Created %d accounts. LDAP: %r." % (n, counters)
+        messages.success(request, msg)
+
+        if request.POST.get('perform_send'):
+            n = backend.send_password_email_to_people([self.organisation])
+            messages.success(
+                request,
+                'Emails have been sent to %d people.' % n
+            )
+        return redirect('management:organisations_view',
+                        pk=self.organisation.pk)

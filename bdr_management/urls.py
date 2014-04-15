@@ -39,6 +39,9 @@ urlpatterns = patterns(
     url(r'^organisations/(?P<pk>\d+)/reset/password',
         views.ResetPassword.as_view(),
         name='reset_password'),
+    url(r'^organisations/(?P<pk>\d+)/create/account',
+        views.CreateAccount.as_view(),
+        name='create_account'),
 
     url(r'^persons$',
         views.Persons.as_view(),
