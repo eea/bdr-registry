@@ -5,7 +5,30 @@ from bdr_management.tests import factories
 
 class OrganisationManagementTests(BaseWebTest):
 
-    def test_organisations_view_by_staff_user(self):
+    def test_organisation_add_by_staff(self):
+        user = factories.StaffUserFactory()
+        url = self.reverse('management:organisations_add')
+        resp = self.app.get(url, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_organisation_add_by_anonymous(self):
+        url = self.reverse('management:organisations_add')
+        resp = self.app.get(url)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_organisation_add_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        url = self.reverse('management:organisations_add')
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisation_add_by_superuser(self):
+        user = factories.SuperUserFactory()
+        url = self.reverse('management:organisations_add')
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+    def test_organisations_view_by_staff(self):
         user = factories.StaffUserFactory()
         resp = self.app.get(self.reverse('management:organisations'),
                             user=user.username)
