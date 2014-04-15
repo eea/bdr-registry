@@ -88,7 +88,8 @@ def create_accounts(modeladmin, request, queryset):
             new_accounts.append(account)
             organisation.save()
             n += 1
-        counters = sync_accounts_with_ldap(new_accounts)
+        # counters = sync_accounts_with_ldap(new_accounts)
+        counters = 0
         msg = "Created %d accounts. LDAP: %r." % (n, counters)
         messages.add_message(request, messages.INFO, msg)
 

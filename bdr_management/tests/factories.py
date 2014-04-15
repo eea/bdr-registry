@@ -84,6 +84,14 @@ class OrganisationFactory(django.DjangoModelFactory):
     name = fuzzy.FuzzyText()
     country = factory.SubFactory(CountryFactory)
 
+    @factory.post_generation
+    def people(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for person in extracted:
+                self.people.add(person)
+
 
 class PersonFactory(django.DjangoModelFactory):
 

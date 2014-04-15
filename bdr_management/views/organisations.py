@@ -17,7 +17,7 @@ from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.organisations import OrganisationForm, \
     OrganisationDeleteForm
-from bdr_registry.models import Organisation
+from bdr_registry.models import Organisation, Account
 
 
 class Organisations(views.StaffuserRequiredMixin,
@@ -277,10 +277,9 @@ class ResetPassword(views.GroupRequiredMixin,
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
-        resp = super(ResetPassword, self).dispatch(request, *args, **kwargs)
         if not self.organisation.account:
             raise Http404
-        return resp
+        return super(ResetPassowrd, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
         self.organisation.account.set_random_password()
@@ -308,10 +307,9 @@ class CreateAccount(views.GroupRequiredMixin,
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
-        resp = super(CreateAccount, self).dispatch(request, *args, **kwargs)
         if self.organisation.account:
             raise Http404
-        return resp
+        return super(CreateAccount, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
         obligation = self.organisation.obligation
@@ -320,7 +318,7 @@ class CreateAccount(views.GroupRequiredMixin,
         self.organisation.account = account
         self.organisation.save()
         counters = backend.sync_accounts_with_ldap([account])
-        msg = "Created %d accounts. LDAP: %r." % (n, counters)
+        msg = "Account created. LDAP: %r." % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
