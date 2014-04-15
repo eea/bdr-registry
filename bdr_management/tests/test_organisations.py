@@ -85,3 +85,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertEqual(1, len(mail.outbox))
         self.assertIn(email, mail.outbox[0].to)
 
+    def test_reset_password_link_with_account(self):
+        org = factories.OrganisationWithAccountFactory()
+        url = self.reverse('management:organisations_view', pk=org.pk)
+        resp = self.app.get(url, user='admin')
