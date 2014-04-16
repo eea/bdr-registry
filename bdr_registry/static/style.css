@@ -150,3 +150,7 @@
 table.no-border td {
     border: none;
 }
+
+fieldset.noborder {
+    border: none;
+}

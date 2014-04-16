@@ -14,9 +14,13 @@
   </div>
 {% endif %}
 
+
 <form id="delete-form" action="{{ delete_url }}" method="post">
-  {% csrf_token %}
+  <fieldset class="noborder">
+    {% csrf_token %}
+  </fieldset>
 </form>
+
 
 <table class="datatable table-object">
 
@@ -31,4 +35,3 @@
   </tbody>
 
 </table>
-

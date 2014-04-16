@@ -108,10 +108,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         url = self.reverse('management:organisations_view', pk=org.pk)
         reset_passwd_url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.get(url, user=user.username)
-        d = pq(resp.text, parser='html')
-        selector = 'a[href="%s"]' % reset_passwd_url
-        elems = d.find(selector)
-        self.assertFalse(elems)
+        self.assertEqual(1, len(resp.pyquery('#reset-password-action')))
 
 
 class OrganisationCreateAccountTests(base.BaseWebTest):
