@@ -29,7 +29,7 @@
         {% if not object.account %}
         <tr>
           <td>
-            <a href="{% url 'management:create_account' pk=object.pk %}">
+            <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
               {% trans "Create account" %}</a>
           </td>
         </tr>

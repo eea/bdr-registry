@@ -167,3 +167,15 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.assertEqual(1, len(mail.outbox))
         self.assertIn(email, mail.outbox[0].to)
 
+    def test_create_account_link_with_account(self):
+        org = factories.OrganisationWithAccountFactory()
+        url = self.reverse('management:organisations_view', pk=org.pk)
+        resp = self.app.get(url, user='admin')
+        self.assertEqual(0, len(resp.pyquery('#create-account-action')))
+
+    def test_create_account_link_without_account(self):
+        user = factories.SuperUserFactory()
+        org = factories.OrganisationFactory()
+        url = self.reverse('management:organisations_view', pk=org.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(1, len(resp.pyquery('#create-account-action')))
