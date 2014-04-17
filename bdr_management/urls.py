@@ -42,6 +42,9 @@ urlpatterns = patterns(
     url(r'^organisations/(?P<pk>\d+)/create/account',
         views.CreateAccount.as_view(),
         name='create_account'),
+    url(r'^organisations/(?P<pk>\d+)/create/reporting/folder',
+        views.CreateReportingFolder.as_view(),
+        name='create_reporting_folder'),
 
     url(r'^persons$',
         views.Persons.as_view(),

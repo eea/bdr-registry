@@ -1,0 +1,19 @@
+{% extends 'bdr_management/_management_base.html' %}
+
+
+{% block content %}
+
+  <h1>Create reporting folder for {{ organisation }}</h1>
+
+  <p>Are you sure?</p>
+
+  <form method="POST" action="">
+
+    {% csrf_token %}
+
+    <br><br>
+    <button type="submit">Create reporting folder</button>
+    <a href="{% url 'management:organisations_view' pk=organisation.pk %}"><small>Cancel</small></a>
+  </form>
+
+{% endblock %}

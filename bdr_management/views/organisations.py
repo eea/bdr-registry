@@ -300,7 +300,7 @@ class ResetPassword(views.GroupRequiredMixin,
 class CreateAccount(views.GroupRequiredMixin,
                     generic.DetailView):
 
-    group_required = 'BDR helpdesk'
+    group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/create_account.html'
     model = Organisation
@@ -329,3 +329,28 @@ class CreateAccount(views.GroupRequiredMixin,
             )
         return redirect('management:organisations_view',
                         pk=self.organisation.pk)
+
+
+class CreateReportingFolder(views.GroupRequiredMixin,
+                            generic.DetailView):
+
+    API_ERROR_MSG = 'BDR_API_URL and BDR_API_AUTH not configured'
+
+    group_required = settings.BDR_HELPDESK_GROUP
+
+    template_name = 'bdr_management/create_reporting_folder.html'
+    model = Organisation
+
+    def dispatch(self, request, *args, **kwargs):
+        self.organisation = self.get_object()
+        if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
+            messages.error(request, self.API_ERROR_MSG)
+            return redirect('management:organisations_view',
+                            pk=self.organisation.pk)
+        return super(CreateReportingFolder, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        return redirect('management:organisations_view',
+                        pk=self.organisation.pk)
+
+
