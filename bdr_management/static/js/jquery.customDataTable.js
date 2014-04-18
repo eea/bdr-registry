@@ -34,7 +34,7 @@
                 aaSorting: column_sorting,
                 // fnServerData: fnServerData,
                 oLanguage: {
-                  sProcessing: '<img src="/static/img/loading.gif" width="16" height="16" />'
+                  sProcessing: 'Loading ...'
                 }
             });
 
