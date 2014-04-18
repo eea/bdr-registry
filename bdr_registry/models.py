@@ -96,10 +96,10 @@ class Organisation(models.Model):
     name = models.CharField(_('Company name'), max_length=255)
     date_registered = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
-    addr_street = models.CharField(_('Street and nr'), max_length=255)
-    addr_place1 = models.CharField(_('Place 1 / Municipality'), max_length=255)
+    addr_street = models.CharField(_('Street and number'), max_length=255)
+    addr_place1 = models.CharField(_('Municipality'), max_length=255)
     addr_postalcode = models.CharField(_('Postal code'), max_length=255)
-    addr_place2 = models.CharField(_('Place 2 / Region'),
+    addr_place2 = models.CharField(_('Region'),
                             max_length=255, null=True, blank=True)
     eori = models.CharField(_('EORI number'), help_text=EORI_LABEL,
                             max_length=17, null=True, blank=True)
