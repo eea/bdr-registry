@@ -10,10 +10,9 @@ MANAGEMENT_JS_ASSETS = (
 
 
 MANAGEMENT_CSS_ASSETS = (
-	'formalize.css',
-    'style.css',
-    'bootstrap.grid.css',
-    'eionet-ui.css',
+	'css/formalize.css',
+    'css/bootstrap.grid.css',
+    'css/eionet-ui.css',
     'css/jquery.dataTables.css'
 )
 
