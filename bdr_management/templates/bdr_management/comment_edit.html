@@ -1,12 +1,19 @@
 {% extends 'bdr_management/_management_base.html' %}
 {% load widget_tweaks %}
+{% load assets %}
 
 
-<!-- {% block head %}
+{% block head %}
+
+  {% assets "management_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+
+  {% assets "management_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
 
   <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
-
-  
 
   <style type="text/css">
     label {
@@ -15,7 +22,7 @@
     }
   </style>
 
-{% endblock %} -->
+{% endblock %}
 
 
 {% block content %}
