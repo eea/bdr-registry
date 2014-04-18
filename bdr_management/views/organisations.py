@@ -173,18 +173,19 @@ class OrganisationsManagementEdit(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:organisations_view',
+                           kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:organisations'),
                        _('Organisations')),
-            Breadcrumb(reverse('management:organisations_view',
-                               kwargs={'pk': self.object.pk}),
-                       self.object),
+            Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(OrganisationsManagementEdit, self) \
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
     def get_success_url(self):
@@ -195,16 +196,16 @@ class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
                           OrganisationBaseEdit):
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('organisation', kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
-            Breadcrumb(reverse('organisation',
-                               kwargs={'pk': self.object.pk}),
-                       self.object),
+            Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(OrganisationsUpdate, self) \
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
     def get_success_url(self):
@@ -255,15 +256,16 @@ class OrganisationAdd(views.GroupRequiredMixin,
         return reverse('management:organisations')
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:organisations')
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'),
-                       _('Organisations')),
+            Breadcrumb(back_url, _('Organisations')),
             Breadcrumb('', _('Add organisation'))
         ]
         context = super(OrganisationAdd, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
         context['title'] = 'Add a new organisation'
+        context['cancel_url'] = back_url
         return context
 
 

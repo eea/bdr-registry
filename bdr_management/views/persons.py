@@ -131,17 +131,18 @@ class PersonManagementEdit(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:persons_view',
+                           kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:persons'),
                        _('Persons')),
-            Breadcrumb(reverse('management:persons_view',
-                       kwargs={'pk': self.object.pk}),
-                       self.object),
+            Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(PersonManagementEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
     def get_success_url(self):
@@ -155,14 +156,15 @@ class PersonEdit(base.PersonUserRequiredMixin,
               'phone2', 'phone3', 'fax')
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('person', kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
-            Breadcrumb(reverse('person', kwargs={'pk': self.object.pk}),
-                       self.object),
+            Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
         data = super(PersonEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
     def get_success_url(self):

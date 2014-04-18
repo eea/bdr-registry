@@ -46,16 +46,16 @@ class CommentManagementCreate(GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:organisations_view', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:organisations'), _('Organisations')),
-            Breadcrumb(reverse('management:organisations_view',
-                               kwargs=self.kwargs),
-                       self.organisation),
+            Breadcrumb(back_url, self.organisation),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(CommentManagementCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
 
@@ -63,14 +63,15 @@ class CommentCreate(base.OrganisationUserRequiredMixin,
                     CommentCreateBase):
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('organisation', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('organisation', kwargs=self.kwargs),
-                       self.organisation),
+            Breadcrumb(back_url, self.organisation),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(CommentCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
 
