@@ -2,10 +2,7 @@
 {% load i18n %}
 <div class="push-top">
   <strong id="organisation-filters-button"
-          class="btn-text no-margins" 
-          onclick="
-          $('#organisation-filters').toggleClass('hidden');
-          $(this).hide();">
+          class="btn-text no-margins">
           Show Filters</strong>
 </div>
 
@@ -34,10 +31,7 @@
   </div>
   <div class="btn-toolbar small no-bottom">
     <button class="btn-text offset_top_label" 
-            id="reset-filters"
-            onclick="
-            $('#organisation-filters').toggleClass('hidden');
-            $('#organisation-filters-button').show();">
+            id="reset-filters">
             {% trans "Reset filters" %}</button>
   </div>
 </form>

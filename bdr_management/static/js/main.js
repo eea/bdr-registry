@@ -42,6 +42,16 @@ $(function () {
         window.location.href = $(this).data('href');
     });
 
+    $('#organisation-filters-button').on('click', function(e) {
+      $('#organisation-filters').toggleClass('hidden');
+      $(this).hide();
+    })
+
+    $('#organisation-filters').on('click', function(e) {
+        $('#organisation-filters').toggleClass('hidden');
+        $('#organisation-filters-button').show();
+    })
+
     $('input[name=send_mail]').on('change', function () {
         if($(this).is(':checked')) {
             $('#organisation-persons').show();
