@@ -2,9 +2,11 @@
 {% load widget_tweaks %}
 
 
-{% block head %}
+<!-- {% block head %}
 
   <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
+
+  
 
   <style type="text/css">
     label {
@@ -13,19 +15,23 @@
     }
   </style>
 
-{% endblock %}
+{% endblock %} -->
 
 
 {% block content %}
 
   {% include 'bdr_management/_edit_header.html' %}
 
-  <form method="post">
+  <form method="post" class="push-top">
     {% csrf_token %}
     <label for="{{ form.text.auto_id }}">
       <strong>{{ form.text.label }}</strong></label>
-    {% render_field form.text %}<br><br>
-    <button type="submit" class="primary_button">Save</button>
+    {% render_field form.text %}
+
+    <div class="btn-toolbar">
+      <button type="submit" class="btn-green">Save</button>
+      <a class="btn" onclick="history.go(-1);">Cancel</a> <!-- REVIEW -->
+    </div>
 
   <script>CKEDITOR.replace('id_text')</script>
 
