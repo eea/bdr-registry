@@ -39,39 +39,34 @@
   </div>
 
   <h2>{% trans "Comments" %}</h2>
+
+  <ul class="no-list">
+  {% for comment in object.comments.all %}
+    <li class="comment push-bottom">
+      {{ comment.text|safe }}
+      <div class="small muted">
+        <!-- Date -->
+        {{ comment.created|date:"d b Y" }}
+        <!-- Actions -->
+        {% if user|has_permission:object %}
+        &ensp;|&ensp;
+        <a class='btn-text delete-link' 
+           href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
+          {% trans "Delete comment" %}
+        </a>
+        {% endif %}
+      </div>
+    </li>
+  {% empty %}
+    <p>{% trans "There are no comments for this organisation." %}</p>
+  {% endfor %}
+  </ul>
   {% if user|has_permission:object %}
-    <div class="sub-actions">
-      <a href="{{ comment_add_url}}" class="button">{% trans "Add comment" %}</a>
-    </div>
+  <div class="btn-toolbar">
+    <a href="{{ comment_add_url}}" class="btn">{% trans "Add comment" %}</a>
+  </div>
   {% endif %}
 
-  <table class="comment no-border">
-    <tbody>
-
-    {% for comment in object.comments.all %}
-      <tr>
-        <td class="content">
-          <p>{{ comment.text|safe }}</p>
-          <p class="documentByLine">{{ comment.created|date:"d b Y" }}</p>
-        </td>
-        {% if user|has_permission:object %}
-          <td class="action">
-            <a class='delete-link' href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
-              <small>{% trans "Delete comment" %}</small>
-            </a>
-          </td>
-        {% endif %}
-      </tr>
-    {% empty %}
-      <tr>
-        <td colspan="2">
-          <p>{% trans "There are no comments for this organisation." %}</p>
-        </td>
-      </tr>
-    {% endfor %}
-
-    </tbody>
-  </table>
 
   <h2>{% trans "Persons" %}</h2>
   {% if user|has_permission:object %}

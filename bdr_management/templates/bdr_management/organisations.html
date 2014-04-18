@@ -9,19 +9,21 @@
 
   {% assign '["id", "name", "obligation", "account", "country", "vat_number", "date_registered"]' as columns %}
   {% assign '' as column_defs %}
-  {% assign '[[7, "desc"]]' as column_sorting %}
+  {% assign '[[1, "asc"]]' as column_sorting %}
 
-  <h1>{% trans "Organisations" %}</h1>
-
-  <div class="filters">
-    {% include 'bdr_management/_organisation_filters.html' %}
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">{% trans "Organisations" %}</h1>
+      {% if user|has_permission:None %}
+        &nbsp;
+        <a class="btn btn-green pull-right"
+           style="margin-top: 5px;"
+           href="{% url 'management:organisations_add' %}">{% trans "Add a new organisation" %}</a>
+      {% endif %}
   </div>
+  <hr />
 
-  {% if user|has_permission:None %}
-    <div class="actions">
-      <a href="{% url 'management:organisations_add' %}" class="button">{% trans "Add a new organisation" %}</a>
-    </div>
-  {% endif %}
+
+  {% include 'bdr_management/_organisation_filters.html' %}
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'

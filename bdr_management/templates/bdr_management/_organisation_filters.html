@@ -1,25 +1,43 @@
 {% load widget_tweaks %}
 {% load i18n %}
+<div class="push-top">
+  <strong id="organisation-filters-button"
+          class="btn-text no-margins" 
+          onclick="
+          $('#organisation-filters').toggleClass('hidden');
+          $(this).hide();">
+          Show Filters</strong>
+</div>
 
-
-<form id="organisation-filters">
-
-  <label for="{{ form.country.auto_id }}">
-    <small><b>{{ form.country.label }}</b></small></label>
-  {% render_field form.country data-column-index=4 data-value='text' class='filter_data' %}
-
-  <label for="{{ form.obligation.auto_id }}">
-    <small><b>{{ form.obligation.label }}</b></small></label>
-  {% render_field form.obligation data-column-index=2 data-value='text' class='filter_data' style='width: 100px' %}
-
-  <label for="{{ form.account.auto_id }}">
-    <small><b>{{ form.account.label }}</b></small></label>
-  {% render_field form.account data-column-index=3 data-value='val' class='filter_data' %}
-
-  <label for="{{ form.created.auto_id }}">
-    <small><b>{{ form.created.label }}</b></small></label>
-  {% render_field form.created data-column-index=8 data-value='val' class='filter_data' %}
-
-  <button id="reset-filters">{% trans "Reset" %}</button>
-
+<form class="form box-small no-border hidden" id="organisation-filters">
+  <div class="row">
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.country.auto_id }}">
+        {{ form.country.label }}</label>
+      {% render_field form.country data-column-index=4 data-value='text' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.obligation.auto_id }}">
+        {{ form.obligation.label }}</label>
+      {% render_field form.obligation data-column-index=2 data-value='text' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.account.auto_id }}">
+        {{ form.account.label }}</label>
+      {% render_field form.account data-column-index=3 data-value='val' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.created.auto_id }}">
+        {{ form.created.label }}</label>
+      {% render_field form.created data-column-index=8 data-value='val' class='filter_data' %}
+    </div>
+  </div>
+  <div class="btn-toolbar small no-bottom">
+    <button class="btn-text offset_top_label" 
+            id="reset-filters"
+            onclick="
+            $('#organisation-filters').toggleClass('hidden');
+            $('#organisation-filters-button').show();">
+            {% trans "Reset filters" %}</button>
+  </div>
 </form>
