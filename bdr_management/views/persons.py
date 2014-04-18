@@ -231,16 +231,16 @@ class PersonManagementCreate(views.GroupRequiredMixin,
         return reverse('management:organisations_view', kwargs=self.kwargs)
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:organisations_view', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:organisations'), _('Organisations')),
-            Breadcrumb(reverse('management:organisations_view',
-                               kwargs=self.kwargs),
-                       self.organisation),
+            Breadcrumb(back_url, self.organisation),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(PersonManagementCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
 
 
@@ -251,12 +251,14 @@ class PersonCreate(base.OrganisationUserRequiredMixin,
         return reverse('organisation', kwargs=self.kwargs)
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('organisation', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('organisation', kwargs=self.kwargs),
+            Breadcrumb(back_url,
                        self.organisation),
             Breadcrumb('', _('Add person'))
         ]
         data = super(PersonCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
         return data
