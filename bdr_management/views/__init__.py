@@ -1,3 +1,3 @@
-from .organisations import *
+from .companies import *
 from .persons import *
 from .comments import *

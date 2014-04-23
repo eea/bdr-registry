@@ -68,7 +68,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         org = factories.CompanyWithAccountFactory()
         self.assertIsNone(org.account.password)
         url = self.reverse('management:reset_password', pk=org.pk)
-        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        success_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, user='admin')
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
@@ -87,7 +87,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertEqual(1, org.people.count())
         email = org.people.first().email
         url = self.reverse('management:reset_password', pk=org.pk)
-        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        success_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, {'perform_send': '1'}, user='admin')
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
@@ -101,14 +101,14 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
 
     def test_reset_password_link_with_account(self):
         org = factories.CompanyWithAccountFactory()
-        url = self.reverse('management:organisations_view', pk=org.pk)
+        url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(1, len(resp.pyquery('#reset-password-action')))
 
     def test_reset_password_link_without_account(self):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
-        url = self.reverse('management:organisations_view', pk=org.pk)
+        url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(0, len(resp.pyquery('#reset-password-action')))
 
@@ -143,7 +143,7 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         obligation = factories.ObligationFactory()
         org = factories.CompanyFactory(obligation=obligation)
         url = self.reverse('management:create_account', pk=org.pk)
-        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        success_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, user=user.username)
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
@@ -166,7 +166,7 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.assertEqual(1, org.people.count())
         email = org.people.first().email
         url = self.reverse('management:create_account', pk=org.pk)
-        success_url = self.reverse('management:organisations_view', pk=org.pk)
+        success_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, {'perform_send': '1'}, user=user.username)
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
@@ -179,14 +179,14 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
 
     def test_create_account_link_with_account(self):
         org = factories.CompanyWithAccountFactory()
-        url = self.reverse('management:organisations_view', pk=org.pk)
+        url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(0, len(resp.pyquery('#create-account-action')))
 
     def test_create_account_link_without_account(self):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
-        url = self.reverse('management:organisations_view', pk=org.pk)
+        url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(1, len(resp.pyquery('#create-account-action')))
 
@@ -197,7 +197,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
-        redirect_url = self.reverse('management:organisations_view', pk=org.pk)
+        redirect_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertRedirects(resp, redirect_url)
         resp = resp.follow()
@@ -209,7 +209,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
-        redirect_url = self.reverse('management:organisations_view', pk=org.pk)
+        redirect_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, user=user.username)
         self.assertRedirects(resp, redirect_url)
         resp = resp.follow()

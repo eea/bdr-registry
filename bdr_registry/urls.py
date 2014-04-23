@@ -10,20 +10,20 @@ from bdr_management import views as management_views
 admin.autodiscover()
 
 
-organisation_patterns = patterns(
+company_patterns = patterns(
     '',
 
     url(r'^add$',
-        views.OrganisationCreate.as_view()),
+        views.CompanyCreate.as_view()),
     url(r'^all$',
-        views.organisation_all),
+        views.company_all),
 
     url(r'^(?P<pk>\d+)$',
-        management_views.OrganisationsUpdateView.as_view(),
+        management_views.CompaniesUpdateView.as_view(),
         name='company'),
     url(r'^(?P<pk>\d+)/update$',
-        management_views.OrganisationsUpdate.as_view(),
-        name='organisation_update'),
+        management_views.CompaniesUpdate.as_view(),
+        name='company_update'),
 
     url(r'^(?P<pk>\d+)/persons/add$',
         management_views.PersonCreate.as_view(),
@@ -71,8 +71,8 @@ urlpatterns = patterns(
 
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
-    url(r'^edit_organisation$',views.edit_organisation),
-    url(r'^organisation/', include(organisation_patterns)),
+    url(r'^edit_company$', views.edit_company),
+    url(r'^company/', include(company_patterns)),
     url(r'^person/', include(person_patterns)),
     url(r'^admin/', include(admin.site.urls)),
 )

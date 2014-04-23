@@ -5,7 +5,7 @@
 
 {% block content %}
 
-  {% url 'management:organisations_filter' as url %}
+  {% url 'management:companies_filter' as url %}
 
   {% assign '["id", "name", "obligation", "account", "country", "vat_number", "date_registered"]' as columns %}
   {% assign '' as column_defs %}
@@ -17,7 +17,7 @@
         &nbsp;
         <a class="btn btn-green pull-right"
            style="margin-top: 5px;"
-           href="{% url 'management:organisations_add' %}">{% trans "Add a new organisation" %}</a>
+           href="{% url 'management:companies_add' %}">{% trans "Add a new organisation" %}</a>
       {% endif %}
   </div>
   <hr />

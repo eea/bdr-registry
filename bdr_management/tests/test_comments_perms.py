@@ -48,7 +48,7 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_delete', pk=company.pk,
                            comment_pk=comment.pk)
         resp = self.app.delete(url, user=user.username)
-        success_url = self.reverse('management:organisations_view',
+        success_url = self.reverse('management:companies_view',
                                    pk=company.pk)
         self.assertRedirects(resp, success_url)
 
@@ -59,7 +59,7 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_delete', pk=company.pk,
                            comment_pk=comment.pk)
         resp = self.app.delete(url, user=user.username)
-        success_url = self.reverse('management:organisations_view',
+        success_url = self.reverse('management:companies_view',
                                    pk=company.pk)
         self.assertRedirects(resp, success_url)
 

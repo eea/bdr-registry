@@ -11,7 +11,6 @@ from django.http import Http404
 from django.shortcuts import redirect
 
 from braces import views
-from braces.views import SuperuserRequiredMixin
 
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
@@ -20,7 +19,7 @@ from bdr_management.forms.organisations import OrganisationForm, \
 from bdr_registry.models import Company, Account
 
 
-class Organisations(views.StaffuserRequiredMixin,
+class Companies(views.StaffuserRequiredMixin,
                     generic.TemplateView):
 
     template_name = 'bdr_management/organisations.html'
@@ -30,17 +29,17 @@ class Organisations(views.StaffuserRequiredMixin,
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb('', _('Organisations'))
         ]
-        context = super(Organisations, self).get_context_data(**kwargs)
+        context = super(Companies, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
         context['form'] = forms.OrganisationFilters()
         return context
 
 
-class OrganisationsFilter(views.StaffuserRequiredMixin,
+class CompaniesFilter(views.StaffuserRequiredMixin,
                           base.FilterView):
 
     def process_name(self, object, val):
-        url = reverse('management:organisations_view',
+        url = reverse('management:companies_view',
                       kwargs={'pk': object.pk})
         return '<a href="%s">%s</a>' % (url, val)
 
@@ -97,7 +96,7 @@ class OrganisationsFilter(views.StaffuserRequiredMixin,
         return start_date
 
 
-class OrganisationsBaseView(base.ModelTableViewMixin,
+class CompaniesBaseView(base.ModelTableViewMixin,
                             generic.DetailView):
 
     template_name = 'bdr_management/organisation_view.html'
@@ -105,17 +104,17 @@ class OrganisationsBaseView(base.ModelTableViewMixin,
     exclude = ('id', )
 
 
-class OrganisationsManagementView(views.StaffuserRequiredMixin,
-                                  OrganisationsBaseView):
+class CompaniesManagementView(views.StaffuserRequiredMixin,
+                                  CompaniesBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'),
+            Breadcrumb(reverse('management:companies'),
                        _('Organisations')),
             Breadcrumb('', self.object)
         ]
-        data = super(OrganisationsManagementView, self) \
+        data = super(CompaniesManagementView, self) \
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
 
@@ -129,21 +128,21 @@ class OrganisationsManagementView(views.StaffuserRequiredMixin,
         return data
 
     def get_edit_url(self):
-        return reverse('management:organisations_edit', kwargs=self.kwargs)
+        return reverse('management:companies_edit', kwargs=self.kwargs)
 
     def get_delete_url(self):
-        return reverse('management:organisations_delete', kwargs=self.kwargs)
+        return reverse('management:companies_delete', kwargs=self.kwargs)
 
 
-class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
-                              OrganisationsBaseView):
+class CompaniesUpdateView(base.OrganisationUserRequiredMixin,
+                              CompaniesBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb('', self.object)
         ]
-        data = super(OrganisationsUpdateView, self) \
+        data = super(CompaniesUpdateView, self) \
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
 
@@ -155,10 +154,10 @@ class OrganisationsUpdateView(base.OrganisationUserRequiredMixin,
         return data
 
     def get_edit_url(self):
-        return reverse('organisation_update', kwargs=self.kwargs)
+        return reverse('company_update', kwargs=self.kwargs)
 
 
-class OrganisationBaseEdit(base.ModelTableViewMixin,
+class CompanyBaseEdit(base.ModelTableViewMixin,
                            SuccessMessageMixin,
                            generic.UpdateView):
 
@@ -167,33 +166,33 @@ class OrganisationBaseEdit(base.ModelTableViewMixin,
     success_message = _('Organisation edited successfully')
 
 
-class OrganisationsManagementEdit(views.GroupRequiredMixin,
-                                  OrganisationBaseEdit):
+class CompaniesManagementEdit(views.GroupRequiredMixin,
+                              CompanyBaseEdit):
 
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:organisations_view',
+        back_url = reverse('management:companies_view',
                            kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'),
+            Breadcrumb(reverse('management:companies'),
                        _('Organisations')),
             Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(OrganisationsManagementEdit, self) \
+        data = super(CompaniesManagementEdit, self) \
             .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
 
     def get_success_url(self):
-        return reverse('management:organisations_view', kwargs=self.kwargs)
+        return reverse('management:companies_view', kwargs=self.kwargs)
 
 
-class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
-                          OrganisationBaseEdit):
+class CompaniesUpdate(base.OrganisationUserRequiredMixin,
+                          CompanyBaseEdit):
 
     def get_context_data(self, **kwargs):
         back_url = reverse('company', kwargs={'pk': self.object.pk})
@@ -202,8 +201,7 @@ class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
             Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
-        data = super(OrganisationsUpdate, self) \
-            .get_context_data(**kwargs)
+        data = super(CompaniesUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
@@ -212,36 +210,36 @@ class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
         return reverse('company', kwargs=self.kwargs)
 
 
-class OrganisationDelete(views.GroupRequiredMixin,
-                         base.ModelTableEditMixin,
-                         generic.DeleteView):
+class CompanyDelete(views.GroupRequiredMixin,
+                    base.ModelTableEditMixin,
+                    generic.DeleteView):
 
     group_required = settings.BDR_HELPDESK_GROUP
     model = Company
-    success_url = reverse_lazy('management:organisations')
+    success_url = reverse_lazy('management:companies')
     template_name = 'bdr_management/organisation_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'),
+            Breadcrumb(reverse('management:companies'),
                        _('Organisations')),
-            Breadcrumb(reverse('management:organisations_view',
+            Breadcrumb(reverse('management:companies_view',
                                kwargs={'pk': self.object.pk}),
                        self.object),
             Breadcrumb('', _('Delete organisation'))
         ]
-        context = super(OrganisationDelete, self).get_context_data(**kwargs)
+        context = super(CompanyDelete, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
         context['form'] = OrganisationDeleteForm()
         return context
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _('Organisation deleted'))
-        return super(OrganisationDelete, self).delete(request, *args, **kwargs)
+        return super(CompanyDelete, self).delete(request, *args, **kwargs)
 
 
-class OrganisationAdd(views.GroupRequiredMixin,
+class CompanyAdd(views.GroupRequiredMixin,
                       SuccessMessageMixin,
                       generic.CreateView):
 
@@ -253,16 +251,16 @@ class OrganisationAdd(views.GroupRequiredMixin,
     success_message = _('Organisation created successfully')
 
     def get_success_url(self):
-        return reverse('management:organisations')
+        return reverse('management:companies')
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:organisations')
+        back_url = reverse('management:companies')
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url, _('Organisations')),
             Breadcrumb('', _('Add organisation'))
         ]
-        context = super(OrganisationAdd, self).get_context_data(**kwargs)
+        context = super(CompanyAdd, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
         context['title'] = 'Add a new organisation'
         context['cancel_url'] = back_url
@@ -295,7 +293,7 @@ class ResetPassword(views.GroupRequiredMixin,
                 request,
                 'Emails have been sent to %d people.' % n
             )
-        return redirect('management:organisations_view',
+        return redirect('management:companies_view',
                         pk=self.organisation.pk)
 
 
@@ -329,7 +327,7 @@ class CreateAccount(views.GroupRequiredMixin,
                 request,
                 'Emails have been sent to %d people.' % n
             )
-        return redirect('management:organisations_view',
+        return redirect('management:companies_view',
                         pk=self.organisation.pk)
 
 
@@ -347,12 +345,12 @@ class CreateReportingFolder(views.GroupRequiredMixin,
         self.organisation = self.get_object()
         if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
             messages.error(request, self.API_ERROR_MSG)
-            return redirect('management:organisations_view',
+            return redirect('management:companies_view',
                             pk=self.organisation.pk)
         return super(CreateReportingFolder, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
-        return redirect('management:organisations_view',
+        return redirect('management:companies_view',
                         pk=self.organisation.pk)
 
 

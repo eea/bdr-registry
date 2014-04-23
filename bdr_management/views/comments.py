@@ -26,7 +26,7 @@ class CommentCreateBase(SuccessMessageMixin,
         return super(CommentCreateBase, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('management:organisations_view', kwargs=self.kwargs)
+        return reverse('management:companies_view', kwargs=self.kwargs)
 
     def get_form_kwargs(self, **kwargs):
         data = super(CommentCreateBase, self).get_form_kwargs(**kwargs)
@@ -46,10 +46,10 @@ class CommentManagementCreate(GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:organisations_view', kwargs=self.kwargs)
+        back_url = reverse('management:companies_view', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:organisations'), _('Organisations')),
+            Breadcrumb(reverse('management:companies'), _('Organisations')),
             Breadcrumb(back_url, self.organisation),
             Breadcrumb('', _('Add comment'))
         ]
@@ -97,7 +97,7 @@ class CommentManagementDelete(GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
-        return reverse('management:organisations_view',
+        return reverse('management:companies_view',
                        kwargs={'pk': self.organisation.pk})
 
 

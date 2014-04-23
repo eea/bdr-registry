@@ -48,7 +48,7 @@ ORG_CREATE_EXCLUDE = ('account', 'active', 'comments')
 ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')
 
 
-class OrganisationCreate(CreateView):
+class CompanyCreate(CreateView):
 
     model = models.Company
     template_name = 'organisation_add.html'
@@ -58,10 +58,10 @@ class OrganisationCreate(CreateView):
                                  exclude=ORG_CREATE_EXCLUDE)
 
 
-class OrganisationUpdate(UpdateView):
+class CompanyUpdate(UpdateView):
 
     model = models.Company
-    template_name = 'organisation_update.html'
+    template_name = 'company_update.html'
 
     def get_form_class(self):
         exclude = ORG_ADMIN_EXCLUDE
@@ -73,12 +73,12 @@ class OrganisationUpdate(UpdateView):
         organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
-        dispatch = super(OrganisationUpdate, self).dispatch
+        dispatch = super(CompanyUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
-        return reverse('organisation_update', args=[self.object.pk])
+        return reverse('company_update', args=[self.object.pk])
 
     def get_context_data(self, **kwargs):
         try:
@@ -88,7 +88,7 @@ class OrganisationUpdate(UpdateView):
             url = None
         kwargs['reporting_url'] = url
         kwargs['helpdesk_email'] = settings.BDR_HELPDESK_EMAIL
-        return super(OrganisationUpdate, self).get_context_data(**kwargs)
+        return super(CompanyUpdate, self).get_context_data(**kwargs)
 
 
 def attempt_basic_auth(request):
@@ -106,7 +106,7 @@ def attempt_basic_auth(request):
                              u"Logged in as %s" % user.username)
 
 
-def edit_organisation(request):
+def edit_company(request):
     attempt_basic_auth(request)
     uid = request.GET.get('uid')
     if not uid:
@@ -129,7 +129,7 @@ def api_key_required(view):
 
 
 @api_key_required
-def organisation_all(request):
+def company_all(request):
     data = []
     account_uid = request.GET.get('account_uid')
     for organisation in models.Company.objects.all():
@@ -175,7 +175,7 @@ def organisation_all(request):
     return HttpResponse(xml, content_type='application/xml')
 
 
-class OrganisationForm(ModelForm):
+class CompanyForm(ModelForm):
 
     obligation = ModelChoiceField(queryset=models.Obligation.objects,
                                   required=True)
@@ -192,7 +192,7 @@ CommentForm = modelform_factory(models.Comment, exclude=['organisation'])
 class SelfRegister(View):
 
     def make_forms(self, post_data=None):
-        return (OrganisationForm(post_data, prefix='organisation'),
+        return (CompanyForm(post_data, prefix='organisation'),
                 PersonForm(post_data, prefix='person'))
 
     def render_forms(self, request, organisation_form,
@@ -229,7 +229,7 @@ class SelfRegister(View):
         return self.render_forms(request, organisation_form, person_form)
 
 
-class OrganisationAddPerson(CreateView):
+class CompanyAddPerson(CreateView):
 
     template_name = 'organisation_add_person.html'
     model = models.Person
@@ -239,12 +239,12 @@ class OrganisationAddPerson(CreateView):
         organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
-        dispatch = super(OrganisationAddPerson, self).dispatch
+        dispatch = super(CompanyAddPerson, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_context_data(self, **kwargs):
-        context = super(OrganisationAddPerson, self).get_context_data(**kwargs)
+        context = super(CompanyAddPerson, self).get_context_data(**kwargs)
         context['organisation_pk'] = self.kwargs['pk']
         return context
 
@@ -253,7 +253,7 @@ class OrganisationAddPerson(CreateView):
         pk = self.kwargs['pk']
         person.organisation = models.Company.objects.get(pk=pk)
         person.save()
-        return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
+        return HttpResponseRedirect(reverse('company_update', args=[pk]))
 
 
 class PersonUpdate(UpdateView):
@@ -272,7 +272,7 @@ class PersonUpdate(UpdateView):
 
     def get_success_url(self):
         organisation = self.object.organisation
-        return reverse('organisation_update', args=[organisation.pk])
+        return reverse('company_update', args=[organisation.pk])
 
     def form_valid(self, form):
         messages.add_message(self.request, messages.INFO,
@@ -305,11 +305,11 @@ class PersonDelete(DeleteView):
                                  u"Person deleted: %s" % self.object)
 
         organisation = self.object.organisation
-        url = reverse('organisation_update', args=[organisation.pk])
+        url = reverse('company_update', args=[organisation.pk])
         return HttpResponseRedirect(url)
 
 
-class OrganisationAddComment(CreateView):
+class CompanyAddComment(CreateView):
 
     template_name = 'organisation_add_comment.html'
     model = models.Comment
@@ -319,12 +319,12 @@ class OrganisationAddComment(CreateView):
         organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
-        dispatch = super(OrganisationAddComment, self).dispatch
+        dispatch = super(CompanyAddComment, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_context_data(self, **kwargs):
-        context = super(OrganisationAddComment, self).get_context_data(**kwargs)
+        context = super(CompanyAddComment, self).get_context_data(**kwargs)
         context['organisation_pk'] = self.kwargs['pk']
         return context
 
@@ -333,7 +333,7 @@ class OrganisationAddComment(CreateView):
         pk = self.kwargs['pk']
         comment.organisation = models.Company.objects.get(pk=pk)
         comment.save()
-        return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
+        return HttpResponseRedirect(reverse('company_update', args=[pk]))
 
 
 class CommentUpdate(UpdateView):
@@ -352,7 +352,7 @@ class CommentUpdate(UpdateView):
 
     def get_success_url(self):
         organisation = self.object.organisation
-        return reverse('organisation_update', args=[organisation.pk])
+        return reverse('company_update', args=[organisation.pk])
 
     def form_valid(self, form):
         messages.add_message(self.request, messages.INFO,
@@ -381,7 +381,7 @@ class CommentDelete(DeleteView):
                              self.object.created.strftime('%d %B %Y'))
 
         organisation = self.object.organisation
-        url = reverse('organisation_update', args=[organisation.pk])
+        url = reverse('company_update', args=[organisation.pk])
         return HttpResponseRedirect(url)
 
 
