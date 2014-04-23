@@ -20,7 +20,7 @@ organisation_patterns = patterns(
 
     url(r'^(?P<pk>\d+)$',
         management_views.OrganisationsUpdateView.as_view(),
-        name='organisation'),
+        name='company'),
     url(r'^(?P<pk>\d+)/update$',
         management_views.OrganisationsUpdate.as_view(),
         name='organisation_update'),

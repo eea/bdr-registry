@@ -50,27 +50,27 @@ ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')
 
 class OrganisationCreate(CreateView):
 
-    model = models.Organisation
+    model = models.Company
     template_name = 'organisation_add.html'
 
     def get_form_class(self):
-        return modelform_factory(models.Organisation,
+        return modelform_factory(models.Company,
                                  exclude=ORG_CREATE_EXCLUDE)
 
 
 class OrganisationUpdate(UpdateView):
 
-    model = models.Organisation
+    model = models.Company
     template_name = 'organisation_update.html'
 
     def get_form_class(self):
         exclude = ORG_ADMIN_EXCLUDE
         if not self.request.user.is_superuser:
             exclude = exclude + ('name',)
-        return modelform_factory(models.Organisation, exclude=exclude)
+        return modelform_factory(models.Company, exclude=exclude)
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Organisation, pk=pk)
+        organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationUpdate, self).dispatch
@@ -112,8 +112,8 @@ def edit_organisation(request):
     if not uid:
         return HttpResponseNotFound()
     account = get_object_or_404(models.Account, uid=uid)
-    org = get_object_or_404(models.Organisation, account=account)
-    location = reverse('organisation', kwargs={'pk': org.pk})
+    org = get_object_or_404(models.Company, account=account)
+    location = reverse('company', kwargs={'pk': org.pk})
     return HttpResponseRedirect(location)
 
 
@@ -132,7 +132,7 @@ def api_key_required(view):
 def organisation_all(request):
     data = []
     account_uid = request.GET.get('account_uid')
-    for organisation in models.Organisation.objects.all():
+    for organisation in models.Company.objects.all():
         if account_uid is not None:
             if (organisation.account is None or
                 organisation.account.uid != account_uid):
@@ -181,7 +181,7 @@ class OrganisationForm(ModelForm):
                                   required=True)
 
     class Meta:
-        model = models.Organisation
+        model = models.Company
         exclude = ORG_CREATE_EXCLUDE
 
 
@@ -236,7 +236,7 @@ class OrganisationAddPerson(CreateView):
     form_class = PersonForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Organisation, pk=pk)
+        organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationAddPerson, self).dispatch
@@ -251,7 +251,7 @@ class OrganisationAddPerson(CreateView):
     def form_valid(self, form):
         person = form.save(commit=False)
         pk = self.kwargs['pk']
-        person.organisation = models.Organisation.objects.get(pk=pk)
+        person.organisation = models.Company.objects.get(pk=pk)
         person.save()
         return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
 
@@ -316,7 +316,7 @@ class OrganisationAddComment(CreateView):
     form_class = CommentForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Organisation, pk=pk)
+        organisation = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(organisation)
         login_url = reverse('login')
         dispatch = super(OrganisationAddComment, self).dispatch
@@ -331,7 +331,7 @@ class OrganisationAddComment(CreateView):
     def form_valid(self, form):
         comment = form.save(commit=False)
         pk = self.kwargs['pk']
-        comment.organisation = models.Organisation.objects.get(pk=pk)
+        comment.organisation = models.Company.objects.get(pk=pk)
         comment.save()
         return HttpResponseRedirect(reverse('organisation_update', args=[pk]))
 

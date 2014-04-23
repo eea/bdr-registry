@@ -10,7 +10,7 @@ from django.views import generic
 from braces.views import GroupRequiredMixin
 
 from bdr_management import base, forms
-from bdr_registry.models import Organisation, Comment
+from bdr_registry.models import Company, Comment
 
 
 class CommentCreateBase(SuccessMessageMixin,
@@ -22,7 +22,7 @@ class CommentCreateBase(SuccessMessageMixin,
     success_message = _("Comment added successfully")
 
     def dispatch(self, *args, **kwargs):
-        self.organisation = get_object_or_404(Organisation, **self.kwargs)
+        self.organisation = get_object_or_404(Company, **self.kwargs)
         return super(CommentCreateBase, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
@@ -63,7 +63,7 @@ class CommentCreate(base.OrganisationUserRequiredMixin,
                     CommentCreateBase):
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('organisation', kwargs=self.kwargs)
+        back_url = reverse('company', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url, self.organisation),
@@ -81,7 +81,7 @@ class CommentDeleteBase(generic.DeleteView):
     model = Comment
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation = get_object_or_404(Organisation,
+        self.organisation = get_object_or_404(Company,
                                               pk=self.kwargs['pk'])
         return super(CommentDeleteBase, self).dispatch(request, *args,
                                                        **kwargs)
@@ -105,4 +105,4 @@ class CommentDelete(base.OrganisationUserRequiredMixin,
                     CommentDeleteBase):
 
     def get_success_url(self):
-        return reverse('organisation', kwargs={'pk': self.organisation.pk})
+        return reverse('company', kwargs={'pk': self.organisation.pk})

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.template.defaultfilters import urlize
 
 import bdr_management
-from bdr_registry.models import Organisation
+from bdr_registry.models import Company
 
 register = template.Library()
 numeric_test = re.compile('^\d+$')
@@ -38,12 +38,12 @@ def process_field(value):
 @register.filter
 def has_permission(user, object):
 
-    if object and isinstance(object, Organisation):
-        organisation = object
-    elif object and object.organisation:
-        organisation = object.organisation
+    if object and isinstance(object, Company):
+        company = object
+    elif object and hasattr(object, 'company'):
+        company = object.company
     else:
-        organisation = None
+        company = None
 
-    return bdr_management.base.has_permission(user, organisation)
+    return bdr_management.base.has_permission(user, company)
 

@@ -292,7 +292,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
     def name_history(self, request, pk):
-        org = get_object_or_404(models.Organisation, pk=pk)
+        org = get_object_or_404(models.Company, pk=pk)
         return TemplateResponse(request, 'organisation_name_history.html', {
             'organisation': org,
             'opts': org._meta,
@@ -304,7 +304,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
         out.writerow(['userid', 'name', 'date_registered', 'active',
                       'addr_street', 'addr_place1', 'addr_postalcode',
                       'addr_place2', 'country', 'vat_number', 'obligation'])
-        for org in models.Organisation.objects.all():
+        for org in models.Company.objects.all():
             account = org.account
             out.writerow([v.encode('utf-8') for v in [
                 '' if account is None else account.uid,
@@ -366,7 +366,7 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Country)
-admin.site.register(models.Organisation, OrganisationAdmin)
+admin.site.register(models.Company, OrganisationAdmin)
 admin.site.register(models.Person, PersonAdmin)
 admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)

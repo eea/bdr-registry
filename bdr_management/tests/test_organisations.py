@@ -31,7 +31,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.patcher.stop()
 
     def test_reset_password_get_with_account(self):
-        org = factories.OrganisationWithAccountFactory()
+        org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(200, resp.status_int)
@@ -40,14 +40,14 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
 
     def test_reset_password_get_without_account(self):
         user = factories.StaffUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.get(url, user=user.username, expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
     def test_reset_password_post_without_account(self):
         user = factories.StaffUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.post(url, user=user.username, expect_errors=True)
         self.assertEqual(404, resp.status_int)
@@ -65,14 +65,14 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
     #     self.assertEqual(404, resp.status_int)
 
     def test_reset_password(self):
-        org = factories.OrganisationWithAccountFactory()
+        org = factories.CompanyWithAccountFactory()
         self.assertIsNone(org.account.password)
         url = self.reverse('management:reset_password', pk=org.pk)
         success_url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.post(url, user='admin')
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
-        org = self.assertObjectInDatabase('Organisation', app='bdr_registry',
+        org = self.assertObjectInDatabase('Company', app='bdr_registry',
                                           pk=org.pk)
         self.assertIsNotNone(org.account.password)
         expected_messages = [
@@ -83,7 +83,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
 
     def test_reset_password_with_perform_send(self):
         obligation = factories.ObligationFactory()
-        org = factories.OrganisationWithAccountFactory(obligation=obligation)
+        org = factories.CompanyWithAccountFactory(obligation=obligation)
         self.assertEqual(1, org.people.count())
         email = org.people.first().email
         url = self.reverse('management:reset_password', pk=org.pk)
@@ -100,14 +100,14 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertIn(email, mail.outbox[0].to)
 
     def test_reset_password_link_with_account(self):
-        org = factories.OrganisationWithAccountFactory()
+        org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(1, len(resp.pyquery('#reset-password-action')))
 
     def test_reset_password_link_without_account(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(0, len(resp.pyquery('#reset-password-action')))
@@ -124,14 +124,14 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.patcher.stop()
 
     def test_create_organisation_account_get_with_account(self):
-        org = factories.OrganisationWithAccountFactory()
+        org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:create_account', pk=org.pk)
         resp = self.app.get(url, user='admin', expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
     def test_create_organisation_account_get_without_account(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:create_account', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
@@ -141,13 +141,13 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
     def test_create_organisation_account(self):
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
-        org = factories.OrganisationFactory(obligation=obligation)
+        org = factories.CompanyFactory(obligation=obligation)
         url = self.reverse('management:create_account', pk=org.pk)
         success_url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.post(url, user=user.username)
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
-        org = self.assertObjectInDatabase('Organisation', app='bdr_registry',
+        org = self.assertObjectInDatabase('Company', app='bdr_registry',
                                           pk=org.pk)
         self.assertIsNotNone(org.account)
         self.assertIsNotNone(org.account.password)
@@ -161,7 +161,7 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         person = factories.PersonFactory()
-        org = factories.OrganisationFactory(obligation=obligation,
+        org = factories.CompanyFactory(obligation=obligation,
                                             people=[person])
         self.assertEqual(1, org.people.count())
         email = org.people.first().email
@@ -178,14 +178,14 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.assertIn(email, mail.outbox[0].to)
 
     def test_create_account_link_with_account(self):
-        org = factories.OrganisationWithAccountFactory()
+        org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(0, len(resp.pyquery('#create-account-action')))
 
     def test_create_account_link_without_account(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(1, len(resp.pyquery('#create-account-action')))
@@ -195,7 +195,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
 
     def test_create_reporting_folder_get_without_settings(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
         redirect_url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.get(url, user=user.username)
@@ -207,7 +207,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
 
     def test_create_reporting_folder_post_without_settings(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
         redirect_url = self.reverse('management:organisations_view', pk=org.pk)
         resp = self.app.post(url, user=user.username)
@@ -220,7 +220,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
     @override_settings(BDR_API_URL=BDR_API_URL, BDR_API_AUTH=BDR_API_AUTH)
     def test_create_reporting_folder_get(self):
         user = factories.SuperUserFactory()
-        org = factories.OrganisationFactory()
+        org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)

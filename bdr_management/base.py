@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from bdr_registry.models import Organisation, Person
+from bdr_registry.models import Company, Person
 from braces.views._access import AccessMixin
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
@@ -34,14 +34,14 @@ class OrganisationUserRequiredBaseMixin(AccessMixin):
 class OrganisationUserRequiredMixin(OrganisationUserRequiredBaseMixin):
 
     def get_organisation(self):
-        return get_object_or_404(Organisation, pk=self.kwargs['pk'])
+        return get_object_or_404(Company, pk=self.kwargs['pk'])
 
 
 class PersonUserRequiredMixin(OrganisationUserRequiredBaseMixin):
 
     def get_organisation(self):
         person = get_object_or_404(Person, pk=self.kwargs['pk'])
-        return person.organisation
+        return person.company
 
 
 class FilterView(JSONResponseMixin, AjaxResponseMixin, View):

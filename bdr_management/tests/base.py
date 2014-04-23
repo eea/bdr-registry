@@ -5,7 +5,6 @@ from django.core.urlresolvers import reverse
 from django.db.models.loading import get_model
 
 from django_webtest import WebTest
-from webtest import AppError
 from webtest.forms import Select, MultipleSelect
 from factory import base
 

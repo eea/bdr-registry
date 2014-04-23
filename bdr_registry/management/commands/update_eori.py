@@ -3,7 +3,7 @@
 import csv
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
-from bdr_registry.models import Organisation
+from bdr_registry.models import Company
 
 
 class Command(BaseCommand):
@@ -25,12 +25,12 @@ class Command(BaseCommand):
                     for row in reader:
                         if row[2] and row[8]:  #account_id and eori
                             try:
-                                org = Organisation.objects.get(id=row[0])
+                                org = Company.objects.get(id=row[0])
                                 org.eori = row[8]
                                 org.save()
                                 self.stdout.write('Update '
                                     'organisation: %s\n' % org.id)
-                            except Organisation.DoesNotExist:
+                            except Company.DoesNotExist:
                                 pass
 
                 self.stdout.write('Update successful.\n')

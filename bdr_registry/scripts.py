@@ -35,7 +35,7 @@ def import_companies(csv_file):
             'addr_street': row['Street'],
             'addr_postalcode': row['PostalCode'],
         }
-        org = models.Organisation.objects.create(**org_data)
+        org = models.Company.objects.create(**org_data)
 
         p1_data = {
             'title': row['p1-Title'],
@@ -87,7 +87,7 @@ def update_companies_from_ldap():
             log.warn("Can't determine obligation for uid=%r", uid)
             continue
 
-        org = models.Organisation.objects.create(
+        org = models.Company.objects.create(
             name=org_name,
             addr_street="",
             addr_place1="",
@@ -117,7 +117,7 @@ def update_companies_from_csv(csv_file, commit=False):
         except models.Account.DoesNotExist:
             log.warn("uid=%s: not found", uid)
             continue
-        org = models.Organisation.objects.get(account=account)
+        org = models.Company.objects.get(account=account)
 
         old = [org.addr_street, org.addr_place1,
                org.addr_place2, org.addr_postalcode]

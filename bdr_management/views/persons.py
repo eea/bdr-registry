@@ -12,7 +12,7 @@ from braces import views
 from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonForm
-from bdr_registry.models import Person, Organisation
+from bdr_registry.models import Person, Company
 
 
 class Persons(views.StaffuserRequiredMixin,
@@ -195,7 +195,7 @@ class PersonDelete(base.PersonUserRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
-        return reverse('organisation', kwargs={'pk': self.organisation.pk})
+        return reverse('company', kwargs={'pk': self.organisation.pk})
 
 
 class PersonCreateBase(SuccessMessageMixin,
@@ -207,7 +207,7 @@ class PersonCreateBase(SuccessMessageMixin,
     success_message = _('Person created successfully')
 
     def dispatch(self, *args, **kwargs):
-        self.organisation = get_object_or_404(Organisation, **self.kwargs)
+        self.organisation = get_object_or_404(Company, **self.kwargs)
         return super(PersonCreateBase, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self, **kwargs):
@@ -248,10 +248,10 @@ class PersonCreate(base.OrganisationUserRequiredMixin,
                    PersonCreateBase):
 
     def get_success_url(self):
-        return reverse('organisation', kwargs=self.kwargs)
+        return reverse('company', kwargs=self.kwargs)
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('organisation', kwargs=self.kwargs)
+        back_url = reverse('company', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url,

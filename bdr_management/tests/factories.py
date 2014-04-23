@@ -76,9 +76,9 @@ class ObligationFactory(django.DjangoModelFactory):
 
 
 @mute_signals(signals.post_save)
-class OrganisationFactory(django.DjangoModelFactory):
+class CompanyFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Organisation'
+    FACTORY_FOR = 'bdr_registry.Company'
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
     name = fuzzy.FuzzyText()
@@ -103,12 +103,12 @@ class PersonFactory(django.DjangoModelFactory):
 
     email = factory.Sequence(lambda n: 'person_%d@eaudeweb.ro' % n)
     phone = fuzzy.FuzzyText()
-    organisation = factory.SubFactory(OrganisationFactory)
+    company = factory.SubFactory(CompanyFactory)
 
 
-class OrganisationWithAccountFactory(OrganisationFactory):
+class CompanyWithAccountFactory(CompanyFactory):
 
-    person1 = factory.RelatedFactory(PersonFactory, 'organisation')
+    person1 = factory.RelatedFactory(PersonFactory, 'company')
 
     @factory.post_generation
     def account(self, create, extracted, **kwargs):
@@ -123,6 +123,6 @@ class CommentFactory(django.DjangoModelFactory):
     FACTORY_FOR = 'bdr_registry.Comment'
 
     text = fuzzy.FuzzyText()
-    organisation = factory.SubFactory(OrganisationFactory)
+    company = factory.SubFactory(CompanyFactory)
 
 

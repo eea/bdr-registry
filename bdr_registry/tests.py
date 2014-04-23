@@ -73,8 +73,8 @@ class FormSubmitTest(TransactionTestCase):
         form_data = dict(ORG_FIXTURE, country=self.denmark.pk)
         resp = self.client.post('/organisation/add', form_data)
 
-        self.assertEqual(models.Organisation.objects.count(), 1)
-        org = models.Organisation.objects.all()[0]
+        self.assertEqual(models.Company.objects.count(), 1)
+        org = models.Company.objects.all()[0]
         self.assert_object_has_items(org, ORG_FIXTURE)
         self.assertEqual(org.country, self.denmark)
 
@@ -98,9 +98,9 @@ class FormSubmitTest(TransactionTestCase):
     def test_submitted_organisation_and_person_are_saved(self):
         resp = self.client.post('/self_register', self.prepare_form_data())
 
-        self.assertEqual(models.Organisation.objects.count(), 1)
+        self.assertEqual(models.Company.objects.count(), 1)
         self.assertEqual(models.Person.objects.count(), 1)
-        org = models.Organisation.objects.all()[0]
+        org = models.Company.objects.all()[0]
         person = models.Person.objects.all()[0]
 
         self.assert_object_has_items(org, ORG_FIXTURE)
@@ -117,7 +117,7 @@ class FormSubmitTest(TransactionTestCase):
         del form_data['person-email']
         resp = self.client.post('/self_register', form_data)
 
-        self.assertEqual(models.Organisation.objects.count(), 0)
+        self.assertEqual(models.Company.objects.count(), 0)
         self.assertEqual(resp.status_code, 200)
 
     def test_mail_is_sent_after_successful_self_registration(self):
@@ -142,7 +142,7 @@ class OrganisationExportTest(TestCase):
     def test_export_csv_with_obligation(self):
         fgas = models.Obligation.objects.get(code='fgas')
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, obligation=fgas.pk)
-        org_pk = models.Organisation.objects.all()[0].pk
+        org_pk = models.Company.objects.all()[0].pk
 
         # we need to refer the form that is tested.
         # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
@@ -167,14 +167,14 @@ class OrganisationEditTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         org_data = dict(ORG_FIXTURE, country=self.dk.pk)
         self.client.post('/organisation/add', org_data)
-        self.org = models.Organisation.objects.all()[0]
+        self.org = models.Company.objects.all()[0]
         self.update_url = '/organisation/%d/update' % self.org.pk
 
     def test_model_updated_from_organisation_edit(self):
         create_user_and_login(self.client, superuser=True)
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         self.client.post(self.update_url, org_form)
-        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.addr_street, "Sesame")
 
     def test_modifying_obligation_or_account_is_ignored(self):
@@ -184,7 +184,7 @@ class OrganisationEditTest(TestCase):
         org_form = dict(ORG_FIXTURE, country=self.dk.pk,
                         obligation=fgas.pk, account=account.pk)
         self.client.post(self.update_url, org_form)
-        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertIsNone(new_org.obligation)
         self.assertIsNone(new_org.account)
 
@@ -195,7 +195,7 @@ class OrganisationEditTest(TestCase):
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         resp = self.client.post(self.update_url, org_form)
         self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
-        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.addr_street, "Sesame")
 
     def test_random_account_is_not_allowed_to_edit(self):
@@ -214,7 +214,7 @@ class OrganisationEditTest(TestCase):
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="Rebranded")
         resp = self.client.post(self.update_url, org_form)
         self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
-        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "Rebranded")
 
     def test_owner_cant_change_name(self):
@@ -224,7 +224,7 @@ class OrganisationEditTest(TestCase):
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, name="Rebranded")
         resp = self.client.post(self.update_url, org_form)
         self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
-        new_org = models.Organisation.objects.get(pk=self.org.pk)
+        new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "Teh company")
 
     def test_landing_page_redirects_to_organisation_edit(self):
@@ -248,25 +248,25 @@ class OrganisationNameHistoryTest(TestCase):
         user = create_user_and_login(self.client)
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
         self.client.post('/organisation/add', form_data)
-        self.assertEqual(models.OrganisationNameHistory.objects.count(), 1)
-        [hist0] = models.OrganisationNameHistory.objects.all()
+        self.assertEqual(models.CompanyNameHistory.objects.count(), 1)
+        [hist0] = models.CompanyNameHistory.objects.all()
         self.assertEqual(hist0.name, ORG_FIXTURE['name'])
-        self.assertEqual(hist0.organisation, models.Organisation.objects.get())
+        self.assertEqual(hist0.organisation, models.Company.objects.get())
         self.assertEqual(hist0.user, user)
 
     def test_updating_organisation_name_creates_record_in_history(self):
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
         self.client.post('/organisation/add', form_data)
-        org = models.Organisation.objects.all()[0]
+        org = models.Company.objects.all()[0]
 
         user = create_user_and_login(self.client, superuser=True, staff=True)
         update_url = '/organisation/%d/update' % org.pk
         form_data['name'] = "Teh other company"
         self.client.post(update_url, form_data)
-        self.assertEqual(models.OrganisationNameHistory.objects.count(), 2)
-        [hist0, hist1] = models.OrganisationNameHistory.objects.all()
+        self.assertEqual(models.CompanyNameHistory.objects.count(), 2)
+        [hist0, hist1] = models.CompanyNameHistory.objects.all()
         self.assertEqual(hist1.name, form_data['name'])
-        self.assertEqual(hist1.organisation, models.Organisation.objects.get())
+        self.assertEqual(hist1.organisation, models.Company.objects.get())
         self.assertEqual(hist1.user, user)
 
 
@@ -277,7 +277,7 @@ class OrganisationPasswordTest(TestCase):
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.account = models.Account.objects.create_for_obligation(self.fgas)
         self.account.set_random_password()
-        self.acme = models.Organisation.objects.create(country=self.dk,
+        self.acme = models.Company.objects.create(country=self.dk,
                                                        obligation=self.fgas,
                                                        account=self.account)
         ldap_editor_patch = patch('bdr_registry.admin.create_ldap_editor')
@@ -318,7 +318,7 @@ class PersonEditTest(TestCase):
     def setUp(self):
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
-        self.acme = models.Organisation.objects.create(country=self.dk,
+        self.acme = models.Company.objects.create(country=self.dk,
                                                        obligation=self.fgas)
         self.person = models.Person.objects.create(organisation=self.acme)
         self.update_url = '/person/%d/update' % self.person.pk
@@ -332,7 +332,7 @@ class PersonEditTest(TestCase):
 
     def test_modifying_organisation_is_ignored(self):
         create_user_and_login(self.client, superuser=True)
-        org2 = models.Organisation.objects.create(country=self.dk,
+        org2 = models.Company.objects.create(country=self.dk,
                                                   obligation=self.fgas)
         person_form = dict(PERSON_FIXTURE, organisation=org2.pk)
         self.client.post(self.update_url, person_form)
@@ -412,7 +412,7 @@ class CommentEditTest(TestCase):
     def setUp(self):
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
-        self.acme = models.Organisation.objects.create(country=self.dk,
+        self.acme = models.Company.objects.create(country=self.dk,
                                                        obligation=self.fgas)
         self.comment = models.Comment.objects.create(organisation=self.acme)
         self.update_url = '/comment/%d/update' % self.comment.pk
@@ -425,7 +425,7 @@ class CommentEditTest(TestCase):
 
     def test_modifying_organisation_is_ignored(self):
         create_user_and_login(self.client, superuser=True)
-        org2 = models.Organisation.objects.create(country=self.dk,
+        org2 = models.Company.objects.create(country=self.dk,
                                                   obligation=self.fgas)
         comment_form = dict(COMMENT_FIXTURE, organisation=org2.pk)
         self.client.post(self.update_url, comment_form)
@@ -506,7 +506,7 @@ class ApiTest(TestCase):
         account = models.Account.objects.create(uid='fgas12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
                       account=account, obligation=self.fgas)
-        org = models.Organisation.objects.create(**kwargs)
+        org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(organisation=org,
                                      first_name="Joe",
                                      family_name="Smith",
@@ -556,7 +556,7 @@ class ApiTest(TestCase):
         account = models.Account.objects.create(uid='fgas12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
                       account=account, obligation=self.fgas)
-        org = models.Organisation.objects.create(**kwargs)
+        org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(organisation=org,
                                      first_name="Joe",
                                      family_name="Smith",
@@ -597,8 +597,8 @@ class ApiTest(TestCase):
         kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.fgas)
         account1 = models.Account.objects.create(uid='fgas0001')
         account2 = models.Account.objects.create(uid='fgas0002')
-        models.Organisation.objects.create(account=account1, **kwargs)
-        org2 = models.Organisation.objects.create(account=account2, **kwargs)
+        models.Company.objects.create(account=account1, **kwargs)
+        org2 = models.Company.objects.create(account=account2, **kwargs)
 
         resp = self.client.get('/organisation/all'
                                '?account_uid=fgas0002'

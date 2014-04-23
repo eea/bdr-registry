@@ -89,7 +89,7 @@ class NextAccountId(models.Model):
         return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
 
 
-class Organisation(models.Model):
+class Company(models.Model):
 
     EORI_LABEL = _('Economic Operators Registration and Identification number (EORI)')
 
@@ -108,11 +108,11 @@ class Organisation(models.Model):
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True,
-                                   related_name='organisation')
+                                   related_name='company')
     website = models.URLField(null=True, blank=True)
 
     def get_absolute_url(self):
-        return reverse('organisation', kwargs={'pk': self.pk})
+        return reverse('company', kwargs={'pk': self.pk})
 
     def __unicode__(self):
         return self.name
@@ -135,14 +135,14 @@ def organisation_saved(instance, **extra):
         instance.namehistory.create(name=instance.name, user_id=user_id)
 
 
-models.signals.post_init.connect(organisation_loaded, sender=Organisation)
-models.signals.post_save.connect(organisation_saved, sender=Organisation)
+models.signals.post_init.connect(organisation_loaded, sender=Company)
+models.signals.post_save.connect(organisation_saved, sender=Company)
 
 
-class OrganisationNameHistory(models.Model):
+class CompanyNameHistory(models.Model):
 
     name = models.CharField(max_length=255)
-    organisation = models.ForeignKey(Organisation, related_name='namehistory')
+    company = models.ForeignKey(Company, related_name='namehistory')
     user = models.ForeignKey('auth.User', null=True, blank=True)
     time = models.DateTimeField(auto_now_add=True)
 
@@ -166,7 +166,7 @@ class Person(models.Model):
     fax = models.CharField(_('Fax'),
                            max_length=255, null=True, blank=True)
 
-    organisation = models.ForeignKey(Organisation, related_name='people')
+    company = models.ForeignKey(Company, related_name='people')
 
     @property
     def formal_name(self):
@@ -179,8 +179,8 @@ class Person(models.Model):
 class Comment(models.Model):
     text = models.TextField(_('Comment'))
     created = models.DateTimeField(auto_now_add=True)
-    organisation = models.ForeignKey(Organisation,
-                                     related_name='comments')
+    company = models.ForeignKey(Company,
+                                related_name='comments')
 
     def __unicode__(self):
         return self.created.strftime('%d %B %Y')

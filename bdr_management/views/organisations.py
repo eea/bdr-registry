@@ -17,7 +17,7 @@ from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.organisations import OrganisationForm, \
     OrganisationDeleteForm
-from bdr_registry.models import Organisation, Account
+from bdr_registry.models import Company, Account
 
 
 class Organisations(views.StaffuserRequiredMixin,
@@ -48,7 +48,7 @@ class OrganisationsFilter(views.StaffuserRequiredMixin,
         return val.strftime(settings.DATE_FORMAT)
 
     def get_queryset(self, opt):
-        queryset = Organisation.objects.all()
+        queryset = Company.objects.all()
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(opt['order_by'])
@@ -101,7 +101,7 @@ class OrganisationsBaseView(base.ModelTableViewMixin,
                             generic.DetailView):
 
     template_name = 'bdr_management/organisation_view.html'
-    model = Organisation
+    model = Company
     exclude = ('id', )
 
 
@@ -163,7 +163,7 @@ class OrganisationBaseEdit(base.ModelTableViewMixin,
                            generic.UpdateView):
 
     template_name = 'bdr_management/organisation_edit.html'
-    model = Organisation
+    model = Company
     success_message = _('Organisation edited successfully')
 
 
@@ -196,7 +196,7 @@ class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
                           OrganisationBaseEdit):
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('organisation', kwargs={'pk': self.object.pk})
+        back_url = reverse('company', kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
             Breadcrumb(back_url, self.object),
@@ -209,7 +209,7 @@ class OrganisationsUpdate(base.OrganisationUserRequiredMixin,
         return data
 
     def get_success_url(self):
-        return reverse('organisation', kwargs=self.kwargs)
+        return reverse('company', kwargs=self.kwargs)
 
 
 class OrganisationDelete(views.GroupRequiredMixin,
@@ -217,7 +217,7 @@ class OrganisationDelete(views.GroupRequiredMixin,
                          generic.DeleteView):
 
     group_required = settings.BDR_HELPDESK_GROUP
-    model = Organisation
+    model = Company
     success_url = reverse_lazy('management:organisations')
     template_name = 'bdr_management/organisation_confirm_delete.html'
 
@@ -248,7 +248,7 @@ class OrganisationAdd(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/organisation_add.html'
-    model = Organisation
+    model = Company
     form_class = OrganisationForm
     success_message = _('Organisation created successfully')
 
@@ -275,7 +275,7 @@ class ResetPassword(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/reset_password.html'
-    model = Organisation
+    model = Company
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
@@ -305,7 +305,7 @@ class CreateAccount(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/create_account.html'
-    model = Organisation
+    model = Company
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
@@ -341,7 +341,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/create_reporting_folder.html'
-    model = Organisation
+    model = Company
 
     def dispatch(self, request, *args, **kwargs):
         self.organisation = self.get_object()
