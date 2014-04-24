@@ -234,7 +234,7 @@ class PersonManagementCreate(views.GroupRequiredMixin,
         back_url = reverse('management:companies_view', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:companies'), _('Organisations')),
+            Breadcrumb(reverse('management:companies'), _('Companies')),
             Breadcrumb(back_url, self.company),
             Breadcrumb('', _('Add comment'))
         ]

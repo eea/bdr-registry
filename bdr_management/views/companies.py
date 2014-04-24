@@ -27,7 +27,7 @@ class Companies(views.StaffuserRequiredMixin,
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb('', _('Organisations'))
+            Breadcrumb('', _('Companies'))
         ]
         context = super(Companies, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
@@ -111,7 +111,7 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'),
-                       _('Organisations')),
+                       _('Companies')),
             Breadcrumb('', self.object)
         ]
         data = super(CompaniesManagementView, self) \
@@ -177,7 +177,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'),
-                       _('Organisations')),
+                       _('Companies')),
             Breadcrumb(back_url, self.object),
             Breadcrumb('', _('Edit %s' % self.object))
         ]
@@ -223,7 +223,7 @@ class CompanyDelete(views.GroupRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'),
-                       _('Organisations')),
+                       _('Companies')),
             Breadcrumb(reverse('management:companies_view',
                                kwargs={'pk': self.object.pk}),
                        self.object),
@@ -257,7 +257,7 @@ class CompanyAdd(views.GroupRequiredMixin,
         back_url = reverse('management:companies')
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(back_url, _('Organisations')),
+            Breadcrumb(back_url, _('Companies')),
             Breadcrumb('', _('Add company'))
         ]
         context = super(CompanyAdd, self).get_context_data(**kwargs)
