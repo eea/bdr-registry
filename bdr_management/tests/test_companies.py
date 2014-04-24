@@ -20,7 +20,7 @@ BDR_API_URL = 'http://testserver'
 BDR_API_AUTH = ('apiuser', 'apipassword')
 
 
-class OrganisationResetPasswordTests(base.BaseWebTest):
+class CompanyResetPasswordTests(base.BaseWebTest):
 
     def setUp(self):
         self.patcher = patch('bdr_management.backend.create_ldap_editor',
@@ -113,7 +113,7 @@ class OrganisationResetPasswordTests(base.BaseWebTest):
         self.assertEqual(0, len(resp.pyquery('#reset-password-action')))
 
 
-class OrganisationCreateAccountTests(base.BaseWebTest):
+class CompanyCreateAccountTests(base.BaseWebTest):
 
     def setUp(self):
         self.patcher = patch('bdr_management.backend.create_ldap_editor',
@@ -123,13 +123,13 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
     def tearDown(self):
         self.patcher.stop()
 
-    def test_create_organisation_account_get_with_account(self):
+    def test_create_company_account_get_with_account(self):
         org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:create_account', pk=org.pk)
         resp = self.app.get(url, user='admin', expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
-    def test_create_organisation_account_get_without_account(self):
+    def test_create_company_account_get_without_account(self):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_account', pk=org.pk)
@@ -138,7 +138,7 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.assertTemplateUsed(resp, 'bdr_management/create_account.html')
         self.assertEqual(resp.context['object'], org)
 
-    def test_create_organisation_account(self):
+    def test_create_company_account(self):
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         org = factories.CompanyFactory(obligation=obligation)
@@ -157,7 +157,7 @@ class OrganisationCreateAccountTests(base.BaseWebTest):
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
 
-    def test_create_organisation_account_with_perform_send(self):
+    def test_create_company_account_with_perform_send(self):
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         person = factories.PersonFactory()
