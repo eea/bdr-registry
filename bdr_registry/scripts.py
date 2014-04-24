@@ -28,7 +28,7 @@ def import_companies(csv_file):
             'date_registered': timezone.make_aware(raw_date - HOURS_2,
                                                    timezone.utc),
             'obligation': obligation,
-            'name': row['Organisation'],
+            'name': row['Company'],
             'country': country,
             'addr_place2': row['Region'],
             'addr_place1': row['Municipality'],
@@ -97,7 +97,7 @@ def update_companies_from_ldap():
             obligation=obligation,
             account=account)
 
-        log.info("Organisation: uid=%r pk=%r name=%r",
+        log.info("Company: uid=%r pk=%r name=%r",
                  org.account.uid, org.pk, org.name)
 
 

@@ -163,7 +163,7 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
 
     template_name = 'bdr_management/company_edit.html'
     model = Company
-    success_message = _('Organisation edited successfully')
+    success_message = _('Company edited successfully')
 
 
 class CompaniesManagementEdit(views.GroupRequiredMixin,
@@ -235,7 +235,7 @@ class CompanyDelete(views.GroupRequiredMixin,
         return context
 
     def delete(self, request, *args, **kwargs):
-        messages.success(request, _('Organisation deleted'))
+        messages.success(request, _('Company deleted'))
         return super(CompanyDelete, self).delete(request, *args, **kwargs)
 
 
@@ -248,7 +248,7 @@ class CompanyAdd(views.GroupRequiredMixin,
     template_name = 'bdr_management/company_add.html'
     model = Company
     form_class = OrganisationForm
-    success_message = _('Organisation created successfully')
+    success_message = _('Company created successfully')
 
     def get_success_url(self):
         return reverse('management:companies')

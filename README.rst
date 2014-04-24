@@ -15,7 +15,7 @@ organisations.
 Workflows
 ---------
 
-Organisation reporters
+Company reporters
 ~~~~~~~~~~~~~~~~~~~~~~
 Starting from the BDR homepage, reporters click on "Self-registration",
 which takes them to a registration form on `bdr-registry`. The
@@ -61,7 +61,7 @@ create reporting folders in the `BDR Zope` application.
 
 .. _admin interface: https://bdr.eionet.europa.eu/registry/admin/
 
-Organisation accounts have no special roles configured in
+Company accounts have no special roles configured in
 `bdr-registry`; they can edit their own company's contact details
 based on the user id. They are however granted owner rights on their
 reporting folder in the `BDR Zope` application, so they can upload files
