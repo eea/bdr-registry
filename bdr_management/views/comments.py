@@ -22,7 +22,7 @@ class CommentCreateBase(SuccessMessageMixin,
     success_message = _("Comment added successfully")
 
     def dispatch(self, *args, **kwargs):
-        self.organisation = get_object_or_404(Company, **self.kwargs)
+        self.company = get_object_or_404(Company, **self.kwargs)
         return super(CommentCreateBase, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
@@ -30,13 +30,13 @@ class CommentCreateBase(SuccessMessageMixin,
 
     def get_form_kwargs(self, **kwargs):
         data = super(CommentCreateBase, self).get_form_kwargs(**kwargs)
-        data['initial']['organisation'] = self.organisation
+        data['initial']['company'] = self.company
         return data
 
     def get_context_data(self, **kwargs):
         context = super(CommentCreateBase, self).get_context_data(**kwargs)
         context['title'] = 'Add a new comment'
-        context['object'] = self.organisation
+        context['object'] = self.company
         return context
 
 
@@ -50,7 +50,7 @@ class CommentManagementCreate(GroupRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'), _('Organisations')),
-            Breadcrumb(back_url, self.organisation),
+            Breadcrumb(back_url, self.company),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(CommentManagementCreate, self).get_context_data(**kwargs)
@@ -59,14 +59,14 @@ class CommentManagementCreate(GroupRequiredMixin,
         return data
 
 
-class CommentCreate(base.OrganisationUserRequiredMixin,
+class CommentCreate(base.CompanyUserRequiredMixin,
                     CommentCreateBase):
 
     def get_context_data(self, **kwargs):
         back_url = reverse('company', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(back_url, self.organisation),
+            Breadcrumb(back_url, self.company),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(CommentCreate, self).get_context_data(**kwargs)
@@ -81,8 +81,8 @@ class CommentDeleteBase(generic.DeleteView):
     model = Comment
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation = get_object_or_404(Company,
-                                              pk=self.kwargs['pk'])
+        self.company = get_object_or_404(Company,
+                                         pk=self.kwargs['pk'])
         return super(CommentDeleteBase, self).dispatch(request, *args,
                                                        **kwargs)
 
@@ -98,11 +98,11 @@ class CommentManagementDelete(GroupRequiredMixin,
 
     def get_success_url(self):
         return reverse('management:companies_view',
-                       kwargs={'pk': self.organisation.pk})
+                       kwargs={'pk': self.company.pk})
 
 
-class CommentDelete(base.OrganisationUserRequiredMixin,
+class CommentDelete(base.CompanyUserRequiredMixin,
                     CommentDeleteBase):
 
     def get_success_url(self):
-        return reverse('company', kwargs={'pk': self.organisation.pk})
+        return reverse('company', kwargs={'pk': self.company.pk})

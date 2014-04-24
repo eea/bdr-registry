@@ -14,32 +14,32 @@ from braces.views import AjaxResponseMixin, JSONResponseMixin
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
 
 
-class OrganisationUserRequiredBaseMixin(AccessMixin):
+class CompanyUserRequiredBaseMixin(AccessMixin):
 
     group_required = settings.BDR_HELPDESK_GROUP
 
     def dispatch(self, request, *args, **kwargs):
         self.request = request
-        self.organisation = self.get_organisation()
+        self.company = self.get_company()
 
-        if not has_permission(self.request.user, self.organisation):
+        if not has_permission(self.request.user, self.company):
             return redirect_to_login(request.get_full_path(),
                                      self.get_login_url(),
                                      self.get_redirect_field_name())
 
-        return super(OrganisationUserRequiredBaseMixin, self) \
+        return super(CompanyUserRequiredBaseMixin, self) \
             .dispatch(request, *args, **kwargs)
 
 
-class OrganisationUserRequiredMixin(OrganisationUserRequiredBaseMixin):
+class CompanyUserRequiredMixin(CompanyUserRequiredBaseMixin):
 
-    def get_organisation(self):
+    def get_company(self):
         return get_object_or_404(Company, pk=self.kwargs['pk'])
 
 
-class PersonUserRequiredMixin(OrganisationUserRequiredBaseMixin):
+class PersonUserRequiredMixin(CompanyUserRequiredBaseMixin):
 
-    def get_organisation(self):
+    def get_company(self):
         person = get_object_or_404(Person, pk=self.kwargs['pk'])
         return person.company
 
@@ -162,7 +162,7 @@ class ModelTableViewMixin(ModelTableMixin):
     template_name = 'bdr_management/_view.html'
 
 
-def has_permission(user, organisation):
+def has_permission(user, company):
 
     if user.is_superuser:
         return True
@@ -171,8 +171,8 @@ def has_permission(user, organisation):
     if required_group in user.groups.values_list('name', flat=True):
         return True
 
-    if organisation:
-        account = organisation.account
+    if company:
+        account = company.account
         if account and (account.uid == user.username):
             return True
 

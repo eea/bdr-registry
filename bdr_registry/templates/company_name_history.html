@@ -9,14 +9,14 @@
 <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
 &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_label|capfirst|escape }}</a>
 &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
-&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}{{ organisation.pk }}">{{ organisation|truncatewords:"18" }}</a>
+&rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}{{ company.pk }}">{{ company|truncatewords:"18" }}</a>
 &rsaquo; name history
 </div>
 {% endblock %}
 
 
 {% block content %}
-<h1>History of name updates for <em>{{ organisation.name }}</em></h1>
+<h1>History of name updates for <em>{{ company.name }}</em></h1>
 
 <table>
 
@@ -29,7 +29,7 @@
   </thead>
 
   <tbody>
-    {% for item in organisation.namehistory.all %}
+    {% for item in company.namehistory.all %}
       <tr>
         <td>{{ item.time }}</td>
         <td>{% firstof item.user '(automated script)' %}</td>

@@ -112,7 +112,7 @@ msgid "Back to reporting"
 msgstr ""
 
 #: templates/company_update.html:20
-msgid "Update organisation"
+msgid "Update company"
 msgstr ""
 
 #: templates/company_update.html:23 templates/self_register.html:37

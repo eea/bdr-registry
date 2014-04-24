@@ -1,10 +1,10 @@
 BDR Organisations Registry
 ==========================
 
-`bdr-registry`_ is a registry of organisation contacts (implemented as a
+`bdr-registry`_ is a registry of company contacts (implemented as a
 Django application) for the reporting process which is handled by the
 `BDR Zope`_ application. Reporters from organisations can self-register
-and then manage a list of contacts for their organisation. BDR helpdesk
+and then manage a list of contacts for their company. BDR helpdesk
 can manage accounts and passwords and download CSV reports of
 organisations.
 
@@ -24,7 +24,7 @@ helpdesk.
 
 After they receive an account, reporters can follow a link on the
 reporting folder, which takes them to a page in `bdr-registry`, where
-they can update the organisation's contact details.
+they can update the company's contact details.
 
 Helpdesk
 ~~~~~~~~
@@ -36,7 +36,7 @@ Helpdesk reviews self-registered organisations and creates LDAP accounts
 and BDR reporting folders for them. These actions are performed via the
 "action" menu after selecting one or more organisations. Optionally,
 email notifications, containing the LDAP username and password, can be
-sent to organisation contacts when the accounts are created, or at a
+sent to company contacts when the accounts are created, or at a
 later time.
 
 Helpdesk can download CSV reports of organisations_ and `contact
@@ -56,13 +56,13 @@ against the same LDAP server as the `BDR Zope` application.
 
 User permissions for `bdr-registry` are configured via the `admin
 interface`_. The `helpdesk` group grants permission to can edit/delete
-any organisation, create/update LDAP accounts, reset passwords, and
+any company, create/update LDAP accounts, reset passwords, and
 create reporting folders in the `BDR Zope` application.
 
 .. _admin interface: https://bdr.eionet.europa.eu/registry/admin/
 
 Organisation accounts have no special roles configured in
-`bdr-registry`; they can edit their own organisation's contact details
+`bdr-registry`; they can edit their own company's contact details
 based on the user id. They are however granted owner rights on their
 reporting folder in the `BDR Zope` application, so they can upload files
 and follow the envelope workflow steps.
@@ -80,7 +80,7 @@ as a `Script (Python)` (source code at
 is granted Manager role on the entire `BDR Zope` application so it can
 create reporting folders.
 
-`WebQ`_ calls a `bdr-registry` API to fetch organisation details. This
+`WebQ`_ calls a `bdr-registry` API to fetch company details. This
 API is protected using access tokens configured in the admin interface.
 
 When a user visits `bdr-registry` coming from the `BDR Zope`

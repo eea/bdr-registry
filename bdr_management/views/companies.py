@@ -22,7 +22,7 @@ from bdr_registry.models import Company, Account
 class Companies(views.StaffuserRequiredMixin,
                     generic.TemplateView):
 
-    template_name = 'bdr_management/organisations.html'
+    template_name = 'bdr_management/companies.html'
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -99,13 +99,13 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
 class CompaniesBaseView(base.ModelTableViewMixin,
                             generic.DetailView):
 
-    template_name = 'bdr_management/organisation_view.html'
+    template_name = 'bdr_management/company_view.html'
     model = Company
     exclude = ('id', )
 
 
 class CompaniesManagementView(views.StaffuserRequiredMixin,
-                                  CompaniesBaseView):
+                              CompaniesBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -134,8 +134,8 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
         return reverse('management:companies_delete', kwargs=self.kwargs)
 
 
-class CompaniesUpdateView(base.OrganisationUserRequiredMixin,
-                              CompaniesBaseView):
+class CompaniesUpdateView(base.CompanyUserRequiredMixin,
+                          CompaniesBaseView):
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -161,7 +161,7 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
                            SuccessMessageMixin,
                            generic.UpdateView):
 
-    template_name = 'bdr_management/organisation_edit.html'
+    template_name = 'bdr_management/company_edit.html'
     model = Company
     success_message = _('Organisation edited successfully')
 
@@ -191,8 +191,8 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         return reverse('management:companies_view', kwargs=self.kwargs)
 
 
-class CompaniesUpdate(base.OrganisationUserRequiredMixin,
-                          CompanyBaseEdit):
+class CompaniesUpdate(base.CompanyUserRequiredMixin,
+                      CompanyBaseEdit):
 
     def get_context_data(self, **kwargs):
         back_url = reverse('company', kwargs={'pk': self.object.pk})
@@ -217,7 +217,7 @@ class CompanyDelete(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
     model = Company
     success_url = reverse_lazy('management:companies')
-    template_name = 'bdr_management/organisation_confirm_delete.html'
+    template_name = 'bdr_management/company_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -227,7 +227,7 @@ class CompanyDelete(views.GroupRequiredMixin,
             Breadcrumb(reverse('management:companies_view',
                                kwargs={'pk': self.object.pk}),
                        self.object),
-            Breadcrumb('', _('Delete organisation'))
+            Breadcrumb('', _('Delete company'))
         ]
         context = super(CompanyDelete, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
@@ -245,7 +245,7 @@ class CompanyAdd(views.GroupRequiredMixin,
 
     group_required = settings.BDR_HELPDESK_GROUP
 
-    template_name = 'bdr_management/organisation_add.html'
+    template_name = 'bdr_management/company_add.html'
     model = Company
     form_class = OrganisationForm
     success_message = _('Organisation created successfully')
@@ -258,11 +258,11 @@ class CompanyAdd(views.GroupRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url, _('Organisations')),
-            Breadcrumb('', _('Add organisation'))
+            Breadcrumb('', _('Add company'))
         ]
         context = super(CompanyAdd, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
-        context['title'] = 'Add a new organisation'
+        context['title'] = 'Add a new company'
         context['cancel_url'] = back_url
         return context
 
@@ -276,25 +276,25 @@ class ResetPassword(views.GroupRequiredMixin,
     model = Company
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation = self.get_object()
-        if not self.organisation.account:
+        self.company = self.get_object()
+        if not self.company.account:
             raise Http404
         return super(ResetPassword, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
-        self.organisation.account.set_random_password()
-        counters = backend.sync_accounts_with_ldap([self.organisation.account])
+        self.company.account.set_random_password()
+        counters = backend.sync_accounts_with_ldap([self.company.account])
         msg = _('Password have been reset. LDAP: %r.') % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people([self.organisation])
+            n = backend.send_password_email_to_people([self.company])
             messages.success(
                 request,
                 'Emails have been sent to %d people.' % n
             )
         return redirect('management:companies_view',
-                        pk=self.organisation.pk)
+                        pk=self.company.pk)
 
 
 class CreateAccount(views.GroupRequiredMixin,
@@ -306,29 +306,29 @@ class CreateAccount(views.GroupRequiredMixin,
     model = Company
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation = self.get_object()
-        if self.organisation.account:
+        self.company = self.get_object()
+        if self.company.account:
             raise Http404
         return super(CreateAccount, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
-        obligation = self.organisation.obligation
+        obligation = self.company.obligation
         account = Account.objects.create_for_obligation(obligation)
         account.set_random_password()
-        self.organisation.account = account
-        self.organisation.save()
+        self.company.account = account
+        self.company.save()
         counters = backend.sync_accounts_with_ldap([account])
         msg = "Account created. LDAP: %r." % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people([self.organisation])
+            n = backend.send_password_email_to_people([self.company])
             messages.success(
                 request,
                 'Emails have been sent to %d people.' % n
             )
         return redirect('management:companies_view',
-                        pk=self.organisation.pk)
+                        pk=self.company.pk)
 
 
 class CreateReportingFolder(views.GroupRequiredMixin,
@@ -342,15 +342,15 @@ class CreateReportingFolder(views.GroupRequiredMixin,
     model = Company
 
     def dispatch(self, request, *args, **kwargs):
-        self.organisation = self.get_object()
+        self.company = self.get_object()
         if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
             messages.error(request, self.API_ERROR_MSG)
             return redirect('management:companies_view',
-                            pk=self.organisation.pk)
+                            pk=self.company.pk)
         return super(CreateReportingFolder, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
         return redirect('management:companies_view',
-                        pk=self.organisation.pk)
+                        pk=self.company.pk)
 
 

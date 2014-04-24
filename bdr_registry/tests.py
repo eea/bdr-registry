@@ -69,9 +69,9 @@ class FormSubmitTest(TransactionTestCase):
         for key in data:
             self.assertEqual(getattr(obj, key), data[key])
 
-    def test_submitted_organisation_is_saved(self):
+    def test_submitted_company_is_saved(self):
         form_data = dict(ORG_FIXTURE, country=self.denmark.pk)
-        resp = self.client.post('/organisation/add', form_data)
+        resp = self.client.post('/company/add', form_data)
 
         self.assertEqual(models.Company.objects.count(), 1)
         org = models.Company.objects.all()[0]
@@ -80,22 +80,22 @@ class FormSubmitTest(TransactionTestCase):
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
-                         'http://testserver/organisation/%d' % org.pk)
+                         'http://testserver/company/%d' % org.pk)
 
     def prepare_form_data(self):
         form_data = {
-            'organisation-country': self.denmark.pk,
-            'organisation-obligation': self.fgas.pk,
+            'company-country': self.denmark.pk,
+            'company-obligation': self.fgas.pk,
         }
         for key, value in ORG_FIXTURE.items():
-            form_data['organisation-' + key] = value
+            form_data['company-' + key] = value
         for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
         for key, value in COMMENT_FIXTURE.items():
             form_data['comment-' + key] = value
         return form_data
 
-    def test_submitted_organisation_and_person_are_saved(self):
+    def test_submitted_company_and_person_are_saved(self):
         resp = self.client.post('/self_register', self.prepare_form_data())
 
         self.assertEqual(models.Company.objects.count(), 1)
@@ -105,14 +105,14 @@ class FormSubmitTest(TransactionTestCase):
 
         self.assert_object_has_items(org, ORG_FIXTURE)
         self.assert_object_has_items(person, PERSON_FIXTURE)
-        self.assertEqual(person.organisation, org)
+        self.assertEqual(person.company, org)
         self.assertItemsEqual(org.people.all(), [person])
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
                          'http://testserver/self_register/done')
 
-    def test_invalid_person_rolls_back_saved_organisation(self):
+    def test_invalid_person_rolls_back_saved_company(self):
         form_data = self.prepare_form_data()
         del form_data['person-email']
         resp = self.client.post('/self_register', form_data)
@@ -131,12 +131,12 @@ class OrganisationExportTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         user = create_user_and_login(self.client, superuser=True, staff=True)
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        resp = self.client.post('/organisation/add', form_data)
+        resp = self.client.post('/company/add', form_data)
         self.assertEqual(resp.status_code, 302)
 
 
     def test_export_csv_no_obligation(self):
-        resp = self.client.get('/admin/bdr_registry/organisation/export')
+        resp = self.client.get('/admin/bdr_registry/company/export')
         self.assertIn(ORG_FIXTURE['name'], resp.content)
 
     def test_export_csv_with_obligation(self):
@@ -154,10 +154,10 @@ class OrganisationExportTest(TestCase):
         })
 
         resp = self.client.post(
-            '/admin/bdr_registry/organisation/{0}/'.format(org_pk),
+            '/admin/bdr_registry/company/{0}/'.format(org_pk),
             org_form)
         self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/admin/bdr_registry/organisation/export')
+        resp = self.client.get('/admin/bdr_registry/company/export')
         self.assertIn(OBLIGATON_CODE, resp.content)
 
 
@@ -166,11 +166,11 @@ class OrganisationEditTest(TestCase):
     def setUp(self):
         self.dk = models.Country.objects.get(name="Denmark")
         org_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        self.client.post('/organisation/add', org_data)
+        self.client.post('/company/add', org_data)
         self.org = models.Company.objects.all()[0]
-        self.update_url = '/organisation/%d/update' % self.org.pk
+        self.update_url = '/company/%d/update' % self.org.pk
 
-    def test_model_updated_from_organisation_edit(self):
+    def test_model_updated_from_company_edit(self):
         create_user_and_login(self.client, superuser=True)
         org_form = dict(ORG_FIXTURE, country=self.dk.pk, addr_street="Sesame")
         self.client.post(self.update_url, org_form)
@@ -188,7 +188,7 @@ class OrganisationEditTest(TestCase):
         self.assertIsNone(new_org.obligation)
         self.assertIsNone(new_org.account)
 
-    def test_organisation_account_is_allowed_to_edit(self):
+    def test_company_account_is_allowed_to_edit(self):
         user = create_user_and_login(self.client)
         self.org.account = models.Account.objects.create(uid=user.username)
         self.org.save()
@@ -204,9 +204,9 @@ class OrganisationEditTest(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
 
-    def test_view_returns_404_for_organisation_notfound(self):
+    def test_view_returns_404_for_company_notfound(self):
         with quiet_request_logging():
-            resp = self.client.get('/organisation/123/update')
+            resp = self.client.get('/company/123/update')
         self.assertEqual(resp.status_code, 404)
 
     def test_admin_can_change_name(self):
@@ -227,12 +227,12 @@ class OrganisationEditTest(TestCase):
         new_org = models.Company.objects.get(pk=self.org.pk)
         self.assertEqual(new_org.name, "Teh company")
 
-    def test_landing_page_redirects_to_organisation_edit(self):
+    def test_landing_page_redirects_to_company_edit(self):
         self.org.account = models.Account.objects.create(uid='ods123')
         self.org.save()
-        url1 = ('http://testserver/edit_organisation?uid={org.account.uid}'
+        url1 = ('http://testserver/edit_company?uid={org.account.uid}'
                 .format(org=self.org))
-        url2 = ('http://testserver/organisation/{org.pk}/update'
+        url2 = ('http://testserver/company/{org.pk}/update'
                 .format(org=self.org))
         resp = self.client.get(url1)
         self.assertEqual(resp['location'], url2)
@@ -244,29 +244,29 @@ class OrganisationNameHistoryTest(TestCase):
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.dk = models.Country.objects.get(name="Denmark")
 
-    def test_new_organisation_creates_record_in_history(self):
+    def test_new_company_creates_record_in_history(self):
         user = create_user_and_login(self.client)
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        self.client.post('/organisation/add', form_data)
+        self.client.post('/company/add', form_data)
         self.assertEqual(models.CompanyNameHistory.objects.count(), 1)
         [hist0] = models.CompanyNameHistory.objects.all()
         self.assertEqual(hist0.name, ORG_FIXTURE['name'])
-        self.assertEqual(hist0.organisation, models.Company.objects.get())
+        self.assertEqual(hist0.company, models.Company.objects.get())
         self.assertEqual(hist0.user, user)
 
-    def test_updating_organisation_name_creates_record_in_history(self):
+    def test_updating_company_name_creates_record_in_history(self):
         form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        self.client.post('/organisation/add', form_data)
+        self.client.post('/company/add', form_data)
         org = models.Company.objects.all()[0]
 
         user = create_user_and_login(self.client, superuser=True, staff=True)
-        update_url = '/organisation/%d/update' % org.pk
+        update_url = '/company/%d/update' % org.pk
         form_data['name'] = "Teh other company"
         self.client.post(update_url, form_data)
         self.assertEqual(models.CompanyNameHistory.objects.count(), 2)
         [hist0, hist1] = models.CompanyNameHistory.objects.all()
         self.assertEqual(hist1.name, form_data['name'])
-        self.assertEqual(hist1.organisation, models.Company.objects.get())
+        self.assertEqual(hist1.company, models.Company.objects.get())
         self.assertEqual(hist1.user, user)
 
 
@@ -287,7 +287,7 @@ class OrganisationPasswordTest(TestCase):
     def test_password_reset_changes_password(self):
         password = self.account.password
         create_user_and_login(self.client, superuser=True, staff=True)
-        self.client.post('/admin/bdr_registry/organisation/', {
+        self.client.post('/admin/bdr_registry/company/', {
             helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
             'action': 'reset_password',
             'perform_reset': 'yes',
@@ -300,7 +300,7 @@ class OrganisationPasswordTest(TestCase):
         self.acme.people.create(email="alice@example.com")
         self.acme.people.create(email="bob@example.com")
         create_user_and_login(self.client, superuser=True, staff=True)
-        self.client.post('/admin/bdr_registry/organisation/', {
+        self.client.post('/admin/bdr_registry/company/', {
             helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
             'action': 'send_password_email',
             'perform_send': 'yes',
@@ -320,7 +320,7 @@ class PersonEditTest(TestCase):
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.acme = models.Company.objects.create(country=self.dk,
                                                        obligation=self.fgas)
-        self.person = models.Person.objects.create(organisation=self.acme)
+        self.person = models.Person.objects.create(company=self.acme)
         self.update_url = '/person/%d/update' % self.person.pk
 
     def test_person_information_is_updated(self):
@@ -330,16 +330,16 @@ class PersonEditTest(TestCase):
         new_person = models.Person.objects.get(pk=self.person.pk)
         self.assertEqual(new_person.phone, '555 9876')
 
-    def test_modifying_organisation_is_ignored(self):
+    def test_modifying_company_is_ignored(self):
         create_user_and_login(self.client, superuser=True)
         org2 = models.Company.objects.create(country=self.dk,
                                                   obligation=self.fgas)
-        person_form = dict(PERSON_FIXTURE, organisation=org2.pk)
+        person_form = dict(PERSON_FIXTURE, company=org2.pk)
         self.client.post(self.update_url, person_form)
         new_person = models.Person.objects.get(pk=self.person.pk)
-        self.assertEqual(new_person.organisation, self.acme)
+        self.assertEqual(new_person.company, self.acme)
 
-    def test_organisation_account_is_allowed_to_edit(self):
+    def test_company_account_is_allowed_to_edit(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
@@ -362,23 +362,23 @@ class PersonEditTest(TestCase):
             resp = self.client.get('/person/123/update')
         self.assertEqual(resp.status_code, 404)
 
-    def test_add_person_to_organisation(self):
+    def test_add_person_to_company(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
-        self.client.post('/organisation/%d/add_person' % self.acme.pk,
+        self.client.post('/company/%d/add_person' % self.acme.pk,
                          dict(PERSON_FIXTURE, first_name='Smith'))
         new_person = models.Person.objects.get(first_name='Smith')
-        self.assertEqual(new_person.organisation, self.acme)
+        self.assertEqual(new_person.company, self.acme)
 
-    def test_add_person_to_organisation_returns_404_for_missing_org(self):
+    def test_add_person_to_company_returns_404_for_missing_org(self):
         with quiet_request_logging():
-            resp = self.client.get('/organisation/123/add_person')
+            resp = self.client.get('/company/123/add_person')
         self.assertEqual(resp.status_code, 404)
 
-    def test_organisation_account_can_delete_person_from_organisation(self):
-        self.person2 = models.Person.objects.create(organisation=self.acme)
+    def test_company_account_can_delete_person_from_company(self):
+        self.person2 = models.Person.objects.create(company=self.acme)
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
@@ -386,7 +386,7 @@ class PersonEditTest(TestCase):
         self.client.post('/person/%d/delete' % self.person.pk)
         self.assertItemsEqual(self.acme.people.all(), [self.person2])
 
-    def test_organisation_account_cant_delete_last_person(self):
+    def test_company_account_cant_delete_last_person(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
@@ -414,7 +414,7 @@ class CommentEditTest(TestCase):
         self.fgas = models.Obligation.objects.get(code='fgas')
         self.acme = models.Company.objects.create(country=self.dk,
                                                        obligation=self.fgas)
-        self.comment = models.Comment.objects.create(organisation=self.acme)
+        self.comment = models.Comment.objects.create(company=self.acme)
         self.update_url = '/comment/%d/update' % self.comment.pk
 
     def test_comment_information_is_updated(self):
@@ -423,16 +423,16 @@ class CommentEditTest(TestCase):
         new_comment = models.Comment.objects.get(pk=self.comment.pk)
         self.assertEqual(new_comment.text, COMMENT_FIXTURE['text'])
 
-    def test_modifying_organisation_is_ignored(self):
+    def test_modifying_company_is_ignored(self):
         create_user_and_login(self.client, superuser=True)
         org2 = models.Company.objects.create(country=self.dk,
                                                   obligation=self.fgas)
-        comment_form = dict(COMMENT_FIXTURE, organisation=org2.pk)
+        comment_form = dict(COMMENT_FIXTURE, company=org2.pk)
         self.client.post(self.update_url, comment_form)
         new_comment = models.Comment.objects.get(pk=self.comment.pk)
-        self.assertEqual(new_comment.organisation, self.acme)
+        self.assertEqual(new_comment.company, self.acme)
 
-    def test_organisation_account_is_allowed_to_edit(self):
+    def test_company_account_is_allowed_to_edit(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
@@ -453,23 +453,23 @@ class CommentEditTest(TestCase):
             resp = self.client.get('/comment/123/update')
         self.assertEqual(resp.status_code, 404)
 
-    def test_add_comment_to_organisation(self):
+    def test_add_comment_to_company(self):
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
         self.acme.save()
-        self.client.post('/organisation/%d/add_comment' % self.acme.pk,
+        self.client.post('/company/%d/add_comment' % self.acme.pk,
                          COMMENT_FIXTURE)
         new_comment = models.Comment.objects.get(text=COMMENT_FIXTURE['text'])
-        self.assertEqual(new_comment.organisation, self.acme)
+        self.assertEqual(new_comment.company, self.acme)
 
-    def test_add_comment_to_organisation_returns_404_for_missing_org(self):
+    def test_add_comment_to_company_returns_404_for_missing_org(self):
         with quiet_request_logging():
-            resp = self.client.get('/organisation/123/add_comment')
+            resp = self.client.get('/company/123/add_comment')
         self.assertEqual(resp.status_code, 404)
 
-    def test_organisation_account_can_delete_comment_from_organisation(self):
-        self.comment2 = models.Comment.objects.create(organisation=self.acme)
+    def test_company_account_can_delete_comment_from_company(self):
+        self.comment2 = models.Comment.objects.create(company=self.acme)
         user = create_user_and_login(self.client)
         account = models.Account.objects.create(uid=user.username)
         self.acme.account = account
@@ -495,19 +495,19 @@ class ApiTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
 
-    def test_response_empty_when_no_organisations_in_db(self):
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+    def test_response_empty_when_no_companys_in_db(self):
+        resp = self.client.get('/company/all?apikey=' + self.apikey)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<organisations></organisations>')
+                    '<companys></companys>')
         self.assertEqual(resp.content, expected)
 
-    def test_response_contains_single_organisation_from_db(self):
+    def test_response_contains_single_company_from_db(self):
         account = models.Account.objects.create(uid='fgas12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
                       account=account, obligation=self.fgas)
         org = models.Company.objects.create(**kwargs)
-        models.Person.objects.create(organisation=org,
+        models.Person.objects.create(company=org,
                                      first_name="Joe",
                                      family_name="Smith",
                                      email="joe.smith@example.com",
@@ -515,18 +515,18 @@ class ApiTest(TestCase):
                                      fax="555 6789")
 
         comment_text = "A comment"
-        comment = models.Comment.objects.create(organisation=org,
+        comment = models.Comment.objects.create(company=org,
                                                 text=comment_text)
 
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+        resp = self.client.get('/company/all?apikey=' + self.apikey)
 
         # By default, MySQL DateTime doesn't store fractional seconds,
         # so we'll get them back trimmed
         expected_comment_created = str(comment.created.replace(microsecond=0))
 
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<organisations>'
-                      '<organisation>'
+                    '<companys>'
+                      '<company>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -548,8 +548,8 @@ class ApiTest(TestCase):
                           '<text>A comment</text>'
                           '<created>' + expected_comment_created + '</created>'
                         '</comment>'
-                      '</organisation>'
-                    '</organisations>')
+                      '</company>'
+                    '</companys>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_all_person_data(self):
@@ -557,7 +557,7 @@ class ApiTest(TestCase):
         kwargs = dict(ORG_FIXTURE, country=self.dk,
                       account=account, obligation=self.fgas)
         org = models.Company.objects.create(**kwargs)
-        models.Person.objects.create(organisation=org,
+        models.Person.objects.create(company=org,
                                      first_name="Joe",
                                      family_name="Smith",
                                      email="joe.smith@example.com",
@@ -566,10 +566,10 @@ class ApiTest(TestCase):
                                      phone3="557 1234",
                                      fax="555 6789")
 
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+        resp = self.client.get('/company/all?apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<organisations>'
-                      '<organisation>'
+                    '<companys>'
+                      '<company>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -589,23 +589,23 @@ class ApiTest(TestCase):
                           '<phone>557 1234</phone>'
                           '<fax>555 6789</fax>'
                         '</person>'
-                      '</organisation>'
-                    '</organisations>')
+                      '</company>'
+                    '</companys>')
         self.assertEqual(resp.content, expected)
 
-    def test_response_contains_organisation_with_matching_uid(self):
+    def test_response_contains_company_with_matching_uid(self):
         kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.fgas)
         account1 = models.Account.objects.create(uid='fgas0001')
         account2 = models.Account.objects.create(uid='fgas0002')
         models.Company.objects.create(account=account1, **kwargs)
         org2 = models.Company.objects.create(account=account2, **kwargs)
 
-        resp = self.client.get('/organisation/all'
+        resp = self.client.get('/company/all'
                                '?account_uid=fgas0002'
                                '&apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<organisations>'
-                      '<organisation>'
+                    '<companys>'
+                      '<company>'
                         '<pk>' + str(org2.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -617,10 +617,10 @@ class ApiTest(TestCase):
                         '<account>fgas0002</account>'
                         '<obligation name="F-gases">fgas</obligation>'
                         '<country name="Denmark">dk</country>'
-                      '</organisation>'
-                    '</organisations>')
+                      '</company>'
+                    '</companys>')
         self.assertEqual(resp.content, expected)
 
     def test_requests_with_no_api_key_are_rejected(self):
-        resp = self.client.get('/organisation/all')
+        resp = self.client.get('/company/all')
         self.assertEqual(resp.status_code, 403)

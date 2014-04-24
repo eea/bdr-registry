@@ -195,7 +195,7 @@ class PersonDelete(base.PersonUserRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_success_url(self):
-        return reverse('company', kwargs={'pk': self.organisation.pk})
+        return reverse('company', kwargs={'pk': self.company.pk})
 
 
 class PersonCreateBase(SuccessMessageMixin,
@@ -207,18 +207,18 @@ class PersonCreateBase(SuccessMessageMixin,
     success_message = _('Person created successfully')
 
     def dispatch(self, *args, **kwargs):
-        self.organisation = get_object_or_404(Company, **self.kwargs)
+        self.company = get_object_or_404(Company, **self.kwargs)
         return super(PersonCreateBase, self).dispatch(*args, **kwargs)
 
     def get_form_kwargs(self, **kwargs):
         data = super(PersonCreateBase, self).get_form_kwargs(**kwargs)
-        data['initial']['organisation'] = self.organisation
+        data['initial']['company'] = self.company
         return data
 
     def get_context_data(self, **kwargs):
         context = super(PersonCreateBase, self).get_context_data(**kwargs)
         context['title'] = 'Add a new person'
-        context['object'] = self.organisation
+        context['object'] = self.company
         return context
 
 
@@ -235,7 +235,7 @@ class PersonManagementCreate(views.GroupRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'), _('Organisations')),
-            Breadcrumb(back_url, self.organisation),
+            Breadcrumb(back_url, self.company),
             Breadcrumb('', _('Add comment'))
         ]
         data = super(PersonManagementCreate, self).get_context_data(**kwargs)
@@ -244,7 +244,7 @@ class PersonManagementCreate(views.GroupRequiredMixin,
         return data
 
 
-class PersonCreate(base.OrganisationUserRequiredMixin,
+class PersonCreate(base.CompanyUserRequiredMixin,
                    PersonCreateBase):
 
     def get_success_url(self):
@@ -255,7 +255,7 @@ class PersonCreate(base.OrganisationUserRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url,
-                       self.organisation),
+                       self.company),
             Breadcrumb('', _('Add person'))
         ]
         data = super(PersonCreate, self).get_context_data(**kwargs)

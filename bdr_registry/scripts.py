@@ -55,9 +55,9 @@ def import_companies(csv_file):
             'fax': row['p2-Fax'],
         }
 
-        p1 = models.Person.objects.create(organisation=org, **p1_data)
+        p1 = models.Person.objects.create(company=org, **p1_data)
         if any(p2_data.values()):
-            p2 = models.Person.objects.create(organisation=org, **p2_data)
+            p2 = models.Person.objects.create(company=org, **p2_data)
 
 
 @transaction.commit_on_success

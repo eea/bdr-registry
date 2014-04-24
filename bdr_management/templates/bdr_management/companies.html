@@ -17,13 +17,13 @@
         &nbsp;
         <a class="btn btn-green pull-right"
            style="margin-top: 5px;"
-           href="{% url 'management:companies_add' %}">{% trans "Add a new organisation" %}</a>
+           href="{% url 'management:companies_add' %}">{% trans "Add a new company" %}</a>
       {% endif %}
   </div>
   <hr />
 
 
-  {% include 'bdr_management/_organisation_filters.html' %}
+  {% include 'bdr_management/_company_filters.html' %}
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'

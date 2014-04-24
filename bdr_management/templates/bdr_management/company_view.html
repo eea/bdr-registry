@@ -51,14 +51,14 @@
         {% if user|has_permission:object %}
         &ensp;|&ensp;
         <a class='btn-text delete-link' 
-           href="{% url comment_delete_route pk=organisation.pk comment_pk=comment.pk %}">
+           href="{% url comment_delete_route pk=company.pk comment_pk=comment.pk %}">
           {% trans "Delete comment" %}
         </a>
         {% endif %}
       </div>
     </li>
   {% empty %}
-    <p>{% trans "There are no comments for this organisation." %}</p>
+    <p>{% trans "There are no comments for this company." %}</p>
   {% endfor %}
   </ul>
   {% if user|has_permission:object %}

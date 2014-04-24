@@ -10,6 +10,6 @@ class CommentForm(ModelForm):
 
     def save(self, **kwargs):
         comment = super(CommentForm, self).save(commit=False)
-        comment.organisation = self.initial['organisation']
+        comment.company = self.initial['company']
         comment.save()
         return comment

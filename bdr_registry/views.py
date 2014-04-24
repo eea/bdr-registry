@@ -25,14 +25,14 @@ import models
 
 class CanEdit(object):
 
-    def __init__(self, organisation):
-        self.organisation = organisation
+    def __init__(self, company):
+        self.company = company
 
     def __call__(self, user):
         if user.is_superuser:
             return True
 
-        account = self.organisation.account
+        account = self.company.account
         if account is not None:
             if account.uid == user.username:
                 return True
@@ -51,7 +51,7 @@ ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')
 class CompanyCreate(CreateView):
 
     model = models.Company
-    template_name = 'organisation_add.html'
+    template_name = 'company_add.html'
 
     def get_form_class(self):
         return modelform_factory(models.Company,
@@ -70,8 +70,8 @@ class CompanyUpdate(UpdateView):
         return modelform_factory(models.Company, exclude=exclude)
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Company, pk=pk)
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Company, pk=pk)
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(CompanyUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -132,25 +132,25 @@ def api_key_required(view):
 def company_all(request):
     data = []
     account_uid = request.GET.get('account_uid')
-    for organisation in models.Company.objects.all():
+    for company in models.Company.objects.all():
         if account_uid is not None:
-            if (organisation.account is None or
-                organisation.account.uid != account_uid):
+            if (company.account is None or
+                company.account.uid != account_uid):
                 continue
-        item = OrderedDict((k, getattr(organisation, k))
+        item = OrderedDict((k, getattr(company, k))
                 for k in ['pk', 'name', 'addr_street', 'addr_postalcode',
                           'eori', 'vat_number', 'addr_place1',
                           'addr_place2'])
-        if organisation.account is not None:
-            item['account'] = organisation.account.uid
-        if organisation.obligation is not None:
+        if company.account is not None:
+            item['account'] = company.account.uid
+        if company.obligation is not None:
             item['obligation'] = {
-                '@name': organisation.obligation.name,
-                '#text': organisation.obligation.code,
+                '@name': company.obligation.name,
+                '#text': company.obligation.code,
             }
         item['country'] = {
-            '@name': organisation.country.name,
-            '#text': organisation.country.code,
+            '@name': company.country.name,
+            '#text': company.country.code,
         }
 
         def person_data(person):
@@ -161,17 +161,17 @@ def company_all(request):
                 ('phone', [p for p in phones if p]),
                 ('fax', person.fax),
             ])
-        item['person'] = [person_data(p) for p in organisation.people.all()]
+        item['person'] = [person_data(p) for p in company.people.all()]
 
         def comment_data(comment):
             return OrderedDict([
                 ('text', comment.text),
                 ('created', comment.created)
             ])
-        item['comment'] = [comment_data(c) for c in organisation.comments.all()]
+        item['comment'] = [comment_data(c) for c in company.comments.all()]
 
         data.append(item)
-    xml = xmltodict.unparse({'organisations': {'organisation': data}})
+    xml = xmltodict.unparse({'companies': {'company': data}})
     return HttpResponse(xml, content_type='application/xml')
 
 
@@ -185,14 +185,14 @@ class CompanyForm(ModelForm):
         exclude = ORG_CREATE_EXCLUDE
 
 
-PersonForm = modelform_factory(models.Person, exclude=['organisation'])
-CommentForm = modelform_factory(models.Comment, exclude=['organisation'])
+PersonForm = modelform_factory(models.Person, exclude=['company'])
+CommentForm = modelform_factory(models.Comment, exclude=['company'])
 
 
 class SelfRegister(View):
 
     def make_forms(self, post_data=None):
-        return (CompanyForm(post_data, prefix='organisation'),
+        return (CompanyForm(post_data, prefix='company'),
                 PersonForm(post_data, prefix='person'))
 
     def render_forms(self, request, organisation_form,
@@ -206,18 +206,18 @@ class SelfRegister(View):
         return self.render_forms(request, *self.make_forms())
 
     def post(self, request):
-        organisation_form, person_form = self.make_forms(request.POST.dict())
+        company_form, person_form = self.make_forms(request.POST.dict())
 
-        if organisation_form.is_valid():
-            organisation = organisation_form.save()
+        if company_form.is_valid():
+            company = company_form.save()
 
             if person_form.is_valid():
                 person = person_form.save(commit=False)
-                person.organisation = organisation
+                person.company = company
                 person.save()
 
                 send_notification_email({
-                    'organisation': organisation,
+                    'company': company,
                     'person': person,
                 })
 
@@ -226,18 +226,18 @@ class SelfRegister(View):
             else:
                 transaction.rollback()
 
-        return self.render_forms(request, organisation_form, person_form)
+        return self.render_forms(request, company_form, person_form)
 
 
 class CompanyAddPerson(CreateView):
 
-    template_name = 'organisation_add_person.html'
+    template_name = 'company_add_person.html'
     model = models.Person
     form_class = PersonForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Company, pk=pk)
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Company, pk=pk)
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(CompanyAddPerson, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -251,7 +251,7 @@ class CompanyAddPerson(CreateView):
     def form_valid(self, form):
         person = form.save(commit=False)
         pk = self.kwargs['pk']
-        person.organisation = models.Company.objects.get(pk=pk)
+        person.company = models.Company.objects.get(pk=pk)
         person.save()
         return HttpResponseRedirect(reverse('company_update', args=[pk]))
 
@@ -263,21 +263,21 @@ class PersonUpdate(UpdateView):
     form_class = PersonForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Person, pk=pk).organisation
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Person, pk=pk).company
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(PersonUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
-        organisation = self.object.organisation
-        return reverse('company_update', args=[organisation.pk])
+        company = self.object.company
+        return reverse('company_update', args=[company.pk])
 
     def form_valid(self, form):
         messages.add_message(self.request, messages.INFO,
                              u"Details saved: %s" % self.object)
-        return super(PersonEdit, self).form_valid(form)
+        return super(PersonUpdate, self).form_valid(form)
 
 
 class PersonDelete(DeleteView):
@@ -286,8 +286,8 @@ class PersonDelete(DeleteView):
     template_name = 'person_confirm_delete.html'
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Person, pk=pk).organisation
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Person, pk=pk).company
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(PersonDelete, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -295,7 +295,7 @@ class PersonDelete(DeleteView):
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if self.object.organisation.people.count() == 1:
+        if self.object.company.people.count() == 1:
             messages.add_message(self.request, messages.ERROR,
                                  u"Can't delete last person")
 
@@ -304,8 +304,8 @@ class PersonDelete(DeleteView):
             messages.add_message(self.request, messages.INFO,
                                  u"Person deleted: %s" % self.object)
 
-        organisation = self.object.organisation
-        url = reverse('company_update', args=[organisation.pk])
+        company = self.object.company
+        url = reverse('company_update', args=[company.pk])
         return HttpResponseRedirect(url)
 
 
@@ -316,8 +316,8 @@ class CompanyAddComment(CreateView):
     form_class = CommentForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Company, pk=pk)
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Company, pk=pk)
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(CompanyAddComment, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -331,7 +331,7 @@ class CompanyAddComment(CreateView):
     def form_valid(self, form):
         comment = form.save(commit=False)
         pk = self.kwargs['pk']
-        comment.organisation = models.Company.objects.get(pk=pk)
+        comment.company = models.Company.objects.get(pk=pk)
         comment.save()
         return HttpResponseRedirect(reverse('company_update', args=[pk]))
 
@@ -343,16 +343,16 @@ class CommentUpdate(UpdateView):
     form_class = CommentForm
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Comment, pk=pk).organisation
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Comment, pk=pk).company
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(CommentUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
-        organisation = self.object.organisation
-        return reverse('company_update', args=[organisation.pk])
+        company = self.object.company
+        return reverse('company_update', args=[company.pk])
 
     def form_valid(self, form):
         messages.add_message(self.request, messages.INFO,
@@ -366,8 +366,8 @@ class CommentDelete(DeleteView):
     template_name = 'comment_confirm_delete.html'
 
     def dispatch(self, request, pk):
-        organisation = get_object_or_404(models.Comment, pk=pk).organisation
-        can_edit = CanEdit(organisation)
+        company = get_object_or_404(models.Comment, pk=pk).company
+        can_edit = CanEdit(company)
         login_url = reverse('login')
         dispatch = super(CommentDelete, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
@@ -380,8 +380,8 @@ class CommentDelete(DeleteView):
                              u"Comment from %s successfully deleted" %
                              self.object.created.strftime('%d %B %Y'))
 
-        organisation = self.object.organisation
-        url = reverse('company_update', args=[organisation.pk])
+        company = self.object.company
+        url = reverse('company_update', args=[company.pk])
         return HttpResponseRedirect(url)
 
 

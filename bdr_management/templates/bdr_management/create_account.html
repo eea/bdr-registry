@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Create account for {{ organisation }}</h1>
+<h1>Create account for {{ company }}</h1>
 
 <form method="POST" action="" class="push-top">
 {% csrf_token %}
@@ -15,9 +15,9 @@
     </label>
   </div>
 
-  <div id="organisation-persons">
+  <div id="company-persons">
     <ul>
-      {% for person in organisation.people.all %}
+      {% for person in company.people.all %}
         <li><b>{{ person }}</b></li>
       {% endfor %}
     </ul>

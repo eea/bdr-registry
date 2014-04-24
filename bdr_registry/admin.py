@@ -80,13 +80,13 @@ def create_accounts(modeladmin, request, queryset):
     if request.POST.get('perform_create'):
         n = 0
         new_accounts = []
-        for organisation in organisations_without_account:
-            obligation = organisation.obligation
+        for company in organisations_without_account:
+            obligation = company.obligation
             account = models.Account.objects.create_for_obligation(obligation)
             account.set_random_password()
-            organisation.account = account
+            company.account = account
             new_accounts.append(account)
-            organisation.save()
+            company.save()
             n += 1
         # counters = sync_accounts_with_ldap(new_accounts)
         counters = 0
@@ -99,7 +99,7 @@ def create_accounts(modeladmin, request, queryset):
 
         return
 
-    return TemplateResponse(request, 'organisation_create_accounts.html', {
+    return TemplateResponse(request, 'company_create_accounts.html', {
         'organisations_without_account': organisations_without_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -115,9 +115,9 @@ def reset_password(modeladmin, request, queryset):
     if request.POST.get('perform_reset'):
         n = 0
         reset_accounts = []
-        for organisation in organisations_with_account:
-            organisation.account.set_random_password()
-            reset_accounts.append(organisation.account)
+        for company in organisations_with_account:
+            company.account.set_random_password()
+            reset_accounts.append(company.account)
             n += 1
         counters = sync_accounts_with_ldap(reset_accounts)
         msg = "%d passwords have been reset. LDAP: %r." % (n, counters)
@@ -128,7 +128,7 @@ def reset_password(modeladmin, request, queryset):
 
         return
 
-    return TemplateResponse(request, 'organisation_reset_password.html', {
+    return TemplateResponse(request, 'company_reset_password.html', {
         'organisations_with_account': organisations_with_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -139,23 +139,23 @@ def send_password_email_to_people(organisations):
     n = 0
     mail_from = settings.BDR_EMAIL_FROM
     reporting_year = settings.REPORTING_YEAR
-    for organisation in organisations:
-        for person in organisation.people.all():
-            if organisation.obligation.code == 'ods':
+    for company in organisations:
+        for person in company.people.all():
+            if company.obligation.code == 'ods':
                 subject = u"Reporting data on ODS covering %s" % reporting_year
-                html = render_to_string('email_organisation_ods.html', {
+                html = render_to_string('email_company_ods.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
-            elif organisation.obligation.code == 'fgas':
+            elif company.obligation.code == 'fgas':
                 subject = u"Reporting data on F-Gases covering %s" % reporting_year
-                html = render_to_string('email_organisation_fgas.html', {
+                html = render_to_string('email_company_fgas.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
@@ -163,7 +163,7 @@ def send_password_email_to_people(organisations):
 
             else:
                 raise RuntimeError("Unknown obligation %r" %
-                                   organisation.obligation.code)
+                                   company.obligation.code)
 
             mail_to = [person.email]
             message = mail.EmailMessage(subject, html,
@@ -184,7 +184,7 @@ def send_password_email(modeladmin, request, queryset):
                              "Emails have been sent to %d people." % n)
         return
 
-    return TemplateResponse(request, 'organisation_email_password.html', {
+    return TemplateResponse(request, 'company_email_password.html', {
         'organisations_with_account': organisations_with_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -249,7 +249,7 @@ class PersonInline(admin.StackedInline):
 class PersonReadOnlyInline(PersonInline):
 
     readonly_fields = ['title', 'family_name', 'first_name', 'email',
-                       'phone', 'phone2', 'phone3', 'fax', 'organisation']
+                       'phone', 'phone2', 'phone3', 'fax', 'company']
 
 
 class CommentInline(admin.StackedInline):
@@ -293,8 +293,8 @@ class OrganisationAdmin(ReadOnlyAdmin):
 
     def name_history(self, request, pk):
         org = get_object_or_404(models.Company, pk=pk)
-        return TemplateResponse(request, 'organisation_name_history.html', {
-            'organisation': org,
+        return TemplateResponse(request, 'company_name_history.html', {
+            'company': org,
             'opts': org._meta,
         }, current_app=self.admin_site.name)
 
@@ -327,7 +327,7 @@ class PersonAdmin(ReadOnlyAdmin):
 
     user_readonly = ['title', 'family_name', 'first_name',
                      'email', 'phone', 'phone2', 'phone3',
-                     'fax', 'organisation']
+                     'fax', 'company']
 
     user_readonly_inlines = []
 
@@ -346,7 +346,7 @@ class PersonAdmin(ReadOnlyAdmin):
         out.writerow(['userid', 'companyname', 'country',
                       'contactname', 'contactemail'])
         for person in models.Person.objects.all():
-            org = person.organisation
+            org = person.company
             account = org.account
             if account is None:
                 continue

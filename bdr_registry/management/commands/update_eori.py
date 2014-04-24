@@ -29,7 +29,7 @@ class Command(BaseCommand):
                                 org.eori = row[8]
                                 org.save()
                                 self.stdout.write('Update '
-                                    'organisation: %s\n' % org.id)
+                                    'company: %s\n' % org.id)
                             except Company.DoesNotExist:
                                 pass
 

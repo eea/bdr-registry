@@ -10,14 +10,14 @@
   <ul>
     {% if reporting_url %}
     <li><a href="{{ reporting_url }}"
-           title="Go back to the collection for this organisation"
+           title="Go back to the collection for this company"
            >{% trans "Back to reporting" %}</a></li>
     {% endif %}
   </ul>
 </div>
 
 
-<h1>{% trans "Update organisation" %} <em>{{ object.name }}</em></h1>
+<h1>{% trans "Update company" %} <em>{{ object.name }}</em></h1>
 
 
 <h2>{% trans "Company details" %}</h2>
@@ -113,7 +113,7 @@
 <h2>{% trans "Comments" %}</h2>
 
 <ul>
-{% for comment in organisation.comments.all %}
+{% for comment in company.comments.all %}
   <li>
     <a href="{% url 'comment_update' comment.pk %}">
         {{ comment.created|date:"d F Y" }}
@@ -128,7 +128,7 @@
 {% endfor %}
 </ul>
 
-<form action="{% url 'organisation_add_comment' organisation.pk %}">
+<form action="{% url 'organisation_add_comment' company.pk %}">
   <button type="submit">{% trans "New comment" %}</button>
 </form>
 
@@ -136,7 +136,7 @@
 <h2>{% trans "People" %}</h2>
 
 <ul>
-{% for person in organisation.people.all %}
+{% for person in company.people.all %}
   <li>
     <a href="{% url 'person_update' person.pk %}">{{ person }}</a>
     <a class="delete" href="{% url 'person_delete' person.pk %}">
@@ -146,7 +146,7 @@
 {% endfor %}
 </ul>
 
-<form action="{% url 'organisation_add_person' organisation.pk %}">
+<form action="{% url 'organisation_add_person' company.pk %}">
   <button type="submit">{% trans "New person" %}</button>
 </form>
 

@@ -22,28 +22,28 @@ def sync_accounts_with_ldap(accounts):
     return dict(counters)
 
 
-def send_password_email_to_people(organisations):
+def send_password_email_to_people(companies):
     n = 0
     mail_from = settings.BDR_EMAIL_FROM
     reporting_year = settings.REPORTING_YEAR
-    for organisation in organisations:
-        for person in organisation.people.all():
-            if organisation.obligation.code == 'ods':
+    for company in companies:
+        for person in company.people.all():
+            if company.obligation.code == 'ods':
                 subject = u"Reporting data on ODS covering %s" % reporting_year
-                html = render_to_string('email_organisation_ods.html', {
+                html = render_to_string('email_company_ods.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
-            elif organisation.obligation.code == 'fgas':
+            elif company.obligation.code == 'fgas':
                 subject = u"Reporting data on F-Gases covering %s" % (
                     reporting_year)
-                html = render_to_string('email_organisation_fgas.html', {
+                html = render_to_string('email_company_fgas.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
@@ -51,7 +51,7 @@ def send_password_email_to_people(organisations):
 
             else:
                 raise RuntimeError("Unknown obligation %r" %
-                                   organisation.obligation.code)
+                                   company.obligation.code)
 
             mail_to = [person.email]
             message = mail.EmailMessage(subject, html,

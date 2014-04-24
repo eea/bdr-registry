@@ -6,10 +6,10 @@ class PersonForm(ModelForm):
 
     class Meta():
         model = Person
-        exclude = ('organisation',)
+        exclude = ('company',)
 
     def save(self, **kwargs):
         person = super(PersonForm, self).save(commit=False)
-        person.organisation = self.initial['organisation']
+        person.company = self.initial['company']
         person.save()
         return person
