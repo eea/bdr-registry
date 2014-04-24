@@ -36,7 +36,7 @@ class Companies(views.StaffuserRequiredMixin,
 
 
 class CompaniesFilter(views.StaffuserRequiredMixin,
-                          base.FilterView):
+                      base.FilterView):
 
     def process_name(self, object, val):
         url = reverse('management:companies_view',
