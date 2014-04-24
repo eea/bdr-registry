@@ -58,8 +58,8 @@ def sync_accounts_with_ldap(accounts):
     counters = defaultdict(int)
     for account in accounts:
         if ldap_editor.create_account(account.uid,
-                                      account.organisation.name,
-                                      account.organisation.country.name,
+                                      account.company.name,
+                                      account.company.country.name,
                                       account.password):
             counters['create'] += 1
         else:
