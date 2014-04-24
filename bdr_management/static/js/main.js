@@ -24,6 +24,8 @@ $(function () {
                 optionElem.val('').change();
             }
         });
+        $('#company-filters').toggleClass('hidden');
+        $('#company-filters-button').show();
     });
 
     $('.delete-link').on('click', function(e) {
@@ -45,11 +47,6 @@ $(function () {
     $('#company-filters-button').on('click', function(e) {
       $('#company-filters').toggleClass('hidden');
       $(this).hide();
-    })
-
-    $('#company-filters').on('click', function(e) {
-        $('#company-filters').toggleClass('hidden');
-        $('#company-filters-button').show();
     })
 
     $('input[name=send_mail]').on('change', function () {
