@@ -14,8 +14,7 @@ from braces import views
 
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
-from bdr_management.forms.organisations import OrganisationForm, \
-    OrganisationDeleteForm
+from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_registry.models import Company, Account
 
 
@@ -31,7 +30,7 @@ class Companies(views.StaffuserRequiredMixin,
         ]
         context = super(Companies, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
-        context['form'] = forms.OrganisationFilters()
+        context['form'] = forms.CompanyFilters()
         return context
 
 
@@ -70,7 +69,7 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
             queryset = queryset.filter(
                 obligation__name=filters['obligation'])
         if 'account' in filters:
-            if filters['account'] == forms.OrganisationFilters.WITHOUT_ACCOUNT:
+            if filters['account'] == forms.CompanyFilters.WITHOUT_ACCOUNT:
                 queryset = queryset.exclude(account__isnull=False)
             else:
                 queryset = queryset.exclude(account__isnull=True)
@@ -85,11 +84,11 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
 
     def _get_startdate(self, selected_option):
         today = date.today()
-        if selected_option == forms.OrganisationFilters.TODAY:
+        if selected_option == forms.CompanyFilters.TODAY:
             start_date = today
-        elif selected_option == forms.OrganisationFilters.LAST_7_DAYS:
+        elif selected_option == forms.CompanyFilters.LAST_7_DAYS:
             start_date = today - timedelta(days=7)
-        elif selected_option == forms.OrganisationFilters.THIS_MONTH:
+        elif selected_option == forms.CompanyFilters.THIS_MONTH:
             start_date = date(today.year, today.month, 1)
         else:
             start_date = date(today.year, 1, 1)
@@ -231,7 +230,7 @@ class CompanyDelete(views.GroupRequiredMixin,
         ]
         context = super(CompanyDelete, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
-        context['form'] = OrganisationDeleteForm()
+        context['form'] = CompanyDeleteForm()
         return context
 
     def delete(self, request, *args, **kwargs):
@@ -240,14 +239,14 @@ class CompanyDelete(views.GroupRequiredMixin,
 
 
 class CompanyAdd(views.GroupRequiredMixin,
-                      SuccessMessageMixin,
-                      generic.CreateView):
+                 SuccessMessageMixin,
+                 generic.CreateView):
 
     group_required = settings.BDR_HELPDESK_GROUP
 
     template_name = 'bdr_management/company_add.html'
     model = Company
-    form_class = OrganisationForm
+    form_class = CompanyForm
     success_message = _('Company created successfully')
 
     def get_success_url(self):
@@ -352,5 +351,3 @@ class CreateReportingFolder(views.GroupRequiredMixin,
     def post(self, request, pk):
         return redirect('management:companies_view',
                         pk=self.company.pk)
-
-

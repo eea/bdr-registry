@@ -2,7 +2,7 @@ from django.forms import Form, ModelChoiceField, ChoiceField
 from bdr_registry.models import Country, Obligation
 
 
-class OrganisationFilters(Form):
+class CompanyFilters(Form):
 
     WITHOUT_ACCOUNT = 'without-account'
     WITH_ACCOUNT = 'with-account'
