@@ -6,18 +6,16 @@
 {% include 'bdr_management/_edit_header.html' %}
 <div class="row">
 <form class="form col-md-8 push-top" method="post">
-    {% csrf_token %}
-    {% for field in form %}
-      <tr>
-        <td>
-          <label for="id_{{ field.name }}"
-            class="question {% if field.field.required %}required{% endif %}">{{ field.label }}</label>
-        </td>
-        <td>
-          {{ field|add_error_class:"error" }}
-        </td>
-      </tr>
-    {% endfor %}
+  {% csrf_token %}
+
+  {% include 'bdr_management/_edit_person_form_fields.html' %}
+
+  <hr />
+
+  <div class="btn-toolbar">
+    <button type="submit" class="btn-blue">Save</button>
+    <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
+  </div>
 
 </form>
 </div>

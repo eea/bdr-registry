@@ -1,0 +1,15 @@
+{% load utils %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+{% for field in form %}
+      <tr>
+        <td>
+          <label for="id_{{ field.name }}"
+            class="question {% if field.field.required %}required{% endif %}">{{ field.label }}</label>
+        </td>
+        <td>
+          {{ field|add_error_class:"error" }}
+        </td>
+      </tr>
+{% endfor %}

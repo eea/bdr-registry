@@ -1,4 +1,5 @@
 from datetime import date, timedelta
+from bdr_management.forms import PersonForm
 
 from django.conf import settings
 from django.contrib import messages
@@ -7,7 +8,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 
 from braces import views
@@ -248,6 +249,35 @@ class CompanyAdd(views.GroupRequiredMixin,
     model = Company
     form_class = CompanyForm
     success_message = _('Company created successfully')
+
+    def get(self, request, *args, **kwargs):
+        self.object = None
+        return self.render_to_response(
+            self.get_context_data(form=self.get_form(self.get_form_class()),
+                                  person_form=PersonForm(),
+                                  company_form=CompanyForm()))
+
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        person_form = PersonForm(self.request.POST)
+        if form.is_valid() and person_form.is_valid():
+            return self.form_valid(form, person_form)
+        else:
+            return self.form_invalid(form, person_form)
+
+    def form_invalid(self, form, person_form):
+        return self.render_to_response(
+            self.get_context_data(form=self.get_form(self.get_form_class()),
+                                  person_form=person_form))
+
+    def form_valid(self, form, person_form):
+        self.object = form.save()
+        person_form.initial['company'] = self.object
+        person_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
 
     def get_success_url(self):
         return reverse('management:companies')
