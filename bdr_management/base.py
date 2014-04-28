@@ -111,8 +111,8 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
         count_total = self.get_queryset(dict(no_filter, **get_limit))
 
         return self.render_json_response({
-            'iTotalRecords': count_filtered,
-            'iTotalDisplayRecords': count_total,
+            'iTotalRecords': count_total,
+            'iTotalDisplayRecords': count_filtered,
             'aaData': table_data,
 
         })
