@@ -20,7 +20,7 @@ from bdr_registry.models import Company, Account
 
 
 class Companies(views.StaffuserRequiredMixin,
-                    generic.TemplateView):
+                generic.TemplateView):
 
     template_name = 'bdr_management/companies.html'
 
@@ -97,7 +97,7 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
 
 
 class CompaniesBaseView(base.ModelTableViewMixin,
-                            generic.DetailView):
+                        generic.DetailView):
 
     template_name = 'bdr_management/company_view.html'
     model = Company
@@ -158,12 +158,13 @@ class CompaniesUpdateView(base.CompanyUserRequiredMixin,
 
 
 class CompanyBaseEdit(base.ModelTableViewMixin,
-                           SuccessMessageMixin,
-                           generic.UpdateView):
+                      SuccessMessageMixin,
+                      generic.UpdateView):
 
     template_name = 'bdr_management/company_edit.html'
     model = Company
     success_message = _('Company edited successfully')
+    form_class = CompanyForm
 
 
 class CompaniesManagementEdit(views.GroupRequiredMixin,
