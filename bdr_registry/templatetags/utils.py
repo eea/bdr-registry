@@ -1,9 +1,12 @@
+from django.utils.safestring import mark_safe
 import re
 from datetime import datetime
 
 from django import template
 from django.conf import settings
 from django.template.defaultfilters import urlize
+
+from xml.etree import ElementTree
 
 import bdr_management
 from bdr_registry.models import Company
@@ -47,3 +50,25 @@ def has_permission(user, object):
 
     return bdr_management.base.has_permission(user, company)
 
+
+@register.filter
+def custom_render_field(field):
+
+    div = ElementTree.Element('div')
+    div.attrib['class'] = 'form-group'
+    label = ElementTree.fromstring(field.label_tag())
+    if field.field.required:
+        label.attrib['class'] = 'required'
+    div.append(label)
+    input_elem = ElementTree.fromstring(field.as_widget())
+    if field.errors:
+        input_elem.attrib['class'] = 'form-error'
+    div.append(input_elem)
+
+    for err in field.errors:
+        err_div = ElementTree.Element('div')
+        err_div.text = err
+        err_div.attrib['class'] = 'bdr-error'
+        div.append(err_div)
+
+    return mark_safe(ElementTree.tostring(div))
