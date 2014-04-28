@@ -763,6 +763,7 @@ a.badge-red:active {
   max-width: 80em;
 }
 .form input[type="text"],
+.form input[type="email"],
 .form input[type="url"],
 .form input[type="password"],
 .form select,
@@ -795,7 +796,7 @@ a.badge-red:active {
   display: inline;
 }
 .form label {
-  display: block;
+  display: inline-block;
   font-weight: bold;
   white-space: nowrap;
   padding-bottom: 6px;
@@ -806,6 +807,10 @@ a.badge-red:active {
 .form label[for] {
   cursor: pointer;
 }
+.form label.required {
+  background-position: right top;
+}
+
 .form .radio-label {
   display: block;
   margin-bottom: 0;
