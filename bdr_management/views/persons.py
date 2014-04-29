@@ -138,7 +138,7 @@ class PersonManagementEdit(views.GroupRequiredMixin,
             Breadcrumb(reverse('management:persons'),
                        _('Persons')),
             Breadcrumb(back_url, self.object),
-            Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb('', _(u'Edit %s' % self.object))
         ]
         data = super(PersonManagementEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
@@ -160,7 +160,7 @@ class PersonEdit(base.PersonUserRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
             Breadcrumb(back_url, self.object),
-            Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb('', _(u'Edit %s' % self.object))
         ]
         data = super(PersonEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs

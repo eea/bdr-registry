@@ -180,7 +180,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
             Breadcrumb(reverse('management:companies'),
                        _('Companies')),
             Breadcrumb(back_url, self.object),
-            Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb('', _(u'Edit %s' % self.object))
         ]
         data = super(CompaniesManagementEdit, self) \
             .get_context_data(**kwargs)
@@ -200,7 +200,7 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin,
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
             Breadcrumb(back_url, self.object),
-            Breadcrumb('', _('Edit %s' % self.object))
+            Breadcrumb('', _(u'Edit %s' % self.object))
         ]
         data = super(CompaniesUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs

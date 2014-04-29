@@ -53,14 +53,13 @@ def has_permission(user, object):
 
 @register.filter
 def custom_render_field(field):
-
     div = ElementTree.Element('div')
     div.attrib['class'] = 'form-group'
-    label = ElementTree.fromstring(field.label_tag())
+    label = ElementTree.fromstring(field.label_tag().encode('utf-8'))
     if field.field.required:
         label.attrib['class'] = 'required'
     div.append(label)
-    input_elem = ElementTree.fromstring(field.as_widget())
+    input_elem = ElementTree.fromstring(field.as_widget().encode('utf-8'))
     if field.errors:
         input_elem.attrib['class'] = 'form-error'
     div.append(input_elem)
