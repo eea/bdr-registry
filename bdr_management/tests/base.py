@@ -64,7 +64,7 @@ class BaseWebTest(WebTest):
             ))
 
     def get_login_for_url(self, url):
-        return '%s?next=%s' % (self.reverse('login'), url)
+        return '%s/?next=%s' % (self.reverse('login'), url)
 
 
 class mute_signals(object):
