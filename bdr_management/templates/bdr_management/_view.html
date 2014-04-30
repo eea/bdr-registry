@@ -18,18 +18,14 @@
 </div>
 <hr />
 
-
 <form id="delete-form" action="{{ delete_url }}" method="post">
   <fieldset class="no-borders">
     {% csrf_token %}
   </fieldset>
 </form>
 
-
-
-
 <div class="pull-left">
-  <table class="table-list box-small no-background">
+  <table class="table-list no-margins">
     <tbody>
     {% for field in fields %}
     <tr>
