@@ -1,22 +1,26 @@
 {% load utils %}
 {% load i18n %}
 
-<h1>{{ object }}</h1>
 
-{% if user|has_permission:object %}
-  <div class="actions">
-    {% if edit_url %}
-      <a href="{{ edit_url }}" class="button">{% trans "Edit" %}</a>
-    {% endif %}
-    {% if delete_url %}
-      <a href="{{ delete_url }}" class="button">{% trans "Delete" %}</a>
-    {% endif %}
-  </div>
-{% endif %}
+<div class="push-bottom clearfix">
+  <h1 class="pull-left">{{ object }}</h1>
+
+  {% if user|has_permission:object %}
+    <div class="pull-right h1-align">
+      {% if edit_url %}
+        <a href="{{ edit_url }}" class="btn btn-blue">{% trans "Edit" %}</a>
+      {% endif %}
+      {% if delete_url %}
+        <a href="{{ delete_url }}" class="btn">{% trans "Delete" %}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+<hr />
 
 
 <form id="delete-form" action="{{ delete_url }}" method="post">
-  <fieldset class="noborder">
+  <fieldset class="no-borders">
     {% csrf_token %}
   </fieldset>
 </form>
@@ -24,19 +28,16 @@
 
 
 
-
-
-
-<table class="datatable table-object">
-
-  <tbody>
+<div class="pull-left">
+  <table class="table-list box-small no-background">
+    <tbody>
     {% for field in fields %}
-      <tr>
-        <th class="scope-row">{{ field.verbose_name|capfirst }}</th>
-        <td class="scope-pad">
-          {{ object|getattribute:field.name|process_field }}</td>
-      </tr>
+    <tr>
+      <th class="text-right small">{{ field.verbose_name|capfirst }}</th>
+      <td class="bold">
+        {{ object|getattribute:field.name|process_field }}</td>
+    </tr>
     {% endfor %}
-  </tbody>
-
-</table>
+    </tbody>
+  </table>
+</div>

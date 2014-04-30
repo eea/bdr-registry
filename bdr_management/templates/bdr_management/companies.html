@@ -12,12 +12,14 @@
   {% assign '[[0, "desc"]]' as column_sorting %}
 
   <div class="push-bottom clearfix">
-      <h1 class="input-align inline-block no-margins">{% trans "Companies" %}</h1>
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Companies" %}</h1>
       {% if user|has_permission:None %}
-        &nbsp;
-        <a class="btn btn-green pull-right"
-           style="margin-top: 5px;"
-           href="{% url 'management:companies_add' %}">{% trans "Add a new company" %}</a>
+      <div class="pull-right h1-align">
+        <a class="btn btn-green"
+           href="{% url 'management:companies_add' %}">
+           {% trans "Add a new company" %}</a>
+       </div>
       {% endif %}
   </div>
   <hr />
