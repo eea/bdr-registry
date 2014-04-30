@@ -274,6 +274,15 @@ abbr {
     color: #666;
     font-weight: normal;
   }
+  .form .table-list label {
+    padding-bottom: 0;
+  }
+
+  .form .table-list label.required {
+    background-position: center left;
+    padding-right: 0;
+    padding-left: 12px;
+  }
 
 
 table a {
@@ -1118,6 +1127,9 @@ hr.blank {
 .block {
   width: 100%;
   display: block!important;
+}
+.full-width {
+  width: 100%;
 }
 .hidden {
   display: none!important;

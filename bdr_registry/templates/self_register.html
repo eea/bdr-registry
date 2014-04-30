@@ -1,6 +1,19 @@
 {% extends "bdr_layout.html" %}
 {% load widget_tweaks %}
 {% load i18n %}
+{% load assets %}
+
+{% block head %}
+
+  {% assets "management_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+
+  {% assets "management_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+{% endblock %}
 
 {% block content %}
 
@@ -30,77 +43,73 @@
   {% blocktrans %}For undertakings reporting for the first time, the account request will be evaluated and login and password will be provided.{% endblocktrans %}
 </p>
 
-<form method="post">
+<form method="post" class="form box-small">
   {% csrf_token %}
+  <div class="row">
+    <!-- Company details -->
+    <div class="col-sm-6">
+      <p class="h4 text-center">{% trans "Company details" %}</p>
 
-  <fieldset>
-    <legend>{% trans "Company details" %}</legend>
+      <table class="table-list full-width no-background">
+      {% for field in organisation_form %}
+        <tr>
+          <th class="text-right small">
+            <label for="id_{{ field.name }}" class="input-align {% if field.field.required %}required{% endif %}">
+              {{ field.label }}
+            </label>
+          </th>
+          <td class="bold">
+            {% for err in field.errors %}
+              <div class="bdr-error">{{ err }}</div>
+            {% endfor %}
+            {% if field.help_text %}
+              {% render_field field title=field.help_text %}
+            {% else %}
+              {{ field }}
+            {% endif %}
+            {% if field.name == 'eori' %}
+              <a class="input-align small no-bold" href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+                {% trans "About EORI number" %}</a>
+            {% endif %}
+            
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
 
-    <table class="formtable">
-    <col style="width:10em"/>
-    <col />
-    {% for field in organisation_form %}
-      <tr>
-        <td>
-          <label for="id_{{ field.name }}" class="question
-              {% if field.field.required %}required{% endif %}">
-            {{ field.label }}
-          </label>
-        </td>
-        <td>
-          {% for err in field.errors %}
-            <div class="bdr-error">{{ err }}</div>
-          {% endfor %}
-          {% if field.help_text %}
-            {% render_field field title=field.help_text %}
-          {% else %}
-            {{ field }}
-          {% endif %}
-          {% if field.name == 'eori' %}
-            <div>
-              <a href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
-                <small>{% trans "About EORI number" %}</small></a>
-            </div>
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
-    </table>
+    <!-- Company reporter -->
+    <div class="col-sm-6">
+      <p class="h4 text-center">{% trans "Designated company reporter nr 1" %}</p>
 
-  </fieldset>
-
-  <fieldset>
-    <legend>{% trans "Designated company reporter nr 1" %}</legend>
-
-    <table class="formtable">
-    <col style="width:10em"/>
-    <col />
-    {% for field in person_form %}
-      <tr>
-        <td>
-          <label for="id_{{ field.name }}" class="question
-              {% if field.field.required %}required{% endif %}">
-            {{ field.label }}
-          </label>
-        </td>
-        <td>
-          {% for err in field.errors %}
-            <div class="bdr-error">{{ err }}</div>
-          {% endfor %}
-          {% if field.help_text %}
-            {% render_field field title=field.help_text %}
-          {% else %}
-            {{ field }}
-          {% endif %}
-        </td>
-      </tr>
-    {% endfor %}
-    </table>
-
-  </fieldset>
-
-  <button type="submit">{% trans "Request account" %}</button>
-
+      <table class="table-list full-width no-background">
+      {% for field in person_form %}
+        <tr>
+          <th class="text-right small">
+            <label for="id_{{ field.name }}" class="input-align
+                {% if field.field.required %}required{% endif %}">
+              {{ field.label }}
+            </label>
+          </th>
+          <td class="bold">
+            {% for err in field.errors %}
+              <div class="bdr-error">{{ err }}</div>
+            {% endfor %}
+            {% if field.help_text %}
+              {% render_field field title=field.help_text %}
+            {% else %}
+              {{ field }}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+  </div>
+  <hr />
+  <div class="btn-toolbar text-center no-bottom">
+    <button type="submit" class="btn-blue">{% trans "Request account" %}</button>
+  </div>
 </form>
 
 {% endblock %}
