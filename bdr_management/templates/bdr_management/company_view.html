@@ -10,34 +10,26 @@
     {% include 'bdr_management/_view.html' %}
 
     {% if user|has_permission:object %}
-      <table class="datatable table-actions" cellpadding="0"
-             cellspacing="0">
-        <thead>
-          <tr>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div class="box-small no-borders pull-left"
+           style="margin-left:24px;">
+        <p class="h4 no-margins">Actions:</p>
+        <ul>
           {% if object.account %}
-          <tr>
-            <td>
-              <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
-                {% trans "Reset password" %}</a>
-            </td>
-          </tr>
+          <li>
+            <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
+              {% trans "Reset password" %}</a>
+          </li>
           {% endif %}
-
+  
           {% if not object.account %}
-          <tr>
-            <td>
-              <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
-                {% trans "Create account" %}</a>
-            </td>
-          </tr>
+          <li>
+            <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
+              {% trans "Create account" %}</a>
+          </li>
           {% endif %}
-        </tbody>
-      </table>
-  {% endif %}
+        </ul>
+      </div>
+    {% endif %}
   </div>
 
   <h2>{% trans "Comments" %}</h2>
@@ -65,28 +57,28 @@
   </ul>
   {% if user|has_permission:object %}
   <div class="btn-toolbar">
-    <a href="{{ comment_add_url}}" class="btn">{% trans "Add comment" %}</a>
+    <a href="{{ comment_add_url}}" class="btn">
+      {% trans "Add comment" %}</a>
   </div>
   {% endif %}
 
 
   <h2>{% trans "Persons" %}</h2>
+  <ul>
+    {% for person in object.people.all %}
+      <li>
+        <a href="{% url person_route pk=person.pk %}"
+           class="bold">
+          {{ person.formal_name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
   {% if user|has_permission:object %}
-    <div class="sub-actions">
+    <div class="btn-toolbar">
       <a href="{{ person_add_url }}" class="btn">
         {% trans "Add a new person" %}</a>
     </div>
   {% endif %}
 
-  <ul>
-
-    {% for person in object.people.all %}
-      <li>
-        <a href="{% url person_route pk=person.pk %}">
-          {{ person.formal_name }}</a>
-      </li>
-    {% endfor %}
-
-  </ul>
 
 {% endblock %}

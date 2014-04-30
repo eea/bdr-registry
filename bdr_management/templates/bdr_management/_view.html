@@ -1,38 +1,42 @@
 {% load utils %}
 {% load i18n %}
 
-<h1>{{ object }}</h1>
 
-<div class="actions">
+<div class="push-bottom clearfix">
+  <h1 class="pull-left">{{ object }}</h1>
+
   {% if user|has_permission:object %}
-    {% if edit_url %}
-      <a href="{{ edit_url }}" class="button">{% trans "Edit" %}</a>
-    {% endif %}
-    {% if delete_url %}
-      <a href="{{ delete_url }}" class="button">{% trans "Delete" %}</a>
-    {% endif %}
+    <div class="pull-right h1-align">
+      {% if edit_url %}
+        <a href="{{ edit_url }}" class="btn btn-blue">{% trans "Edit" %}</a>
+      {% endif %}
+      {% if delete_url %}
+        <a href="{{ delete_url }}" class="btn">{% trans "Delete" %}</a>
+      {% endif %}
+      {% if back_url %}
+        <a href="{{ back_url }}" class="button">{% trans "Back" %}</a>
+      {% endif %}
+    </div>
   {% endif %}
-  {% if back_url %}
-      <a href="{{ back_url }}" class="button">{% trans "Back" %}</a>
-    {% endif %}
 </div>
+<hr />
 
 <form id="delete-form" action="{{ delete_url }}" method="post">
-  <fieldset class="noborder">
+  <fieldset class="no-borders">
     {% csrf_token %}
   </fieldset>
 </form>
 
-<table class="datatable table-object">
-
-  <tbody>
+<div class="pull-left">
+  <table class="table-list no-margins">
+    <tbody>
     {% for field in fields %}
-      <tr>
-        <th class="scope-row">{{ field.verbose_name|capfirst }}</th>
-        <td class="scope-pad">
-          {{ object|getattribute:field.name|process_field }}</td>
-      </tr>
+    <tr>
+      <th class="text-right small">{{ field.verbose_name|capfirst }}</th>
+      <td class="bold">
+        {{ object|getattribute:field.name|process_field }}</td>
+    </tr>
     {% endfor %}
-  </tbody>
-
-</table>
+    </tbody>
+  </table>
+</div>
