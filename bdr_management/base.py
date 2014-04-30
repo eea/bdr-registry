@@ -126,6 +126,8 @@ class ModelTableMixin(object):
         context['edit_url'] = self.get_edit_url()
         context['delete_url'] = self.get_delete_url()
         context['title'] = context.get('object', '')
+        if 'HTTP_REFERER' in self.request.META:
+            context['back_url'] = self.request.META['HTTP_REFERER']
         return context
 
     def get_edit_url(self):

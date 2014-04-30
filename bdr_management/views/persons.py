@@ -88,6 +88,8 @@ class PersonManagementView(views.StaffuserRequiredMixin,
         ]
         data = super(PersonManagementView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        if not 'back_url' in data:
+            data['back_url'] = reverse('management:persons')
         return data
 
     def get_edit_url(self):
@@ -107,6 +109,8 @@ class PersonView(base.PersonUserRequiredMixin,
         ]
         data = super(PersonView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        if not 'back_url' in data:
+            data['back_url'] = reverse('home')
         return data
 
     def get_edit_url(self):
@@ -117,8 +121,8 @@ class PersonView(base.PersonUserRequiredMixin,
 
 
 class PersonEditBase(base.ModelTableViewMixin,
-                       SuccessMessageMixin,
-                       generic.UpdateView):
+                     SuccessMessageMixin,
+                     generic.UpdateView):
 
     template_name = 'bdr_management/person_edit.html'
     model = Person
@@ -126,7 +130,7 @@ class PersonEditBase(base.ModelTableViewMixin,
 
 
 class PersonManagementEdit(views.GroupRequiredMixin,
-                             PersonEditBase):
+                           PersonEditBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
 
