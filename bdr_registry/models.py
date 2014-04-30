@@ -173,7 +173,7 @@ class Person(models.Model):
         return u"{p.title} {p.first_name} {p.family_name}".format(p=self)
 
     def __unicode__(self):
-        return u"{p.first_name} {p.family_name} <{p.email}>".format(p=self)
+        return u"{p.first_name} {p.family_name}".format(p=self)
 
 
 class Comment(models.Model):
