@@ -225,18 +225,20 @@ class CompanyDelete(views.GroupRequiredMixin,
     template_name = 'bdr_management/company_confirm_delete.html'
 
     def get_context_data(self, **kwargs):
+        back_url = reverse('management:companies_view',
+                           kwargs={'pk': self.object.pk})
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'),
                        _('Companies')),
-            Breadcrumb(reverse('management:companies_view',
-                               kwargs={'pk': self.object.pk}),
+            Breadcrumb(back_url,
                        self.object),
             Breadcrumb('', _('Delete company'))
         ]
         context = super(CompanyDelete, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
         context['form'] = CompanyDeleteForm()
+        context['cancel_url'] = back_url
         return context
 
     def delete(self, request, *args, **kwargs):

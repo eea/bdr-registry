@@ -192,6 +192,21 @@ class PersonManagementDelete(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
     success_url = reverse_lazy('management:persons')
 
+    def get_context_data(self, **kwargs):
+        back_url = reverse('management:persons_view',
+                           kwargs={'pk': self.object.pk})
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:persons'),
+                       _('Persons')),
+            Breadcrumb(back_url, self.object),
+            Breadcrumb('', _(u'Delete %s' % self.object))
+        ]
+        data = super(PersonManagementDelete, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
+        return data
+
 
 class PersonDelete(base.PersonUserRequiredMixin,
                    PersonDeleteBase):
@@ -200,6 +215,18 @@ class PersonDelete(base.PersonUserRequiredMixin,
 
     def get_success_url(self):
         return reverse('company', kwargs={'pk': self.company.pk})
+
+    def get_context_data(self, **kwargs):
+        back_url = reverse('person', kwargs={'pk': self.object.pk})
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), _('Registry')),
+            Breadcrumb(back_url, self.object),
+            Breadcrumb('', _(u'Delete %s' % self.object))
+        ]
+        data = super(PersonDelete, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
+        return data
 
 
 class PersonCreateBase(SuccessMessageMixin,
