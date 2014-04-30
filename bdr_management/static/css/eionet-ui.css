@@ -2,6 +2,9 @@
 #workarea ul {
   line-height: 1;
 }
+ul li {
+  margin-bottom: 6px;
+}
 /*GENERAL TABLE STYLES*/
 table.no-borders td,
 table.no-borders th {
@@ -1213,5 +1216,4 @@ hr.blank {
 
 .h1-align {
   padding: 0.2em 0em;
-  margin-left: 1em;
 }
