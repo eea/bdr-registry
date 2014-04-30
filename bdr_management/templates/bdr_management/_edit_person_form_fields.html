@@ -2,7 +2,11 @@
 {% load i18n %}
 {% load widget_tweaks %}
 
-{{ form.title|custom_render_field }}
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.title|custom_render_field }}
+  </div>
+</div>
 
 <div class="row">
   <div class="col-sm-6">
@@ -31,8 +35,13 @@
     </div>
 </div>
 
-{{ form.fax|custom_render_field }}
-
-{% if form.company %}
-  {{ form.company|custom_render_field }}
-{% endif %}
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.fax|custom_render_field }}
+  </div>
+  {% if form.company %}
+    <div class="col-sm-6">
+      {{ form.company|custom_render_field }}
+    </div>
+  {% endif %}
+</div>
