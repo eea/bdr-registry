@@ -10,6 +10,18 @@ table.no-borders td,
 table.no-borders th {
   border: 0!important;
 }
+table a {
+  text-decoration: none;
+}
+table a:hover {
+  text-decoration: underline;
+}
+.table-hover > tbody > tr:hover > td {
+  background-color: #f6f6f6;
+}
+.va-middle {
+  vertical-align: middle;
+}
 /* SIMPLE TABLE */
 .simple_table {
   border-collapse: collapse;
@@ -274,33 +286,6 @@ abbr {
     color: #666;
     font-weight: normal;
   }
-  .form .table-list label {
-    padding-bottom: 0;
-  }
-
-  .form .table-list label.required {
-    background-position: center left;
-    padding-right: 0;
-    padding-left: 12px;
-  }
-
-
-table a {
-  text-decoration: none;
-}
-table a:hover {
-  text-decoration: underline;
-}
-.table-hover > tbody > tr:hover > td {
-  background-color: #f6f6f6;
-}
-
-
-
-
-.va-middle {
-  vertical-align: middle;
-}
 
 
 /* Comments */
@@ -716,7 +701,14 @@ a.badge-red:active {
 .form label.required {
   background-position: right top;
 }
-
+.form .table-list label {
+  padding-bottom: 0;
+}
+.form .table-list label.required {
+  background-position: center left;
+  padding-right: 0;
+  padding-left: 12px;
+}
 .form .radio-label {
   display: block;
   margin-bottom: 0;
@@ -730,6 +722,13 @@ a.badge-red:active {
 .form-group.pull-left input,
 .form-group.pull-left select,
 .form-group.pull-left textarea {
+}
+.form-error {
+  border-color: red!important;
+}
+.form-error:hover,
+.form-error:focus {
+  outline: 2px auto red!important;
 }
 /* BUTTONS */
 .btn-toolbar {
@@ -997,6 +996,12 @@ hr.blank {
   max-width: initial!important;
 }
 /* SPACING HELPERS */
+.offset-top-label {
+  margin-top: 22px;
+}
+.h1-align {
+  padding: 0.2em 0em;
+}
 .push-top {
   margin-top: 12px;
 }
@@ -1134,19 +1139,6 @@ hr.blank {
 .hidden {
   display: none!important;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 .comment {
   border-left: 3px solid #ddd;
   padding-left: 12px;
@@ -1157,7 +1149,6 @@ hr.blank {
   margin-top: 0;
   margin-bottom: 3px;
 }
-
 /* Alerts */
 .inform,
 .warning {
@@ -1197,35 +1188,4 @@ hr.blank {
   padding: 0 1em;
   margin: 0;
   background: #f6f6f6;
-}
-
-.form-error {
-  border-color: red!important;
-}
-.form-error:hover,
-.form-error:focus {
-  outline: 2px auto red!important;
-}
-.offset-top-label {
-  margin-top: 22px;
-}
-
-
-/* definition lists */
-
-  /* clearfix */
-  dl:before,
-  dl:after {
-    display: table;
-    content: " ";
-  }
-  dl:after {
-    clear: both;
-  }
-
-  /* horizontal */
-
-
-.h1-align {
-  padding: 0.2em 0em;
 }
