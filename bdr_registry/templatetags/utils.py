@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.utils.safestring import mark_safe
 import re
 from datetime import datetime
@@ -33,8 +34,14 @@ def getattribute(value, arg):
 
 @register.filter
 def process_field(value):
+    if value is None:
+        return ''
     if isinstance(value, datetime):
         return value.strftime(settings.DATE_FORMAT)
+    if isinstance(value, Company):
+        return mark_safe('<a href="%s">%s</a' % (
+            reverse('company', kwargs={'pk': value.pk}),
+            unicode(value)))
     return urlize(value)
 
 
