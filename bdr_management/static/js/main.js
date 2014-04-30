@@ -57,4 +57,8 @@ $(function () {
         }
     }).change();
 
+    $('#toggle-morePhones').on('click', function () {
+        $(this).addClass('hidden');
+        $('#morePhones').removeClass('hidden');
+    });
 });
