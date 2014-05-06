@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views import generic
@@ -182,8 +183,33 @@ class PersonDeleteBase(base.ModelTableEditMixin,
     template_name = 'bdr_management/person_confirm_delete.html'
 
     def delete(self, request, *args, **kwargs):
-        messages.success(request, _("Person deleted"))
-        return super(PersonDeleteBase, self).delete(request, *args, **kwargs)
+        if self.company_has_other_reporters():
+            messages.success(request, _("Person deleted"))
+            return super(PersonDeleteBase, self).delete(
+                request, *args, **kwargs)
+        else:
+            return self.cannot_delete_last_reporter()
+
+    def get(self, request, *args, **kwargs):
+        if self.company_has_other_reporters():
+            return super(PersonDeleteBase, self).get(request, *args, **kwargs)
+        else:
+            return self.cannot_delete_last_reporter()
+
+    def cannot_delete_last_reporter(self):
+        messages.error(
+            self.request,
+            _(u'Cannot delete the only designated company reporter '
+              u'for "%s"' % self.get_object().company))
+        return HttpResponseRedirect(self.get_view_url())
+
+    def company_has_other_reporters(self):
+        return self.get_object().company.people.count() > 1
+
+    def get_object(self, queryset=None):
+        if not hasattr(self, 'object'):
+            self.object = super(PersonDeleteBase, self).get_object()
+        return self.object
 
 
 class PersonManagementDelete(views.GroupRequiredMixin,
@@ -193,8 +219,7 @@ class PersonManagementDelete(views.GroupRequiredMixin,
     success_url = reverse_lazy('management:persons')
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:persons_view',
-                           kwargs={'pk': self.object.pk})
+        back_url = self.get_view_url()
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:persons'),
@@ -207,6 +232,10 @@ class PersonManagementDelete(views.GroupRequiredMixin,
         data['cancel_url'] = back_url
         return data
 
+    def get_view_url(self):
+        return reverse('management:persons_view',
+                       kwargs={'pk': self.get_object().pk})
+
 
 class PersonDelete(base.PersonUserRequiredMixin,
                    PersonDeleteBase):
@@ -217,7 +246,7 @@ class PersonDelete(base.PersonUserRequiredMixin,
         return reverse('company', kwargs={'pk': self.company.pk})
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('person', kwargs={'pk': self.object.pk})
+        back_url = self.get_view_url()
         breadcrumbs = [
             Breadcrumb(reverse('home'), _('Registry')),
             Breadcrumb(back_url, self.object),
@@ -227,6 +256,10 @@ class PersonDelete(base.PersonUserRequiredMixin,
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
+
+    def get_view_url(self):
+        return reverse('person',
+                       kwargs={'pk': self.get_object().pk})
 
 
 class PersonCreateBase(SuccessMessageMixin,

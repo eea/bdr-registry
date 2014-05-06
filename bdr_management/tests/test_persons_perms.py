@@ -90,24 +90,41 @@ class PersonManagementTests(BaseWebTest):
 
     def test_person_delete_by_staff(self):
         user = factories.StaffUserFactory()
-        person = factories.PersonFactory()
-        url = self.reverse('management:persons_delete', pk=person.pk)
+        person1 = factories.PersonFactory()
+        person2 = factories.PersonFactory(company=person1.company)
+        url = self.reverse('management:persons_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_delete_by_anonymous(self):
         user = factories.UserFactory()
-        person = factories.PersonFactory()
-        url = self.reverse('management:persons_delete', pk=person.pk)
+        person1 = factories.PersonFactory()
+        person2 = factories.PersonFactory(company=person1.company)
+        url = self.reverse('management:persons_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
-        person = factories.PersonFactory()
-        url = self.reverse('management:persons_delete', pk=person.pk)
+        person1 = factories.PersonFactory()
+        person2 = factories.PersonFactory(company=person1.company)
+        url = self.reverse('management:persons_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, '/management/persons')
+
+    def test_delete_last_person(self):
+        company = factories.CompanyFactory()
+        person = factories.PersonFactory(company=company)
+        url = self.reverse('management:persons_delete', pk=person.pk)
+        resp = self.app.delete(url, user=factories.SuperUserFactory())
+        self.assertRedirects(resp, self.reverse('management:persons_view',
+                                                pk=person.pk))
+        resp = resp.follow()
+        expected_messages = [
+            u'Cannot delete the only designated company reporter '
+            u'for "%s"' % person.company]
+        actual_messages = map(str, resp.context['messages'])
+        self.assertItemsEqual(expected_messages, actual_messages)
 
 
 class PersonTests(BaseWebTest):
@@ -206,16 +223,18 @@ class PersonTests(BaseWebTest):
     def test_person_delete_by_staff_user(self):
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
-        person = factories.PersonFactory(company=company)
-        url = self.reverse('person_delete', pk=person.pk)
+        person1 = factories.PersonFactory(company=company)
+        person2 = factories.PersonFactory(company=company)
+        url = self.reverse('person_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
     def test_person_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
-        person = factories.PersonFactory(company=company)
-        url = self.reverse('person_delete', pk=person.pk)
+        person1 = factories.PersonFactory(company=company)
+        person2 = factories.PersonFactory(company=company)
+        url = self.reverse('person_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('company', pk=company.pk)
         self.assertRedirects(resp, success_url)
@@ -224,16 +243,30 @@ class PersonTests(BaseWebTest):
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
-        person = factories.PersonFactory(company=company)
-        url = self.reverse('person_delete', pk=person.pk)
+        person1 = factories.PersonFactory(company=company)
+        person2 = factories.PersonFactory(company=company)
+        url = self.reverse('person_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('company', pk=company.pk)
-
         self.assertRedirects(resp, success_url)
 
     def test_person_delete_by_anonymous(self):
         company = factories.CompanyFactory()
-        person = factories.PersonFactory(company=company)
-        url = self.reverse('person_delete', pk=person.pk)
+        person1 = factories.PersonFactory(company=company)
+        person2 = factories.PersonFactory(company=company)
+        url = self.reverse('person_delete', pk=person1.pk)
         resp = self.app.delete(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_delete_last_person(self):
+        company = factories.CompanyFactory()
+        person = factories.PersonFactory(company=company)
+        url = self.reverse('person_delete', pk=person.pk)
+        resp = self.app.delete(url, user=factories.SuperUserFactory())
+        self.assertRedirects(resp, self.reverse('person', pk=person.pk))
+        resp = resp.follow()
+        expected_messages = [
+            u'Cannot delete the only designated company reporter '
+            u'for "%s"' % person.company]
+        actual_messages = map(str, resp.context['messages'])
+        self.assertItemsEqual(expected_messages, actual_messages)
