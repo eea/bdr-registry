@@ -83,6 +83,7 @@ class CompanyFactory(django.DjangoModelFactory):
 
     name = fuzzy.FuzzyText()
     country = factory.SubFactory(CountryFactory)
+    obligation = factory.SubFactory(ObligationFactory)
 
     @factory.post_generation
     def people(self, create, extracted, **kwargs):
