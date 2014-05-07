@@ -407,87 +407,6 @@ class PersonEditTest(TestCase):
         self.assertEqual(resp.status_code, 404)
 
 
-class CommentEditTest(TestCase):
-
-    def setUp(self):
-        self.dk = models.Country.objects.get(name="Denmark")
-        self.fgas = models.Obligation.objects.get(code='fgas')
-        self.acme = models.Company.objects.create(country=self.dk,
-                                                       obligation=self.fgas)
-        self.comment = models.Comment.objects.create(company=self.acme)
-        self.update_url = '/comment/%d/update' % self.comment.pk
-
-    def test_comment_information_is_updated(self):
-        create_user_and_login(self.client, superuser=True)
-        self.client.post(self.update_url, COMMENT_FIXTURE)
-        new_comment = models.Comment.objects.get(pk=self.comment.pk)
-        self.assertEqual(new_comment.text, COMMENT_FIXTURE['text'])
-
-    def test_modifying_company_is_ignored(self):
-        create_user_and_login(self.client, superuser=True)
-        org2 = models.Company.objects.create(country=self.dk,
-                                                  obligation=self.fgas)
-        comment_form = dict(COMMENT_FIXTURE, company=org2.pk)
-        self.client.post(self.update_url, comment_form)
-        new_comment = models.Comment.objects.get(pk=self.comment.pk)
-        self.assertEqual(new_comment.company, self.acme)
-
-    def test_company_account_is_allowed_to_edit(self):
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        resp = self.client.post(self.update_url, COMMENT_FIXTURE)
-        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
-        new_comment = models.Comment.objects.get(pk=self.comment.pk)
-        self.assertEqual(new_comment.text, COMMENT_FIXTURE['text'])
-
-    def test_random_account_is_not_allowed_to_edit(self):
-        create_user_and_login(self.client)
-        resp = self.client.post(self.update_url, COMMENT_FIXTURE)
-        self.assertEqual(resp.status_code, 302)
-        self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
-
-    def test_comment_update_returns_404_if_comment_missing(self):
-        with quiet_request_logging():
-            resp = self.client.get('/comment/123/update')
-        self.assertEqual(resp.status_code, 404)
-
-    def test_add_comment_to_company(self):
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        self.client.post('/company/%d/add_comment' % self.acme.pk,
-                         COMMENT_FIXTURE)
-        new_comment = models.Comment.objects.get(text=COMMENT_FIXTURE['text'])
-        self.assertEqual(new_comment.company, self.acme)
-
-    def test_add_comment_to_company_returns_404_for_missing_org(self):
-        with quiet_request_logging():
-            resp = self.client.get('/company/123/add_comment')
-        self.assertEqual(resp.status_code, 404)
-
-    def test_company_account_can_delete_comment_from_company(self):
-        self.comment2 = models.Comment.objects.create(company=self.acme)
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        self.client.post('/comment/%d/delete' % self.comment.pk)
-        self.assertItemsEqual(self.acme.comments.all(), [self.comment2])
-
-    def test_random_account_is_not_allowed_to_delete(self):
-        create_user_and_login(self.client)
-        self.client.post('/comment/%d/delete' % self.comment.pk)
-        self.assertItemsEqual(self.acme.comments.all(), [self.comment])
-
-    def test_comment_delete_returns_404_if_comment_missing(self):
-        with quiet_request_logging():
-            resp = self.client.get('/comment/123/delete')
-        self.assertEqual(resp.status_code, 404)
-
-
 class ApiTest(TestCase):
 
     def setUp(self):
@@ -495,11 +414,11 @@ class ApiTest(TestCase):
         self.dk = models.Country.objects.get(name="Denmark")
         self.fgas = models.Obligation.objects.get(code='fgas')
 
-    def test_response_empty_when_no_companys_in_db(self):
+    def test_response_empty_when_no_companies_in_db(self):
         resp = self.client.get('/company/all?apikey=' + self.apikey)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companys></companys>')
+                    '<companies></companies>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_single_company_from_db(self):
@@ -525,7 +444,7 @@ class ApiTest(TestCase):
         expected_comment_created = str(comment.created.replace(microsecond=0))
 
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companys>'
+                    '<companies>'
                       '<company>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
@@ -549,7 +468,7 @@ class ApiTest(TestCase):
                           '<created>' + expected_comment_created + '</created>'
                         '</comment>'
                       '</company>'
-                    '</companys>')
+                    '</companies>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_all_person_data(self):
@@ -568,7 +487,7 @@ class ApiTest(TestCase):
 
         resp = self.client.get('/company/all?apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companys>'
+                    '<companies>'
                       '<company>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
@@ -590,7 +509,7 @@ class ApiTest(TestCase):
                           '<fax>555 6789</fax>'
                         '</person>'
                       '</company>'
-                    '</companys>')
+                    '</companies>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_company_with_matching_uid(self):
@@ -604,7 +523,7 @@ class ApiTest(TestCase):
                                '?account_uid=fgas0002'
                                '&apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companys>'
+                    '<companies>'
                       '<company>'
                         '<pk>' + str(org2.pk) + '</pk>'
                         '<name>Teh company</name>'
@@ -618,7 +537,7 @@ class ApiTest(TestCase):
                         '<obligation name="F-gases">fgas</obligation>'
                         '<country name="Denmark">dk</country>'
                       '</company>'
-                    '</companys>')
+                    '</companies>')
         self.assertEqual(resp.content, expected)
 
     def test_requests_with_no_api_key_are_rejected(self):
