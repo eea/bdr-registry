@@ -114,8 +114,8 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
                        _('Companies')),
             Breadcrumb('', self.object)
         ]
-        data = super(CompaniesManagementView, self) \
-            .get_context_data(**kwargs)
+        data = super(CompaniesManagementView,
+                     self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
 
         data['person_add_url'] = reverse('management:persons_add',
@@ -124,8 +124,6 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
                                           kwargs=self.kwargs)
         data['comment_delete_route'] = 'management:comment_delete'
         data['person_route'] = 'management:persons_view'
-        if not 'back_url' in data:
-            data['back_url'] = reverse('management:companies')
 
         return data
 
@@ -134,6 +132,9 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
 
     def get_delete_url(self):
         return reverse('management:companies_delete', kwargs=self.kwargs)
+
+    def get_back_url(self):
+        return reverse('management:companies')
 
 
 class CompaniesUpdateView(base.CompanyUserRequiredMixin,
@@ -152,13 +153,14 @@ class CompaniesUpdateView(base.CompanyUserRequiredMixin,
         data['comment_add_url'] = reverse('comment_add', kwargs=self.kwargs)
         data['comment_delete_route'] = 'comment_delete'
         data['person_route'] = 'person'
-        if not 'back_url' in data:
-            data['back_url'] = reverse('home')
 
         return data
 
     def get_edit_url(self):
         return reverse('company_update', kwargs=self.kwargs)
+
+    def get_back_url(self):
+        return reverse('home')
 
 
 class CompanyBaseEdit(base.ModelTableViewMixin,
@@ -284,7 +286,6 @@ class CompanyAdd(views.GroupRequiredMixin,
         person_form.initial['company'] = self.object
         person_form.save()
         return HttpResponseRedirect(self.get_success_url())
-
 
     def get_success_url(self):
         return reverse('management:companies')

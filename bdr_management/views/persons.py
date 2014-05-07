@@ -89,8 +89,6 @@ class PersonManagementView(views.StaffuserRequiredMixin,
         ]
         data = super(PersonManagementView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
-        if not 'back_url' in data:
-            data['back_url'] = reverse('management:persons')
         return data
 
     def get_edit_url(self):
@@ -98,6 +96,9 @@ class PersonManagementView(views.StaffuserRequiredMixin,
 
     def get_delete_url(self):
         return reverse('management:persons_delete', kwargs=self.kwargs)
+
+    def get_back_url(self):
+        return reverse('management:persons')
 
 
 class PersonView(base.PersonUserRequiredMixin,
@@ -110,9 +111,10 @@ class PersonView(base.PersonUserRequiredMixin,
         ]
         data = super(PersonView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
-        if not 'back_url' in data:
-            data['back_url'] = reverse('home')
         return data
+
+    def get_back_url(self):
+        return reverse('home')
 
     def get_edit_url(self):
         return reverse('person_update', kwargs=self.kwargs)
