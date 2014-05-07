@@ -19,6 +19,10 @@
             <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
               {% trans "Reset password" %}</a>
           </li>
+          <li>
+            <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
+              {% trans "Create reporting folder" %}</a>
+          </li>
           {% endif %}
   
           {% if not object.account %}

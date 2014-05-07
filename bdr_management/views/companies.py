@@ -1,5 +1,5 @@
+import requests
 from datetime import date, timedelta
-from bdr_management.forms import PersonForm
 
 from django.conf import settings
 from django.contrib import messages
@@ -13,6 +13,7 @@ from django.shortcuts import redirect
 
 from braces import views
 
+from bdr_management.forms import PersonForm
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
@@ -387,5 +388,27 @@ class CreateReportingFolder(views.GroupRequiredMixin,
         return super(CreateReportingFolder, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
+        url = settings.BDR_API_URL + '/create_organisation_folder'
+        form = {
+            'country_code': self.company.country.code,
+            'obligation_folder_name': self.company.obligation.reportek_slug,
+            'account_uid': self.company.account.uid,
+            'organisation_name': self.company.name,
+        }
+        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH)
+
+        if resp.status_code != 200:
+            messages.error(request, "BDR API request failed: %s" % resp)
+        else:
+            rv = resp.json()
+            success = rv['success']
+            if success:
+                if rv['created']:
+                    messages.success(request, "Created: %s" % rv['path'])
+                else:
+                    messages.warning(request, "Existing: %s" % rv['path'])
+            else:
+                messages.error(request, "Error: %s" % rv['error'])
+
         return redirect('management:companies_view',
                         pk=self.company.pk)
