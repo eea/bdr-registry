@@ -25,9 +25,6 @@ class CommentCreateBase(SuccessMessageMixin,
         self.company = get_object_or_404(Company, **self.kwargs)
         return super(CommentCreateBase, self).dispatch(*args, **kwargs)
 
-    def get_success_url(self):
-        return reverse('management:companies_view', kwargs=self.kwargs)
-
     def get_form_kwargs(self, **kwargs):
         data = super(CommentCreateBase, self).get_form_kwargs(**kwargs)
         data['initial']['company'] = self.company
@@ -46,7 +43,7 @@ class CommentManagementCreate(GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:companies_view', kwargs=self.kwargs)
+        back_url = self.get_success_url()
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'), _('Companies')),
@@ -58,12 +55,15 @@ class CommentManagementCreate(GroupRequiredMixin,
         data['cancel_url'] = back_url
         return data
 
+    def get_success_url(self):
+        return reverse('management:companies_view', kwargs=self.kwargs)
+
 
 class CommentCreate(base.CompanyUserRequiredMixin,
                     CommentCreateBase):
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('company', kwargs=self.kwargs)
+        back_url = self.get_success_url()
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(back_url, self.company),
@@ -73,6 +73,9 @@ class CommentCreate(base.CompanyUserRequiredMixin,
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
+
+    def get_success_url(self):
+        return reverse('company', kwargs=self.kwargs)
 
 
 class CommentDeleteBase(generic.DeleteView):
