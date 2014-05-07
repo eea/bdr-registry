@@ -1,6 +1,7 @@
 
 from .base import BaseWebTest
 from bdr_management.tests import factories
+from bdr_registry.models import Comment
 
 
 class CommentManagementTests(BaseWebTest):
@@ -11,6 +12,9 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_add_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -18,6 +22,11 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp,
+                             self.reverse('management:companies_view',
+                                          pk=company.pk))
+        self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_superuser(self):
         user = factories.SuperUserFactory()
@@ -25,12 +34,20 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp,
+                             self.reverse('management:companies_view',
+                                          pk=company.pk))
+        self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_anonymous(self):
         company = factories.CompanyFactory()
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, {'text': 'hey'})
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_delete_by_staff(self):
         user = factories.StaffUserFactory()
@@ -40,17 +57,20 @@ class CommentManagementTests(BaseWebTest):
                            comment_pk=comment.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
+        self.assertObjectInDatabase(Comment, pk=comment.pk)
         url = self.reverse('management:comment_delete', pk=company.pk,
                            comment_pk=comment.pk)
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('management:companies_view',
                                    pk=company.pk)
         self.assertRedirects(resp, success_url)
+        self.assertObjectNotInDatabase(Comment, pk=company.pk)
 
     def test_comment_delete_by_superuser(self):
         user = factories.SuperUserFactory()
@@ -62,6 +82,7 @@ class CommentManagementTests(BaseWebTest):
         success_url = self.reverse('management:companies_view',
                                    pk=company.pk)
         self.assertRedirects(resp, success_url)
+        self.assertObjectNotInDatabase(Comment, pk=company.pk)
 
     def test_comment_delete_by_anonymous(self):
         company = factories.CompanyFactory()
@@ -70,6 +91,7 @@ class CommentManagementTests(BaseWebTest):
                            comment_pk=comment.pk)
         resp = self.app.delete(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectInDatabase(Comment, pk=comment.pk)
 
 
 class CommentTests(BaseWebTest):
@@ -80,6 +102,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_add_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -87,6 +112,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp, self.reverse('company', pk=company.pk))
+        self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_superuser(self):
         user = factories.SuperUserFactory()
@@ -94,6 +122,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp, self.reverse('company', pk=company.pk))
+        self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_owner(self):
         user = factories.UserFactory()
@@ -102,12 +133,18 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        self.assertRedirects(resp, self.reverse('company', pk=company.pk))
+        self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_anonymous(self):
         company = factories.CompanyFactory()
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, {'text': 'hey'})
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_delete_by_staff_user(self):
         user = factories.StaffUserFactory()
@@ -127,6 +164,7 @@ class CommentTests(BaseWebTest):
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('company', pk=company.pk)
         self.assertRedirects(resp, success_url)
+        self.assertObjectNotInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_owner(self):
         user = factories.UserFactory()
@@ -138,6 +176,7 @@ class CommentTests(BaseWebTest):
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('company', pk=company.pk)
         self.assertRedirects(resp, success_url)
+        self.assertObjectNotInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_anonymous(self):
         company = factories.CompanyFactory()
@@ -146,3 +185,4 @@ class CommentTests(BaseWebTest):
                            comment_pk=comment.pk)
         resp = self.app.delete(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertObjectInDatabase(Comment, pk=comment.pk)

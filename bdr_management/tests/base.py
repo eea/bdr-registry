@@ -47,14 +47,9 @@ class BaseWebTest(WebTest):
         return reverse(view_name, args=args, kwargs=kwargs)
 
     def assertObjectInDatabase(self, model, **kwargs):
-        if isinstance(model, basestring):
-            app = kwargs.pop('app', None)
-            self.assertTrue(app)
-            Model = get_model(app, model)
-        else:
-            Model = model
+        Model = self._get_model(model, kwargs)
 
-        if not Model:
+        if Model is None:
             self.fail('Model {} does not exist'.format(model))
         try:
             return Model.objects.get(**kwargs)
@@ -62,6 +57,23 @@ class BaseWebTest(WebTest):
             self.fail('Object "{}" with kwargs {} does not exist'.format(
                 model, str(kwargs)
             ))
+
+    def assertObjectNotInDatabase(self, model, **kwargs):
+        Model = self._get_model(model, kwargs)
+        self.assertIsNotNone(Model)
+        if Model.objects.filter(**kwargs).exists():
+            self.fail('Object "{}" with kwargs {} does exist'.format(
+                model, str(kwargs)
+            ))
+
+
+    def _get_model(self, model, kwargs):
+        if isinstance(model, basestring):
+            app = kwargs.pop('app', None)
+            self.assertIsNotNone(app)
+            return get_model(app, model)
+        else:
+            return model
 
     def get_login_for_url(self, url):
         return '%s/?next=%s' % (self.reverse('login'), url)
