@@ -1,5 +1,7 @@
 import requests
 from datetime import date, timedelta
+from cStringIO import StringIO
+import csv
 
 from django.conf import settings
 from django.contrib import messages
@@ -8,7 +10,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, HttpResponse
 from django.shortcuts import redirect
 
 from braces import views
@@ -412,3 +414,30 @@ class CreateReportingFolder(views.GroupRequiredMixin,
 
         return redirect('management:companies_view',
                         pk=self.company.pk)
+
+
+class CompaniesExport(views.StaffuserRequiredMixin,
+                    generic.View):
+
+    def get(self, request):
+        of = StringIO()
+        out = csv.writer(of)
+        out.writerow(['userid', 'name', 'date_registered', 'active',
+                      'addr_street', 'addr_place1', 'addr_postalcode',
+                      'addr_place2', 'country', 'vat_number', 'obligation'])
+        for company in Company.objects.all():
+            account = company.account
+            out.writerow([v.encode('utf-8') for v in [
+                '' if account is None else account.uid,
+                company.name,
+                company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
+                'on' if company.active else '',
+                company.addr_street,
+                company.addr_place1,
+                company.addr_postalcode,
+                company.addr_place2,
+                company.country.name,
+                company.vat_number or '',
+                company.obligation.code if company.obligation else '',
+            ]])
+        return HttpResponse(of.getvalue(), content_type="text/plain")

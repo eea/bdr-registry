@@ -14,15 +14,19 @@
   <div class="push-bottom clearfix">
       <h1 class="input-align inline-block no-margins">
         {% trans "Companies" %}</h1>
-      {% if user|has_permission:None %}
       <div class="pull-right h1-align">
-        <a class="btn btn-green"
+        {% if user|has_permission:None %}
+          <a class="btn btn-green"
            href="{% url 'management:companies_add' %}">
            {% trans "Add a new company" %}</a>
-       </div>
-      {% endif %}
+          <a class='btn btn-green' href="{% url 'management:companies_export' %}">
+            {% trans 'Export all' %}
+          </a>
+        {% endif %}
+      </div>
   </div>
   <hr />
+
 
 
   {% include 'bdr_management/_company_filters.html' %}

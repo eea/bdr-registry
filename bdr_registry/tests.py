@@ -125,42 +125,6 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
-class OrganisationExportTest(TestCase):
-
-    def setUp(self):
-        self.dk = models.Country.objects.get(name="Denmark")
-        user = create_user_and_login(self.client, superuser=True, staff=True)
-        form_data = dict(ORG_FIXTURE, country=self.dk.pk)
-        resp = self.client.post('/company/add', form_data)
-        self.assertEqual(resp.status_code, 302)
-
-
-    def test_export_csv_no_obligation(self):
-        resp = self.client.get('/admin/bdr_registry/company/export')
-        self.assertIn(ORG_FIXTURE['name'], resp.content)
-
-    def test_export_csv_with_obligation(self):
-        fgas = models.Obligation.objects.get(code='fgas')
-        org_form = dict(ORG_FIXTURE, country=self.dk.pk, obligation=fgas.pk)
-        org_pk = models.Company.objects.all()[0].pk
-
-        # we need to refer the form that is tested.
-        # see https://docs.djangoproject.com/en/dev/topics/forms/formsets/#formset-validation
-        org_form.update({
-            'people-INITIAL_FORMS': '0',
-            'people-TOTAL_FORMS': '0',
-            'comments-INITIAL_FORMS': '0',
-            'comments-TOTAL_FORMS': '0'
-        })
-
-        resp = self.client.post(
-            '/admin/bdr_registry/company/{0}/'.format(org_pk),
-            org_form)
-        self.assertEqual(resp.status_code, 302)
-        resp = self.client.get('/admin/bdr_registry/company/export')
-        self.assertIn(OBLIGATON_CODE, resp.content)
-
-
 class OrganisationNameHistoryTest(TestCase):
 
     def setUp(self):
