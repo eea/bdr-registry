@@ -193,6 +193,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
 
 class OrganisationCreateReportingFolderTests(base.BaseWebTest):
 
+    @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_get_without_settings(self):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
@@ -205,6 +206,7 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
 
+    @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_post_without_settings(self):
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
