@@ -91,6 +91,10 @@ class NextAccountId(models.Model):
 
 class Company(models.Model):
 
+    class Meta:
+
+        verbose_name_plural = 'Companies'
+
     EORI_LABEL = _('Economic Operators Registration and Identification number (EORI)')
 
     name = models.CharField(_('Company name'), max_length=255)
