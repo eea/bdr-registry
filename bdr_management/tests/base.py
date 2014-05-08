@@ -75,6 +75,17 @@ class BaseWebTest(WebTest):
         else:
             return model
 
+    def get_company_form_params(self, company):
+        form = company.__dict__.copy()
+        for field in form:
+            if form[field] is None:
+                form[field] = ''
+        form.update({'obligation': company.obligation.pk,
+                     'country': company.country.pk})
+        if company.account is not None:
+            form['account'] = company.account.pk
+        return form
+
     def get_login_for_url(self, url):
         return '%s/?next=%s' % (self.reverse('login'), url)
 

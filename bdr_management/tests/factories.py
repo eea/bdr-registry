@@ -82,8 +82,12 @@ class CompanyFactory(django.DjangoModelFactory):
     FACTORY_DJANGO_GET_OR_CREATE = ('name',)
 
     name = fuzzy.FuzzyText()
+    addr_street = fuzzy.FuzzyText()
+    addr_place1 = fuzzy.FuzzyText()
+    addr_postalcode = fuzzy.FuzzyInteger(99999)
     country = factory.SubFactory(CountryFactory)
     obligation = factory.SubFactory(ObligationFactory)
+
 
     @factory.post_generation
     def people(self, create, extracted, **kwargs):
