@@ -34,6 +34,9 @@ urlpatterns = patterns(
     url(r'^companies/(?P<pk>\d+)/persons/add/?$',
         views.PersonManagementCreate.as_view(),
         name='persons_add'),
+    url(r'^companies/(?P<pk>\d+)/name-history/?$',
+        views.CompanyNameHistory.as_view(),
+        name='company_name_history'),
 
     url(r'^companies/(?P<pk>\d+)/comment/add/?',
         views.CommentManagementCreate.as_view(),

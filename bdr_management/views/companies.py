@@ -441,3 +441,27 @@ class CompaniesExport(views.StaffuserRequiredMixin,
                 company.obligation.code if company.obligation else '',
             ]])
         return HttpResponse(of.getvalue(), content_type="text/plain")
+
+
+class CompanyNameHistory(views.StaffuserRequiredMixin,
+                         generic.DetailView):
+
+    template_name = 'bdr_management/company_name_history.html'
+    model = Company
+
+    def get_context_data(self, **kwargs):
+        company = kwargs['object']
+        back_url = reverse('management:companies_view',
+                           kwargs={'pk': company.pk})
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:companies'),
+                       _('Companies')),
+            Breadcrumb(back_url, kwargs['object']),
+            Breadcrumb('', _('Name history'))
+        ]
+        context = super(CompanyNameHistory, self).get_context_data()
+        context['breadcrumbs'] = breadcrumbs
+
+        # context['company'] = get_object_or_404(Company, kwargs)
+        return context

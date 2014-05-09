@@ -165,8 +165,8 @@ class OrganisationPasswordTest(TestCase):
         self.account = models.Account.objects.create_for_obligation(self.fgas)
         self.account.set_random_password()
         self.acme = models.Company.objects.create(country=self.dk,
-                                                       obligation=self.fgas,
-                                                       account=self.account)
+                                                  obligation=self.fgas,
+                                                  account=self.account)
         ldap_editor_patch = patch('bdr_registry.admin.create_ldap_editor')
         ldap_editor_patch.start()
         self.addCleanup(ldap_editor_patch.stop)
