@@ -10,7 +10,16 @@
   {% assign '["name", "email"]' as columns %}
   {% assign '' as column_defs %}
 
-  <h1>{% trans "Persons" %}</h1>
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Persons" %}</h1>
+      <div class="pull-right h1-align">
+        <a class='btn btn-green' href="{% url 'management:persons_export' %}">
+          {% trans 'Export all' %}
+        </a>
+      </div>
+  </div>
+  <hr />
 
   <table data-toggle='datatable' data-source='{{ url }}'
          data-columns='{{ columns }}'
