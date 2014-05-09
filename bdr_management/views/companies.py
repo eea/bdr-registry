@@ -417,7 +417,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
 
 
 class CompaniesExport(views.StaffuserRequiredMixin,
-                    generic.View):
+                      generic.View):
 
     def get(self, request):
         of = StringIO()
