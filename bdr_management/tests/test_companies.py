@@ -4,6 +4,7 @@ from django.core import mail
 from django.test.utils import override_settings
 
 from bdr_management.tests import base, factories
+from bdr_registry.models import Company
 
 
 LdapEditorResetPassMock = Mock()
@@ -191,7 +192,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.assertEqual(1, len(resp.pyquery('#create-account-action')))
 
 
-class OrganisationCreateReportingFolderTests(base.BaseWebTest):
+class CompanyCreateReportingFolderTests(base.BaseWebTest):
 
     @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_get_without_settings(self):
@@ -228,3 +229,52 @@ class OrganisationCreateReportingFolderTests(base.BaseWebTest):
         self.assertEqual(200, resp.status_int)
         self.assertTemplateUsed(
             resp, 'bdr_management/create_reporting_folder.html')
+
+
+class CompanyNameHistoryTests(base.BaseWebTest):
+
+    def setUp(self):
+        self.company_form = {
+            'name': "Teh company",
+            'addr_street': "teh street",
+            'addr_place1': "Copenhagen",
+            'addr_postalcode': "123456",
+            'addr_place2': "Hovedstaden",
+            'country': '1',
+            'obligation': '1'
+        }
+        self.person_form = {
+            'title': "Mr.",
+            'first_name': "Joe",
+            'family_name': "Tester",
+            'email': "tester@example.com",
+            'phone': "555 1234",
+        }
+
+        self.user = factories.SuperUserFactory()
+
+    def create_company(self):
+        url = self.reverse('management:companies_add')
+        self.app.post(
+            url,
+            self.company_form.items() + self.person_form.items(),
+            user='admin')
+        company = Company.objects.all().first()
+        return company
+
+    def test_create_company_adds_name_history(self):
+        company = self.create_company()
+        self.assertEqual(company.namehistory.count(), 1)
+        self.assertEqual(company.namehistory.first().name,
+                         self.company_form['name'])
+
+    def test_rename_company_adds_name_history(self):
+        company = self.create_company()
+        url = self.reverse('management:companies_edit', **{'pk': company.pk})
+        old_name = self.company_form['name']
+        new_name = 'New name'
+        self.company_form.update({'name': new_name})
+        self.app.post(url, self.company_form, user=self.user)
+        self.assertEqual(company.namehistory.count(), 2)
+        self.assertEqual(company.namehistory.first().name, old_name)
+        self.assertEqual(company.namehistory.all()[1].name, new_name)
