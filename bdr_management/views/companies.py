@@ -328,7 +328,7 @@ class ResetPassword(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people([self.company])
+            n = backend.send_password_email_to_people(self.company)
             messages.success(
                 request,
                 'Emails have been sent to %d people.' % n
@@ -362,7 +362,7 @@ class CreateAccount(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people([self.company])
+            n = backend.send_password_email_to_people(self.company)
             messages.success(
                 request,
                 'Emails have been sent to %d people.' % n
@@ -463,5 +463,4 @@ class CompanyNameHistory(views.StaffuserRequiredMixin,
         context = super(CompanyNameHistory, self).get_context_data()
         context['breadcrumbs'] = breadcrumbs
 
-        # context['company'] = get_object_or_404(Company, kwargs)
         return context

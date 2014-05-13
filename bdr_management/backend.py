@@ -1,8 +1,7 @@
 from collections import defaultdict
 
 from django.conf import settings
-from django.template.loader import render_to_string
-from django.core import mail
+from post_office import mail
 
 from bdr_registry.ldap_editor import create_ldap_editor
 
@@ -22,42 +21,16 @@ def sync_accounts_with_ldap(accounts):
     return dict(counters)
 
 
-def send_password_email_to_people(companies):
-    n = 0
-    mail_from = settings.BDR_EMAIL_FROM
-    reporting_year = settings.REPORTING_YEAR
-    for company in companies:
-        for person in company.people.all():
-            if company.obligation.code == 'ods':
-                subject = u"Reporting data on ODS covering %s" % reporting_year
-                html = render_to_string('email_company_ods.html', {
-                    'person': person,
-                    'company': company,
-                    'reporting_year': reporting_year,
-                    'next_year': reporting_year + 1
-                })
-                mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
+def send_password_email_to_people(company):
 
-            elif company.obligation.code == 'fgas':
-                subject = u"Reporting data on F-Gases covering %s" % (
-                    reporting_year)
-                html = render_to_string('email_company_fgas.html', {
-                    'person': person,
-                    'company': company,
-                    'reporting_year': reporting_year,
-                    'next_year': reporting_year + 1
-                })
-                mail_bcc = settings.BDR_ORGEMAIL_FGAS_BCC
+    template = company.obligation.email_template
+    for person in company.people.all():
+        mail.send([person.email],
+                  settings.BDR_EMAIL_FROM,
+                  subject=template.subject,
+                  message=template.content,
+                  html_message=template.html_content,
+                  context={'company': company, 'person': person},
+                  priority='now')
 
-            else:
-                raise RuntimeError("Unknown obligation %r" %
-                                   company.obligation.code)
-
-            mail_to = [person.email]
-            message = mail.EmailMessage(subject, html,
-                                        mail_from, mail_to, mail_bcc)
-            message.content_subtype = 'html'
-            message.send(fail_silently=False)
-            n += len(mail_to)
-
-    return n
+    return company.people.count()
