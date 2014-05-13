@@ -1,0 +1,22 @@
+{% load utils %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.name|custom_render_field }}
+  </div>
+  <div class="col-sm-6">
+    {{ form.subject|custom_render_field }}
+  </div>
+</div>
+
+<hr />
+
+<div class="row">
+  <div class="col-sm-12">
+    {{ form.description|custom_render_field }}
+    {{ form.content|custom_render_field }}
+    {{ form.html_content|custom_render_field }}
+  </div>
+</div>
