@@ -79,6 +79,7 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'bdr_registry',
     'django_assets',
+    'post_office',
     'bdr_management',
 )
 

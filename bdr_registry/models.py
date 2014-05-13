@@ -5,6 +5,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 import local
 from django.utils.translation import ugettext_lazy as _
+from post_office.models import EmailTemplate
 
 
 def generate_key(size=20):
@@ -39,6 +40,7 @@ class Obligation(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
     reportek_slug = models.CharField(max_length=255)
+    email_template = models.ForeignKey(EmailTemplate)
 
     def __unicode__(self):
         return self.name

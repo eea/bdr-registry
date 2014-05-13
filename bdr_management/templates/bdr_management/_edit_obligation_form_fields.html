@@ -1,0 +1,12 @@
+{% load utils %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.name|custom_render_field }}
+    {{ form.code|custom_render_field }}
+    {{ form.reportek_slug|custom_render_field }}
+    {{ form.email_template|custom_render_field }}
+  </div>
+</div>

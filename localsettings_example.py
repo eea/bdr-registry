@@ -35,7 +35,7 @@ SECRET_KEY = 'foo'  # replace this with a random string
 
 
 ## email server
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'post_office.EmailBackend'
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 25
 
