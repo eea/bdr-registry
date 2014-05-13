@@ -136,3 +136,28 @@ class ObligationDelete(views.GroupRequiredMixin,
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
+
+
+class ObligationCreate(views.GroupRequiredMixin,
+                       SuccessMessageMixin,
+                       generic.CreateView):
+
+    template_name = 'bdr_management/obligation_add.html'
+    model = Obligation
+    success_message = _('Obligation created successfully')
+    group_required = settings.BDR_HELPDESK_GROUP
+
+    def get_success_url(self):
+        return reverse('management:email_templates', kwargs=self.kwargs)
+
+    def get_context_data(self, **kwargs):
+        back_url = reverse('management:email_templates', kwargs=self.kwargs)
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(back_url, _('Email templates')),
+            Breadcrumb('', _('Create new template'))
+        ]
+        data = super(ObligationCreate, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        data['cancel_url'] = back_url
+        return data
