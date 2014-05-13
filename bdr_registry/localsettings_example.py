@@ -32,7 +32,8 @@ SECRET_KEY = 'foo'  # replace this with a random string
 # BDR_EMAIL_FROM = 'helpdesk@example.com'
 # BDR_ORGEMAIL_ODS_BCC = ['foo@example.com', 'bar@example.com']
 # BDR_ORGEMAIL_FGAS_BCC = ['foo@example.com', 'bar@example.com']
-
+# BDR_ORGEMAIL_CARS_BCC = ['foo@example.com', 'bar@example.com']
+# BDR_ORGEMAIL_VANS_BCC = ['foo@example.com', 'bar@example.com']
 
 ## email server
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

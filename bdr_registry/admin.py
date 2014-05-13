@@ -165,6 +165,26 @@ def send_password_email_to_people(organisations):
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_FGAS_BCC
 
+            elif organisation.obligation.code == 'vans':
+                subject = u"Reporting data on Average CO2 emissions (light commercial vehicles) %s" % reporting_year
+                html = render_to_string('email_organisation_vans.html', {
+                    'person': person,
+                    'organisation': organisation,
+                    'reporting_year': reporting_year,
+                    'next_year': reporting_year + 1
+                })
+                mail_bcc = settings.BDR_ORGEMAIL_VANS_BCC
+
+            elif organisation.obligation.code == 'cars':
+                subject = u"Reporting data on Average CO2 emissions (passenger cars) covering %s" % reporting_year
+                html = render_to_string('email_organisation_cars.html', {
+                    'person': person,
+                    'organisation': organisation,
+                    'reporting_year': reporting_year,
+                    'next_year': reporting_year + 1
+                })
+                mail_bcc = settings.BDR_ORGEMAIL_CARS_BCC
+
             else:
                 raise RuntimeError("Unknown obligation %r" %
                                    organisation.obligation.code)

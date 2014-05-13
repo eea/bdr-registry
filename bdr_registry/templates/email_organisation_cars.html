@@ -1,0 +1,80 @@
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <p>Dear {{ person.formal_name }},</p>
+
+  <p>
+    This message is addressed to you as the contact person of a manufacturer
+    reporting data concerning CO2 emissions from passenger cars in accordance with Article 8(5) of Regulation (EU) No 443/2009.
+  </p>
+
+  <p>
+    The report shall be submitted to the European Environment Agency
+    (EEA) using the online Business Data Repository (BDR) at <a
+    href="https://bdr.eionet.europa.eu/">bdr.eionet.europa.eu</a>.
+  </p>
+
+  <p>
+    In order to submit your report you will need to login using the
+    username and password for your company.
+    The company for which you have received reporting rights is
+    <strong>{{ organisation.name }}</strong> in
+    <strong>{{ organisation.country.name }}</strong>.
+
+    The username for your company is:
+    <strong>{{ organisation.account.uid }}</strong> and the password
+    is <strong>{{ organisation.account.password }}</strong>.
+  </p>
+
+  <p>
+    Please note that this password will be valid for reporting during
+    the year {{ reporting_year }}.
+    To assure confidentiality we will reset the password at the beginning
+    of {{ next_year }}.
+  </p>
+
+  <p><u>How to submit your report?</u></p>
+
+  <p>
+    Detailed information on how to upload your delivery to BDR
+    is available in the BDR User Manual at: <a
+    href="https://circabc.europa.eu/w/browse/a41f7626-c660-4ee6-9b4b-8f198de8ab5c">https://circabc.europa.eu/w/browse/a41f7626-c660-4ee6-9b4b-8f198de8ab5c</a>.
+  </p>
+
+  <p><u>Reporting requirements and forms</u></p>
+
+  <p>
+    From this year the EEA is collecting the corrections from cars
+    manufacturers using the BDR. When notifying corrections back to
+    the Commission, the manufacturer must include all records and all entries
+    that are relevant for it; i.e. both those that the manufacturer considers correct as well as those that have been corrected.
+
+    For 2014, manufacturers can provide data in several formats: .xls, .csv,
+    .xml, .mdb.
+  </p>
+
+  <p><u>BDR Helpdesk</u></p>
+
+  <p>
+    Please feel free to contact the BDR Helpdesk (<a
+    href="mailto:BDR.helpdesk@eea.europa.eu"
+    >BDR.helpdesk@eea.europa.eu</a>)
+  </p>
+
+  <p>
+    If you received this e-mail but you think that you are no longer
+    subject to the reporting obligations, please be so kind to inform
+    us accordingly.
+  </p>
+
+  <p>Thank you in advance for your co-operation.</p>
+
+  <p>
+    Yours faithfully<br />
+    BDR Helpdesk
+  </p>
+</body>
+</html>
