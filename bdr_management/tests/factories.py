@@ -66,6 +66,14 @@ class CountryFactory(django.DjangoModelFactory):
     code = 'RO'
 
 
+class EmailTemplateFactory(django.DjangoModelFactory):
+
+    FACTORY_FOR = 'post_office.EmailTemplate'
+    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
+
+    name = fuzzy.FuzzyText()
+
+
 class ObligationFactory(django.DjangoModelFactory):
 
     FACTORY_FOR = 'bdr_registry.Obligation'
@@ -73,6 +81,7 @@ class ObligationFactory(django.DjangoModelFactory):
 
     name = fuzzy.FuzzyText()
     code = factory.Iterator(['ods', 'fgas'])
+    email_template = factory.SubFactory(EmailTemplateFactory)
 
 
 @mute_signals(signals.post_save)

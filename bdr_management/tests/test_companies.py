@@ -82,6 +82,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
 
+    @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
     def test_reset_password_with_perform_send(self):
         obligation = factories.ObligationFactory()
         org = factories.CompanyWithAccountFactory(obligation=obligation)
@@ -158,12 +159,13 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
 
+    @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
     def test_create_company_account_with_perform_send(self):
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         person = factories.PersonFactory()
         org = factories.CompanyFactory(obligation=obligation,
-                                            people=[person])
+                                       people=[person])
         self.assertEqual(1, org.people.count())
         email = org.people.first().email
         url = self.reverse('management:create_account', pk=org.pk)
