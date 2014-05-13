@@ -48,6 +48,10 @@ class ReadOnlyAdmin(admin.ModelAdmin):
         return super(ReadOnlyAdmin, self).change_view(
             request, object_id, extra_context=extra_context)
 
+    def add_view(self, request, **kwargs):
+        self.readonly_fields = []
+        return super(ReadOnlyAdmin, self).add_view(request, **kwargs)
+
     def _user_is_readonly(self, request):
         groups = [ x.name for x in request.user.groups.all() ]
 
