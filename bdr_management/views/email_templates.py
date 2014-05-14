@@ -72,6 +72,7 @@ class EmailTemplateView(views.StaffuserRequiredMixin,
         ]
         data = super(EmailTemplateView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['management'] = True
         return data
 
     def get_edit_url(self):

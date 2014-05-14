@@ -37,7 +37,7 @@
     <tr>
       <th class="text-right small">{{ field.verbose_name|capfirst }}</th>
       <td class="bold">
-        {{ object|getattribute:field.name|process_field }}</td>
+        {{ object|getattribute:field.name|process_field:management }}</td>
     </tr>
     {% endfor %}
     </tbody>

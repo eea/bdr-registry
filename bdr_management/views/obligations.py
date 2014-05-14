@@ -72,6 +72,7 @@ class ObligationView(views.StaffuserRequiredMixin,
         ]
         data = super(ObligationView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['management'] = True
         return data
 
     def get_edit_url(self):

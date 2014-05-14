@@ -92,6 +92,7 @@ class PersonManagementView(views.StaffuserRequiredMixin,
         ]
         data = super(PersonManagementView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['management'] = True
         return data
 
     def get_edit_url(self):
@@ -114,6 +115,7 @@ class PersonView(base.PersonUserRequiredMixin,
         ]
         data = super(PersonView, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['management'] = False
         return data
 
     def get_back_url(self):

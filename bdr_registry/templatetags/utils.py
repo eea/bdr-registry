@@ -33,15 +33,20 @@ def getattribute(value, arg):
 
 
 @register.filter
-def process_field(value):
+def process_field(value, management):
     if value is None:
         return ''
     if isinstance(value, datetime):
         return value.strftime(settings.DATE_FORMAT)
     if isinstance(value, Company):
-        return mark_safe('<a href="%s">%s</a' % (
-            reverse('company', kwargs={'pk': value.pk}),
-            unicode(value)))
+        if management:
+            return mark_safe('<a href="%s">%s</a' % (
+                reverse('management:companies_view', kwargs={'pk': value.pk}),
+                unicode(value)))
+        else:
+            return mark_safe('<a href="%s">%s</a' % (
+                reverse('company', kwargs={'pk': value.pk}),
+                unicode(value)))
     if isinstance(value, EmailTemplate):
         return mark_safe('<a href="%s">%s</a' % (
             reverse('management:email_template_view', kwargs={'pk': value.pk}),
