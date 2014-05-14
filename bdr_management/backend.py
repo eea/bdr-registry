@@ -27,9 +27,7 @@ def send_password_email_to_people(company):
     for person in company.people.all():
         mail.send([person.email],
                   settings.BDR_EMAIL_FROM,
-                  subject=template.subject,
-                  message=template.content,
-                  html_message=template.html_content,
+                  template=template,
                   context={'company': company, 'person': person},
                   priority='now')
 
