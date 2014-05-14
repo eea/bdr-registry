@@ -61,7 +61,7 @@ class EmailTemplateView(views.StaffuserRequiredMixin,
 
     template_name = 'bdr_management/email_template_view.html'
     model = EmailTemplate
-    exclude = ('id', )
+    exclude = ('id', 'content')
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
