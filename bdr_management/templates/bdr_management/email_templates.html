@@ -13,11 +13,13 @@
   <div class="push-bottom clearfix">
       <h1 class="input-align inline-block no-margins">
         {% trans "Email templates" %}</h1>
-      <div class="pull-right h1-align">
-        <a class='btn btn-green' href="{% url 'management:email_templates_add' %}">
-          {% trans 'Add a new template' %}
-        </a>
-      </div>
+      {% if user|has_permission:None %}
+        <div class="pull-right h1-align">
+          <a class='btn btn-green' href="{% url 'management:email_templates_add' %}">
+            {% trans 'Add a new template' %}
+          </a>
+        </div>
+      {% endif %}
   </div>
   <hr />
 
