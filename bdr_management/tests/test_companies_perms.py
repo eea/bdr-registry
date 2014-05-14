@@ -221,53 +221,53 @@ class CompanyTests(BaseWebTest):
         company = factories.CompanyFactory()
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
-        form.update({'name': 'NewName'})
+        form.update({'website': 'http://www.google.com/'})
         resp = self.app.post(url, user=user.username, params=form)
 
         self.assertRedirects(resp, self.get_login_for_url(url))
-        self.assertObjectInDatabase(Company, name=company.name)
-        self.assertObjectNotInDatabase(Company, name='NewName')
+        self.assertObjectNotInDatabase(Company, website=form['website'])
+        self.assertObjectInDatabase(Company, website=None)
 
     def test_anonymous_cant_edit_company(self):
         company = factories.CompanyFactory()
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
-        form.update({'name': 'NewName'})
+        form.update({'website': 'http://www.google.com/'})
         resp = self.app.post(url, params=form)
 
         self.assertRedirects(resp, self.get_login_for_url(url))
-        self.assertObjectInDatabase(Company, name=company.name)
-        self.assertObjectNotInDatabase(Company, name='NewName')
+        self.assertObjectNotInDatabase(Company, website=form['website'])
+        self.assertObjectInDatabase(Company, website=None)
 
     def test_bdr_group_can_edit_company(self):
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
-        form.update({'name': 'NewName'})
+        form.update({'website': 'http://www.google.com/'})
         resp = self.app.post(url, user=user.username, params=form)
 
         self.assertRedirects(
             resp,
             self.reverse('company', pk=company.pk))
-        self.assertObjectInDatabase(Company, name='NewName')
-        self.assertObjectNotInDatabase(Company, name=company.name)
+        self.assertObjectInDatabase(Company, website=form['website'])
+        self.assertObjectNotInDatabase(Company, website=None)
 
     def test_superuser_can_edit_company(self):
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
-        form.update({'name': 'NewName'})
+        form.update({'website': 'http://www.google.com/'})
         resp = self.app.post(url, user=user.username, params=form)
 
         self.assertRedirects(
             resp,
             self.reverse('company', pk=company.pk))
-        self.assertObjectInDatabase(Company, name='NewName')
-        self.assertObjectNotInDatabase(Company, name=company.name)
+        self.assertObjectInDatabase(Company, website=form['website'])
+        self.assertObjectNotInDatabase(Company, website=None)
 
-    def test_owner_can_edit_company(self):
+    def test_owner_cant_change_company_name(self):
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -277,5 +277,18 @@ class CompanyTests(BaseWebTest):
         resp = self.app.post(url, user=user.username, params=form)
 
         self.assertRedirects(resp, self.reverse('company', pk=company.pk))
-        self.assertObjectInDatabase(Company, name='NewName')
-        self.assertObjectNotInDatabase(Company, name=company.name)
+        self.assertObjectNotInDatabase(Company, name='NewName')
+        self.assertObjectInDatabase(Company, name=company.name)
+
+    def test_owner_can_edit_company(self):
+        user = factories.UserFactory()
+        account = factories.AccountFactory(uid=user.username)
+        company = factories.CompanyFactory(account=account)
+        url = self.reverse('company_update', pk=company.pk)
+        form = self.get_company_form_params(company)
+        form.update({'website': 'http://www.google.com/'})
+        resp = self.app.post(url, user=user.username, params=form)
+
+        self.assertRedirects(resp, self.reverse('company', pk=company.pk))
+        self.assertObjectInDatabase(Company, website=form['website'])
+        self.assertObjectNotInDatabase(Company, website=None)

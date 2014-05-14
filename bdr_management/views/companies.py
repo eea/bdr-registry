@@ -218,6 +218,11 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin,
         data['cancel_url'] = back_url
         return data
 
+    def get_form(self, form_class):
+        form = super(CompaniesUpdate, self).get_form(form_class)
+        form.fields.pop('name')
+        return form
+
     def get_success_url(self):
         return reverse('company', kwargs=self.kwargs)
 

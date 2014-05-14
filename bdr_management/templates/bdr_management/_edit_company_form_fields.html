@@ -2,76 +2,78 @@
 {% load i18n %}
 {% load widget_tweaks %}
 
+  {% if form.name %}
     {{ form.name|custom_render_field }}
+  {% endif %}
 
-    {{ form.website|custom_render_field }}
+  {{ form.website|custom_render_field }}
 
-    <!-- Active -->
-    <div class="form-group clearfix">
-      <label class="btn inline-block" for="id_{{ form.active.name }}">
-        {{ form.active }}
-        {{ form.active.label }}
-      </label>
-      &ensp;
-      <p class="input-align inline-block muted no-margins">
-        Explanatory text
-      </p>
+  <!-- Active -->
+  <div class="form-group clearfix">
+    <label class="btn inline-block" for="id_{{ form.active.name }}">
+      {{ form.active }}
+      {{ form.active.label }}
+    </label>
+    &ensp;
+    <p class="input-align inline-block muted no-margins">
+      Explanatory text
+    </p>
+  </div>
+
+  <hr />
+
+  <div class="row">
+    <div class="col-sm-6">
+      {{ form.account|custom_render_field }}
     </div>
-
-    <hr />
-
-    <div class="row">
-      <div class="col-sm-6">
-        {{ form.account|custom_render_field }}
-      </div>
-      <div class="col-sm-6">
-        {{ form.obligation|custom_render_field }}
-      </div>
+    <div class="col-sm-6">
+      {{ form.obligation|custom_render_field }}
     </div>
+  </div>
 
-    <hr />
+  <hr />
 
-    {{ form.addr_street|custom_render_field }}
+  {{ form.addr_street|custom_render_field }}
 
-    <div class="row">
-      <div class="col-sm-6">
-        {{ form.addr_place1|custom_render_field }}
-      </div>
-      <div class="col-sm-6">
-        {{ form.addr_place2|custom_render_field }}
-      </div>
+  <div class="row">
+    <div class="col-sm-6">
+      {{ form.addr_place1|custom_render_field }}
     </div>
-
-    <div class="row">
-      <div class="col-sm-6">
-        {{ form.addr_postalcode|custom_render_field }}
-      </div>
-      <div class="col-sm-6">
-        {{ form.country|custom_render_field }}
-      </div>
+    <div class="col-sm-6">
+      {{ form.addr_place2|custom_render_field }}
     </div>
+  </div>
 
-    <hr />
+  <div class="row">
+    <div class="col-sm-6">
+      {{ form.addr_postalcode|custom_render_field }}
+    </div>
+    <div class="col-sm-6">
+      {{ form.country|custom_render_field }}
+    </div>
+  </div>
 
-    <div class="row">
-      <div class="col-sm-6">
-        <!-- Eori -->
-        <div class="form-group">
-          <div class="clearfix">
-            <label for="id_{{ form.eori.name }}" 
-                   class="pull-left">{{ form.eori.label }}</label>
-            <a class="pull-left" style="margin-left: 12px;"
-               href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
-              {% trans "About EORI number" %}
-            </a>
-          </div>
-          {{ form.eori|add_error_class:"form-error" }}
-          {% for err in form.eori.errors %}
-            <div class="bdr-error">{{ err }}</div>
-          {% endfor %}
+  <hr />
+
+  <div class="row">
+    <div class="col-sm-6">
+      <!-- Eori -->
+      <div class="form-group">
+        <div class="clearfix">
+          <label for="id_{{ form.eori.name }}"
+                 class="pull-left">{{ form.eori.label }}</label>
+          <a class="pull-left" style="margin-left: 12px;"
+             href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+            {% trans "About EORI number" %}
+          </a>
         </div>
-      </div>
-      <div class="col-sm-6">
-        {{ form.vat_number|custom_render_field }}
+        {{ form.eori|add_error_class:"form-error" }}
+        {% for err in form.eori.errors %}
+          <div class="bdr-error">{{ err }}</div>
+        {% endfor %}
       </div>
     </div>
+    <div class="col-sm-6">
+      {{ form.vat_number|custom_render_field }}
+    </div>
+  </div>
