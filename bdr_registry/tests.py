@@ -151,22 +151,6 @@ class OrganisationPasswordTest(TestCase):
         new_password = models.Account.objects.get(pk=self.account.pk).password
         self.assertNotEqual(password, new_password)
 
-    def test_password_email_is_sent(self):
-        self.acme.people.create(email="alice@example.com")
-        self.acme.people.create(email="bob@example.com")
-        create_user_and_login(self.client, superuser=True, staff=True)
-        self.client.post('/admin/bdr_registry/company/', {
-            helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
-            'action': 'send_password_email',
-            'perform_send': 'yes',
-        })
-        self.assertEqual(len(mail.outbox), 2)
-        message = mail.outbox[1]
-        self.assertItemsEqual(message.to, ['bob@example.com'])
-        self.assertIn(self.acme.country.name, message.body)
-        self.assertIn(self.acme.account.uid, message.body)
-        self.assertIn(self.acme.account.password, message.body)
-
 
 class PersonEditTest(TestCase):
 
@@ -216,16 +200,6 @@ class PersonEditTest(TestCase):
         with quiet_request_logging():
             resp = self.client.get('/person/123/update')
         self.assertEqual(resp.status_code, 404)
-
-    def test_add_person_to_company(self):
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        self.client.post('/company/%d/add_person' % self.acme.pk,
-                         dict(PERSON_FIXTURE, first_name='Smith'))
-        new_person = models.Person.objects.get(first_name='Smith')
-        self.assertEqual(new_person.company, self.acme)
 
     def test_add_person_to_company_returns_404_for_missing_org(self):
         with quiet_request_logging():
