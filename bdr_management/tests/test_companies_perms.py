@@ -1,7 +1,8 @@
 
 from .base import BaseWebTest
 from bdr_management.tests import factories
-from bdr_registry.models import Company
+from bdr_registry.models import Company, Person
+
 
 class CompanyManagementTests(BaseWebTest):
 
@@ -11,10 +12,27 @@ class CompanyManagementTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
 
+    def test_company_add_post_by_staff(self):
+        user = factories.StaffUserFactory()
+        url = self.reverse('management:companies_add')
+        form =factories.company_with_person_form()
+        resp = self.app.post(url, params=form, user=user)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertFalse(Company.objects.exists())
+        self.assertFalse(Person.objects.exists())
+
     def test_company_add_by_anonymous(self):
         url = self.reverse('management:companies_add')
         resp = self.app.get(url)
         self.assertRedirects(resp, self.get_login_for_url(url))
+
+    def test_company_add_post_by_anonymous(self):
+        url = self.reverse('management:companies_add')
+        form = factories.company_with_person_form()
+        resp = self.app.post(url, params=form)
+        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertFalse(Company.objects.exists())
+        self.assertFalse(Person.objects.exists())
 
     def test_company_add_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -22,11 +40,29 @@ class CompanyManagementTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
+    def test_company_add_post_by_bdr_group(self):
+        user = factories.BDRGroupUserFactory()
+        url = self.reverse('management:companies_add')
+        form = factories.company_with_person_form()
+        resp = self.app.post(url, params=form, user=user)
+        self.assertRedirects(resp, self.reverse('management:companies'))
+        self.assertTrue(Company.objects.exists())
+        self.assertTrue(Person.objects.exists())
+
     def test_company_add_by_superuser(self):
         user = factories.SuperUserFactory()
         url = self.reverse('management:companies_add')
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+
+    def test_company_add_post_by_superuser(self):
+        user = factories.SuperUserFactory()
+        url = self.reverse('management:companies_add')
+        form = factories.company_with_person_form()
+        resp = self.app.post(url, params=form, user=user)
+        self.assertRedirects(resp, self.reverse('management:companies'))
+        self.assertTrue(Company.objects.exists())
+        self.assertTrue(Person.objects.exists())
 
     def test_companies_view_by_staff(self):
         user = factories.StaffUserFactory()

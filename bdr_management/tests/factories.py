@@ -6,6 +6,10 @@ from django.db.models import signals
 from .base import mute_signals
 
 
+text_fuzzer = fuzzy.FuzzyText()
+email_fuzzer = fuzzy.FuzzyText(length=6, suffix='@eaudeweb.ro')
+
+
 class UserFactory(django.DjangoModelFactory):
 
     FACTORY_FOR = 'auth.User'
@@ -139,4 +143,31 @@ class CommentFactory(django.DjangoModelFactory):
     text = fuzzy.FuzzyText()
     company = factory.SubFactory(CompanyFactory)
 
+
+def company_form():
+    return {
+        'name': text_fuzzer.fuzz(),
+        'addr_street': text_fuzzer.fuzz(),
+        'addr_place1': CountryFactory().name,
+        'addr_postalcode': text_fuzzer.fuzz(),
+        'addr_place2': text_fuzzer.fuzz(),
+        'country': '1',
+        'obligation': '1'
+    }.copy()
+
+
+def person_form():
+    return {
+        'title': "Mr.",
+        'first_name': text_fuzzer.fuzz(),
+        'family_name': text_fuzzer.fuzz(),
+        'email': email_fuzzer.fuzz(),
+        'phone': text_fuzzer.fuzz(),
+    }.copy()
+
+
+def company_with_person_form():
+    form = company_form()
+    form.update(person_form())
+    return form
 
