@@ -201,11 +201,6 @@ class PersonEditTest(TestCase):
             resp = self.client.get('/person/123/update')
         self.assertEqual(resp.status_code, 404)
 
-    def test_add_person_to_company_returns_404_for_missing_org(self):
-        with quiet_request_logging():
-            resp = self.client.get('/company/123/add_person')
-        self.assertEqual(resp.status_code, 404)
-
     def test_company_account_can_delete_person_from_company(self):
         self.person2 = models.Person.objects.create(company=self.acme)
         user = create_user_and_login(self.client)

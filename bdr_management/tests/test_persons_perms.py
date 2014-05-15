@@ -166,6 +166,18 @@ class PersonManagementTests(BaseWebTest):
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
 
+    def test_add_person_to_missing_company(self):
+        user = factories.SuperUserFactory()
+        url = self.reverse('management:persons_add', pk=123)
+        form = factories.person_form()
+
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 404)
+
+        resp = self.app.post(url, params=form, user=user.username,
+                             expect_errors=True)
+        self.assertEqual(resp.status_int, 404)
+
 
 class PersonTests(BaseWebTest):
 
