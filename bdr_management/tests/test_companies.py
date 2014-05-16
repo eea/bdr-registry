@@ -4,7 +4,7 @@ from django.core import mail
 from django.test.utils import override_settings
 
 from bdr_management.tests import base, factories
-from bdr_registry.models import Company
+from bdr_registry.models import Company, Account
 
 
 LdapEditorResetPassMock = Mock()
@@ -53,18 +53,6 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         resp = self.app.post(url, user=user.username, expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
-    # def test_reset_passowrd_get_without_obligation(self):
-    #     org = factories.OrganisationWithAccountFactory()
-    #     url = self.reverse('management:reset_password', pk=org.pk)
-    #     resp = self.app.post(url, user=user.username, expect_errors=True)
-    #     self.assertEqual(404, resp.status_int)
-
-    # def test_reset_passowrd_post_without_obligation(self):
-    #     org = factories.OrganisationWithAccountFactory()
-    #     url = self.reverse('management:reset_password', pk=org.pk)
-    #     resp = self.app.post(url, user=user.username, expect_errors=True)
-    #     self.assertEqual(404, resp.status_int)
-
     def test_reset_password(self):
         org = factories.CompanyWithAccountFactory()
         self.assertIsNone(org.account.password)
@@ -81,6 +69,16 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
+
+    def test_reset_password_changes_old(self):
+        user = factories.SuperUserFactory()
+        account = factories.AccountFactory(password='changeme')
+        org = factories.CompanyFactory(account=account)
+        url = self.reverse('management:reset_password', pk=org.pk)
+        self.app.post(url, user=user.username)
+        self.assertEqual(Account.objects.count(), 1)
+        self.assertEqual(Account.objects.first(), account)
+        self.assertNotEqual(Account.objects.first().password, account.password)
 
     @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
     def test_reset_password_with_perform_send(self):

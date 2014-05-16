@@ -112,33 +112,6 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
-class CompanyPasswordTest(TestCase):
-
-    def setUp(self):
-        self.dk = models.Country.objects.get(name="Denmark")
-        self.fgas = models.Obligation.objects.get(code='fgas')
-        self.account = models.Account.objects.create_for_obligation(self.fgas)
-        self.account.set_random_password()
-        self.acme = models.Company.objects.create(country=self.dk,
-                                                  obligation=self.fgas,
-                                                  account=self.account)
-        ldap_editor_patch = patch('bdr_registry.admin.create_ldap_editor')
-        ldap_editor_patch.start()
-        self.addCleanup(ldap_editor_patch.stop)
-
-    def test_password_reset_changes_password(self):
-        password = self.account.password
-        create_user_and_login(self.client, superuser=True, staff=True)
-        self.client.post('/admin/bdr_registry/company/', {
-            helpers.ACTION_CHECKBOX_NAME: self.acme.pk,
-            'action': 'reset_password',
-            'perform_reset': 'yes',
-        })
-
-        new_password = models.Account.objects.get(pk=self.account.pk).password
-        self.assertNotEqual(password, new_password)
-
-
 class ApiTest(TestCase):
 
     def setUp(self):
