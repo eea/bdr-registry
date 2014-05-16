@@ -8,6 +8,7 @@ from .base import mute_signals
 
 text_fuzzer = fuzzy.FuzzyText()
 email_fuzzer = fuzzy.FuzzyText(length=6, suffix='@eaudeweb.ro')
+integer_fuzzer = fuzzy.FuzzyInteger(1000)
 
 
 class UserFactory(django.DjangoModelFactory):
@@ -156,13 +157,14 @@ def company_form():
     }.copy()
 
 
-def person_form():
+def person_form(company_pk=integer_fuzzer.fuzz()):
     return {
         'title': "Mr.",
         'first_name': text_fuzzer.fuzz(),
         'family_name': text_fuzzer.fuzz(),
         'email': email_fuzzer.fuzz(),
         'phone': text_fuzzer.fuzz(),
+        'company': company_pk
     }.copy()
 
 

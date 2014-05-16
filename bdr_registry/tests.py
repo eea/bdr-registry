@@ -69,19 +69,6 @@ class FormSubmitTest(TransactionTestCase):
         for key in data:
             self.assertEqual(getattr(obj, key), data[key])
 
-    def test_submitted_company_is_saved(self):
-        form_data = dict(ORG_FIXTURE, country=self.denmark.pk)
-        resp = self.client.post('/company/add', form_data)
-
-        self.assertEqual(models.Company.objects.count(), 1)
-        org = models.Company.objects.all()[0]
-        self.assert_object_has_items(org, ORG_FIXTURE)
-        self.assertEqual(org.country, self.denmark)
-
-        self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp['location'],
-                         'http://testserver/company/%d' % org.pk)
-
     def prepare_form_data(self):
         form_data = {
             'company-country': self.denmark.pk,
@@ -125,7 +112,7 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
-class OrganisationPasswordTest(TestCase):
+class CompanyPasswordTest(TestCase):
 
     def setUp(self):
         self.dk = models.Country.objects.get(name="Denmark")
@@ -150,85 +137,6 @@ class OrganisationPasswordTest(TestCase):
 
         new_password = models.Account.objects.get(pk=self.account.pk).password
         self.assertNotEqual(password, new_password)
-
-
-class PersonEditTest(TestCase):
-
-    def setUp(self):
-        self.dk = models.Country.objects.get(name="Denmark")
-        self.fgas = models.Obligation.objects.get(code='fgas')
-        self.acme = models.Company.objects.create(country=self.dk,
-                                                       obligation=self.fgas)
-        self.person = models.Person.objects.create(company=self.acme)
-        self.update_url = '/person/%d/update' % self.person.pk
-
-    def test_person_information_is_updated(self):
-        create_user_and_login(self.client, superuser=True)
-        person_form = dict(PERSON_FIXTURE, phone='555 9876')
-        self.client.post(self.update_url, person_form)
-        new_person = models.Person.objects.get(pk=self.person.pk)
-        self.assertEqual(new_person.phone, '555 9876')
-
-    def test_modifying_company_is_ignored(self):
-        create_user_and_login(self.client, superuser=True)
-        org2 = models.Company.objects.create(country=self.dk,
-                                                  obligation=self.fgas)
-        person_form = dict(PERSON_FIXTURE, company=org2.pk)
-        self.client.post(self.update_url, person_form)
-        new_person = models.Person.objects.get(pk=self.person.pk)
-        self.assertEqual(new_person.company, self.acme)
-
-    def test_company_account_is_allowed_to_edit(self):
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        person_form = dict(PERSON_FIXTURE, phone='555 9876')
-        resp = self.client.post(self.update_url, person_form)
-        self.assertFalse(resp['location'].startswith(LOGIN_PREFIX))
-        new_person = models.Person.objects.get(pk=self.person.pk)
-        self.assertEqual(new_person.phone, '555 9876')
-
-    def test_random_account_is_not_allowed_to_edit(self):
-        create_user_and_login(self.client)
-        person_form = dict(PERSON_FIXTURE, phone='555 9876')
-        resp = self.client.post(self.update_url, person_form)
-        self.assertEqual(resp.status_code, 302)
-        self.assertTrue(resp['location'].startswith(LOGIN_PREFIX))
-
-    def test_person_update_returns_404_if_person_missing(self):
-        with quiet_request_logging():
-            resp = self.client.get('/person/123/update')
-        self.assertEqual(resp.status_code, 404)
-
-    def test_company_account_can_delete_person_from_company(self):
-        self.person2 = models.Person.objects.create(company=self.acme)
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        self.client.post('/person/%d/delete' % self.person.pk)
-        self.assertItemsEqual(self.acme.people.all(), [self.person2])
-
-    def test_company_account_cant_delete_last_person(self):
-        user = create_user_and_login(self.client)
-        account = models.Account.objects.create(uid=user.username)
-        self.acme.account = account
-        self.acme.save()
-        self.client.post('/person/%d/delete' % self.person.pk)
-        self.assertItemsEqual(self.acme.people.all(), [self.person])
-
-    def test_random_account_is_not_allowed_to_delete(self):
-        create_user_and_login(self.client)
-        self.client.post('/person/%d/delete' % self.person.pk)
-        #self.assertEqual([p.pk for p in self.acme.people.all()],
-        #                 [self.person.pk])
-        self.assertItemsEqual(self.acme.people.all(), [self.person])
-
-    def test_person_delete_returns_404_if_person_missing(self):
-        with quiet_request_logging():
-            resp = self.client.get('/person/123/delete')
-        self.assertEqual(resp.status_code, 404)
 
 
 class ApiTest(TestCase):
