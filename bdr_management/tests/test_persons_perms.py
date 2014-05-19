@@ -211,7 +211,7 @@ class PersonManagementTests(BaseWebTest):
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, '/management/persons')
+        self.assertRedirects(resp, self.reverse('management:persons'))
 
     def test_person_delete_by_bdr_superuser(self):
         user = factories.SuperUserFactory()
@@ -219,7 +219,7 @@ class PersonManagementTests(BaseWebTest):
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
         resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, '/management/persons')
+        self.assertRedirects(resp, self.reverse('management:persons'))
 
     def test_delete_last_person(self):
         company = factories.CompanyFactory()
