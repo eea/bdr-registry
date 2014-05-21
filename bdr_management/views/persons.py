@@ -12,7 +12,7 @@ from braces import views
 
 from bdr_management import base, backend
 from bdr_management.base import Breadcrumb
-from bdr_management.forms import PersonForm
+from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_registry.models import Person, Company
 
 
@@ -132,6 +132,7 @@ class PersonEditBase(base.ModelTableViewMixin,
     template_name = 'bdr_management/person_edit.html'
     model = Person
     success_message = _('Person edited successfully')
+    form_class = PersonForm
 
 
 class PersonManagementEdit(views.GroupRequiredMixin,
@@ -271,7 +272,7 @@ class PersonCreateBase(SuccessMessageMixin,
 
     template_name = 'bdr_management/person_add.html'
     model = Person
-    form_class = PersonForm
+    form_class = PersonFormWithoutCompany
     success_message = _('Person created successfully')
 
     def dispatch(self, *args, **kwargs):

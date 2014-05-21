@@ -13,7 +13,7 @@ from django.shortcuts import redirect
 
 from braces import views
 
-from bdr_management.forms import PersonForm
+from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
@@ -271,14 +271,14 @@ class CompanyAdd(views.GroupRequiredMixin,
         self.object = None
         return self.render_to_response(
             self.get_context_data(form=self.get_form(self.get_form_class()),
-                                  person_form=PersonForm(),
+                                  person_form=PersonFormWithoutCompany(),
                                   company_form=CompanyForm()))
 
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        person_form = PersonForm(self.request.POST)
+        person_form = PersonFormWithoutCompany(self.request.POST)
         if form.is_valid() and person_form.is_valid():
             return self.form_valid(form, person_form)
         else:

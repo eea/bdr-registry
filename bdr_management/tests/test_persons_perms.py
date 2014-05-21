@@ -118,7 +118,7 @@ class PersonManagementTests(BaseWebTest):
     def test_person_update_post_by_staff(self):
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('management:persons_edit', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
@@ -136,7 +136,7 @@ class PersonManagementTests(BaseWebTest):
 
     def test_person_update_post_by_anonymous(self):
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('management:persons_edit', pk=person.pk)
         resp = self.app.post(url, params=form)
         self.assertRedirects(resp, self.get_login_for_url(url))
@@ -157,8 +157,7 @@ class PersonManagementTests(BaseWebTest):
     def test_person_update_post_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         person = factories.PersonFactory()
-        form = factories.person_form()
-        factories.CompanyFactory(pk=form['company'])
+        form = factories.person_form(person.company.pk)
         url = self.reverse('management:persons_edit', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.reverse('management:persons_view',
@@ -177,9 +176,8 @@ class PersonManagementTests(BaseWebTest):
 
     def test_person_update_post_by_superuser(self):
         user = factories.SuperUserFactory()
-        company = factories.CompanyFactory()
         person = factories.PersonFactory()
-        form = factories.person_form(company_pk=company.pk)
+        form = factories.person_form(person.company.pk)
         url = self.reverse('management:persons_edit', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.reverse('management:persons_view',
@@ -365,7 +363,7 @@ class PersonTests(BaseWebTest):
 
     def test_person_update_post_by_anonymous(self):
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.post(url, params=form)
         self.assertRedirects(resp, self.get_login_for_url(url))
@@ -383,7 +381,7 @@ class PersonTests(BaseWebTest):
     def test_person_update_post_by_staff(self):
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.get_login_for_url(url))
@@ -425,7 +423,7 @@ class PersonTests(BaseWebTest):
     def test_person_update_post_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.reverse('person',
@@ -445,7 +443,7 @@ class PersonTests(BaseWebTest):
     def test_person_update_post_by_superuser(self):
         user = factories.SuperUserFactory()
         person = factories.PersonFactory()
-        form = factories.person_form()
+        form = factories.person_form(person.company.pk)
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.post(url, params=form, user=user.username)
         self.assertRedirects(resp, self.reverse('person',
