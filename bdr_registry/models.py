@@ -112,7 +112,7 @@ class Company(models.Model):
     vat_number = models.CharField(_('VAT number'),
                             max_length=17, null=True, blank=True)
     country = models.ForeignKey(Country)
-    obligation = models.ForeignKey(Obligation)
+    obligation = models.ForeignKey(Obligation, related_name='companies')
     account = models.OneToOneField(Account, null=True, blank=True,
                                    related_name='company')
     website = models.URLField(null=True, blank=True)

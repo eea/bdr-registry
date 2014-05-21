@@ -18,4 +18,12 @@
   	</div>
   </form>
 
+    {% if object.people.all %}
+      <h2>{% trans "Warning: the following persons will be also deleted:" %}</h2>
+      <ul>
+        {% for person in object.people.all %}
+          <li>{{ person }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
 {% endblock %}
