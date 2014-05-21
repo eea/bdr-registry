@@ -22,6 +22,8 @@ from django.template.response import TemplateResponse
 import xmltodict
 import models
 
+from bdr_management.forms.utils import set_empty_label
+
 
 class CanEdit(object):
 
@@ -179,6 +181,10 @@ class CompanyForm(ModelForm):
 
     obligation = ModelChoiceField(queryset=models.Obligation.objects,
                                   required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(CompanyForm, self).__init__(*args, **kwargs)
+        set_empty_label(self.fields, '')
 
     class Meta:
         model = models.Company
