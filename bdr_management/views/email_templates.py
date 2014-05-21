@@ -11,6 +11,7 @@ from braces import views
 
 from bdr_management import base
 from bdr_management.base import Breadcrumb
+from bdr_management.forms.email_template import EmailTemplateForm
 
 
 class EmailTemplates(views.StaffuserRequiredMixin,
@@ -61,7 +62,7 @@ class EmailTemplateView(views.StaffuserRequiredMixin,
 
     template_name = 'bdr_management/email_template_view.html'
     model = EmailTemplate
-    exclude = ('id', 'content')
+    exclude = ('id', 'content', 'description')
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -94,6 +95,7 @@ class EmailTemplateEdit(views.GroupRequiredMixin,
     model = EmailTemplate
     success_message = _('Template edited successfully')
     group_required = settings.BDR_HELPDESK_GROUP
+    form_class = EmailTemplateForm
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:email_template_view',
