@@ -1,6 +1,3 @@
-from cStringIO import StringIO
-import csv
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -13,7 +10,7 @@ from django.views import generic
 
 from braces import views
 
-from bdr_management import base
+from bdr_management import base, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonForm
 from bdr_registry.models import Person, Company
@@ -340,20 +337,21 @@ class PersonsExport(views.StaffuserRequiredMixin,
 
     def get(self, request):
 
-        of = StringIO()
-        out = csv.writer(of)
-        out.writerow(['userid', 'companyname', 'country',
-                      'contactname', 'contactemail'])
+        header = ['userid', 'companyname', 'country',
+                  'contactname', 'contactemail']
+        rows = []
+
         for person in Person.objects.all():
             org = person.company
             account = org.account
             if account is None:
                 continue
-            out.writerow([v.encode('utf-8') for v in [
+            rows.append([v.encode('utf-8') for v in [
                 account.uid,
                 org.name,
                 org.country.name,
                 u"{p.title} {p.first_name} {p.family_name}".format(p=person),
                 person.email,
             ]])
-        return HttpResponse(of.getvalue(), content_type="text/plain")
+        xls_doc = backend.generate_excel(header, rows)
+        return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")

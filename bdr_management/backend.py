@@ -1,5 +1,8 @@
 from collections import defaultdict
 
+from cStringIO import StringIO
+import xlwt
+
 from django.conf import settings
 from post_office import mail
 
@@ -32,3 +35,30 @@ def send_password_email_to_people(company):
                   priority='now')
 
     return company.people.count()
+
+
+def generate_excel(header, rows):
+    style = xlwt.XFStyle()
+    normalfont = xlwt.Font()
+    headerfont = xlwt.Font()
+    headerfont.bold = True
+    style.font = headerfont
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Sheet 1')
+    row = 0
+
+    for col in range(0, len(header)):
+        ws.row(row).set_cell_text(col, header[col], style)
+
+    style.font = normalfont
+
+    for item in rows:
+        row += 1
+        for col in range(0, len(item)):
+            ws.row(row).set_cell_text(col, item[col], style)
+
+    output = StringIO()
+    wb.save(output)
+
+    return output.getvalue()
