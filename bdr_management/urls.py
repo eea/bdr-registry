@@ -111,4 +111,12 @@ urlpatterns = patterns(
     url(r'^templates/(?P<pk>\d+)/delete/?$',
         views.EmailTemplateDelete.as_view(),
         name='email_template_delete'),
+
+    url(r'^settings/?$',
+        views.Settings.as_view(),
+        name='settings_view'),
+    url(r'^settings/edit/?$',
+        views.SettingsEdit.as_view(),
+        name='settings_edit'),
+
 )

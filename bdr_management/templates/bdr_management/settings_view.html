@@ -1,0 +1,36 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Settings" %}</h1>
+      <div class="pull-right h1-align">
+        {% if user|has_permission:None %}
+          <a class="btn btn-green"
+           href="{% url 'management:settings_edit' %}">
+           {% trans "Edit" %}</a>
+        {% endif %}
+      </div>
+  </div>
+  <hr />
+
+  <table class="dataTable">
+
+    <thead>
+      <tr>
+        <th>{% trans "Key" %}</th>
+        <th>{% trans "Value" %}</th>
+      </tr>
+      {% for obj in object_list %}
+          <td>{{ obj.name }}</td>
+          <td>{{ obj.setting_object.value }}</td>
+      {% endfor %}
+    </thead>
+
+  </table>
+
+{% endblock %}

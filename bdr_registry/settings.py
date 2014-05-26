@@ -81,6 +81,7 @@ INSTALLED_APPS = (
     'django_assets',
     'post_office',
     'bdr_management',
+    'django_settings',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [

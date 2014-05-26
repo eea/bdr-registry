@@ -657,6 +657,7 @@ a.badge-red:active {
 .form input[type="email"],
 .form input[type="url"],
 .form input[type="password"],
+.form input[type="number"],
 .form select,
 .form textarea {
   display: block;
