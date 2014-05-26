@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 from cStringIO import StringIO
+import django_settings
 import xlwt
 
 from django.conf import settings
@@ -28,10 +29,13 @@ def send_password_email_to_people(company):
 
     template = company.obligation.email_template
     for person in company.people.all():
+        reporting_year = django_settings.get('reporting_year')
         mail.send([person.email],
                   settings.BDR_EMAIL_FROM,
                   template=template,
-                  context={'company': company, 'person': person},
+                  context={'company': company, 'person': person,
+                           'reporting_year': reporting_year,
+                           'next_year': reporting_year + 1},
                   priority='now')
 
     return company.people.count()
