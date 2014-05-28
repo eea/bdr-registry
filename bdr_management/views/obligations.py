@@ -9,6 +9,7 @@ from braces import views
 
 from bdr_management import base
 from bdr_management.base import Breadcrumb
+from bdr_management.forms.obligations import ObligationForm
 from bdr_registry.models import Obligation
 
 
@@ -94,6 +95,7 @@ class ObligationEdit(views.GroupRequiredMixin,
     model = Obligation
     success_message = _('Obligation edited successfully')
     group_required = settings.BDR_HELPDESK_GROUP
+    form_class = ObligationForm
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:obligation_view',
