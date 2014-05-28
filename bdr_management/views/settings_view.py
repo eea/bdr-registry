@@ -37,7 +37,7 @@ class SettingsEdit(views.GroupRequiredMixin,
 
     def get_initial(self):
         return {
-            'reporting_year': django_settings.get('reporting_year')
+            'reporting_year': django_settings.get('Reporting year')
         }
 
     def get_context_data(self, **kwargs):

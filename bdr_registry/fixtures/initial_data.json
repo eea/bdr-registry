@@ -359,7 +359,7 @@
     "pk": 1,
     "model": "django_settings.setting",
     "fields": {
-        "name": "reporting_year",
+        "name": "Reporting year",
         "setting_id": 1,
         "setting_type": 25
     }

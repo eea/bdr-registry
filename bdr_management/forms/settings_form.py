@@ -10,6 +10,6 @@ class SettingsForm(Form):
     def is_valid(self):
         valid = super(SettingsForm, self).is_valid()
         if valid:
-            django_settings.set('Integer', 'reporting_year',
+            django_settings.set('Integer', 'Reporting year',
                                 self.cleaned_data['reporting_year'])
         return valid

@@ -27,7 +27,7 @@
       </tr>
       {% for obj in object_list %}
         <tr>
-          <td>{{ obj.name }}</td>
+          <td>{% trans obj.name %}</td>
           <td>{{ obj.setting_object.value }}</td>
         </tr>
       {% endfor %}
