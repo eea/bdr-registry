@@ -28,10 +28,13 @@ def sync_accounts_with_ldap(accounts):
 def send_password_email_to_people(company):
 
     template = company.obligation.email_template
+    bcc = company.obligation.bcc.split(',')
+    bcc = [s.strip() for s in bcc]
     for person in company.people.all():
         reporting_year = django_settings.get('reporting_year')
-        mail.send([person.email],
-                  settings.BDR_EMAIL_FROM,
+        mail.send(recipients=[person.email],
+                  bcc=bcc,
+                  sender=settings.BDR_EMAIL_FROM,
                   template=template,
                   context={'company': company, 'person': person,
                            'reporting_year': reporting_year,

@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 import local
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
+from post_office.fields import CommaSeparatedEmailField
 
 
 def generate_key(size=20):
@@ -41,6 +42,7 @@ class Obligation(models.Model):
     code = models.CharField(max_length=255)
     reportek_slug = models.CharField(max_length=255)
     email_template = models.ForeignKey(EmailTemplate)
+    bcc = CommaSeparatedEmailField(blank=True)
 
     def __unicode__(self):
         return self.name
