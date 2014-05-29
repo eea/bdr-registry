@@ -329,14 +329,14 @@ class ResetPassword(views.GroupRequiredMixin,
     def post(self, request, pk):
         self.company.account.set_random_password()
         counters = backend.sync_accounts_with_ldap([self.company.account])
-        msg = _('Password have been reset. LDAP: %r.') % counters
+        msg = _('Password has been reset.') % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
             n = backend.send_password_email_to_people(self.company)
             messages.success(
                 request,
-                'Emails have been sent to %d people.' % n
+                'Emails have been sent to %d person(s).' % n
             )
         return redirect('management:companies_view',
                         pk=self.company.pk)
@@ -363,14 +363,14 @@ class CreateAccount(views.GroupRequiredMixin,
         self.company.account = account
         self.company.save()
         counters = backend.sync_accounts_with_ldap([account])
-        msg = "Account created. LDAP: %r." % counters
+        msg = "Account created." % counters
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
             n = backend.send_password_email_to_people(self.company)
             messages.success(
                 request,
-                'Emails have been sent to %d people.' % n
+                'Emails have been sent to %d person(s).' % n
             )
         return redirect('management:companies_view',
                         pk=self.company.pk)
