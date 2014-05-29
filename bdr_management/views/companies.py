@@ -328,8 +328,8 @@ class ResetPassword(views.GroupRequiredMixin,
 
     def post(self, request, pk):
         self.company.account.set_random_password()
-        counters = backend.sync_accounts_with_ldap([self.company.account])
-        msg = _('Password has been reset.') % counters
+        backend.sync_accounts_with_ldap([self.company.account])
+        msg = _('Password has been reset.')
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
@@ -362,8 +362,8 @@ class CreateAccount(views.GroupRequiredMixin,
         account.set_random_password()
         self.company.account = account
         self.company.save()
-        counters = backend.sync_accounts_with_ldap([account])
-        msg = "Account created." % counters
+        backend.sync_accounts_with_ldap([account])
+        msg = "Account created."
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
