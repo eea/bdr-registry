@@ -12,26 +12,28 @@
     {% if user|has_permission:object %}
       <div class="box-small no-borders pull-left"
            style="margin-left:24px;">
-        <p class="h4 no-margins">Actions:</p>
-        <ul>
-          {% if object.account %}
-          <li>
-            <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
-              {% trans "Reset password" %}</a>
-          </li>
-          <li>
-            <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
-              {% trans "Create reporting folder" %}</a>
-          </li>
-          {% endif %}
-  
-          {% if not object.account %}
-          <li>
-            <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
-              {% trans "Create account" %}</a>
-          </li>
-          {% endif %}
-        </ul>
+        {% if management %}
+          <p class="h4 no-margins">Actions:</p>
+          <ul>
+            {% if object.account %}
+            <li>
+              <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
+                {% trans "Reset password" %}</a>
+            </li>
+            <li>
+              <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
+                {% trans "Create reporting folder" %}</a>
+            </li>
+            {% endif %}
+
+            {% if not object.account %}
+            <li>
+              <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
+                {% trans "Create account" %}</a>
+            </li>
+            {% endif %}
+          </ul>
+        {% endif %}
 
         <p class="h4 no-margins">{% trans "Reporting years" %}:</p>
         <ul>
