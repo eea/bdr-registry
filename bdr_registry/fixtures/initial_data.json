@@ -354,21 +354,5 @@
         "name": "Monitoring and reporting of average CO2 emissions (light commercial vehicles)",
         "reportek_slug": "vans"
     }
-},
-{
-    "pk": 1,
-    "model": "django_settings.setting",
-    "fields": {
-        "name": "Reporting year",
-        "setting_id": 1,
-        "setting_type": 25
-    }
-},
-{
-    "pk": 1,
-    "model": "django_settings.integer",
-    "fields": {
-        "value": 2014
-    }
 }
 ]
