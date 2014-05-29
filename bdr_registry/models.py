@@ -9,6 +9,11 @@ from post_office.models import EmailTemplate
 from post_office.fields import CommaSeparatedEmailField
 
 
+# http://south.aeracode.org/wiki/MyFieldsDontWork
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^post_office\.fields\.CommaSeparatedEmailField"])
+
+
 def generate_key(size=20):
     crypto_random = random.SystemRandom()
     vocabulary = string.ascii_lowercase + string.digits
@@ -192,3 +197,25 @@ class Comment(models.Model):
 
     def __unicode__(self):
         return self.created.strftime('%d %B %Y')
+
+
+class ReportingYear(models.Model):
+
+    year = models.PositiveIntegerField(unique=True)
+    companies = models.ManyToManyField(Company,
+                                       related_name='reporting_years',
+                                       through='ReportingStatus')
+
+    def __unicode__(self):
+        return unicode(self.year)
+
+
+class ReportingStatus(models.Model):
+
+    company = models.ForeignKey(Company, related_name='reporting_statuses')
+    reporting_year = models.ForeignKey(ReportingYear,
+                                       related_name='reporting_statuses')
+    reported = models.NullBooleanField(default=None)
+
+    class Meta:
+        unique_together = ('company', 'reporting_year',)
