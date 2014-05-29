@@ -122,17 +122,13 @@ LOGGING = {
 
 BDR_HELPDESK_EMAIL = ''
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'post_office.EmailBackend'
 
 BDR_EMAIL_FROM = 'bdr@localhost'
-BDR_ORGEMAIL_ODS_BCC = []
-BDR_ORGEMAIL_FGAS_BCC = []
 BDR_REPORTEK_ORGANISATION_URL = '#'
 BDR_API_URL = None
 BDR_API_AUTH = None
 BDR_AUDIT_LOG_FILE = None
-
-REPORTING_YEAR = 2014
 
 DATE_FORMAT = '%d %b %Y'
 
