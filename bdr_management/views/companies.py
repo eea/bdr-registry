@@ -104,6 +104,15 @@ class CompaniesBaseView(base.ModelTableViewMixin,
     model = Company
     exclude = ('id', )
 
+    def get_context_data(self, **kwargs):
+        data = super(CompaniesBaseView, self).get_context_data()
+        company = self.object
+        statuses = company.reporting_statuses.all()
+        years = [unicode(stat.reporting_year) for stat in statuses
+                 if stat.reported]
+        data['reporting_years'] = years
+        return data
+
 
 class CompaniesManagementView(views.StaffuserRequiredMixin,
                               CompaniesBaseView):

@@ -32,6 +32,13 @@
           </li>
           {% endif %}
         </ul>
+
+        <p class="h4 no-margins">{% trans "Reporting years" %}:</p>
+        <ul>
+          {% for year in reporting_years %}
+            <li>{{ year }}</li>
+          {% endfor %}
+        </ul>
       </div>
     {% endif %}
   </div>
