@@ -177,17 +177,7 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
 
     def get_context_data(self, **kwargs):
         data = super(CompanyBaseEdit, self).get_context_data(**kwargs)
-        years = ReportingYear.objects.all()
-        years_dict = {}
-        company = self.object
-        for year in years:
-            status, _ = ReportingStatus.objects.get_or_create(
-                company=company,
-                reporting_year=year,
-                defaults={'reported': False}
-            )
-            years_dict[unicode(year.year)] = status.reported
-        data['years'] = years_dict
+
         return data
 
     def post(self, request, *args, **kwargs):
@@ -211,20 +201,39 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
 
     group_required = settings.BDR_HELPDESK_GROUP
 
-    def get_context_data(self, **kwargs):
-        back_url = reverse('management:companies_view',
-                           kwargs={'pk': self.object.pk})
+    def set_reporting_years(self, data):
+        years = ReportingYear.objects.all()
+        years_dict = {}
+        company = self.object
+        for year in years:
+            status, _ = ReportingStatus.objects.get_or_create(
+                company=company,
+                reporting_year=year,
+                defaults={'reported': False}
+            )
+            years_dict[unicode(year.year)] = status.reported
+        data['years'] = years_dict
+
+    def get_back_url(self):
+        return reverse('management:companies_view',
+                       kwargs={'pk': self.object.pk})
+
+    def set_breadcrumbs(self, data):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb(reverse('management:companies'),
                        _('Companies')),
-            Breadcrumb(back_url, self.object),
+            Breadcrumb(self.get_back_url(), self.object),
             Breadcrumb('', _(u'Edit %s' % self.object))
         ]
-        data = super(CompaniesManagementEdit, self) \
-            .get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
-        data['cancel_url'] = back_url
+
+    def get_context_data(self, **kwargs):
+        data = super(CompaniesManagementEdit, self).get_context_data(**kwargs)
+        data['management'] = True
+        data['cancel_url'] = self.get_back_url()
+        self.set_breadcrumbs(data)
+        self.set_reporting_years(data)
         return data
 
     def get_success_url(self):

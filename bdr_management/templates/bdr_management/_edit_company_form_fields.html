@@ -80,12 +80,14 @@
 
   <hr />
 
-  <h2>{% trans "Reporting years" %}</h2>
-  <div class="row">
-  {% for year, reported in years.items %}
-    <div class="col-sm-3">
-      <input type="checkbox" name="{{ year }}" id="{{ year }}" {% if reported %} checked="checked" {% endif %}>
-      <label for="{{ year }}">{{ year }}</label>
+  {% if management %}
+    <h2>{% trans "Reporting years" %}</h2>
+    <div class="row">
+    {% for year, reported in years.items %}
+      <div class="col-sm-3">
+        <input type="checkbox" name="{{ year }}" id="{{ year }}" {% if reported %} checked="checked" {% endif %}>
+        <label for="{{ year }}">{{ year }}</label>
+      </div>
+    {% endfor %}
     </div>
-  {% endfor %}
-  </div>
+  {% endif %}
