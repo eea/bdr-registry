@@ -77,3 +77,15 @@
       {{ form.vat_number|custom_render_field }}
     </div>
   </div>
+
+  <hr />
+
+  <h2>{% trans "Reporting years" %}</h2>
+  <div class="row">
+  {% for year in years %}
+    <div class="col-sm-3">
+      <input type="checkbox" name="{{ year.year }}" id="{{ year.year }}">
+      <label for="{{ year.year }}">{{ year.year }}</label>
+    </div>
+  {% endfor %}
+  </div>

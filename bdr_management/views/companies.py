@@ -17,7 +17,7 @@ from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
-from bdr_registry.models import Company, Account
+from bdr_registry.models import Company, Account, ReportingYear, ReportingStatus
 
 
 class Companies(views.StaffuserRequiredMixin,
@@ -174,6 +174,26 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
     model = Company
     success_message = _('Company edited successfully')
     form_class = CompanyForm
+
+    def get_context_data(self, **kwargs):
+        data = super(CompanyBaseEdit, self).get_context_data(**kwargs)
+        data['years'] = ReportingYear.objects.all()
+        return data
+
+    def post(self, request, *args, **kwargs):
+        for year in ReportingYear.objects.all():
+            reported = bool(request.POST.get(unicode(year.year)))
+            company = Company.objects.get(pk=kwargs['pk'])
+            reporting_status, created = ReportingStatus.objects.get_or_create(
+                company=company,
+                reporting_year=year,
+                defaults={'reported': reported})
+
+            if not created:
+                reporting_status.reported = reported
+                reporting_status.save()
+
+        return super(CompanyBaseEdit, self).post(request, *args, **kwargs)
 
 
 class CompaniesManagementEdit(views.GroupRequiredMixin,
