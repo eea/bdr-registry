@@ -177,7 +177,17 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
 
     def get_context_data(self, **kwargs):
         data = super(CompanyBaseEdit, self).get_context_data(**kwargs)
-        data['years'] = ReportingYear.objects.all()
+        years = ReportingYear.objects.all()
+        years_dict = {}
+        company = self.object
+        for year in years:
+            status, _ = ReportingStatus.objects.get_or_create(
+                company=company,
+                reporting_year=year,
+                defaults={'reported': False}
+            )
+            years_dict[unicode(year.year)] = status.reported
+        data['years'] = years_dict
         return data
 
     def post(self, request, *args, **kwargs):
