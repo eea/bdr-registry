@@ -566,4 +566,3 @@ class CopyLastYearReportingStatus(views.StaffuserRequiredMixin,
                          _('Data copied for %s companies.' % copied))
 
         return HttpResponseRedirect(reverse('management:companies'))
-
