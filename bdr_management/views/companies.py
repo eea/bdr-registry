@@ -189,29 +189,6 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
     success_message = _('Company edited successfully')
     form_class = CompanyForm
 
-    def get_context_data(self, **kwargs):
-        data = super(CompanyBaseEdit, self).get_context_data(**kwargs)
-
-        return data
-
-    def post(self, request, *args, **kwargs):
-        curr_year = django_settings.get('Reporting year')
-        reporting_years = ReportingYear.objects.filter(
-            year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
-        for year in reporting_years:
-            reported = bool(request.POST.get(unicode(year.year)))
-            company = Company.objects.get(pk=kwargs['pk'])
-            reporting_status, created = ReportingStatus.objects.get_or_create(
-                company=company,
-                reporting_year=year,
-                defaults={'reported': reported})
-
-            if not created:
-                reporting_status.reported = reported
-                reporting_status.save()
-
-        return super(CompanyBaseEdit, self).post(request, *args, **kwargs)
-
 
 class CompaniesManagementEdit(views.GroupRequiredMixin,
                               CompanyBaseEdit):
@@ -257,6 +234,24 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
 
     def get_success_url(self):
         return reverse('management:companies_view', kwargs=self.kwargs)
+
+    def post(self, request, *args, **kwargs):
+        curr_year = django_settings.get('Reporting year')
+        reporting_years = ReportingYear.objects.filter(
+            year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
+        for year in reporting_years:
+            reported = bool(request.POST.get(unicode(year.year)))
+            company = Company.objects.get(pk=kwargs['pk'])
+            reporting_status, created = ReportingStatus.objects.get_or_create(
+                company=company,
+                reporting_year=year,
+                defaults={'reported': reported})
+
+            if not created:
+                reporting_status.reported = reported
+                reporting_status.save()
+
+        return super(CompanyBaseEdit, self).post(request, *args, **kwargs)
 
 
 class CompaniesUpdate(base.CompanyUserRequiredMixin,
