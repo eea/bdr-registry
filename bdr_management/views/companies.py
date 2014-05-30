@@ -1,3 +1,4 @@
+import django_settings
 import requests
 from datetime import date, timedelta
 
@@ -107,7 +108,10 @@ class CompaniesBaseView(base.ModelTableViewMixin,
     def get_context_data(self, **kwargs):
         data = super(CompaniesBaseView, self).get_context_data()
         company = self.object
-        statuses = company.reporting_statuses.all()
+        statuses = company.reporting_statuses.filter(
+            reporting_year__year__gte=settings.FIRST_REPORTING_YEAR).filter(
+            reporting_year__year__lte=django_settings.get('Reporting year')
+        )
         years = [unicode(stat.reporting_year) for stat in statuses
                  if stat.reported]
         data['reporting_years'] = years
@@ -190,7 +194,10 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
         return data
 
     def post(self, request, *args, **kwargs):
-        for year in ReportingYear.objects.all():
+        curr_year = django_settings.get('Reporting year')
+        reporting_years = ReportingYear.objects.filter(
+            year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
+        for year in reporting_years:
             reported = bool(request.POST.get(unicode(year.year)))
             company = Company.objects.get(pk=kwargs['pk'])
             reporting_status, created = ReportingStatus.objects.get_or_create(
@@ -211,7 +218,9 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
 
     def set_reporting_years(self, data):
-        years = ReportingYear.objects.all()
+        curr_year = django_settings.get('Reporting year')
+        years = ReportingYear.objects.filter(
+            year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         years_dict = {}
         company = self.object
         for year in years:

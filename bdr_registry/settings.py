@@ -151,3 +151,5 @@ if 'test' in sys.argv:
 DJANGO_SETTINGS = {
    'Reporting year': ('Integer', 2014),
 }
+
+FIRST_REPORTING_YEAR = 2012
