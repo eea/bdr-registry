@@ -65,7 +65,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
                                           pk=org.pk)
         self.assertIsNotNone(org.account.password)
         expected_messages = [
-            "Password have been reset. LDAP: {'password': 1}."]
+            "Password has been reset."]
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
@@ -92,8 +92,8 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
         expected_messages = [
-            "Password have been reset. LDAP: {'password': 1}.",
-            'Emails have been sent to 1 people.']
+            "Password has been reset.",
+            'Emails have been sent to 1 person(s).']
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(1, len(mail.outbox))
@@ -152,7 +152,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.assertIsNotNone(org.account)
         self.assertIsNotNone(org.account.password)
 
-        expected_messages = ["Account created. LDAP: {'create': 1}."]
+        expected_messages = ["Account created."]
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
@@ -171,8 +171,8 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         resp = self.app.post(url, {'perform_send': '1'}, user=user.username)
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
-        expected_messages = ["Account created. LDAP: {'create': 1}.",
-                             'Emails have been sent to 1 people.']
+        expected_messages = ["Account created.",
+                             'Emails have been sent to 1 person(s).']
         actual_messages = map(str, resp.context['messages'])
         self.assertItemsEqual(expected_messages, actual_messages)
         self.assertEqual(1, len(mail.outbox))
