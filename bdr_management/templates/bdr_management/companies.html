@@ -15,13 +15,14 @@
       <h1 class="input-align inline-block no-margins">
         {% trans "Companies" %}</h1>
       <div class="pull-right h1-align">
-        {% if user|has_permission:None %}
-          <a class="btn btn-green"
-           href="{% url 'management:companies_add' %}">
-           {% trans "Add a new company" %}</a>
-        {% endif %}
+        <a class="btn btn-green"
+         href="{% url 'management:companies_add' %}">
+         {% trans "Add a new company" %}</a>
         <a class='btn btn-green' href="{% url 'management:companies_export' %}">
             {% trans 'Excel export' %}
+        </a>
+        <a class='btn btn-green' href="{% url 'management:copy_report_status' %}">
+            {% trans 'Copy report status' %}
         </a>
       </div>
   </div>

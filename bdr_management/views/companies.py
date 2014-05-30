@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 import django_settings
 import requests
 from datetime import date, timedelta
@@ -527,3 +528,42 @@ class CompanyNameHistory(views.StaffuserRequiredMixin,
         context['breadcrumbs'] = breadcrumbs
 
         return context
+
+
+class CopyLastYearReportingStatus(views.StaffuserRequiredMixin,
+                                  generic.View):
+
+    def get(self, request):
+        copied = 0
+
+        curr_year_int = django_settings.get('Reporting year')
+        prev_year_int = curr_year_int - 1
+
+        try:
+                prev_year_obj = ReportingYear.objects.get(year=prev_year_int)
+                curr_year_obj = ReportingYear.objects.get(year=curr_year_int)
+        except ObjectDoesNotExist:
+            messages.error(request,
+                           _('Previous or current year data not found'))
+            return HttpResponseRedirect(reverse('management:companies'))
+
+        for company in Company.objects.all():
+
+            reporting_stat, created = company.reporting_statuses.get_or_create(
+                company=company,
+                reporting_year=curr_year_obj
+            )
+            if reporting_stat.reported is None:
+                prev_reporting_stat, created = ReportingStatus.objects.get_or_create(
+                    company=company,
+                    reporting_year=prev_year_obj
+                )
+                if prev_reporting_stat.reported is not None:
+                    reporting_stat.reported = prev_reporting_stat.reported
+                    reporting_stat.save()
+                    copied += 1
+        messages.success(request,
+                         _('Data copied for %s companies.' % copied))
+
+        return HttpResponseRedirect(reverse('management:companies'))
+

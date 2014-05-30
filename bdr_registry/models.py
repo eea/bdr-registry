@@ -217,5 +217,9 @@ class ReportingStatus(models.Model):
                                        related_name='reporting_statuses')
     reported = models.NullBooleanField(default=None)
 
+    def __unicode__(self):
+        return u"company %s reported in %s: %s" % (
+            self.company.pk, self.reporting_year.year, self.reported)
+
     class Meta:
         unique_together = ('company', 'reporting_year',)
