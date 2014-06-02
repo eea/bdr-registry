@@ -31,4 +31,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Let's have it basic on dialogs as well.
 	config.removeDialogTabs = 'link:advanced';
+
+    // we need heading in email templates; but we shall keep the dropdown slim though
+    config.format_tags = 'p;h1;h2;h3;pre'
 };
