@@ -240,7 +240,13 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         reporting_years = ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         for year in reporting_years:
-            reported = bool(request.POST.get(unicode(year.year)))
+            submitted_val = request.POST.get(unicode(year.year))
+            if submitted_val == 'inactive':
+                reported = False
+            elif submitted_val == 'active':
+                reported = True
+            else:
+                reported = None
             company = Company.objects.get(pk=kwargs['pk'])
             reporting_status, created = ReportingStatus.objects.get_or_create(
                 company=company,
