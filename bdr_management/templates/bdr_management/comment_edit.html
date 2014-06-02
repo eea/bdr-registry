@@ -5,13 +5,7 @@
 
 {% block head %}
 
-  {% assets "management_css" %}
-    <link rel="stylesheet" href="{{ ASSET_URL }}" />
-  {% endassets %}
-
-  {% assets "management_js" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-  {% endassets %}
+  {{ block.super }}
 
   <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
 

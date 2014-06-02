@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load widget_tweaks %}
 
+<script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
 <div class="row">
   <div class="col-sm-6">
     {{ form.name|custom_render_field }}
@@ -15,7 +16,7 @@
 
 <div class="row">
   <div class="col-sm-12">
-    {{ form.content|custom_render_field }}
     {{ form.html_content|custom_render_field }}
+    <script>CKEDITOR.replace('id_html_content')</script>
   </div>
 </div>
