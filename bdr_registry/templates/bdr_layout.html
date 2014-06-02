@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
   <head>
@@ -22,6 +22,33 @@
           href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="{{ STATIC_URL }}style.css" />
+    {% if debug %}
+    <style type="text/css">
+      #pagehead{
+       position: relative;
+      }
+      #pagehead a {
+       top: 0;
+       z-index: 1999;
+      }
+      #pagehead:before {
+       content: "BDR registry playground website";
+       display: block;
+       position: absolute;
+       top: 0;
+       right: 0;
+       bottom: 0;
+       left: 0;
+       background: rgba(255, 234, 0, 0.5);
+       padding: 24px;
+       z-index: 2000;
+       color: #fff;
+       font-weight: bold;
+       font-size: 30px;
+       text-align: center;
+      }
+    </style>
+    {% endif %}
   </head>
   <body>
     <div id="container">
@@ -60,7 +87,7 @@
 
       </div>
 
-  
+
 <div class="breadcrumbtrail">
 <div class="breadcrumbhead">You are here:</div>
   <div class="breadcrumbitem eionetaccronym"><a href="http://www.eionet.europa.eu/">Eionet</a></div>

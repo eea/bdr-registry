@@ -1,4 +1,4 @@
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ADMIN_ALL_BDR_TABLES = DEBUG
 
@@ -83,6 +83,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
+    'bdr_registry.context_processors.settings_context',
 ]
 
 LOGGING = {
