@@ -400,11 +400,10 @@ def send_notification_email(context):
         Q(groups__name=settings.BDR_HELPDESK_GROUP))
         if u.email]
 
-    with open('bdr_registry/templates/self_register_mail.html') as f:
-        html_content = f.read()
+    template = EmailTemplate.objects.get(id=5)
 
     send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
-         html_message=html_content, context=context, priority='now')
+         template=template, context=context, priority='now')
 
 
 def crashme(request):
