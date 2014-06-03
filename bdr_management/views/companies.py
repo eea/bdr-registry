@@ -204,8 +204,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         for year in years:
             status, _ = ReportingStatus.objects.get_or_create(
                 company=company,
-                reporting_year=year,
-                defaults={'reported': False}
+                reporting_year=year
             )
             years_dict[unicode(year.year)] = status.reported
         data['years'] = years_dict
