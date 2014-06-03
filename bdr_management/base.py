@@ -7,7 +7,7 @@ from django.contrib.auth.views import redirect_to_login
 from django.db.models import Model
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from braces.views import AjaxResponseMixin, JSONResponseMixin
 
 
@@ -23,9 +23,12 @@ class CompanyUserRequiredBaseMixin(AccessMixin):
         self.company = self.get_company()
 
         if not has_permission(self.request.user, self.company):
-            return redirect_to_login(request.get_full_path(),
-                                     self.get_login_url(),
-                                     self.get_redirect_field_name())
+            if self.raise_exception:
+                raise PermissionDenied
+            else:
+                return redirect_to_login(request.get_full_path(),
+                                         self.get_login_url(),
+                                         self.get_redirect_field_name())
 
         return super(CompanyUserRequiredBaseMixin, self) \
             .dispatch(request, *args, **kwargs)

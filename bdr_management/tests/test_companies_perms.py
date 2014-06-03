@@ -9,28 +9,28 @@ class CompanyManagementTests(BaseWebTest):
     def test_company_add_by_staff(self):
         user = factories.StaffUserFactory()
         url = self.reverse('management:companies_add')
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_add_post_by_staff(self):
         user = factories.StaffUserFactory()
         url = self.reverse('management:companies_add')
         form =factories.company_with_person_form()
-        resp = self.app.post(url, params=form, user=user)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, params=form, user=user, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         self.assertFalse(Company.objects.exists())
         self.assertFalse(Person.objects.exists())
 
     def test_company_add_by_anonymous(self):
         url = self.reverse('management:companies_add')
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_add_post_by_anonymous(self):
         url = self.reverse('management:companies_add')
         form = factories.company_with_person_form()
-        resp = self.app.post(url, params=form)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.post(url, params=form, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         self.assertFalse(Company.objects.exists())
         self.assertFalse(Person.objects.exists())
 
@@ -72,8 +72,8 @@ class CompanyManagementTests(BaseWebTest):
 
     def test_companies_view_by_anonymous(self):
         url = self.reverse('management:companies')
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_view_by_staff(self):
         user = factories.StaffUserFactory()
@@ -85,22 +85,22 @@ class CompanyManagementTests(BaseWebTest):
     def test_company_view_by_anonymous(self):
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_view', pk=company.pk)
-        resp = self.app.get(url, user=None)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=None, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_update_by_staff(self):
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_edit', pk=company.pk)
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_update_by_anonymous(self):
         user = factories.UserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_edit', pk=company.pk)
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_update_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -122,9 +122,9 @@ class CompanyManagementTests(BaseWebTest):
         url = self.reverse('management:companies_edit', pk=company.pk)
         form = self.get_company_form_params(company)
         form.update({'name': 'NewName'})
-        resp = self.app.post(url, user=user.username, params=form)
+        resp = self.app.post(url, user=user.username, params=form, expect_errors=True)
 
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertEqual(resp.status_int, 403)
         self.assertObjectInDatabase(Company, name=company.name)
         self.assertObjectNotInDatabase(Company, name='NewName')
 
@@ -133,9 +133,9 @@ class CompanyManagementTests(BaseWebTest):
         url = self.reverse('management:companies_edit', pk=company.pk)
         form = self.get_company_form_params(company)
         form.update({'name': 'NewName'})
-        resp = self.app.post(url, params=form)
+        resp = self.app.post(url, params=form, expect_errors=True)
 
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertEqual(resp.status_int, 403)
         self.assertObjectInDatabase(Company, name=company.name)
         self.assertObjectNotInDatabase(Company, name='NewName')
 
@@ -172,16 +172,16 @@ class CompanyManagementTests(BaseWebTest):
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_delete',
                            pk=company.pk)
-        resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.delete(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_delete_by_anonymous(self):
         user = factories.UserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_delete',
                            pk=company.pk)
-        resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.delete(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -206,8 +206,8 @@ class CompanyTests(BaseWebTest):
         user = factories.UserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('company', pk=company.pk)
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_company_view_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -227,8 +227,8 @@ class CompanyTests(BaseWebTest):
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('company_update', pk=company.pk)
-        resp = self.app.get(url, user=user.username)
-        resp.follow()
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(403, resp.status_int)
 
     def test_company_update_by_owner(self):
         user = factories.UserFactory()
@@ -258,9 +258,9 @@ class CompanyTests(BaseWebTest):
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
         form.update({'website': 'http://www.google.com/'})
-        resp = self.app.post(url, user=user.username, params=form)
+        resp = self.app.post(url, user=user.username, params=form, expect_errors=True)
 
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Company, website=form['website'])
         self.assertObjectInDatabase(Company, website=None)
 
@@ -269,9 +269,9 @@ class CompanyTests(BaseWebTest):
         url = self.reverse('company_update', pk=company.pk)
         form = self.get_company_form_params(company)
         form.update({'website': 'http://www.google.com/'})
-        resp = self.app.post(url, params=form)
+        resp = self.app.post(url, params=form, expect_errors=True)
 
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Company, website=form['website'])
         self.assertObjectInDatabase(Company, website=None)
 

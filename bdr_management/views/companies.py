@@ -26,6 +26,7 @@ class Companies(views.StaffuserRequiredMixin,
                 generic.TemplateView):
 
     template_name = 'bdr_management/companies.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -40,6 +41,8 @@ class Companies(views.StaffuserRequiredMixin,
 
 class CompaniesFilter(views.StaffuserRequiredMixin,
                       base.FilterView):
+
+    raise_exception = True
 
     def process_name(self, object, val):
         url = reverse('management:companies_view',
@@ -122,6 +125,8 @@ class CompaniesBaseView(base.ModelTableViewMixin,
 class CompaniesManagementView(views.StaffuserRequiredMixin,
                               CompaniesBaseView):
 
+    raise_exception = True
+
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
@@ -155,6 +160,8 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
 
 class CompaniesUpdateView(base.CompanyUserRequiredMixin,
                           CompaniesBaseView):
+
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -194,6 +201,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                               CompanyBaseEdit):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def set_reporting_years(self, data):
         curr_year = django_settings.get('Reporting year')
@@ -262,6 +270,8 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
 class CompaniesUpdate(base.CompanyUserRequiredMixin,
                       CompanyBaseEdit):
 
+    raise_exception = True
+
     def get_context_data(self, **kwargs):
         back_url = reverse('company', kwargs={'pk': self.object.pk})
         breadcrumbs = [
@@ -291,6 +301,7 @@ class CompanyDelete(views.GroupRequiredMixin,
     model = Company
     success_url = reverse_lazy('management:companies')
     template_name = 'bdr_management/company_confirm_delete.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:companies_view',
@@ -319,7 +330,7 @@ class CompanyAdd(views.GroupRequiredMixin,
                  generic.CreateView):
 
     group_required = settings.BDR_HELPDESK_GROUP
-
+    raise_exception = True
     template_name = 'bdr_management/company_add.html'
     model = Company
     form_class = CompanyForm
@@ -374,7 +385,7 @@ class ResetPassword(views.GroupRequiredMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
-
+    raise_exception = True
     template_name = 'bdr_management/reset_password.html'
     model = Company
 
@@ -404,7 +415,7 @@ class CreateAccount(views.GroupRequiredMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
-
+    raise_exception = True
     template_name = 'bdr_management/create_account.html'
     model = Company
 
@@ -440,7 +451,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
     API_ERROR_MSG = 'BDR_API_URL and BDR_API_AUTH not configured'
 
     group_required = settings.BDR_HELPDESK_GROUP
-
+    raise_exception = True
     template_name = 'bdr_management/create_reporting_folder.html'
     model = Company
 
@@ -482,6 +493,8 @@ class CreateReportingFolder(views.GroupRequiredMixin,
 class CompaniesExport(views.StaffuserRequiredMixin,
                       generic.View):
 
+    raise_exception = True
+
     def get(self, request):
         header = ['userid', 'name', 'date_registered', 'active',
                   'addr_street', 'addr_place1', 'addr_postalcode',
@@ -512,6 +525,7 @@ class CompanyNameHistory(views.StaffuserRequiredMixin,
 
     template_name = 'bdr_management/company_name_history.html'
     model = Company
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         company = kwargs['object']
@@ -532,6 +546,8 @@ class CompanyNameHistory(views.StaffuserRequiredMixin,
 
 class CopyLastYearReportingStatus(views.StaffuserRequiredMixin,
                                   generic.View):
+
+    raise_exception = True
 
     def get(self, request):
         copied = 0
