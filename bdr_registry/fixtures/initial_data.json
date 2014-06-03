@@ -322,7 +322,7 @@
         "last_updated": "2014-06-03T13:30:00Z",
         "name": "Self Register",
         "created": "2014-06-03T13:04:48Z",
-        "html_content": "<h1>BDR Registration</h1><p>Company{{ company.name }}</p><p>Obligation{{ company.obligation.name }}</p><p>Street and nr{{ company.addr_street }}</p><p>Place 1 / Municipality{{ company.addr_place1 }}</p><p>Postal code{{ company.addr_postalcode }}</p><p>Place 2 / Region{{ company.addr_place2 }}</p><p>Country{{ company.country.name }}</p><p>First contact:</p><p>Title{{ person.title }}</p><p>Family name{{ person.family_name }}</p><p>First name{{ person.first_name }}</p><p>Email address{{ person.email }}</p><p>Telephone{{ person.phone }}</p><p>Fax{{ person.fax }}</p><p><em>Best regards<br />BDR</em></p>",
+        "html_content": "<h1>BDR Registration</h1><p>Company: {{ company.name }}</p><p>Obligation: {{ company.obligation.name }}</p><p>Street and nr: {{ company.addr_street }}</p><p>Place 1 / Municipality: {{ company.addr_place1 }}</p><p>Postal code: {{ company.addr_postalcode }}</p><p>Place 2 / Region: {{ company.addr_place2 }}</p><p>Country: {{ company.country.name }}</p><p>First contact:</p><p>Title: {{ person.title }}</p><p>Family name: {{ person.family_name }}</p><p>First name: {{ person.first_name }}</p><p>Email address: {{ person.email }}</p><p>Telephone: {{ person.phone }}</p><p>Fax: {{ person.fax }}</p><p><em>Best regards<br />BDR</em></p>",
         "description": "",
         "content": "",
         "subject": "New company registered"
