@@ -81,8 +81,14 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
             'search': '',
         }
 
-        filters = {columns[i]: args.get('sSearch_%s' % i)
-                   for i in range(len(columns)) if args.get('sSearch_%s' % i)}
+        # Python 2.6 doesn't have dict comprehension, so instead of
+        # filters = {columns[i]: args.get('sSearch_%s' % i)
+        #            for i in range(len(columns)) if args.get('sSearch_%s' % i)}
+        # do:
+        filters = dict((columns[i], args.get('sSearch_%s' % i))
+                       for i in range(len(columns))
+                       if args.get('sSearch_%s' % i))
+
         with_filter['filters'] = filters
 
         nr_of_sorting_cols = args.get('iSortingCols', 0)
