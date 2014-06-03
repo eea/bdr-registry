@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'Obligation.bcc'
         db.add_column(u'bdr_registry_obligation', 'bcc',
-                      self.gf('post_office.fields.CommaSeparatedEmailField')(default='', blank=True),
+                      self.gf('django.db.models.fields.TextField')(default='', blank=True),
                       keep_default=False)
 
 
@@ -107,7 +107,7 @@ class Migration(SchemaMigration):
         },
         u'bdr_registry.obligation': {
             'Meta': {'object_name': 'Obligation'},
-            'bcc': ('post_office.fields.CommaSeparatedEmailField', [], {'blank': 'True'}),
+            'bcc': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'code': ('django.db.models.fields.CharField', [], {'max_length': '255'}),
             'email_template': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['post_office.EmailTemplate']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),

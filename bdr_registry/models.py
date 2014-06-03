@@ -3,15 +3,11 @@ import string
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.db.models import TextField
 import local
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
-from post_office.fields import CommaSeparatedEmailField
-
-
-# http://south.aeracode.org/wiki/MyFieldsDontWork
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^post_office\.fields\.CommaSeparatedEmailField"])
+from post_office.validators import validate_comma_separated_email_list
 
 
 def generate_key(size=20):
@@ -47,7 +43,7 @@ class Obligation(models.Model):
     code = models.CharField(max_length=255)
     reportek_slug = models.CharField(max_length=255)
     email_template = models.ForeignKey(EmailTemplate)
-    bcc = CommaSeparatedEmailField(blank=True)
+    bcc = TextField(blank=True, validators=[validate_comma_separated_email_list])
 
     def __unicode__(self):
         return self.name
