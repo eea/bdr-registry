@@ -37,8 +37,7 @@ class ReadOnlyAdmin(admin.ModelAdmin):
 
         if self._user_is_readonly(request):
             self.readonly_fields = self.user_readonly
-            self.inlines = self.user_readonly_inlines
-
+            self.inlines = self._user_readonly_inlines
             extra_context = extra_context or {}
 
         else:
@@ -210,7 +209,7 @@ def create_reporting_folder(modeladmin, request, queryset):
             'organisation_name': org.name,
         }
         audit.log("Creatig zope folder for uid=%s", org.account.uid)
-        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH)
+        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
         if resp.status_code != 200:
             logging.error("BDR API request failed: %r", resp)
             errors.append(org.account.uid)
@@ -270,7 +269,9 @@ class OrganisationAdmin(ReadOnlyAdmin):
                      'addr_street', 'addr_place1', 'addr_postalcode',
                      'addr_place2', 'website', 'eori', 'vat_number', 'country',
                      'obligation', 'account', 'comments']
-    user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
+
+    _user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
+    _inlines = [CommentInline, PersonInline]
 
     list_filter = ['obligation', 'country']
     list_display = ['id', 'name', 'obligation', 'account', 'country',
@@ -280,8 +281,6 @@ class OrganisationAdmin(ReadOnlyAdmin):
     search_fields = ['name', 'account__uid', 'addr_postalcode',
                      'vat_number', 'eori']
     actions = [create_accounts, reset_password, create_reporting_folder]
-
-    inlines = [CommentInline, PersonInline]
 
     def get_urls(self):
         my_urls = patterns('',
@@ -329,7 +328,8 @@ class PersonAdmin(ReadOnlyAdmin):
                      'email', 'phone', 'phone2', 'phone3',
                      'fax', 'company']
 
-    user_readonly_inlines = []
+    _user_readonly_inlines = []
+    _inlines = []
 
     search_fields = ['first_name', 'family_name', 'email', 'phone', 'fax',
                      'organisation__name', 'organisation__account__uid']
