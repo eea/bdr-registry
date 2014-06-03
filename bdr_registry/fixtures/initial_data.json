@@ -367,5 +367,26 @@
         "name": "Monitoring and reporting of average CO2 emissions (light commercial vehicles)",
         "reportek_slug": "vans"
     }
+},
+{
+    "pk": 1,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2012
+    }
+},
+{
+    "pk": 2,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2013
+    }
+},
+{
+    "pk": 3,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2014
+    }
 }
 ]
