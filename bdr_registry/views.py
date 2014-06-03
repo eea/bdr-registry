@@ -1,6 +1,8 @@
 from collections import OrderedDict
 from functools import wraps
 import base64
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 from django.views.generic import View
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -8,9 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
 from django.db import transaction
-from django.core import mail
 from django.conf import settings
-from django.template.loader import render_to_string
 from django.http import (HttpResponse, HttpResponseForbidden,
                          HttpResponseNotFound)
 from django.contrib.auth.decorators import user_passes_test
@@ -19,8 +19,11 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
+from post_office.models import EmailTemplate
 import xmltodict
 import models
+
+from post_office.mail import send
 
 from bdr_management.forms.utils import set_empty_label
 
@@ -392,12 +395,16 @@ class CommentDelete(DeleteView):
 
 
 def send_notification_email(context):
-    mail_from = settings.BDR_EMAIL_FROM
-    mail_to = [settings.BDR_HELPDESK_EMAIL]
-    html = render_to_string('self_register_mail.html', context)
-    message = mail.EmailMessage("BDR Registration", html, mail_from, mail_to)
-    message.content_subtype = 'html'
-    message.send(fail_silently=False)
+
+    recipients = [u.email for u in User.objects.filter(
+        Q(groups__name=settings.BDR_HELPDESK_GROUP))
+        if u.email]
+
+    with open('bdr_registry/templates/self_register_mail.html') as f:
+        html_content = f.read()
+
+    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
+         html_message=html_content, context=context, priority='now')
 
 
 def crashme(request):
