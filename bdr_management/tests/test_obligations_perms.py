@@ -7,8 +7,8 @@ class ObligationManagementTests(BaseWebTest):
 
     def test_obligations_list_by_anonymous(self):
         url = self.reverse('management:obligations')
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligations_list_by_staff_user(self):
         user = factories.StaffUserFactory()
@@ -32,8 +32,8 @@ class ObligationManagementTests(BaseWebTest):
         obligation = factories.ObligationFactory()
         url = self.reverse('management:obligation_view',
                            **{'pk': obligation.pk})
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_view_by_staff_user(self):
         user = factories.StaffUserFactory()
@@ -62,13 +62,13 @@ class ObligationManagementTests(BaseWebTest):
     def test_obligation_add_by_staff(self):
         user = factories.StaffUserFactory()
         url = self.reverse('management:obligations_add')
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_add_by_anonymous(self):
         url = self.reverse('management:obligations_add')
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_add_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -87,15 +87,15 @@ class ObligationManagementTests(BaseWebTest):
         obligation = factories.ObligationFactory()
         url = self.reverse('management:obligation_edit',
                            **{'pk': obligation.pk})
-        resp = self.app.get(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_update_by_anonymous(self):
         obligation = factories.ObligationFactory()
         url = self.reverse('management:obligation_edit',
                            **{'pk': obligation.pk})
-        resp = self.app.get(url)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.get(url, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_update_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
@@ -117,15 +117,15 @@ class ObligationManagementTests(BaseWebTest):
         user = factories.StaffUserFactory()
         obligation = factories.ObligationFactory()
         url = self.reverse('management:obligation_delete', pk=obligation.pk)
-        resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.delete(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_delete_by_anonymous(self):
         user = factories.UserFactory()
         obligation = factories.ObligationFactory()
         url = self.reverse('management:obligation_delete', pk=obligation.pk)
-        resp = self.app.delete(url, user=user.username)
-        self.assertRedirects(resp, self.get_login_for_url(url))
+        resp = self.app.delete(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
 
     def test_obligation_delete_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()

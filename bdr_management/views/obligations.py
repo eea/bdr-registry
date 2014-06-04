@@ -17,6 +17,7 @@ class Obligations(views.StaffuserRequiredMixin,
                   generic.TemplateView):
 
     template_name = 'bdr_management/obligations.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -30,6 +31,8 @@ class Obligations(views.StaffuserRequiredMixin,
 
 class ObligationsFilter(views.StaffuserRequiredMixin,
                         base.FilterView):
+
+    raise_exception = True
 
     def process_name(self, object, val):
         url = reverse('management:obligation_view',
@@ -63,6 +66,7 @@ class ObligationView(views.StaffuserRequiredMixin,
     template_name = 'bdr_management/obligation_view.html'
     model = Obligation
     exclude = ('id', )
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -96,6 +100,7 @@ class ObligationEdit(views.GroupRequiredMixin,
     success_message = _('Obligation edited successfully')
     group_required = settings.BDR_HELPDESK_GROUP
     form_class = ObligationForm
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:obligation_view',
@@ -124,6 +129,7 @@ class ObligationDelete(views.GroupRequiredMixin,
     template_name = 'bdr_management/obligation_confirm_delete.html'
     group_required = settings.BDR_HELPDESK_GROUP
     success_url = reverse_lazy('management:obligations')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:obligation_view',
@@ -149,6 +155,7 @@ class ObligationCreate(views.GroupRequiredMixin,
     model = Obligation
     success_message = _('Obligation created successfully')
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('management:email_templates', kwargs=self.kwargs)

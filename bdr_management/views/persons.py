@@ -20,6 +20,7 @@ class Persons(views.StaffuserRequiredMixin,
               generic.TemplateView):
 
     template_name = 'bdr_management/persons.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -33,6 +34,8 @@ class Persons(views.StaffuserRequiredMixin,
 
 class PersonsFilter(views.StaffuserRequiredMixin,
                     base.FilterView):
+
+    raise_exception = True
 
     def process_name(self, obj, val):
         url = reverse('management:persons_view',
@@ -80,6 +83,8 @@ class PersonBaseView(base.ModelTableViewMixin,
 class PersonManagementView(views.StaffuserRequiredMixin,
                            PersonBaseView):
 
+    raise_exception = True
+
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
@@ -104,6 +109,8 @@ class PersonManagementView(views.StaffuserRequiredMixin,
 
 class PersonView(base.PersonUserRequiredMixin,
                  PersonBaseView):
+
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -139,6 +146,7 @@ class PersonManagementEdit(views.GroupRequiredMixin,
                            PersonEditBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:persons_view',
@@ -164,6 +172,7 @@ class PersonEdit(base.PersonUserRequiredMixin,
 
     fields = ('title', 'family_name', 'first_name', 'email', 'phone',
               'phone2', 'phone3', 'fax')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('person', kwargs={'pk': self.object.pk})
@@ -222,6 +231,7 @@ class PersonManagementDelete(views.GroupRequiredMixin,
 
     group_required = settings.BDR_HELPDESK_GROUP
     success_url = reverse_lazy('management:persons')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = self.get_view_url()
@@ -246,6 +256,7 @@ class PersonDelete(base.PersonUserRequiredMixin,
                    PersonDeleteBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('company', kwargs={'pk': self.company.pk})
@@ -295,6 +306,7 @@ class PersonManagementCreate(views.GroupRequiredMixin,
                              PersonCreateBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('management:companies_view', kwargs=self.kwargs)
@@ -316,6 +328,8 @@ class PersonManagementCreate(views.GroupRequiredMixin,
 class PersonCreate(base.CompanyUserRequiredMixin,
                    PersonCreateBase):
 
+    raise_exception = True
+
     def get_success_url(self):
         return reverse('company', kwargs=self.kwargs)
 
@@ -335,6 +349,8 @@ class PersonCreate(base.CompanyUserRequiredMixin,
 
 class PersonsExport(views.StaffuserRequiredMixin,
                     generic.View):
+
+    raise_exception = True
 
     def get(self, request):
 

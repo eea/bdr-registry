@@ -18,6 +18,7 @@ class EmailTemplates(views.StaffuserRequiredMixin,
                      generic.TemplateView):
 
     template_name = 'bdr_management/email_templates.html'
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -31,6 +32,8 @@ class EmailTemplates(views.StaffuserRequiredMixin,
 
 class EmailTemplatesFilter(views.StaffuserRequiredMixin,
                            base.FilterView):
+
+    raise_exception = True
 
     def process_name(self, object, val):
         url = reverse('management:email_template_view',
@@ -63,6 +66,7 @@ class EmailTemplateView(views.StaffuserRequiredMixin,
     template_name = 'bdr_management/email_template_view.html'
     model = EmailTemplate
     exclude = ('id', 'content', 'description')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -96,6 +100,7 @@ class EmailTemplateEdit(views.GroupRequiredMixin,
     success_message = _('Template edited successfully')
     group_required = settings.BDR_HELPDESK_GROUP
     form_class = EmailTemplateForm
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:email_template_view',
@@ -124,6 +129,7 @@ class EmailTemplateDelete(views.GroupRequiredMixin,
     template_name = 'bdr_management/email_template_confirm_delete.html'
     group_required = settings.BDR_HELPDESK_GROUP
     success_url = reverse_lazy('management:email_templates')
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = reverse('management:email_template_view',
@@ -149,6 +155,7 @@ class EmailTemplateCreate(views.GroupRequiredMixin,
     model = EmailTemplate
     success_message = _('Template created successfully')
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('management:email_templates', kwargs=self.kwargs)

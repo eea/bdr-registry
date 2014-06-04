@@ -41,6 +41,7 @@ class CommentManagementCreate(GroupRequiredMixin,
                               CommentCreateBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = self.get_success_url()
@@ -61,6 +62,8 @@ class CommentManagementCreate(GroupRequiredMixin,
 
 class CommentCreate(base.CompanyUserRequiredMixin,
                     CommentCreateBase):
+
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         back_url = self.get_success_url()
@@ -98,6 +101,7 @@ class CommentManagementDelete(GroupRequiredMixin,
                               CommentDeleteBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('management:companies_view',
@@ -106,6 +110,8 @@ class CommentManagementDelete(GroupRequiredMixin,
 
 class CommentDelete(base.CompanyUserRequiredMixin,
                     CommentDeleteBase):
+
+    raise_exception = True
 
     def get_success_url(self):
         return reverse('company', kwargs={'pk': self.company.pk})

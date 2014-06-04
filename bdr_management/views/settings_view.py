@@ -16,6 +16,7 @@ class Settings(views.StaffuserRequiredMixin,
 
     template_name = 'bdr_management/settings_view.html'
     queryset = Setting.objects.all()
+    raise_exception = True
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -34,6 +35,7 @@ class SettingsEdit(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
     form_class = SettingsForm
     success_url = reverse_lazy('management:settings_view')
+    raise_exception = True
 
     def get_initial(self):
         return {
