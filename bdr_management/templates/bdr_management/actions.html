@@ -1,0 +1,28 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Actions" %}</h1>
+  </div>
+  <hr />
+
+  <table class="dataTable">
+    <thead>
+      <tr>
+        <th>{% trans "Action" %}</th>
+        <th>{% trans "Description" %}</th>
+      </tr>
+    </thead>
+    <tr>
+      <td><a class="btn btn-green" href="{% url 'management:copy_report_status' %}">{% trans "Copy data" %}</a></td>
+      <td>Copy reporting status from {{ last_year }} to {{ curr_year }}</td>
+    </tr>
+
+  </table>
+
+{% endblock %}

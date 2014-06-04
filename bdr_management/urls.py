@@ -18,9 +18,6 @@ urlpatterns = patterns(
     url(r'^companies/export/?$',
         views.CompaniesExport.as_view(),
         name='companies_export'),
-    url(r'^companies/copy-report-status/?$',
-        views.CopyLastYearReportingStatus.as_view(),
-        name='copy_report_status'),
     url(r'^companies/(?P<pk>\d+)/?$',
         views.CompaniesManagementView.as_view(),
         name='companies_view'),
@@ -121,5 +118,11 @@ urlpatterns = patterns(
     url(r'^settings/edit/?$',
         views.SettingsEdit.as_view(),
         name='settings_edit'),
+    url(r'^actions/?$',
+        views.Actions.as_view(),
+        name='actions'),
+    url(r'^actions/copy-report-status/?$',
+        views.CopyReportingStatus.as_view(),
+        name='copy_report_status'),
 
 )
