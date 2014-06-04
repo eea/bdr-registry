@@ -25,13 +25,15 @@
         <th>{% trans "Key" %}</th>
         <th>{% trans "Value" %}</th>
       </tr>
+    </thead>
+    <tbody>
       {% for obj in object_list %}
         <tr>
           <td>{% trans obj.name %}</td>
           <td>{{ obj.setting_object.value }}</td>
         </tr>
       {% endfor %}
-    </thead>
+    </tbody>
 
   </table>
 
