@@ -13,6 +13,8 @@ from django.template.loader import render_to_string
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+import django_settings
+import post_office
 import requests
 import models
 from ldap_editor import create_ldap_editor
@@ -366,10 +368,15 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Country)
-admin.site.register(models.Company, OrganisationAdmin)
-admin.site.register(models.Person, PersonAdmin)
-admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)
+
+if not settings.ADMIN_ALL_BDR_TABLES:
+    admin.site.unregister(django_settings.models.Setting)
+    admin.site.unregister(post_office.models.EmailTemplate)
+
 if settings.ADMIN_ALL_BDR_TABLES:
     admin.site.register(models.Account, AccountAdmin)
     admin.site.register(models.NextAccountId)
+    admin.site.register(models.Company, OrganisationAdmin)
+    admin.site.register(models.Person, PersonAdmin)
+    admin.site.register(models.Obligation)

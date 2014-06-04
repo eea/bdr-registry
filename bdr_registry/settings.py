@@ -77,11 +77,11 @@ INSTALLED_APPS = (
     'gunicorn',
     'raven.contrib.django',
     'widget_tweaks',
-    'bdr_registry',
     'django_assets',
     'post_office',
     'bdr_management',
     'django_settings',
+    'bdr_registry',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [
