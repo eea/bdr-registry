@@ -2,9 +2,14 @@ import logging
 from cStringIO import StringIO
 import csv
 from collections import defaultdict
+from django import forms
 
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.contrib.admin import helpers
 from django.core import mail
@@ -12,6 +17,7 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponse
 import django_settings
 import post_office
@@ -367,8 +373,69 @@ class AccountAdmin(admin.ModelAdmin):
     actions = [sync_with_ldap]
 
 
+# class ObligationAdmin(admin.ModelAdmin):
+#     filter_horizontal = ('admins',)
+
+
 admin.site.register(models.Country)
 admin.site.register(models.ApiKey)
+
+admin.site.unregister(User)
+
+
+# class ObligationInline(admin.StackedInline):
+#
+#     model = models.Obligation
+#     extra = 0
+
+# UserAdmin.inlines = [ObligationInline]
+
+
+class UserAdminForm(UserChangeForm):
+    obligations = forms.ModelMultipleChoiceField(
+        queryset=models.Obligation.objects.all(),
+        required=False,
+        widget=FilteredSelectMultiple(
+            verbose_name='Obligations',
+            is_stacked=False
+        )
+    )
+
+    class Meta:
+        model = User
+
+    def __init__(self, *args, **kwargs):
+        super(UserAdminForm, self).__init__(*args, **kwargs)
+
+        if self.instance:
+          self.fields['obligations'].initial = self.instance.obligations.all()
+
+    def save(self, commit=True):
+        user = super(UserAdminForm, self).save(commit=False)
+
+        user.obligations = self.cleaned_data['obligations']
+
+        if commit:
+            user.save()
+            user.save_m2m()
+
+        return user
+
+
+class CustomUserAdmin(UserAdmin):
+    form = UserAdminForm
+
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('Obligations'), {'fields': ('obligations',)}),
+    )
+
+
+admin.site.register(User, CustomUserAdmin)
 
 if not settings.ADMIN_ALL_BDR_TABLES:
     admin.site.unregister(django_settings.models.Setting)
