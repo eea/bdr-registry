@@ -1,3 +1,6 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
+
 try:
     from collections import OrderedDict
 except ImportError:
@@ -398,11 +401,22 @@ class CommentDelete(DeleteView):
         return HttpResponseRedirect(url)
 
 
+def valid_email(email):
+    try:
+        validate_email(email)
+    except ValidationError:
+        return False
+    return True
+
+
 def send_notification_email(context):
 
+    company = context.get('company')
+
     recipients = [u.email for u in User.objects.filter(
-        Q(groups__name=settings.BDR_HELPDESK_GROUP))
-        if u.email]
+        Q(groups__name=settings.BDR_HELPDESK_GROUP) &
+        Q(obligations__pk=company.obligation.pk))
+        if valid_email(u.email)]
 
     template = EmailTemplate.objects.get(id=5)
 
