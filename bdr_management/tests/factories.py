@@ -21,10 +21,26 @@ class UserFactory(django.DjangoModelFactory):
     username = factory.Sequence(lambda n: 'user_%d' % n)
     email = factory.Sequence(lambda n: 'user_%d@eaudeweb.ro' % n)
 
+    @factory.post_generation
+    def groups(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for group in extracted:
+                self.groups.add(group)
+
+    @factory.post_generation
+    def obligations(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for obligation in extracted:
+                self.obligations.add(obligation)
+
 
 class StaffUserFactory(UserFactory):
 
-    username = 'staff'
+    username = factory.Sequence(lambda n: 'staff_%d' % n)
     is_staff = True
 
 
