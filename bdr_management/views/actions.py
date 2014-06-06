@@ -8,9 +8,10 @@ from django.views import generic
 from braces import views
 import django_settings
 from django.contrib import messages
+from bdr_management import backend
 
 from bdr_management.base import Breadcrumb
-from bdr_registry.models import ReportingYear, Company, ReportingStatus
+from bdr_registry.models import ReportingYear, Company, ReportingStatus, Person
 
 
 class Actions(views.StaffuserRequiredMixin,
@@ -112,3 +113,60 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
         data = json.dumps(companies, indent=4)
 
         return HttpResponse(data, content_type="application/json")
+
+
+class CompaniesExcelExport(views.StaffuserRequiredMixin,
+                           generic.View):
+
+    raise_exception = True
+
+    def get(self, request):
+        header = ['userid', 'name', 'date_registered', 'active',
+                  'addr_street', 'addr_place1', 'addr_postalcode',
+                  'addr_place2', 'country', 'vat_number', 'obligation']
+        rows = []
+        for company in Company.objects.all():
+            account = company.account
+            rows.append([v.encode('utf-8') for v in [
+                '' if account is None else account.uid,
+                company.name,
+                company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
+                'on' if company.active else '',
+                company.addr_street,
+                company.addr_place1,
+                company.addr_postalcode,
+                company.addr_place2,
+                company.country.name,
+                company.vat_number or '',
+                company.obligation.code if company.obligation else '',
+            ]])
+
+        xls_doc = backend.generate_excel(header, rows)
+        return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
+
+
+class PersonsExport(views.StaffuserRequiredMixin,
+                    generic.View):
+
+    raise_exception = True
+
+    def get(self, request):
+
+        header = ['userid', 'companyname', 'country',
+                  'contactname', 'contactemail']
+        rows = []
+
+        for person in Person.objects.all():
+            org = person.company
+            account = org.account
+            if account is None:
+                continue
+            rows.append([v.encode('utf-8') for v in [
+                account.uid,
+                org.name,
+                org.country.name,
+                u"{p.title} {p.first_name} {p.family_name}".format(p=person),
+                person.email,
+            ]])
+        xls_doc = backend.generate_excel(header, rows)
+        return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")

@@ -3,14 +3,14 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views import generic
 
 from braces import views
 
-from bdr_management import base, backend
+from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_registry.models import Person, Company
@@ -345,30 +345,3 @@ class PersonCreate(base.CompanyUserRequiredMixin,
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
-
-
-class PersonsExport(views.StaffuserRequiredMixin,
-                    generic.View):
-
-    raise_exception = True
-
-    def get(self, request):
-
-        header = ['userid', 'companyname', 'country',
-                  'contactname', 'contactemail']
-        rows = []
-
-        for person in Person.objects.all():
-            org = person.company
-            account = org.account
-            if account is None:
-                continue
-            rows.append([v.encode('utf-8') for v in [
-                account.uid,
-                org.name,
-                org.country.name,
-                u"{p.title} {p.first_name} {p.family_name}".format(p=person),
-                person.email,
-            ]])
-        xls_doc = backend.generate_excel(header, rows)
-        return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
