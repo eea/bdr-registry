@@ -1,0 +1,32 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+
+  {% include 'bdr_management/_edit_header.html' %}
+  <div class="row">
+    <form class="form form-horizontal col-md-8 push-top" method="post">
+      {% csrf_token %}
+
+
+
+      <div class="row">
+        <div class="col-sm-6">
+          {{ form.reporting_year|custom_render_field }}
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="btn-toolbar">
+        <button type="submit" class="btn-blue">Save</button>
+        <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
+      </div>
+
+    </form>
+  </div>
+
+{% endblock %}

@@ -1,6 +1,13 @@
+import os
+import sys
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 ADMIN_ALL_BDR_TABLES = DEBUG
+
+ASSETS_DEBUG = True
 
 ADMINS = ()
 
@@ -22,11 +29,9 @@ MEDIA_ROOT = ''
 
 MEDIA_URL = ''
 
-STATIC_ROOT = ''
-
 STATIC_URL = '/static/'
 
-STATICFILES_DIRS = ()
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -68,11 +73,15 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
-    'bdr_registry',
     'south',
     'gunicorn',
     'raven.contrib.django',
     'widget_tweaks',
+    'django_assets',
+    'post_office',
+    'bdr_management',
+    'django_settings',
+    'bdr_registry',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [
@@ -114,28 +123,34 @@ LOGGING = {
 
 BDR_HELPDESK_EMAIL = ''
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'post_office.EmailBackend'
 
 BDR_EMAIL_FROM = 'bdr@localhost'
-
-BDR_ORGEMAIL_ODS_BCC = []
-BDR_ORGEMAIL_FGAS_BCC = []
-BDR_ORGEMAIL_CARS_BCC = []
-BDR_ORGEMAIL_VANS_BCC = []
-
-
-
 BDR_REPORTEK_ORGANISATION_URL = '#'
-
 BDR_API_URL = None
 BDR_API_AUTH = None
-
-
 BDR_AUDIT_LOG_FILE = None
 
-REPORTING_YEAR = 2014
+DATE_FORMAT = '%d %b %Y'
+
+BDR_HELPDESK_GROUP = 'BDR helpdesk'
+
+LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
 
 try:
     from localsettings import *
 except ImportError:
     pass
+
+
+if 'test' in sys.argv:
+    try:
+        from test_settings import *
+    except ImportError:
+        pass
+
+DJANGO_SETTINGS = {
+   'Reporting year': ('Integer', 2014),
+}
+
+FIRST_REPORTING_YEAR = 2012

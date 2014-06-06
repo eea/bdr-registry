@@ -1,0 +1,48 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  {% url 'management:companies_filter' as url %}
+
+  {% assign '["id", "name", "obligation", "account", "country", "vat_number", "date_registered"]' as columns %}
+  {% assign '' as column_defs %}
+  {% assign '[[0, "desc"]]' as column_sorting %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Companies" %}</h1>
+      <div class="pull-right h1-align">
+        <a class="btn btn-green"
+         href="{% url 'management:companies_add' %}">
+         {% trans "Add a new company" %}</a>
+      </div>
+  </div>
+  <hr />
+
+
+
+  {% include 'bdr_management/_company_filters.html' %}
+
+  <table data-toggle='datatable' data-source='{{ url }}'
+         data-columns='{{ columns }}'
+         data-column-defs='{{ column_defs }}'
+         data-column-sorting='{{ column_sorting }}'>
+
+    <thead>
+      <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Company name" %}</th>
+        <th>{% trans "Obligation" %}</th>
+        <th>{% trans "Account" %}</th>
+        <th>{% trans "Country" %}</th>
+        <th>{% trans "VAT number" %}</th>
+        <th>{% trans "Date registered" %}</th>
+      </tr>
+    </thead>
+
+  </table>
+
+{% endblock %}

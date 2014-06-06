@@ -1,0 +1,17 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load widget_tweaks %}
+
+
+{% block head %}
+
+  {{ block.super }}
+
+  <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
+
+{% endblock %}
+
+{% block content %}
+
+  {% include 'bdr_management/_edit_email_template.html' %}
+
+{% endblock %}

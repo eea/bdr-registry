@@ -1,0 +1,34 @@
+{% extends 'bdr_management/_management_base.html' %}
+
+
+{% block content %}
+
+<h1>Create account for {{ company }}</h1>
+
+<form method="POST" action="" class="push-top">
+{% csrf_token %}
+
+  <div class="inform">
+    <label class="large">
+      <input type="checkbox" checked="checked" name="perform_send">
+      Send emails with new passwords to:
+    </label>
+
+    <div id="company-persons">
+      <ul>
+        {% for person in company.people.all %}
+          <li class="bold">{{ person }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="btn-toolbar">
+    <button class="btn-blue" type="submit">Create account</button>
+    <a class="btn" href="{% url 'management:companies_view' pk=object.pk %}">
+      Cancel
+    </a>
+  </div>
+</form>
+
+{% endblock %}

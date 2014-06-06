@@ -1,0 +1,40 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Actions" %}</h1>
+  </div>
+  <hr />
+
+  <table class="dataTable">
+    <thead>
+      <tr>
+        <th>{% trans "Action" %}</th>
+        <th>{% trans "Description" %}</th>
+      </tr>
+    </thead>
+    <tr>
+      <td><a href="{% url 'management:copy_report_status' %}">{% trans "Copy reporting status data" %}</a></td>
+      <td>Copy reporting status from {{ last_year }} to {{ curr_year }}</td>
+    </tr>
+    <tr>
+      <td><a href="{% url 'management:companies_export_json' %}">{% trans "JSON export" %}</a></td>
+      <td>{% trans "Export all companies with their persons to JSON" %}</td>
+    </tr>
+    <tr>
+      <td><a href="{% url 'management:companies_export' %}">{% trans "Companies Excel export" %}</a></td>
+      <td>{% trans "Export all companies to Excel" %}</td>
+    </tr>
+    <tr>
+      <td><a href="{% url 'management:persons_export' %}">{% trans "Persons Excel export" %}</a></td>
+      <td>{% trans "Export all persons to Excel" %}</td>
+    </tr>
+
+  </table>
+
+{% endblock %}

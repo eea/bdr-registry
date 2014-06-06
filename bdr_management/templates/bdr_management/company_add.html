@@ -1,0 +1,31 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load widget_tweaks %}
+{% load utils %}
+
+
+{% block content %}
+
+  {% include 'bdr_management/_edit_header.html' %}
+
+  <div class="row">
+    <form class="form col-md-8 push-top" method="post">
+      {% csrf_token %}
+
+      {% include 'bdr_management/_edit_company_form_fields.html' %}
+
+      <h3>First Contact Person</h3>
+
+      {% assign person_form as form %}
+      {% include 'bdr_management/_edit_person_form_fields.html' %}
+
+      <hr />
+
+      <div class="btn-toolbar">
+        <button type="submit" class="btn-blue">Save</button>
+        <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
+      </div>
+
+    </form>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body>
+  <p>Dear {{ person.formal_name }},</p>
+
+  <p>
+    This message is addressed to you as the contact person of an
+    undertaking that needs to report data on fluorinated greenhouse
+    gases (F-Gases) under Article 6 of Regulation (EC) No 842/2006.
+  </p>
+
+  <p>
+    The report needs to be submitted to the European Environment Agency
+    (EEA) using the online Business Data Repository (BDR) at <a
+    href="https://bdr.eionet.europa.eu/">bdr.eionet.europa.eu</a>.
+  </p>
+
+  <p>
+    In order to submit your report you will need to login using the
+    username and password for your company. The company for which you
+    have received reporting rights is <b>{{ company.name }}</b> in
+    <b>{{ company.country.name }}</b>. The username for your
+    company is: <b>{{ company.account.uid }}</b> and the password
+    is <b>{{ company.account.password }}</b>.
+  </p>
+
+  <p>
+    Please note that this password will be valid for reporting during the
+    year {{ reporting_year }}.  To assure confidentiality we will reset the password at
+    the beginning of {{ next_year }}.
+  </p>
+
+  <p><u>How to submit your report?</u></p>
+
+  <p>
+    Detailed information on how to upload your delivery to BDR is
+    available at: <a
+    href="https://bdr.eionet.europa.eu/help/upload.html"
+    >bdr.eionet.europa.eu/help/upload.html</a>.
+  </p>
+
+  <p><u>Reporting requirements and forms</u></p>
+
+  <p>
+    From this year the EEA is using online webforms to collect the data
+    you need to submit. This allows amongst others the data to be fed
+    directly into a database without the need for manual processing. The
+    webforms can perform certain checks immediately while you are
+    completing the form or immediately after submission. This will
+    increase the user friendliness and reduce the administrative burden
+    for all stakeholders. It will also reduce the number of questions
+    posed to you after submission. While the webforms by nature will
+    look somewhat different from the Excel sheets used so far, no
+    additional data will be requested compared to previous years. Due to
+    the functionality of the online forms it was possible to eliminate
+    certain tables and to avoid that data needs to be repeated in two
+    different forms.
+  </p>
+
+  <p>
+    Reporting is not required if you produce, import or export less than
+    one tonne of fluorinated greenhouse gases.
+  </p>
+
+  <p><u>BDR Helpdesk</u></p>
+
+  <p>
+    Please feel free to contact the BDR Helpdesk (<a
+    href="mailto:BDR.helpdesk@eea.europa.eu"
+    >BDR.helpdesk@eea.europa.eu</a>):
+  </p>
+
+  <ul>
+    <li>
+      if you received this e-mail but you think that you are no longer
+      subject to the reporting obligations, please be so kind to inform
+      us accordingly.
+    </li>
+
+    <li>
+      for technical assistance with access to BDR and the submission
+      process.
+    </li>
+  </ul>
+
+  <p>Thank you in advance for your co-operation.</p>
+
+  <p>
+    Yours faithfully<br />
+    BDR Helpdesk
+  </p>
+</body>
+</html>

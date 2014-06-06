@@ -28,14 +28,14 @@ def import_companies(csv_file):
             'date_registered': timezone.make_aware(raw_date - HOURS_2,
                                                    timezone.utc),
             'obligation': obligation,
-            'name': row['Organisation'],
+            'name': row['Company'],
             'country': country,
             'addr_place2': row['Region'],
             'addr_place1': row['Municipality'],
             'addr_street': row['Street'],
             'addr_postalcode': row['PostalCode'],
         }
-        org = models.Organisation.objects.create(**org_data)
+        org = models.Company.objects.create(**org_data)
 
         p1_data = {
             'title': row['p1-Title'],
@@ -55,9 +55,9 @@ def import_companies(csv_file):
             'fax': row['p2-Fax'],
         }
 
-        p1 = models.Person.objects.create(organisation=org, **p1_data)
+        p1 = models.Person.objects.create(company=org, **p1_data)
         if any(p2_data.values()):
-            p2 = models.Person.objects.create(organisation=org, **p2_data)
+            p2 = models.Person.objects.create(company=org, **p2_data)
 
 
 @transaction.commit_on_success
@@ -87,7 +87,7 @@ def update_companies_from_ldap():
             log.warn("Can't determine obligation for uid=%r", uid)
             continue
 
-        org = models.Organisation.objects.create(
+        org = models.Company.objects.create(
             name=org_name,
             addr_street="",
             addr_place1="",
@@ -97,7 +97,7 @@ def update_companies_from_ldap():
             obligation=obligation,
             account=account)
 
-        log.info("Organisation: uid=%r pk=%r name=%r",
+        log.info("Company: uid=%r pk=%r name=%r",
                  org.account.uid, org.pk, org.name)
 
 
@@ -117,7 +117,7 @@ def update_companies_from_csv(csv_file, commit=False):
         except models.Account.DoesNotExist:
             log.warn("uid=%s: not found", uid)
             continue
-        org = models.Organisation.objects.get(account=account)
+        org = models.Company.objects.get(account=account)
 
         old = [org.addr_street, org.addr_place1,
                org.addr_place2, org.addr_postalcode]

@@ -22,7 +22,7 @@ msgstr ""
 msgid "Economic Operators Registration and Identification number (EORI)"
 msgstr ""
 
-#: models.py:97 templates/organisation_update.html:34
+#: models.py:97 templates/company_update.html:34
 msgid "Company name"
 msgstr ""
 
@@ -92,7 +92,7 @@ msgstr ""
 
 #: templates/comment_update.html:32 templates/organisation_add_comment.html:31
 #: templates/organisation_add_person.html:31
-#: templates/organisation_update.html:108 templates/person_update.html:31
+#: templates/company_update.html:108 templates/person_update.html:31
 msgid "Save"
 msgstr ""
 
@@ -113,55 +113,55 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: templates/organisation_update.html:14
+#: templates/company_update.html:14
 msgid "Back to reporting"
 msgstr ""
 
-#: templates/organisation_update.html:20
-msgid "Update organisation"
+#: templates/company_update.html:20
+msgid "Update company"
 msgstr ""
 
-#: templates/organisation_update.html:23 templates/self_register.html:37
+#: templates/company_update.html:23 templates/self_register.html:37
 msgid "Company details"
 msgstr ""
 
-#: templates/organisation_update.html:40
+#: templates/company_update.html:40
 msgid "To modify company name, please contact"
 msgstr ""
 
-#: templates/organisation_update.html:41
+#: templates/company_update.html:41
 msgid "helpdesk"
 msgstr ""
 
-#: templates/organisation_update.html:68 templates/self_register.html:62
+#: templates/company_update.html:68 templates/self_register.html:62
 msgid "About EORI number"
 msgstr ""
 
-#: templates/organisation_update.html:78
+#: templates/company_update.html:78
 msgid "Country"
 msgstr ""
 
-#: templates/organisation_update.html:88
+#: templates/company_update.html:88
 msgid "Account name"
 msgstr ""
 
-#: templates/organisation_update.html:98
+#: templates/company_update.html:98
 msgid "Obligation"
 msgstr ""
 
-#: templates/organisation_update.html:113
+#: templates/company_update.html:113
 msgid "Comments"
 msgstr ""
 
-#: templates/organisation_update.html:127
+#: templates/company_update.html:127
 msgid "New comment"
 msgstr ""
 
-#: templates/organisation_update.html:131
+#: templates/company_update.html:131
 msgid "People"
 msgstr ""
 
-#: templates/organisation_update.html:145
+#: templates/company_update.html:145
 msgid "New person"
 msgstr ""
 

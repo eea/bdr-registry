@@ -1,0 +1,153 @@
+{% extends "bdr_layout.html" %}
+{% load static from staticfiles %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block content %}
+
+
+<div id="operations">
+  <ul>
+    {% if reporting_url %}
+    <li><a href="{{ reporting_url }}"
+           title="Go back to the collection for this company"
+           >{% trans "Back to reporting" %}</a></li>
+    {% endif %}
+  </ul>
+</div>
+
+
+<h1>{% trans "Update company" %} <em>{{ object.name }}</em></h1>
+
+
+<h2>{% trans "Company details" %}</h2>
+
+<form method="post">
+  {% csrf_token %}
+
+  <table class="formtable">
+  <col style="width:10em"/>
+
+  {% if not form.fields.name %}
+    <tr>
+      <td>
+        <label for="id_name" class="question">{% trans "Company name" %}</label>
+      </td>
+      <td>
+        <input id="id_name" value="{{ object.name }}" disabled>
+        <br>
+        <span class="input-hint">
+          {% trans "To modify company name, please contact" %}
+          <a href="mailto:{{ helpdesk_email }}">{% trans "helpdesk" %}</a>.
+        </span>
+      </td>
+    </tr>
+  {% endif %}
+
+  {% for field in form %}
+
+    <tr>
+      <td>
+        <label for="id_{{ field.name }}" class="question
+            {% if field.field.required %}required{% endif %}">
+          {{ field.label }}
+        </label>
+      </td>
+      <td>
+        {% for err in field.errors %}
+          <div class="bdr-error">{{ err }}</div>
+        {% endfor %}
+        {% if field.help_text %}
+          {% render_field field title=field.help_text %}
+        {% else %}
+          {{ field }}
+        {% endif %}
+        {% if field.name == 'eori' %}
+          <div>
+            <a href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+              <small>{% trans "About EORI number" %}</small></a>
+          </div>
+        {% endif %}
+      </td>
+    </tr>
+
+  {% endfor %}
+
+  <tr>
+      <td>
+        <label for="id_country" class="question">{% trans "Country" %}</label>
+      </td>
+      <td>
+        <input id="id_country" value="{{ object.country.name }}" disabled>
+      </td>
+    </tr>
+  </tr>
+
+  <tr>
+      <td>
+        <label for="id_account" class="question">{% trans "Account name" %}</label>
+      </td>
+      <td>
+        <input id="id_account" value="{{ object.account.uid }}" disabled>
+      </td>
+    </tr>
+  </tr>
+
+  <tr>
+      <td>
+        <label for="id_obligation" class="question">{% trans "Obligation" %}</label>
+      </td>
+      <td>
+        <input id="id_obligation" value="{{ object.obligation.name }}" disabled>
+      </td>
+    </tr>
+  </tr>
+
+  </table>
+
+  <button type="submit">{% trans "Save" %}</button>
+
+</form>
+
+
+<h2>{% trans "Comments" %}</h2>
+
+<ul>
+{% for comment in company.comments.all %}
+  <li>
+    <a href="{% url 'comment_update' comment.pk %}">
+        {{ comment.created|date:"d F Y" }}
+    </a>
+    <a class="delete" href="{% url 'comment_delete' comment.pk %}">
+      <img src="{% static "admin/img/icon_deletelink.gif" %}">
+    </a>
+    <p>
+    {{ comment.text |linebreaksbr }}
+    </p>
+  </li>
+{% endfor %}
+</ul>
+
+<form action="{% url 'organisation_add_comment' company.pk %}">
+  <button type="submit">{% trans "New comment" %}</button>
+</form>
+
+
+<h2>{% trans "People" %}</h2>
+
+<ul>
+{% for person in company.people.all %}
+  <li>
+    <a href="{% url 'person_update' person.pk %}">{{ person }}</a>
+    <a class="delete" href="{% url 'person_delete' person.pk %}">
+      <img src="{% static "admin/img/icon_deletelink.gif" %}">
+    </a>
+  </li>
+{% endfor %}
+</ul>
+
+<form action="{% url 'organisation_add_person' company.pk %}">
+  <button type="submit">{% trans "New person" %}</button>
+</form>
+
+{% endblock %}

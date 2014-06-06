@@ -1,0 +1,45 @@
+{% load utils %}
+{% load i18n %}
+
+
+{% if back_url %}
+<div class="">
+  <a href="{{ back_url }}" class="small">
+    {% trans "Back" %}</a>
+</div>
+{% endif %}
+<div class="push-bottom clearfix">
+  <h1 class="pull-left">{{ object }}</h1>
+
+  {% if user|has_permission:object %}
+    <div class="pull-right h1-align">
+      {% if edit_url %}
+        <a href="{{ edit_url }}" class="btn btn-blue">{% trans "Edit" %}</a>
+      {% endif %}
+      {% if delete_url %}
+        <a href="{{ delete_url }}" class="btn">{% trans "Delete" %}</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+<hr />
+
+<form id="delete-form" action="{{ delete_url }}" method="post">
+  <fieldset class="no-borders">
+    {% csrf_token %}
+  </fieldset>
+</form>
+
+<div class="pull-left">
+  <table class="table-list no-margins">
+    <tbody>
+    {% for field in fields %}
+    <tr>
+      <th class="text-right small">{{ field.verbose_name|capfirst }}</th>
+      <td class="bold">
+        {{ object|getattribute:field.name|process_field:management }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>

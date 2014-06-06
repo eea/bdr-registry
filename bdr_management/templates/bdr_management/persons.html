@@ -1,0 +1,32 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  {% url 'management:persons_filter' as url %}
+
+  {% assign '["name", "email"]' as columns %}
+  {% assign '' as column_defs %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Persons" %}</h1>
+  </div>
+  <hr />
+
+  <table data-toggle='datatable' data-source='{{ url }}'
+         data-columns='{{ columns }}'
+         data-column-defs='{{ column_defs }}'>
+
+    <thead>
+      <tr>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Email" %}</th>
+      </tr>
+    </thead>
+
+  </table>
+
+{% endblock %}

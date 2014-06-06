@@ -263,22 +263,130 @@
       "name": "United Kingdom"
     }
   },
-  {
+ {
+    "pk": 1,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-05-14T11:25:19Z",
+        "name": "ODS",
+        "created": "2014-05-13T14:49:55Z",
+        "html_content": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n  <meta charset=\"utf-8\">\r\n  <title>Reporting data on ODS covering {{ reporting_year }}</title>\r\n</head>\r\n\r\n<body>\r\n  <p>Dear {{ person.formal_name }},</p>\r\n\r\n  <p>\r\n    This message is addressed to you as the contact person of an\r\n    undertaking that needs to report data on Ozone Depleting Substances\r\n    (ODS) under Article 27 of Regulation (EC) No 1005/2009.\r\n  </p>\r\n\r\n  <p>\r\n    The report needs to be submitted to the European Environment Agency\r\n    (EEA) using the online Business Data Repository (BDR) at \r\n    <a href=\"https://bdr.eionet.europa.eu/\">bdr.eionet.europa.eu</a>.\r\n  </p>\r\n\r\n  <p>\r\n    In order to submit your report you will need to login using the\r\n    username and password for your company. The company for which you\r\n    have received reporting rights is <b>{{ company.name }}</b> in\r\n    <b>{{ company.country.name }}</b>. The username for your\r\n    company is <b>{{ company.account.uid }}</b> and the password\r\n    is <b>{{ company.account.password }}</b>.\r\n  </p>\r\n\r\n  <p>\r\n    Please note that this password will be valid for reporting during the\r\n    year {{ reporting_year }}. To assure confidentiality we will reset the password at\r\n    the beginning of {{ next_year }}.\r\n  </p>\r\n\r\n  <h1>How to submit your report?</h1>\r\n\r\n  <p>\r\n    Detailed information on how to upload your delivery to BDR is available at: \r\n    <a href=\"https://bdr.eionet.europa.eu/help/upload.html\">bdr.eionet.europa.eu/help/upload.html</a>.\r\n  </p>\r\n\r\n  <h1>Reporting requirements and forms</h1>\r\n\r\n  <p>\r\n    From this year the EEA is using online webforms to collect the data\r\n    you need to submit. This allows amongst others the data to be fed\r\n    directly into a database without the need for manual processing. The\r\n    webforms can perform certain checks immediately while you are\r\n    completing the form or immediately after submission. This will\r\n    increase the user friendliness and reduce the administrative burden\r\n    for all stakeholders. It will also reduce the number of questions\r\n    posed to you after submission. While the webforms by nature will\r\n    look somewhat different from the Excel sheets used so far, no\r\n    additional data will be requested compared to previous years. Due to\r\n    the functionality of the online forms it was possible to eliminate\r\n    certain tables and to avoid that data needs to be repeated in two\r\n    different forms. For example companies importing ODS and using them\r\n    for feedstock data had to fill in certain data in both forms in the\r\n    past which was an additional source of errors.\r\n  </p>\r\n\r\n  <p>\r\n    Reporting is not required if you solely import or export products or\r\n    equipments containing or relying on ODS (e.g. fire extinguishers or\r\n    aircraft). Reporting is not required if you produce, import or\r\n    export less than one tonne of fluorinated greenhouse gases.\r\n  </p>\r\n\r\n  <h1>BDR Helpdesk</h1>\r\n\r\n  <p>\r\n    Please feel free to contact the BDR Helpdesk\r\n    (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):\r\n  </p>\r\n\r\n  <ul>\r\n    <li>\r\n      if you received this e-mail but you think that you are no longer\r\n      subject to the reporting obligations, please be so kind to inform\r\n      us accordingly.\r\n    </li>\r\n\r\n    <li>\r\n      for technical assistance with access to BDR and the submission\r\n      process.\r\n    </li>\r\n  </ul>\r\n\r\n  <p>Thank you in advance for your co-operation.</p>\r\n\r\n  <p>\r\n    Yours faithfully<br />\r\n    BDR Helpdesk\r\n  </p>\r\n</body>\r\n</html>\r\n",
+        "description": "",
+        "content": "",
+        "subject": "Reporting data on ODS"
+    }
+},
+{
+    "pk": 2,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-05-14T11:18:24Z",
+        "name": "F-Gases",
+        "created": "2014-05-13T14:49:55Z",
+        "html_content": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n  <meta charset=\"utf-8\">\r\n  <title>Reporting data on F-Gases covering {{ reporting_year }}</title>\r\n</head>\r\n\r\n<body>\r\n  <p>Dear {{ person.formal_name }},</p>\r\n\r\n  <p>\r\n    This message is addressed to you as the contact person of an\r\n    undertaking that needs to report data on fluorinated greenhouse\r\n    gases (F-Gases) under Article 6 of Regulation (EC) No 842/2006.\r\n  </p>\r\n\r\n  <p>\r\n    The report needs to be submitted to the European Environment Agency\r\n    (EEA) using the online Business Data Repository (BDR) at\r\n    <a href=\"https://bdr.eionet.europa.eu/\">bdr.eionet.europa.eu</a>.\r\n  </p>\r\n\r\n  <p>\r\n    In order to submit your report you will need to login using the\r\n    username and password for your company. The company for which you\r\n    have received reporting rights is <strong>{{ company.name }}</strong> in\r\n    <strong>{{ company.country.name }}</strong>. The username for your\r\n    company is: <strong>{{ company.account.uid }}</strong> and the password\r\n    is <strong>{{ company.account.password }}</strong>.\r\n  </p>\r\n\r\n  <p>\r\n    Please note that this password will be valid for reporting during the\r\n    year {{ reporting_year }}. To assure confidentiality we will reset the password at\r\n    the beginning of {{ next_year }}.\r\n  </p>\r\n\r\n  <h1>How to submit your report?</h1>\r\n\r\n  <p>\r\n    Detailed information on how to upload your delivery to BDR is\r\n    available at: <a\r\n    href=\"https://bdr.eionet.europa.eu/help/upload.html\"\r\n    >bdr.eionet.europa.eu/help/upload.html</a>.\r\n  </p>\r\n\r\n  <h1>Reporting requirements and forms</h1>\r\n\r\n  <p>\r\n    From this year the EEA is using online webforms to collect the data\r\n    you need to submit. This allows amongst others the data to be fed\r\n    directly into a database without the need for manual processing. The\r\n    webforms can perform certain checks immediately while you are\r\n    completing the form or immediately after submission. This will\r\n    increase the user friendliness and reduce the administrative burden\r\n    for all stakeholders. It will also reduce the number of questions\r\n    posed to you after submission. While the webforms by nature will\r\n    look somewhat different from the Excel sheets used so far, no\r\n    additional data will be requested compared to previous years. Due to\r\n    the functionality of the online forms it was possible to eliminate\r\n    certain tables and to avoid that data needs to be repeated in two\r\n    different forms.\r\n  </p>\r\n\r\n  <p>\r\n    Reporting is not required if you produce, import or export less than\r\n    one tonne of fluorinated greenhouse gases.\r\n  </p>\r\n\r\n  <h1>BDR Helpdesk</h1>\r\n\r\n  <p>\r\n    Please feel free to contact the BDR Helpdesk\r\n    (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):\r\n  </p>\r\n\r\n  <ul>\r\n    <li>\r\n      if you received this e-mail but you think that you are no longer\r\n      subject to the reporting obligations, please be so kind to inform\r\n      us accordingly.\r\n    </li>\r\n\r\n    <li>\r\n      for technical assistance with access to BDR and the submission\r\n      process.\r\n    </li>\r\n  </ul>\r\n\r\n  <p>Thank you in advance for your co-operation.</p>\r\n\r\n  <p>\r\n    Yours faithfully<br />\r\n    BDR Helpdesk\r\n  </p>\r\n</body>\r\n</html>\r\n",
+        "description": "",
+        "content": "",
+        "subject": "Reporting data on F-Gases"
+    }
+},
+{
+    "pk": 3,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-05-14T11:39:04Z",
+        "name": "cars",
+        "created": "2014-05-13T14:49:55Z",
+        "html_content": "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n  <meta charset=\"utf-8\">\r\n  <title>Reporting data on CARS covering {{ reporting_year }}</title>\r\n</head>\r\n<body>\r\n  <p>Dear {{ person.formal_name }},</p>\r\n\r\n  <p>\r\n    This message is addressed to you as the contact person of a manufacturer\r\n    reporting data concerning CO2 emissions from passenger cars in accordance\r\n    with Article 8(5) of Regulation (EU) No 443/2009.\r\n  </p>\r\n\r\n  <p>\r\n    The report shall be submitted to the European Environment Agency (EEA)\r\n    using the online Business Data Repository (BDR) at\r\n    <a href=\"https://bdr.eionet.europa.eu/\">bdr.eionet.europa.eu</a>.\r\n  </p>\r\n\r\n  <p>\r\n    In order to submit your report you will need to login using the username\r\n    and password for your company. The company for which you have received\r\n    reporting rights is <strong>{{ company.name }}</strong> in\r\n    <strong>{{ company.country.name }}</strong>. The username for\r\n    your company is <strong>{{ company.account.uid }}</strong> and the\r\n    password is <strong>{{ company.account.password }}</strong>.\r\n  </p>\r\n\r\n  <p>\r\n    Please note that this password will be valid for reporting during the\r\n    year {{ reporting_year }}.  To ensure confidentiality we will reset the password at\r\n    the beginning of {{ next_year }}.\r\n  </p>\r\n\r\n  <h1>How to submit your report?</h1>\r\n\r\n  <p>\r\n    Detailed information on how to upload your delivery to BDR is\r\n    available in the BDR User Manual at:\r\n    https://circabc.europa.eu/w/browse/a41f7626-c660-4ee6-9b4b-8f198de8ab5c\r\n  </p>\r\n\r\n  <h1>Reporting requirements and forms</h1>\r\n\r\n  <p>\r\n    From this year the EEA is collecting the corrections from cars\r\n    manufacturers using the BDR. When notifying corrections back to the\r\n    Commission, the manufacturer must include all records and all entries that\r\n    are relevant for it; i.e. both those that the manufacturer considers\r\n    correct as well as those that have been corrected.\r\n    For {{ reporting_year }}, manufacturers can provide data in several formats:\r\n    .xls, .csv, .xml, .mdb.\r\n  </p>\r\n\r\n  <h1>BDR Helpdesk</h1>\r\n\r\n  <p>\r\n    Please feel free to contact the BDR Helpdesk\r\n    (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):\r\n  </p>\r\n\r\n  <ul>\r\n    <li>\r\n      If you received this e-mail but you think that you are no longer\r\n      subject to the reporting obligations, please be so kind to inform\r\n      us accordingly.\r\n    </li>\r\n\r\n  </ul>\r\n\r\n  <p>Thank you in advance for your co-operation.</p>\r\n\r\n  <p>\r\n    Yours faithfully<br />\r\n    BDR Helpdesk\r\n  </p>\r\n </body>\r\n",
+        "description": "",
+        "content": "",
+        "subject": "Reporting data on cars"
+    }
+},
+{
+    "pk": 4,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-05-14T11:37:51Z",
+        "name": "vans",
+        "created": "2014-05-13T14:49:55Z",
+        "html_content": "<!DOCTYPE html>\r\n<html xmlns=\"http://www.w3.org/1999/html\">\r\n<head>\r\n  <meta charset=\"utf-8\">\r\n  <title>Reporting data on VANS covering {{ reporting_year }}</title>\r\n</head>\r\n\r\n<body>\r\n\r\n<p>Dear {{ person.formal_name }},</p>\r\n\r\n  <p>\r\n    This message is addressed to you as the contact person of a manufacturer\r\n    reporting data concerning CO2 emissions from vans  in accordance with\r\n    Article 8(5) of Regulation (EU) No 510/2011.\r\n  </p>\r\n\r\n  <p>\r\n    The report shall be submitted to the European Environment Agency\r\n    (EEA) using the online Business Data Repository (BDR) at\r\n    <a href=\"https://bdr.eionet.europa.eu/\">bdr.eionet.europa.eu</a>.\r\n  </p>\r\n\r\n  <p>\r\n    In order to submit your report you will need to login using the\r\n    username and password for your company. The company for which you\r\n    have received reporting rights is <strong>{{ company.name }}</strong>\r\n    in <strong>{{ company.country.name }}</strong>. The username for your\r\n    company is <strong>{{ company.account.uid }}</strong> and the password\r\n    is <strong>{{ company.account.password }}</strong>.\r\n  </p>\r\n\r\n  <p>\r\n    Please note that this password will be valid for reporting during the\r\n    year {{ reporting_year }}.  To ensure confidentiality we will reset the password at\r\n    the beginning of {{ next_year }}.\r\n  </p>\r\n\r\n  <h1>How to submit your report?</h1>\r\n\r\n  <p>\r\n    Detailed information on how to upload your delivery to BDR is\r\n    available in the BDR User Manual at: https://circabc.europa.eu/w/browse/a41f7626-c660-4ee6-9b4b-8f198de8ab5c   </p>\r\n\r\n  <h1>Reporting requirements and forms</h1>\r\n\r\n  <p>\r\n    From this year the EEA is collecting the corrections from cars\r\n    manufacturers using the BDR. When notifying corrections back to the\r\n    Commission, the manufacturer must include all records and all entries that\r\n    are relevant for it; i.e. both those that the manufacturer considers\r\n    correct as well as those that have been corrected.\r\n    For {{ reporting_year }}, manufacturers can provide data in several formats:\r\n    .xls, .csv, .xml, .mdb.\r\n  </p>\r\n\r\n  <h1>BDR Helpdesk</h1>\r\n\r\n  <p>\r\n    Please feel free to contact the BDR Helpdesk\r\n    (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):\r\n  </p>\r\n\r\n  <ul>\r\n    <li>\r\n      If you received this e-mail but you think that you are no longer\r\n      subject to the reporting obligations, please be so kind to inform\r\n      us accordingly.\r\n    </li>\r\n\r\n  </ul>\r\n\r\n  <p>Thank you in advance for your co-operation.</p>\r\n\r\n  <p>\r\n    Yours faithfully<br />\r\n    BDR Helpdesk\r\n  </p>\r\n\r\n</body>\r\n</html>\r\n",
+        "description": "",
+        "content": "",
+        "subject": "Reporting data on vans"
+    }
+},
+{
+    "pk": 5,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-06-03T13:30:00Z",
+        "name": "Self Register",
+        "created": "2014-06-03T13:04:48Z",
+        "html_content": "<h1>BDR Registration</h1><p>Company: {{ company.name }}</p><p>Obligation: {{ company.obligation.name }}</p><p>Street and nr: {{ company.addr_street }}</p><p>Place 1 / Municipality: {{ company.addr_place1 }}</p><p>Postal code: {{ company.addr_postalcode }}</p><p>Place 2 / Region: {{ company.addr_place2 }}</p><p>Country: {{ company.country.name }}</p><p>First contact:</p><p>Title: {{ person.title }}</p><p>Family name: {{ person.family_name }}</p><p>First name: {{ person.first_name }}</p><p>Email address: {{ person.email }}</p><p>Telephone: {{ person.phone }}</p><p>Fax: {{ person.fax }}</p><p><em>Best regards<br />BDR</em></p>",
+        "description": "",
+        "content": "",
+        "subject": "New company registered"
+    }
+},
+{
     "pk": 1,
     "model": "bdr_registry.obligation",
     "fields": {
-      "code": "ods",
-      "name": "Ozone depleting substances",
-      "reportek_slug": "ods"
+        "email_template": 1,
+        "code": "ods",
+        "name": "Ozone depleting substances",
+        "reportek_slug": "ods"
     }
-  },
-  {
+},
+{
     "pk": 2,
     "model": "bdr_registry.obligation",
     "fields": {
-      "code": "fgas",
-      "name": "F-gases",
-      "reportek_slug": "fgases"
+        "email_template": 2,
+        "code": "fgas",
+        "name": "F-gases",
+        "reportek_slug": "fgases"
     }
-  }
+},
+{
+    "pk": 3,
+    "model": "bdr_registry.obligation",
+    "fields": {
+        "email_template": 3,
+        "code": "mercury",
+        "name": "Mercury",
+        "reportek_slug": "mercury"
+    }
+},
+{
+    "pk": 4,
+    "model": "bdr_registry.obligation",
+    "fields": {
+        "email_template": 4,
+        "code": "vans",
+        "name": "Monitoring and reporting of average CO2 emissions (light commercial vehicles)",
+        "reportek_slug": "vans"
+    }
+},
+{
+    "pk": 1,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2012
+    }
+},
+{
+    "pk": 2,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2013
+    }
+},
+{
+    "pk": 3,
+    "model": "bdr_registry.reportingyear",
+    "fields": {
+        "year": 2014
+    }
+}
 ]

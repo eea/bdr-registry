@@ -36,7 +36,7 @@ SECRET_KEY = 'foo'  # replace this with a random string
 # BDR_ORGEMAIL_VANS_BCC = ['foo@example.com', 'bar@example.com']
 
 ## email server
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'post_office.EmailBackend'
 # EMAIL_HOST = 'localhost'
 # EMAIL_PORT = 25
 

@@ -1,0 +1,37 @@
+{% load widget_tweaks %}
+{% load i18n %}
+<div class="push-top">
+  <strong id="company-filters-button"
+          class="btn-text no-margins">
+          Show Filters</strong>
+</div>
+
+<form class="form box-small no-borders hidden" id="company-filters">
+  <div class="row">
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.country.auto_id }}">
+        {{ form.country.label }}</label>
+      {% render_field form.country data-column-index=4 data-value='text' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.obligation.auto_id }}">
+        {{ form.obligation.label }}</label>
+      {% render_field form.obligation data-column-index=2 data-value='text' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.account.auto_id }}">
+        {{ form.account.label }}</label>
+      {% render_field form.account data-column-index=3 data-value='val' class='filter_data' %}
+    </div>
+    <div class="col-sm-3">
+      <label class="small muted no-bold" for="{{ form.created.auto_id }}">
+        {{ form.created.label }}</label>
+      {% render_field form.created data-column-index=6 data-value='val' class='filter_data' %}
+    </div>
+  </div>
+  <div class="btn-toolbar small no-bottom">
+    <button class="btn-text offset_top_label" 
+            id="reset-filters">
+            {% trans "Reset filters" %}</button>
+  </div>
+</form>

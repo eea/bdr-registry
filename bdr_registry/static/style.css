@@ -1,6 +1,6 @@
 .formtable input {
-    width: 270px;
-    margin: 2px;
+    width: 18.750em;
+    margin: 0.139em;
 }
 
 .bdr-error {
@@ -11,4 +11,146 @@
 
 .input-hint a {
     vertical-align: inherit;
+}
+
+.datatable .scope-pad {
+    padding-left: 0.694em;
+}
+
+.datatable .scope-row {
+    padding-right: 0.694em;
+}
+
+.button {
+    font-size: 11px;
+    background-color: #F2F2F2 !important;
+    border: 1px solid #BBBBBB !important;
+    color: #333333 !important;
+    padding: 5px !important;
+    text-decoration: none !important;
+    display: inline !important;
+    /* Mozilla: */
+    background: -moz-linear-gradient(top, #F7F7F7, #E4E5E5);
+    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    /* Chrome, Safari:*/
+    background: -webkit-gradient(linear,
+        left top, left bottom, from(#F7F7F7), to(#E4E5E5));
+    -webkit-box-shadow: 0px 1px 0px #000;
+    /* MSIE */
+    filter: progid:DXImageTransform.Microsoft.Gradient(
+        StartColorStr='#F7F7F7', EndColorStr='#E4E5E5', GradientType=0);
+    box-shadow: 0px 1px 0px #000;
+    font-weight: bold;
+}
+.button:hover {
+    background-color: #EEEEEE;
+    background: -moz-linear-gradient(top, #E4E5E5, #F7F7F7);
+    background: -webkit-gradient(linear,
+        left top, left bottom, from(#E4E5E5), to(#F7F7F7));
+    filter: progid:DXImageTransform.Microsoft.Gradient(
+        StartColorStr='#E4E5E5', EndColorStr='#F7F7F7', GradientType=0);
+    color: #111111 !important;
+    cursor: pointer;
+}
+.button:focus {
+    background-color: #E2E2E2;
+}
+
+.primary_button {
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 11px;
+    border: 1px solid #BBBBBB !important;
+    color: #333333 !important;
+    padding: 5px !important;
+    text-decoration: none !important;
+    display: inline !important;
+    /* Mozilla: */
+    background: -moz-linear-gradient(top, #FFFFFF, #EFEFEF);
+    -moz-box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+    /* Chrome, Safari:*/
+    background: -webkit-gradient(linear,
+        left top, left bottom, from(#FFFFFF), to(#EFEFEF));
+    -webkit-box-shadow: 0px 1px 0px #000;
+    /* MSIE */
+    filter: progid:DXImageTransform.Microsoft.Gradient(
+        StartColorStr='#FFFFFF', EndColorStr='#EFEFEF', GradientType=0);
+    box-shadow: 0px 1px 0px #000;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.actions {
+    background-color: #F7F7F7;
+    padding: 0.7em 0 1em 0.7em;
+    margin: 0.694em 0;
+}
+
+.actions a {
+    margin-right: 0.347em;
+}
+
+.sub-actions {
+    padding: 0.3em 0 1em 0.5em;
+}
+
+.filters {
+    background: #f0f4f5;
+    text-align: center;
+    margin: 1.042em 0;
+    padding: 0.486em;
+}
+.filters label {
+    padding-right: 0.347em;
+}
+.filters select {
+    margin-right: 0.694em;
+}
+
+.comment {
+    padding-bottom: 0.694em;
+    padding-left: 0.5em;
+    width: 100%;
+}
+.comment p {
+    line-height: 1.389em;
+    margin-bottom: 0;
+}
+.comment .content {
+    padding-right: 1.736em;
+}
+.comment .action {
+    width: 20%;
+}
+
+.overflow {
+    overflow: hidden;
+}
+
+.table-object {
+    float: left;
+    width: 400px;
+}
+.table-actions {
+    margin-left: 30px!important;
+    float: left;
+    width: 150px;
+}
+.table-actions a {
+    font-weight: bold;
+    font-size: 12px;
+}
+.table-actions th,
+ .table-actions td {
+    padding-left: 15px;
+    text-align: left;
+}
+
+table.no-border td {
+    border: none;
+}
+
+fieldset.noborder {
+    border: none;
 }

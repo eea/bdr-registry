@@ -2,9 +2,14 @@ import logging
 from cStringIO import StringIO
 import csv
 from collections import defaultdict
+from django import forms
 
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin.widgets import FilteredSelectMultiple
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.models import User
 from django.template.response import TemplateResponse
 from django.contrib.admin import helpers
 from django.core import mail
@@ -12,7 +17,10 @@ from django.conf import settings
 from django.template.loader import render_to_string
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
+from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponse
+import django_settings
+import post_office
 import requests
 import models
 from ldap_editor import create_ldap_editor
@@ -63,8 +71,8 @@ def sync_accounts_with_ldap(accounts):
     counters = defaultdict(int)
     for account in accounts:
         if ldap_editor.create_account(account.uid,
-                                      account.organisation.name,
-                                      account.organisation.country.name,
+                                      account.company.name,
+                                      account.company.country.name,
                                       account.password):
             counters['create'] += 1
         else:
@@ -85,15 +93,16 @@ def create_accounts(modeladmin, request, queryset):
     if request.POST.get('perform_create'):
         n = 0
         new_accounts = []
-        for organisation in organisations_without_account:
-            obligation = organisation.obligation
+        for company in organisations_without_account:
+            obligation = company.obligation
             account = models.Account.objects.create_for_obligation(obligation)
             account.set_random_password()
-            organisation.account = account
+            company.account = account
             new_accounts.append(account)
-            organisation.save()
+            company.save()
             n += 1
-        counters = sync_accounts_with_ldap(new_accounts)
+        # counters = sync_accounts_with_ldap(new_accounts)
+        counters = 0
         msg = "Created %d accounts. LDAP: %r." % (n, counters)
         messages.add_message(request, messages.INFO, msg)
 
@@ -103,7 +112,7 @@ def create_accounts(modeladmin, request, queryset):
 
         return
 
-    return TemplateResponse(request, 'organisation_create_accounts.html', {
+    return TemplateResponse(request, 'company_create_accounts.html', {
         'organisations_without_account': organisations_without_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -119,9 +128,9 @@ def reset_password(modeladmin, request, queryset):
     if request.POST.get('perform_reset'):
         n = 0
         reset_accounts = []
-        for organisation in organisations_with_account:
-            organisation.account.set_random_password()
-            reset_accounts.append(organisation.account)
+        for company in organisations_with_account:
+            company.account.set_random_password()
+            reset_accounts.append(company.account)
             n += 1
         counters = sync_accounts_with_ldap(reset_accounts)
         msg = "%d passwords have been reset. LDAP: %r." % (n, counters)
@@ -132,7 +141,7 @@ def reset_password(modeladmin, request, queryset):
 
         return
 
-    return TemplateResponse(request, 'organisation_reset_password.html', {
+    return TemplateResponse(request, 'company_reset_password.html', {
         'organisations_with_account': organisations_with_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -143,43 +152,43 @@ def send_password_email_to_people(organisations):
     n = 0
     mail_from = settings.BDR_EMAIL_FROM
     reporting_year = settings.REPORTING_YEAR
-    for organisation in organisations:
-        for person in organisation.people.all():
-            if organisation.obligation.code == 'ods':
+    for company in organisations:
+        for person in company.people.all():
+            if company.obligation.code == 'ods':
                 subject = u"Reporting data on ODS covering %s" % reporting_year
-                html = render_to_string('email_organisation_ods.html', {
+                html = render_to_string('email_company_ods.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
-            elif organisation.obligation.code == 'fgas':
+            elif company.obligation.code == 'fgas':
                 subject = u"Reporting data on F-Gases covering %s" % reporting_year
-                html = render_to_string('email_organisation_fgas.html', {
+                html = render_to_string('email_company_fgas.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'company': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_FGAS_BCC
 
-            elif organisation.obligation.code == 'vans':
+            elif company.obligation.code == 'vans':
                 subject = u"Reporting data on Average CO2 emissions (light commercial vehicles) %s" % reporting_year
                 html = render_to_string('email_organisation_vans.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'organisation': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
                 mail_bcc = settings.BDR_ORGEMAIL_VANS_BCC
 
-            elif organisation.obligation.code == 'cars':
+            elif company.obligation.code == 'cars':
                 subject = u"Reporting data on Average CO2 emissions (passenger cars) covering %s" % reporting_year
                 html = render_to_string('email_organisation_cars.html', {
                     'person': person,
-                    'organisation': organisation,
+                    'organisation': company,
                     'reporting_year': reporting_year,
                     'next_year': reporting_year + 1
                 })
@@ -187,7 +196,7 @@ def send_password_email_to_people(organisations):
 
             else:
                 raise RuntimeError("Unknown obligation %r" %
-                                   organisation.obligation.code)
+                                   company.obligation.code)
 
             mail_to = [person.email]
             message = mail.EmailMessage(subject, html,
@@ -208,7 +217,7 @@ def send_password_email(modeladmin, request, queryset):
                              "Emails have been sent to %d people." % n)
         return
 
-    return TemplateResponse(request, 'organisation_email_password.html', {
+    return TemplateResponse(request, 'company_email_password.html', {
         'organisations_with_account': organisations_with_account,
         'queryset': queryset,
         'action_checkbox_name': helpers.ACTION_CHECKBOX_NAME,
@@ -273,7 +282,7 @@ class PersonInline(admin.StackedInline):
 class PersonReadOnlyInline(PersonInline):
 
     readonly_fields = ['title', 'family_name', 'first_name', 'email',
-                       'phone', 'phone2', 'phone3', 'fax', 'organisation']
+                       'phone', 'phone2', 'phone3', 'fax', 'company']
 
 
 class CommentInline(admin.StackedInline):
@@ -339,7 +348,6 @@ class OrganisationAdmin(ReadOnlyAdmin):
                      'vat_number', 'eori']
     actions = [create_accounts, reset_password, create_reporting_folder]
 
-
     def get_urls(self):
         my_urls = patterns('',
             (r'^(?P<pk>\d+)/name_history/$',
@@ -349,9 +357,9 @@ class OrganisationAdmin(ReadOnlyAdmin):
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
     def name_history(self, request, pk):
-        org = get_object_or_404(models.Organisation, pk=pk)
-        return TemplateResponse(request, 'organisation_name_history.html', {
-            'organisation': org,
+        org = get_object_or_404(models.Company, pk=pk)
+        return TemplateResponse(request, 'company_name_history.html', {
+            'company': org,
             'opts': org._meta,
         }, current_app=self.admin_site.name)
 
@@ -361,7 +369,7 @@ class OrganisationAdmin(ReadOnlyAdmin):
         out.writerow(['userid', 'name', 'date_registered', 'active',
                       'addr_street', 'addr_place1', 'addr_postalcode',
                       'addr_place2', 'country', 'vat_number', 'obligation'])
-        for org in models.Organisation.objects.all():
+        for org in models.Company.objects.all():
             account = org.account
             out.writerow([v.encode('utf-8') for v in [
                 '' if account is None else account.uid,
@@ -384,7 +392,7 @@ class PersonAdmin(ReadOnlyAdmin):
 
     user_readonly = ['title', 'family_name', 'first_name',
                      'email', 'phone', 'phone2', 'phone3',
-                     'fax', 'organisation']
+                     'fax', 'company']
 
     _user_readonly_inlines = []
     _inlines = []
@@ -404,7 +412,7 @@ class PersonAdmin(ReadOnlyAdmin):
         out.writerow(['userid', 'companyname', 'country',
                       'contactname', 'contactemail'])
         for person in models.Person.objects.all():
-            org = person.organisation
+            org = person.company
             account = org.account
             if account is None:
                 continue
@@ -424,10 +432,64 @@ class AccountAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Country)
-admin.site.register(models.Organisation, OrganisationAdmin)
-admin.site.register(models.Person, PersonAdmin)
-admin.site.register(models.Obligation)
 admin.site.register(models.ApiKey)
+
+admin.site.unregister(User)
+
+
+class UserAdminForm(UserChangeForm):
+    obligations = forms.ModelMultipleChoiceField(
+        queryset=models.Obligation.objects.all(),
+        required=False,
+        widget=FilteredSelectMultiple(
+            verbose_name='Obligations',
+            is_stacked=False
+        )
+    )
+
+    class Meta:
+        model = User
+
+    def __init__(self, *args, **kwargs):
+        super(UserAdminForm, self).__init__(*args, **kwargs)
+
+        if self.instance:
+          self.fields['obligations'].initial = self.instance.obligations.all()
+
+    def save(self, commit=True):
+        user = super(UserAdminForm, self).save(commit=False)
+
+        user.obligations = self.cleaned_data['obligations']
+
+        if commit:
+            user.save()
+            user.save_m2m()
+
+        return user
+
+
+class CustomUserAdmin(UserAdmin):
+    form = UserAdminForm
+
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
+        (_('Obligations'), {'fields': ('obligations',)}),
+    )
+
+
+admin.site.register(User, CustomUserAdmin)
+
+if not settings.ADMIN_ALL_BDR_TABLES:
+    admin.site.unregister(django_settings.models.Setting)
+    admin.site.unregister(post_office.models.EmailTemplate)
+
 if settings.ADMIN_ALL_BDR_TABLES:
     admin.site.register(models.Account, AccountAdmin)
     admin.site.register(models.NextAccountId)
+    admin.site.register(models.Company, OrganisationAdmin)
+    admin.site.register(models.Person, PersonAdmin)
+    admin.site.register(models.Obligation)

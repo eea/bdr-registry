@@ -1,0 +1,41 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load widget_tweaks %}
+{% load assets %}
+
+
+{% block head %}
+
+  {{ block.super }}
+
+  <script src="{{ STATIC_URL }}ckeditor/ckeditor.js"></script>
+
+  <style type="text/css">
+    label {
+      padding-bottom: 7px;
+      display: block;
+    }
+  </style>
+
+{% endblock %}
+
+
+{% block content %}
+
+  {% include 'bdr_management/_edit_header.html' %}
+
+  <form method="post" class="push-top">
+    {% csrf_token %}
+    <label for="{{ form.text.auto_id }}">
+      <strong>{{ form.text.label }}</strong></label>
+    {% render_field form.text %}
+
+    <div class="btn-toolbar">
+      <button type="submit" class="btn-green">Save</button>
+      <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
+    </div>
+
+  <script>CKEDITOR.replace('id_text')</script>
+
+  </form>
+
+{% endblock %}

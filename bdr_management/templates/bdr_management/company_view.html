@@ -1,0 +1,97 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  <div class="overflow">
+
+    {% include 'bdr_management/_view.html' %}
+
+    {% if user|has_permission:object %}
+      <div class="box-small no-borders pull-left"
+           style="margin-left:24px;">
+        {% if management %}
+          <p class="h4 no-margins">Actions:</p>
+          <ul>
+            {% if object.account %}
+            <li>
+              <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
+                {% trans "Reset password" %}</a>
+            </li>
+            <li>
+              <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
+                {% trans "Create reporting folder" %}</a>
+            </li>
+            {% endif %}
+
+            {% if not object.account %}
+            <li>
+              <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
+                {% trans "Create account" %}</a>
+            </li>
+            {% endif %}
+          </ul>
+        {% endif %}
+
+        <p class="h4 no-margins">{% trans "Reporting years" %}:</p>
+        <ul>
+          {% for year in reporting_years %}
+            <li>{{ year }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+
+  <h2>{% trans "Comments" %}</h2>
+
+  <ul class="no-list">
+  {% for comment in object.comments.all %}
+    <li class="comment push-bottom">
+      {{ comment.text|safe }}
+      <div class="small muted">
+        <!-- Date -->
+        {{ comment.created|date:"d b Y" }}
+        <!-- Actions -->
+        {% if user|has_permission:object %}
+        &ensp;|&ensp;
+        <a class='btn-text delete-link' 
+           href="{% url comment_delete_route pk=company.pk comment_pk=comment.pk %}">
+          {% trans "Delete comment" %}
+        </a>
+        {% endif %}
+      </div>
+    </li>
+  {% empty %}
+    <p>{% trans "There are no comments for this company." %}</p>
+  {% endfor %}
+  </ul>
+  {% if user|has_permission:object %}
+  <div class="btn-toolbar">
+    <a href="{{ comment_add_url}}" class="btn">
+      {% trans "Add comment" %}</a>
+  </div>
+  {% endif %}
+
+
+  <h2>{% trans "Persons" %}</h2>
+  <ul>
+    {% for person in object.people.all %}
+      <li>
+        <a href="{% url person_route pk=person.pk %}"
+           class="bold">
+          {{ person.formal_name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% if user|has_permission:object %}
+    <div class="btn-toolbar">
+      <a href="{{ person_add_url }}" class="btn">
+        {% trans "Add a new person" %}</a>
+    </div>
+  {% endif %}
+
+
+{% endblock %}

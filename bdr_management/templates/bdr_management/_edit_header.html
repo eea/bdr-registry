@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<h1>{{ title }}</h1>
+
+
+{% if form.errors or person_form.errors %}
+  <div class="warning">
+    <strong>{% trans "Please correct invalid fields before continuing." %}</strong>
+  </div>
+{% endif %}

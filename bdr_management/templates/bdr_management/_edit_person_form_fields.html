@@ -1,0 +1,45 @@
+{% load utils %}
+{% load i18n %}
+{% load widget_tweaks %}
+
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.first_name|custom_render_field }}
+    {{ form.family_name|custom_render_field }}
+    
+    {% if form.company %}
+    {{ form.company|custom_render_field }}
+    {% endif %}
+  </div>
+  <div class="col-sm-6">
+    {{ form.title|custom_render_field }}
+  </div>
+</div>
+
+<hr />
+
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.email|custom_render_field }}
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-6">
+    {{ form.phone|custom_render_field }}
+  </div>
+  <div class="col-sm-6">
+    {{ form.fax|custom_render_field }}
+  </div>
+</div>
+
+<button type="button" 
+        class="btn-text"
+        id="toggle-morePhones">Add more telephone numbers</button>
+<div id="morePhones" class="row hidden">
+  <div class="col-sm-6">
+    {{ form.phone2|custom_render_field }}
+  </div>
+  <div class="col-sm-6">
+    {{ form.phone3|custom_render_field }}
+  </div>
+</div>
