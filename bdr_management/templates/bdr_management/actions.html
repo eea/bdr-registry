@@ -19,8 +19,12 @@
       </tr>
     </thead>
     <tr>
-      <td><a class="btn btn-green" href="{% url 'management:copy_report_status' %}">{% trans "Copy data" %}</a></td>
+      <td><a href="{% url 'management:copy_report_status' %}">{% trans "Copy reporting status data" %}</a></td>
       <td>Copy reporting status from {{ last_year }} to {{ curr_year }}</td>
+    </tr>
+  <tr>
+      <td><a href="{% url 'management:companies_export_json' %}">{% trans "JSON export" %}</a></td>
+      <td>{% trans "Export all companies with their persons to JSON" %}</td>
     </tr>
 
   </table>

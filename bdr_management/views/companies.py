@@ -1,5 +1,6 @@
 import django_settings
 import requests
+import json
 from datetime import date, timedelta
 
 from django.conf import settings
@@ -489,8 +490,8 @@ class CreateReportingFolder(views.GroupRequiredMixin,
                         pk=self.company.pk)
 
 
-class CompaniesExport(views.StaffuserRequiredMixin,
-                      generic.View):
+class CompaniesExcelExport(views.StaffuserRequiredMixin,
+                           generic.View):
 
     raise_exception = True
 
