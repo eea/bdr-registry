@@ -71,6 +71,8 @@ urlpatterns = patterns(
 
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
+    url(r'^api/', include('bdr_registry_api.urls',
+                          namespace='api')),
     url(r'^edit_company$', views.edit_company),
     url(r'^company/', include(company_patterns)),
     url(r'^person/', include(person_patterns)),
