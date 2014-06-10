@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from solo.models import SingletonModel
 import local
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
@@ -224,3 +225,7 @@ class ReportingStatus(models.Model):
     class Meta:
         unique_together = ('company', 'reporting_year',)
 
+
+class SiteConfiguration(SingletonModel):
+
+    reporting_year = models.PositiveIntegerField()

@@ -1,22 +1,28 @@
 from django.conf import settings
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
 from django.views import generic
 
 from braces import views
-import django_settings
 
 from bdr_management.base import Breadcrumb
-from django_settings.models import Setting
+from bdr_management import base
 from bdr_management.forms.settings_form import SettingsForm
+from bdr_registry.models import SiteConfiguration
 
 
 class Settings(views.StaffuserRequiredMixin,
-               generic.ListView):
+               base.ModelTableViewMixin,
+               generic.DetailView):
 
     template_name = 'bdr_management/settings_view.html'
-    queryset = Setting.objects.all()
     raise_exception = True
+    model = SiteConfiguration
+    exclude = ('id',)
+
+    def get_object(self, queryset=None):
+        return SiteConfiguration.objects.get()
 
     def get_context_data(self, **kwargs):
         breadcrumbs = [
@@ -25,22 +31,29 @@ class Settings(views.StaffuserRequiredMixin,
         ]
         data = super(Settings, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
+        data['management'] = True
         return data
+
+    def get_edit_url(self):
+        return reverse('management:settings_edit')
+
+    def get_back_url(self):
+        return reverse('home')
 
 
 class SettingsEdit(views.GroupRequiredMixin,
-                   generic.FormView):
+                   SuccessMessageMixin,
+                   generic.UpdateView):
 
     template_name = 'bdr_management/settings_edit.html'
     group_required = settings.BDR_HELPDESK_GROUP
     form_class = SettingsForm
     success_url = reverse_lazy('management:settings_view')
     raise_exception = True
+    success_message = _('Settings edited successfully')
 
-    def get_initial(self):
-        return {
-            'reporting_year': django_settings.get('Reporting year')
-        }
+    def get_object(self, queryset=None):
+        return SiteConfiguration.objects.get()
 
     def get_context_data(self, **kwargs):
         settings_url = reverse('management:settings_view')
@@ -52,4 +65,5 @@ class SettingsEdit(views.GroupRequiredMixin,
         data = super(SettingsEdit, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = settings_url
+        data['management'] = True
         return data

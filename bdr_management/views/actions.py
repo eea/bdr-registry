@@ -6,12 +6,12 @@ from django.utils.translation import ugettext as _
 from django.views import generic
 
 from braces import views
-import django_settings
 from django.contrib import messages
 from bdr_management import backend
 
 from bdr_management.base import Breadcrumb
-from bdr_registry.models import ReportingYear, Company, ReportingStatus, Person
+from bdr_registry.models import (ReportingYear, Company, ReportingStatus,
+                                 Person, SiteConfiguration)
 
 
 class Actions(views.StaffuserRequiredMixin,
@@ -21,13 +21,14 @@ class Actions(views.StaffuserRequiredMixin,
     raise_exception = True
 
     def get_context_data(self, **kwargs):
+        config = SiteConfiguration.objects.get()
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb('', _('Actions')),
         ]
         data = super(Actions, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
-        curr_year = django_settings.get("Reporting year")
+        curr_year = config.reporting_year
         last_year = curr_year - 1
         data['curr_year'] = curr_year
         data['last_year'] = last_year
@@ -42,7 +43,7 @@ class CopyReportingStatus(views.StaffuserRequiredMixin,
     def get(self, request):
         copied = 0
 
-        curr_year_int = django_settings.get('Reporting year')
+        curr_year_int = SiteConfiguration.objects.get().reporting_year
         prev_year_int = curr_year_int - 1
 
         try:

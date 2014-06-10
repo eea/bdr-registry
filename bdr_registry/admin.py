@@ -19,9 +19,9 @@ from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext, ugettext_lazy as _
 from django.http import HttpResponse
-import django_settings
 import post_office
 import requests
+from solo.admin import SingletonModelAdmin
 import models
 from ldap_editor import create_ldap_editor
 import audit
@@ -29,7 +29,6 @@ import audit
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
-
 
 
 class ReadOnlyAdmin(admin.ModelAdmin):
@@ -484,7 +483,6 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 
 if not settings.ADMIN_ALL_BDR_TABLES:
-    admin.site.unregister(django_settings.models.Setting)
     admin.site.unregister(post_office.models.EmailTemplate)
 
 if settings.ADMIN_ALL_BDR_TABLES:
@@ -493,3 +491,4 @@ if settings.ADMIN_ALL_BDR_TABLES:
     admin.site.register(models.Company, OrganisationAdmin)
     admin.site.register(models.Person, PersonAdmin)
     admin.site.register(models.Obligation)
+    admin.site.register(models.SiteConfiguration, SingletonModelAdmin)

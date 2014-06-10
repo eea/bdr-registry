@@ -1,22 +1,24 @@
-from django.forms import Form, IntegerField
-from django.utils.translation import ugettext as _
+from django.forms import ModelForm
 from django.conf import settings
-import django_settings
-from bdr_registry.models import ReportingYear
+from bdr_management.forms import set_empty_label
+from bdr_registry.models import ReportingYear, SiteConfiguration
 
 
-class SettingsForm(Form):
+class SettingsForm(ModelForm):
 
-    reporting_year = IntegerField(label=_('Reporting year'))
+    class Meta():
+        model = SiteConfiguration
+        exclude = ('id',)
 
-    def is_valid(self):
-        valid = super(SettingsForm, self).is_valid()
-        if valid:
-            selected_year = self.cleaned_data['reporting_year']
-            django_settings.set('Integer', 'Reporting year',
-                                selected_year)
+    def __init__(self, *args, **kwargs):
+        super(SettingsForm, self).__init__(*args, **kwargs)
+        set_empty_label(self.fields, '')
 
-            for year in range(settings.FIRST_REPORTING_YEAR, selected_year + 1):
-                ReportingYear.objects.get_or_create(year=year)
+    def save(self, commit=True):
+        config = super(SettingsForm, self).save(commit)
 
-        return valid
+        for year in range(settings.FIRST_REPORTING_YEAR,
+                          config.reporting_year + 1):
+            ReportingYear.objects.get_or_create(year=year)
+
+        return config

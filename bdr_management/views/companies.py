@@ -1,4 +1,3 @@
-import django_settings
 import requests
 from datetime import date, timedelta
 
@@ -18,7 +17,8 @@ from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
-from bdr_registry.models import Company, Account, ReportingYear, ReportingStatus
+from bdr_registry.models import (Company, Account, ReportingYear,
+                                 ReportingStatus, SiteConfiguration)
 
 
 class Companies(views.StaffuserRequiredMixin,
@@ -109,11 +109,13 @@ class CompaniesBaseView(base.ModelTableViewMixin,
     exclude = ('id', )
 
     def get_context_data(self, **kwargs):
+        reporting_year = SiteConfiguration.objects.get().reporting_year
+
         data = super(CompaniesBaseView, self).get_context_data()
         company = self.object
         statuses = company.reporting_statuses.filter(
             reporting_year__year__gte=settings.FIRST_REPORTING_YEAR).filter(
-            reporting_year__year__lte=django_settings.get('Reporting year')
+            reporting_year__year__lte=reporting_year
         )
         years = [unicode(stat.reporting_year) for stat in statuses
                  if stat.reported]
@@ -203,7 +205,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
     raise_exception = True
 
     def set_reporting_years(self, data):
-        curr_year = django_settings.get('Reporting year')
+        curr_year = SiteConfiguration.objects.get().reporting_year
         years = ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         years_dict = {}
@@ -242,7 +244,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         return reverse('management:companies_view', kwargs=self.kwargs)
 
     def post(self, request, *args, **kwargs):
-        curr_year = django_settings.get('Reporting year')
+        curr_year = SiteConfiguration.objects.get().reporting_year
         reporting_years = ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         for year in reporting_years:

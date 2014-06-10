@@ -80,7 +80,7 @@ INSTALLED_APPS = (
     'django_assets',
     'post_office',
     'bdr_management',
-    'django_settings',
+    'solo',
     'bdr_registry',
 )
 
@@ -148,9 +148,5 @@ if 'test' in sys.argv:
         from test_settings import *
     except ImportError:
         pass
-
-DJANGO_SETTINGS = {
-   'Reporting year': ('Integer', 2014),
-}
 
 FIRST_REPORTING_YEAR = 2012

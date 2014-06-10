@@ -1,13 +1,13 @@
 from collections import defaultdict
 
 from cStringIO import StringIO
-import django_settings
 import xlwt
 
 from django.conf import settings
 from post_office import mail
 
 from bdr_registry.ldap_editor import create_ldap_editor
+from bdr_registry.models import SiteConfiguration
 
 
 def sync_accounts_with_ldap(accounts):
@@ -27,11 +27,13 @@ def sync_accounts_with_ldap(accounts):
 
 def send_password_email_to_people(company):
 
+    config = SiteConfiguration.objects.get()
+
     template = company.obligation.email_template
     bcc = company.obligation.bcc.split(',')
     bcc = [s.strip() for s in bcc]
     for person in company.people.all():
-        reporting_year = django_settings.get('Reporting year')
+        reporting_year = config.reporting_year
         mail.send(recipients=[person.email],
                   bcc=bcc,
                   sender=settings.BDR_EMAIL_FROM,
