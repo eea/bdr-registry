@@ -26,7 +26,6 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
-from post_office.models import EmailTemplate
 import xmltodict
 import models
 
@@ -418,7 +417,8 @@ def send_notification_email(context):
         Q(obligations__pk=company.obligation.pk))
         if valid_email(u.email)]
 
-    template = EmailTemplate.objects.get(id=5)
+    config = models.SiteConfiguration.objects.get()
+    template = config.self_register_email_template
 
     send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
          template=template, context=context, priority='now')

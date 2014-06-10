@@ -393,7 +393,8 @@
     "pk": 1,
     "model": "bdr_registry.siteconfiguration",
     "fields": {
-        "reporting_year": 2014
+        "reporting_year": 2014,
+        "self_register_email_template": 5
     }
 }
 ]

@@ -229,3 +229,4 @@ class ReportingStatus(models.Model):
 class SiteConfiguration(SingletonModel):
 
     reporting_year = models.PositiveIntegerField()
+    self_register_email_template = models.ForeignKey(EmailTemplate)
