@@ -1,14 +1,16 @@
 import random
 import string
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.encoding import force_text
 from solo.models import SingletonModel
 import local
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
-from post_office.validators import validate_comma_separated_email_list
 
 
 def generate_key(size=20):
@@ -37,6 +39,19 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
+def validate_comma_separated_email_list(value):
+    """
+    Validate every email address in a comma separated list of emails.
+    """
+    value = force_text(value)
+
+    emails = [email.strip() for email in value.split(',')]
+
+    for email in emails:
+        try:
+            validate_email(email)
+        except ValidationError:
+            raise ValidationError('Invalid email: %s' % email, code='invalid')
 
 class Obligation(models.Model):
 
