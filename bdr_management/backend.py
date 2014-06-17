@@ -8,6 +8,7 @@ from post_office import mail
 
 from bdr_registry.ldap_editor import create_ldap_editor
 from bdr_registry.models import SiteConfiguration
+from bdr_registry.views import valid_email
 
 
 def sync_accounts_with_ldap(accounts):
@@ -31,7 +32,7 @@ def send_password_email_to_people(company):
 
     template = company.obligation.email_template
     bcc = company.obligation.bcc.split(',')
-    bcc = [s.strip() for s in bcc]
+    bcc = [s.strip() for s in bcc if valid_email(s.strip())]
     for person in company.people.all():
         reporting_year = config.reporting_year
         mail.send(recipients=[person.email],

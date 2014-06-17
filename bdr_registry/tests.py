@@ -3,8 +3,8 @@ from contextlib import contextmanager
 
 from django.test import TestCase, TransactionTestCase
 from django.core import mail
-from django.contrib.auth.models import User
-from django.contrib.admin import helpers
+from django.contrib.auth.models import User, Group
+from django.conf import settings
 from bdr_registry import models
 from mock import patch
 
@@ -108,6 +108,20 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_mail_is_sent_after_successful_self_registration(self):
+        user1 = User.objects.create(username='user1', password='pass1',
+                                    email='example@example.com',
+                                    is_staff=True)
+        user2 = User.objects.create(username='user2', password='pass2',
+                                    email='example@example.com',
+                                    is_staff=True)
+
+        bdr_group = Group.objects.get_or_create(
+            name=settings.BDR_HELPDESK_GROUP)[0]
+        bdr_group.user_set.add(user1)
+        bdr_group.user_set.add(user2)
+
+        self.fgas.admins = [user1]
+
         self.client.post('/self_register', self.prepare_form_data())
         self.assertEqual(len(mail.outbox), 1)
 
