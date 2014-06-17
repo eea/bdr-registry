@@ -327,10 +327,11 @@ class OrganisationAdmin(ReadOnlyAdmin):
     user_readonly = ['EORI_LABEL', 'name', 'date_registered', 'active',
                      'addr_street', 'addr_place1', 'addr_postalcode',
                      'addr_place2', 'website', 'eori', 'vat_number', 'country',
-                     'obligation', 'account', 'comments']
+                     'obligation', 'comments']
 
     _user_readonly_inlines = [CommentReadOnlyInline, PersonReadOnlyInline]
     _inlines = [CommentInline, PersonInline]
+    exclude = ('account',)
 
     list_filter = [
         ('date_registered', admin.DateFieldListFilter),
