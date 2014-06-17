@@ -244,4 +244,15 @@ class ReportingStatus(models.Model):
 class SiteConfiguration(SingletonModel):
 
     reporting_year = models.PositiveIntegerField()
-    self_register_email_template = models.ForeignKey(EmailTemplate)
+    self_register_email_template = models.ForeignKey(
+        EmailTemplate,
+        related_name='self_register_conf')
+    notify_add_file_template = models.ForeignKey(
+        EmailTemplate,
+        related_name='notify_add_file_conf')
+    notify_add_feedback_template = models.ForeignKey(
+        EmailTemplate,
+        related_name='notify_add_feedback_conf')
+    notify_release_template = models.ForeignKey(
+        EmailTemplate,
+        related_name='notify_release_conf')

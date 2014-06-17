@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from post_office.mail import send
 from django.conf import settings
-from bdr_registry.models import Account
+from bdr_registry.models import Account, SiteConfiguration
 from bdr_registry.views import valid_email
 
 
@@ -15,7 +15,10 @@ def notify_add_file(request, *args, **kwargs):
     recipients = [p.email for p in company.people.all()
                   if valid_email(p.email)]
 
-    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM)
+    conf = SiteConfiguration.objects.get()
+    template = conf.notify_add_file_template
+    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
+         template=template)
     return HttpResponse()
 
 
@@ -25,7 +28,10 @@ def notify_add_feedback(request, *args, **kwargs):
     recipients = [p.email for p in company.people.all()
                   if valid_email(p.email)]
 
-    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM)
+    conf = SiteConfiguration.objects.get()
+    template = conf.notify_add_feedback_template
+    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
+         template=template)
     return HttpResponse()
 
 
@@ -38,5 +44,8 @@ def notify_release(request, *args, **kwargs):
         Q(obligations__pk=company.obligation.pk))
         if valid_email(u.email)]
 
-    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM)
+    conf = SiteConfiguration.objects.get()
+    template = conf.notify_release_template
+    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
+         template=template)
     return HttpResponse()

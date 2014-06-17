@@ -329,6 +329,45 @@
     }
 },
 {
+    "pk": 6,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-06-17T10:28:30Z",
+        "name": "Notify add file",
+        "created": "2014-06-17T10:28:30Z",
+        "html_content": "<p>File added for {{ company }}</p>",
+        "description": "",
+        "content": "",
+        "subject": "New file added"
+    }
+},
+{
+    "pk": 7,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-06-17T10:28:30Z",
+        "name": "Notify add feedback",
+        "created": "2014-06-17T10:28:30Z",
+        "html_content": "<p>Feedback added for {{ company }}</p>",
+        "description": "",
+        "content": "",
+        "subject": "New feeback added"
+    }
+},
+{
+    "pk": 8,
+    "model": "post_office.emailtemplate",
+    "fields": {
+        "last_updated": "2014-06-17T10:28:30Z",
+        "name": "Notify release",
+        "created": "2014-06-17T10:28:30Z",
+        "html_content": "<p>Release for {{ company }}</p>",
+        "description": "",
+        "content": "",
+        "subject": "Release"
+    }
+},
+{
     "pk": 1,
     "model": "bdr_registry.obligation",
     "fields": {
@@ -394,7 +433,10 @@
     "model": "bdr_registry.siteconfiguration",
     "fields": {
         "reporting_year": 2014,
-        "self_register_email_template": 5
+        "self_register_email_template": 5,
+        "notify_add_file_template": 6,
+        "notify_add_feedback_template": 7,
+        "notify_release_template": 8
     }
 }
 ]
