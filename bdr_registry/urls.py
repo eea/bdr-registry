@@ -69,6 +69,7 @@ urlpatterns = patterns(
 
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
+    url(r'^api/notify/', include('notify_api.urls')),
     url(r'^edit_company$', views.edit_company),
     url(r'^organisation/all/?$',
         views.company_all),
