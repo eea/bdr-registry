@@ -182,7 +182,7 @@ def company_all(request):
         item['comment'] = [comment_data(c) for c in company.comments.all()]
 
         data.append(item)
-    xml = xmltodict.unparse({'companies': {'company': data}})
+    xml = xmltodict.unparse({'organisations': {'organisation': data}})
     return HttpResponse(xml, content_type='application/xml')
 
 

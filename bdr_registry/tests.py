@@ -134,10 +134,10 @@ class ApiTest(TestCase):
         self.fgas = models.Obligation.objects.get(code='fgas')
 
     def test_response_empty_when_no_companies_in_db(self):
-        resp = self.client.get('/company/all?apikey=' + self.apikey)
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companies></companies>')
+                    '<organisations></organisations>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_single_company_from_db(self):
@@ -156,15 +156,15 @@ class ApiTest(TestCase):
         comment = models.Comment.objects.create(company=org,
                                                 text=comment_text)
 
-        resp = self.client.get('/company/all?apikey=' + self.apikey)
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
 
         # By default, MySQL DateTime doesn't store fractional seconds,
         # so we'll get them back trimmed
         expected_comment_created = str(comment.created.replace(microsecond=0))
 
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companies>'
-                      '<company>'
+                    '<organisations>'
+                      '<organisation>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -186,8 +186,8 @@ class ApiTest(TestCase):
                           '<text>A comment</text>'
                           '<created>' + expected_comment_created + '</created>'
                         '</comment>'
-                      '</company>'
-                    '</companies>')
+                      '</organisation>'
+                    '</organisations>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_all_person_data(self):
@@ -204,10 +204,10 @@ class ApiTest(TestCase):
                                      phone3="557 1234",
                                      fax="555 6789")
 
-        resp = self.client.get('/company/all?apikey=' + self.apikey)
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companies>'
-                      '<company>'
+                    '<organisations>'
+                      '<organisation>'
                         '<pk>' + str(org.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -227,8 +227,8 @@ class ApiTest(TestCase):
                           '<phone>557 1234</phone>'
                           '<fax>555 6789</fax>'
                         '</person>'
-                      '</company>'
-                    '</companies>')
+                      '</organisation>'
+                    '</organisations>')
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_company_with_matching_uid(self):
@@ -238,12 +238,12 @@ class ApiTest(TestCase):
         models.Company.objects.create(account=account1, **kwargs)
         org2 = models.Company.objects.create(account=account2, **kwargs)
 
-        resp = self.client.get('/company/all'
+        resp = self.client.get('/organisation/all'
                                '?account_uid=fgas0002'
                                '&apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
-                    '<companies>'
-                      '<company>'
+                    '<organisations>'
+                      '<organisation>'
                         '<pk>' + str(org2.pk) + '</pk>'
                         '<name>Teh company</name>'
                         '<addr_street>teh street</addr_street>'
@@ -255,10 +255,10 @@ class ApiTest(TestCase):
                         '<account>fgas0002</account>'
                         '<obligation name="F-gases">fgas</obligation>'
                         '<country name="Denmark">dk</country>'
-                      '</company>'
-                    '</companies>')
+                      '</organisation>'
+                    '</organisations>')
         self.assertEqual(resp.content, expected)
 
     def test_requests_with_no_api_key_are_rejected(self):
-        resp = self.client.get('/company/all')
+        resp = self.client.get('/organisation/all')
         self.assertEqual(resp.status_code, 403)

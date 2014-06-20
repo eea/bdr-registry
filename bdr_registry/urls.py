@@ -15,8 +15,6 @@ company_patterns = patterns(
 
     url(r'^add/?$',
         views.CompanyCreate.as_view()),
-    url(r'^all/?$',
-        views.company_all),
 
     url(r'^(?P<pk>\d+)/?$',
         management_views.CompaniesUpdateView.as_view(),
@@ -72,6 +70,8 @@ urlpatterns = patterns(
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
     url(r'^edit_company$', views.edit_company),
+    url(r'^organisation/all/?$',
+        views.company_all),
     url(r'^company/', include(company_patterns)),
     url(r'^person/', include(person_patterns)),
     url(r'^admin/', include(admin.site.urls)),
