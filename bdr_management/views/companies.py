@@ -472,7 +472,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
             'account_uid': self.company.account.uid,
             'organisation_name': self.company.name,
         }
-        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH)
+        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
 
         if resp.status_code != 200:
             messages.error(request, "BDR API request failed: %s" % resp)
