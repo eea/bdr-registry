@@ -28,9 +28,9 @@ they can update the company's contact details.
 
 Helpdesk
 ~~~~~~~~
-All helpdesk actions are performed via the `Django admin pages`_.
+All helpdesk actions are performed via the `bdr management pages`_.
 
-.. _Django admin pages: https://bdr.eionet.europa.eu/registry/admin/
+.. _bdr management pages: https://bdr.eionet.europa.eu/registry/management/
 
 Helpdesk reviews self-registered organisations and creates LDAP accounts
 and BDR reporting folders for them. These actions are performed via the
@@ -39,11 +39,11 @@ email notifications, containing the LDAP username and password, can be
 sent to company contacts when the accounts are created, or at a
 later time.
 
-Helpdesk can download CSV reports of organisations_ and `contact
+Helpdesk can download CSV reports of `companies`_ and `contact
 persons`_.
 
-.. _organisations: https://bdr.eionet.europa.eu/registry/admin/bdr_registry/organisation/export
-.. _contact persons: https://bdr.eionet.europa.eu/registry/admin/bdr_registry/person/export
+.. _companies: https://bdr.eionet.europa.eu/registry/management/companies/export
+.. _contact persons: https://bdr.eionet.europa.eu/registry/management/person/export
 
 
 Architecture
@@ -54,12 +54,12 @@ Authentication
 Authentication is performed using the Django authentication system
 against the same LDAP server as the `BDR Zope` application.
 
-User permissions for `bdr-registry` are configured via the `admin
-interface`_. The `helpdesk` group grants permission to can edit/delete
+User permissions for `bdr-registry` are configured via the `bdr management`_.
+The `helpdesk` group grants permission to can edit/delete
 any company, create/update LDAP accounts, reset passwords, and
 create reporting folders in the `BDR Zope` application.
 
-.. _admin interface: https://bdr.eionet.europa.eu/registry/admin/
+.. _bdr management: https://bdr.eionet.europa.eu/registry/management/
 
 Company accounts have no special roles configured in
 `bdr-registry`; they can edit their own company's contact details
@@ -81,7 +81,7 @@ is granted Manager role on the entire `BDR Zope` application so it can
 create reporting folders.
 
 `WebQ`_ calls a `bdr-registry` API to fetch company details. This
-API is protected using access tokens configured in the admin interface.
+API is protected using access tokens configured in the management interface.
 
 When a user visits `bdr-registry` coming from the `BDR Zope`
 application, and the user is not yet authenticated in `bdr-registry`,
