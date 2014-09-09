@@ -53,11 +53,19 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_cas.middleware.CASMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'bdr_registry.local.ThreadLocalRequestMiddleware',
 )
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas.backends.CASBackend',
+)
+CAS_SERVER_URL = 'https://sso.eionet.europa.eu'
+CAS_LOGOUT_COMPLETELY = True
 
 ROOT_URLCONF = 'bdr_registry.urls'
 
@@ -82,6 +90,7 @@ INSTALLED_APPS = (
     'bdr_management',
     'solo',
     'bdr_registry',
+    'django_cas',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [

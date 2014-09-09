@@ -16,3 +16,4 @@ South==0.8.4
 webassets==0.9
 xlwt==0.7.5
 xmltodict==0.8.7
+django-cas-sso==1.1.0

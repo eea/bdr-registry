@@ -54,10 +54,9 @@ urlpatterns = patterns(
     '',
 
     url(r'^$', views.home, name='home'),
-    url(r'^accounts/login/?$', 'django.contrib.auth.views.login',
-        {'template_name': 'login.html'},
+    url(r'^accounts/login/?$', 'django_cas.views.login',
         name='login'),
-    url(r'^accounts/logout/?$', views.logout_view, name='logout'),
+    url(r'^accounts/logout/?$', 'django_cas.views.logout', name='logout'),
 
     url(r'^self_register/?$', views.SelfRegister.as_view(),
         name='self_register'),
