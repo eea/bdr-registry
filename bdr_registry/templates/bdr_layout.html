@@ -70,9 +70,15 @@
         </div>
         <div id="righttools">
           {% if user.is_anonymous %}
-            <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
+            <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "Login CAS" %}</a>
           {% else %}
             <a id="logoutlink" href="{% url 'logout' %}"
+              >{% trans "Logout" %} ({{ user.username }})</a>
+          {% endif %}
+          {% if user.is_anonymous %}
+            <a id="loginlink" href="{% url 'login' %}?ecas=true&next={{ request.get_full_path }}">{% trans "Login ECAS" %}</a>
+          {% else %}
+            <a id="logoutlink" href="{% url 'logout' %}?ecas=true"
               >{% trans "Logout" %} ({{ user.username }})</a>
           {% endif %}
           <a id="printlink" title="{% trans 'Print this page' %}" href="javascript:this.print();"><span>{% trans "Print" %}</span></a>

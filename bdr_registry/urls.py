@@ -54,9 +54,9 @@ urlpatterns = patterns(
     '',
 
     url(r'^$', views.home, name='home'),
-    url(r'^accounts/login/?$', 'django_cas.views.login',
+    url(r'^accounts/login/?$', 'django_ecas.views.login',
         name='login'),
-    url(r'^accounts/logout/?$', 'django_cas.views.logout', name='logout'),
+    url(r'^accounts/logout/?$', 'django_ecas.views.logout', name='logout'),
 
     url(r'^self_register/?$', views.SelfRegister.as_view(),
         name='self_register'),

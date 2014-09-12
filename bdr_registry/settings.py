@@ -63,8 +63,10 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'django_cas.backends.CASBackend',
+    'django_ecas.backends.ECASBackend',
 )
 CAS_SERVER_URL = 'https://sso.eionet.europa.eu'
+ECAS_SERVER_URL = 'https://webgate.ec.europa.eu/cas'
 CAS_LOGOUT_COMPLETELY = True
 
 ROOT_URLCONF = 'bdr_registry.urls'
@@ -91,6 +93,7 @@ INSTALLED_APPS = (
     'solo',
     'bdr_registry',
     'django_cas',
+    'django_ecas',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = [
