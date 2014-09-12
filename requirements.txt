@@ -17,4 +17,7 @@ webassets==0.9
 xlwt==0.7.5
 xmltodict==0.8.7
 django-cas-sso==1.1.0
--e git@git.edw.ro:/var/local/git/django_ecas.git#egg=django_ecas
+# yes, we need this to enable inheritance adn overriding at module level rather than class level...
+mock==1.0.1
+#-e /home/daniel/work/bdr/src/django_ecas#egg=django_ecas
+-e git+git@git.edw.ro:/var/local/git/django_ecas.git#egg=django_ecas
