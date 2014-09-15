@@ -65,9 +65,10 @@ AUTHENTICATION_BACKENDS = (
     'django_cas.backends.CASBackend',
     'django_ecas.backends.ECASBackend',
 )
-CAS_SERVER_URL = 'https://sso.eionet.europa.eu'
-ECAS_SERVER_URL = 'https://webgate.ec.europa.eu/cas'
-ECAS_SERVER_VALIDATE_URL = 'https://ecas.ec.europa.eu/cas'
+# make sure you add trailing '/' else urljoin will strip the last path part
+CAS_SERVER_URL = 'https://sso.eionet.europa.eu/'
+ECAS_SERVER_URL = 'https://webgate.ec.europa.eu/cas/'
+ECAS_SERVER_VALIDATE_URL = 'https://ecas.ec.europa.eu/cas/'
 CAS_LOGOUT_COMPLETELY = True
 
 ROOT_URLCONF = 'bdr_registry.urls'
