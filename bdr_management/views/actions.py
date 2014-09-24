@@ -163,7 +163,7 @@ class PersonsExport(views.StaffuserRequiredMixin,
             account = org.account
             if account is None:
                 continue
-            rows.append([v.encode('utf-8') for v in [
+            rows.append([v.encode('utf-8') if v else '' for v in [
                 account.uid,
                 org.name,
                 org.country.name,
