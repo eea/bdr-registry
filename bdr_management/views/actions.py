@@ -154,7 +154,8 @@ class PersonsExport(views.StaffuserRequiredMixin,
     def get(self, request):
 
         header = ['userid', 'companyname', 'country',
-                  'contactname', 'contactemail']
+                  'contactname', 'contactemail', 'phone', 'phone2', 'phone3',
+                  'fax']
         rows = []
 
         for person in Person.objects.all():
@@ -168,6 +169,10 @@ class PersonsExport(views.StaffuserRequiredMixin,
                 org.country.name,
                 u"{p.title} {p.first_name} {p.family_name}".format(p=person),
                 person.email,
+                person.phone,
+                person.phone2,
+                person.phone3,
+                person.fax,
             ]])
         xls_doc = backend.generate_excel(header, rows)
         return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
