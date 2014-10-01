@@ -52,7 +52,13 @@ class PersonsFilter(views.StaffuserRequiredMixin,
         return result
 
     def get_queryset(self, opt):
-        queryset = Person.objects.all()
+
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        queryset = (Person.objects.
+                    filter(company__obligation__id__in=user_obligations).
+                    all())
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(

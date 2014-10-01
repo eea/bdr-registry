@@ -29,9 +29,17 @@ class CompanyFilters(Form):
     country = ModelChoiceField(queryset=Country.objects.all(),
                                empty_label='All')
 
-    obligation = ModelChoiceField(queryset=Obligation.objects.all(),
-                                  empty_label='All')
+    obligation = ModelChoiceField(
+        queryset=Obligation.objects.all(),
+        empty_label='All')
 
     account = ChoiceField(choices=ACCOUNT_CHOICES)
 
     created = ChoiceField(choices=CREATED_CHOICES)
+
+    def __init__(self, *args, **kwargs):
+        obligations = kwargs.pop('obligations', [])
+        super(CompanyFilters, self).__init__(*args, **kwargs)
+        self.fields['obligation'].queryset = (
+                        self.fields['obligation'].queryset.
+                        filter(pk__in=obligations))

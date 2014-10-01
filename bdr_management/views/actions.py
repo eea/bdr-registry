@@ -54,7 +54,14 @@ class CopyReportingStatus(views.StaffuserRequiredMixin,
                            _('Previous or current year data not found'))
             return HttpResponseRedirect(reverse('management:actions'))
 
-        for company in Company.objects.all():
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        companies = (Company.objects.
+                    filter(obligation__id__in=user_obligations).
+                    all())
+
+        for company in companies:
 
             reporting_stat, created = company.reporting_statuses.get_or_create(
                 company=company,
@@ -83,7 +90,12 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
     def get(self, request):
 
         companies = []
-        for company in Company.objects.all():
+
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        for company in (Company.objects.
+                        filter(obligation__id__in=user_obligations).all()):
 
             people = []
             for person in company.people.all():
@@ -126,7 +138,15 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
                   'addr_street', 'addr_place1', 'addr_postalcode',
                   'addr_place2', 'country', 'vat_number', 'obligation']
         rows = []
-        for company in Company.objects.all():
+
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        companies = (Company.objects.
+                    filter(obligation__id__in=user_obligations).
+                    all())
+
+        for company in companies:
             account = company.account
             rows.append([v.encode('utf-8') for v in [
                 '' if account is None else account.uid,
@@ -158,7 +178,14 @@ class PersonsExport(views.StaffuserRequiredMixin,
                   'fax']
         rows = []
 
-        for person in Person.objects.all():
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        persons = (Person.objects.
+                    filter(company__obligation__id__in=user_obligations).
+                    all())
+
+        for person in persons:
             org = person.company
             account = org.account
             if account is None:

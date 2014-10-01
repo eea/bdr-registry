@@ -32,9 +32,13 @@ class Companies(views.StaffuserRequiredMixin,
             Breadcrumb(reverse('home'), title=_('Registry')),
             Breadcrumb('', _('Companies'))
         ]
+
+        user_obligations = [ obligation['id'] for obligation
+                            in self.request.user.obligations.values() ]
+
         context = super(Companies, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
-        context['form'] = forms.CompanyFilters()
+        context['form'] = forms.CompanyFilters(obligations=user_obligations)
         return context
 
 
@@ -52,7 +56,13 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
         return val.strftime(settings.DATE_FORMAT)
 
     def get_queryset(self, opt):
-        queryset = Company.objects.all()
+
+        user_obligations = [obligation['id'] for obligation
+                            in self.request.user.obligations.values()]
+
+        queryset = (Company.objects.
+                    filter(obligation__id__in=user_obligations).
+                    all())
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(opt['order_by'])
@@ -339,10 +349,13 @@ class CompanyAdd(views.GroupRequiredMixin,
 
     def get(self, request, *args, **kwargs):
         self.object = None
+        user_obligations = [ obligation['id'] for obligation
+                            in self.request.user.obligations.values() ]
+
         return self.render_to_response(
             self.get_context_data(form=self.get_form(self.get_form_class()),
-                                  person_form=PersonFormWithoutCompany(),
-                                  company_form=CompanyForm()))
+                    person_form=PersonFormWithoutCompany(),
+                    company_form=CompanyForm(obligations=user_obligations)))
 
     def post(self, request, *args, **kwargs):
         self.object = None

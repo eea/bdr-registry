@@ -40,7 +40,11 @@ class ObligationsFilter(views.StaffuserRequiredMixin,
         return '<a href="%s">%s</a>' % (url, val)
 
     def get_queryset(self, opt):
-        queryset = Obligation.objects.all()
+
+        user_obligations = [obligation['id'] for obligation
+                    in self.request.user.obligations.values()]
+
+        queryset = Obligation.objects.filter(pk__in=user_obligations).all()
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(opt['order_by'])
