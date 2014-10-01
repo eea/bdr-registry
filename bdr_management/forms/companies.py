@@ -12,9 +12,9 @@ class CompanyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         obligations = kwargs.pop('obligations', [])
         super(CompanyForm, self).__init__(*args, **kwargs)
-        # self.fields['obligation'].queryset = (
-        #                 self.fields['obligation'].queryset.
-        #                 filter(pk__in=obligations))
+        self.fields['obligation'].queryset = (
+                        self.fields['obligation'].queryset.
+                        filter(pk__in=obligations))
         set_empty_label(self.fields, '')
 
 

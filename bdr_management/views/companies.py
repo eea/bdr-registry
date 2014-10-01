@@ -250,6 +250,13 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         self.set_reporting_years(data)
         return data
 
+    def get_form_kwargs(self):
+        kwargs = super(CompaniesManagementEdit, self).get_form_kwargs()
+        kwargs['obligations'] = [
+            o['id'] for o in self.request.user.obligations.values()
+        ]
+        return kwargs
+
     def get_success_url(self):
         return reverse('management:companies_view', kwargs=self.kwargs)
 
@@ -347,16 +354,6 @@ class CompanyAdd(views.GroupRequiredMixin,
     form_class = CompanyForm
     success_message = _('Company created successfully')
 
-    def get(self, request, *args, **kwargs):
-        self.object = None
-        user_obligations = [ obligation['id'] for obligation
-                            in self.request.user.obligations.values() ]
-
-        return self.render_to_response(
-            self.get_context_data(form=self.get_form(self.get_form_class()),
-                    person_form=PersonFormWithoutCompany(),
-                    company_form=CompanyForm(obligations=user_obligations)))
-
     def post(self, request, *args, **kwargs):
         self.object = None
         form_class = self.get_form_class()
@@ -381,6 +378,13 @@ class CompanyAdd(views.GroupRequiredMixin,
     def get_success_url(self):
         return reverse('management:companies')
 
+    def get_form_kwargs(self):
+        kwargs = super(CompanyAdd, self).get_form_kwargs()
+        kwargs['obligations'] = [
+            o['id'] for o in self.request.user.obligations.values()
+        ]
+        return kwargs
+
     def get_context_data(self, **kwargs):
         back_url = reverse('management:companies')
         breadcrumbs = [
@@ -392,6 +396,7 @@ class CompanyAdd(views.GroupRequiredMixin,
         context['breadcrumbs'] = breadcrumbs
         context['title'] = 'Add a new company'
         context['cancel_url'] = back_url
+        context['person_form'] = PersonFormWithoutCompany()
         return context
 
 
