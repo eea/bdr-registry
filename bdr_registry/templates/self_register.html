@@ -21,6 +21,27 @@
 <h2>{% trans "Reporting undertakings" %}</h2>
 
 <p>
+  {% blocktrans %} The Business Data Repository (BDR) is currently used
+  for companies to fulfil their reporting obligations on trading of
+  <a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2009:286:0001:0030:EN:PDF">ozone depleting substances (ODS)</a>,
+  <a href="http://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32014R0517&from=EN">fluorinated gases (F-gases)</a>
+  and '<a href="http://eur-lex.europa.eu/legal-content/EN/TXT/?uri=celex:32009R0443">Cars</a> and <a href="http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2011:145:0001:0018:EN:PDF">vans</a>'.
+  {% endblocktrans %}
+</p>
+<p>
+  {% blocktrans %} For the moment the registration of companies for <strong>ODS and F-gases is closed due to an improvement</strong> of the BDR platform. If your company needs to register for <strong>'Cars and vans' reporting data-flows please submit an e-mail to</strong> <a href="mailto:ec-co2-ldv-implementation@ec.europa.eu">ec-co2-ldv-implementation@ec.europa.eu</a>.
+  {% endblocktrans %}
+</p>
+
+<p>
+  {% blocktrans %} Should you have any doubts on how to get access to the
+  tool a dedicated support service is available at <a href="mailto:bdr.helpdesk@eea.europa.eu">bdr.helpdesk@eea.europa.eu</a>.
+  {% endblocktrans %}
+</p>
+
+{% comment %}
+
+<p>
   {% blocktrans %}Designated reporters of an undertaking, who have to report in accordance with Article 6 of the F-Gas Regulation or Article 27 of the ODS Regulation, should register in order to be able to report.{% endblocktrans %}
 </p>
 
@@ -71,7 +92,7 @@
               <a class="input-align small no-bold" href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
                 {% trans "About EORI number" %}</a>
             {% endif %}
-            
+
           </td>
         </tr>
       {% endfor %}
@@ -112,5 +133,7 @@
     <button type="submit" class="btn-blue">{% trans "Request account" %}</button>
   </div>
 </form>
+
+{% endcomment %}
 
 {% endblock %}
