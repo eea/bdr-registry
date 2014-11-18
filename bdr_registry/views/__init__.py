@@ -27,10 +27,10 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 import xmltodict
-import models
 
 from post_office.mail import send
 
+from bdr_registry import models
 from bdr_management.forms.utils import set_empty_label
 
 
