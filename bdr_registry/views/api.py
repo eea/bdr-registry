@@ -1,4 +1,5 @@
 import xmltodict
+import json
 from functools import wraps
 from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404
@@ -78,5 +79,14 @@ def company_all(request):
 def company_by_obligation(request, obligation_slug):
     obligation = get_object_or_404(models.Obligation,
                                    reportek_slug=obligation_slug)
-    data = serializers.serialize('json', obligation.companies.all())
-    return HttpResponse(data, content_type='application/json')
+    fields = [
+        'pk', 'name', 'addr_street', 'addr_postalcode', 'eori', 'vat_number',
+        'addr_place1', 'addr_place2', 'active', 'website'
+    ]
+    data = []
+    for company in obligation.companies.all():
+        d = {field: getattr(company, field) for field in fields}
+        d['country'] = dict(code=company.country.code,
+                            name=company.country.name)
+        data.append(d)
+    return HttpResponse(json.dumps(data), content_type='application/json')
