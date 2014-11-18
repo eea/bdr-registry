@@ -5,6 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from bdr_registry import views
 from bdr_management import views as management_views
+from bdr_registry.views import api as api_views
 
 
 admin.autodiscover()
@@ -70,10 +71,14 @@ urlpatterns = patterns(
     url(r'^management/', include('bdr_management.urls',
                                  namespace='management')),
     url(r'^edit_company$', views.edit_company),
-    url(r'^organisation/all/?$',
-        views.company_all),
     url(r'^company/', include(company_patterns)),
     url(r'^person/', include(person_patterns)),
     url(r'^admin/', include(admin.site.urls)),
+
+    # Api views
+    url(r'^api/company/obligation/(?P<obligation_slug>.*)/',
+        api_views.company_by_obligation),
+    url(r'^organisation/all/?$',
+        api_views.company_all),
 )
 urlpatterns += staticfiles_urlpatterns()
