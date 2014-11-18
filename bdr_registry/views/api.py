@@ -81,7 +81,7 @@ def company_by_obligation(request, obligation_slug):
                                    reportek_slug=obligation_slug)
     fields = [
         'pk', 'name', 'addr_street', 'addr_postalcode', 'eori', 'vat_number',
-        'addr_place1', 'addr_place2', 'active', 'website'
+        'addr_place1', 'addr_place2', 'active', 'website', 'date_registered',
     ]
     data = []
     for company in obligation.companies.all():
