@@ -79,14 +79,16 @@ def company_all(request):
 def company_by_obligation(request, obligation_slug):
     obligation = get_object_or_404(models.Obligation,
                                    reportek_slug=obligation_slug)
+    DATE_FORMAT = '%Y/%m/%d %H:%I:%s'
     fields = [
         'pk', 'name', 'addr_street', 'addr_postalcode', 'eori', 'vat_number',
-        'addr_place1', 'addr_place2', 'active', 'website'
+        'addr_place1', 'addr_place2', 'active', 'website',
     ]
     data = []
     for company in obligation.companies.all():
         d = {field: getattr(company, field) for field in fields}
         d['country'] = dict(code=company.country.code,
                             name=company.country.name)
+        d['date_registered'] = company.date_registered.strftime(DATE_FORMAT)
         data.append(d)
     return HttpResponse(json.dumps(data), content_type='application/json')
