@@ -90,5 +90,6 @@ def company_by_obligation(request, obligation_slug):
         d['country'] = dict(code=company.country.code,
                             name=company.country.name)
         d['date_registered'] = company.date_registered.strftime(DATE_FORMAT)
+        d['account'] = company.account and company.account.uid
         data.append(d)
     return HttpResponse(json.dumps(data), content_type='application/json')
