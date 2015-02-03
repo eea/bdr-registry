@@ -2,3 +2,4 @@
 localsettings.py
 /db.sqlite
 supervisord.conf
+/static
