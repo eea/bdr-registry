@@ -125,10 +125,38 @@
 
   <h2>Services</h2>
   <ul>
-    <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
-    <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
-    <li><a href="/help" title="{% trans 'Introduction to Reportnet Repository' %}">{% trans "Help" %}</a></li>
-    <li><a href="/selfregister" title="{% trans 'Create an account to report statistics' %}">{% trans "Self-registration" %}</a></li>
+    <li>
+      <a href="/"
+         title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a>
+    </li>
+    <li>
+      <a href="/searchdataflow"
+         title="{% trans 'Search' %}">{% trans "Search" %}</a>
+    </li>
+    <li>
+      <a href="/help/fgases"
+         title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a>
+    </li>
+    <li>
+      <a href="/help/ods"
+         title="{% trans 'Help ODS' %}">{% trans "Help ODS" %}</a>
+    </li>
+    <li>
+      <a href="/help/cars_vans"
+         title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a>
+    </li>
+    <li>
+      <a href="/help/cars_vans"
+         title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a>
+    </li>
+    <li>
+      <a href="/help/dataconfidentiality"
+         title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a>
+    </li>
+    <li>
+      <a href="/selfregister"
+         title="{% trans 'Self-registration' %}">{% trans "Self-registration" %}</a>
+    </li>
     {% if user.is_superuser %}
       <li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
     {% endif %}
