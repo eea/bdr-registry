@@ -49,6 +49,8 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'frame.middleware.RequestMiddleware',
+    'frame.middleware.UserMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +59,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'bdr_registry.local.ThreadLocalRequestMiddleware',
+    'django.contrib.auth.middleware.RemoteUserMiddleware',
 )
 
 ROOT_URLCONF = 'bdr_registry.urls'
@@ -73,6 +76,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
+    'frame',
     'south',
     'gunicorn',
     'raven.contrib.django',
