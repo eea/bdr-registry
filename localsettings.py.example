@@ -73,6 +73,7 @@ SECRET_KEY = 'foo'  # replace this with a random string
 
 ## remote user authentication
 # FRAME_URL = 'https://bdr.eionet.europa.eu/ReportekUtilities/frame'
+# FRAME_VERIFY_SSL = False
 
 
 ## credentials for updating LDAP accounts
