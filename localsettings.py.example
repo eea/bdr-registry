@@ -68,7 +68,13 @@ SECRET_KEY = 'foo'  # replace this with a random string
 # AUTHENTICATION_BACKENDS = (
 #     'django_auth_ldap.backend.LDAPBackend',
 #     'django.contrib.auth.backends.ModelBackend',
+#     'frame.backends.FrameUserBackend',
 # )
+
+## remote user authentication
+# FRAME_URL = 'https://bdr.eionet.europa.eu/ReportekUtilities/frame'
+# FRAME_VERIFY_SSL = False
+# FRAME_COOKIES = ['_ZopeId', 'sso', '__ginger_snap']
 
 
 ## credentials for updating LDAP accounts
