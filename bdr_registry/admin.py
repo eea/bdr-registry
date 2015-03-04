@@ -33,7 +33,6 @@ log.setLevel(logging.DEBUG)
 
 class ReadOnlyAdmin(admin.ModelAdmin):
 
-
     def get_actions(self, request):
 
         actions = super(ReadOnlyAdmin, self).get_actions(request)
@@ -470,7 +469,10 @@ class UserAdminForm(UserChangeForm):
 
 class CustomUserAdmin(UserAdmin):
     form = UserAdminForm
-
+    list_display = (
+        'username', 'email', 'first_name', 'last_name', 'is_staff',
+        'get_obligations',
+    )
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
@@ -481,6 +483,9 @@ class CustomUserAdmin(UserAdmin):
     )
 
 
+User.get_obligations = (
+    lambda self: '\n'.join(o.name for o in self.obligations.all())
+)
 admin.site.register(User, CustomUserAdmin)
 
 if not settings.ADMIN_ALL_BDR_TABLES:
