@@ -57,7 +57,7 @@
         <!-- Actions -->
         {% if user|has_permission:object %}
         &ensp;|&ensp;
-        <a class='btn-text delete-link' 
+        <a class='btn-text delete-link'
            href="{% url comment_delete_route pk=company.pk comment_pk=comment.pk %}">
           {% trans "Delete comment" %}
         </a>
