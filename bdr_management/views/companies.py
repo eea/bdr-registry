@@ -21,6 +21,15 @@ from bdr_registry.models import (Company, Account, ReportingYear,
                                  ReportingStatus, SiteConfiguration)
 
 
+class CompanyMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user and not request.user.obligations.count():
+            messages.warning(
+                request, _('You have no obligations assigned to this user')
+            )
+        return super(CompanyMixin, self).dispatch(request, *args, **kwargs)
+
+
 class Companies(views.StaffuserRequiredMixin,
                 generic.TemplateView):
 
@@ -200,6 +209,7 @@ class CompaniesUpdateView(base.CompanyUserRequiredMixin,
 
 class CompanyBaseEdit(base.ModelTableViewMixin,
                       SuccessMessageMixin,
+                      CompanyMixin,
                       generic.UpdateView):
 
     template_name = 'bdr_management/company_edit.html'
@@ -345,6 +355,7 @@ class CompanyDelete(views.GroupRequiredMixin,
 
 class CompanyAdd(views.GroupRequiredMixin,
                  SuccessMessageMixin,
+                 CompanyMixin,
                  generic.CreateView):
 
     group_required = settings.BDR_HELPDESK_GROUP
