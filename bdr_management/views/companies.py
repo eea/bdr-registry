@@ -1,6 +1,7 @@
-import requests
 from datetime import date, timedelta
 
+import requests
+from braces import views
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -11,26 +12,17 @@ from django.views import generic
 from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 
-from braces import views
-
 from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
+from bdr_management.views.mixins import CompanyMixin
 from bdr_registry.models import (Company, Account, ReportingYear,
                                  ReportingStatus, SiteConfiguration)
 
 
-class CompanyMixin(object):
-    def dispatch(self, request, *args, **kwargs):
-        if request.user and not request.user.obligations.count():
-            messages.warning(
-                request, _('You have no obligations assigned to this user')
-            )
-        return super(CompanyMixin, self).dispatch(request, *args, **kwargs)
-
-
 class Companies(views.StaffuserRequiredMixin,
+                CompanyMixin,
                 generic.TemplateView):
 
     template_name = 'bdr_management/companies.html'
@@ -42,8 +34,7 @@ class Companies(views.StaffuserRequiredMixin,
             Breadcrumb('', _('Companies'))
         ]
 
-        user_obligations = [ obligation['id'] for obligation
-                            in self.request.user.obligations.values() ]
+        user_obligations = self.get_obligations()
 
         context = super(Companies, self).get_context_data(**kwargs)
         context['breadcrumbs'] = breadcrumbs
@@ -52,6 +43,7 @@ class Companies(views.StaffuserRequiredMixin,
 
 
 class CompaniesFilter(views.StaffuserRequiredMixin,
+                      CompanyMixin,
                       base.FilterView):
 
     raise_exception = True
@@ -66,12 +58,7 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
 
     def get_queryset(self, opt):
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
-
-        queryset = (Company.objects.
-                    filter(obligation__id__in=user_obligations).
-                    all())
+        queryset = self.get_companies()
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(opt['order_by'])
@@ -262,9 +249,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
 
     def get_form_kwargs(self):
         kwargs = super(CompaniesManagementEdit, self).get_form_kwargs()
-        kwargs['obligations'] = [
-            o['id'] for o in self.request.user.obligations.values()
-        ]
+        kwargs['obligations'] = self.get_obligations()
         return kwargs
 
     def get_success_url(self):
@@ -391,9 +376,7 @@ class CompanyAdd(views.GroupRequiredMixin,
 
     def get_form_kwargs(self):
         kwargs = super(CompanyAdd, self).get_form_kwargs()
-        kwargs['obligations'] = [
-            o['id'] for o in self.request.user.obligations.values()
-        ]
+        kwargs['obligations'] = self.get_obligations()
         return kwargs
 
     def get_context_data(self, **kwargs):

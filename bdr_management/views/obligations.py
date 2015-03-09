@@ -10,6 +10,7 @@ from braces import views
 from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.obligations import ObligationForm
+from bdr_management.views.mixins import CompanyMixin
 from bdr_registry.models import Obligation
 
 
@@ -30,6 +31,7 @@ class Obligations(views.StaffuserRequiredMixin,
 
 
 class ObligationsFilter(views.StaffuserRequiredMixin,
+                        CompanyMixin,
                         base.FilterView):
 
     raise_exception = True
@@ -41,8 +43,7 @@ class ObligationsFilter(views.StaffuserRequiredMixin,
 
     def get_queryset(self, opt):
 
-        user_obligations = [obligation['id'] for obligation
-                    in self.request.user.obligations.values()]
+        user_obligations = self.get_obligations()
 
         queryset = Obligation.objects.filter(pk__in=user_obligations).all()
 

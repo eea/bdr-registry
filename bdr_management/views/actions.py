@@ -12,6 +12,7 @@ from bdr_management import backend
 from bdr_management.base import Breadcrumb
 from bdr_registry.models import (ReportingYear, Company, ReportingStatus,
                                  Person, SiteConfiguration)
+from bdr_management.views.mixins import CompanyMixin
 
 
 class Actions(views.StaffuserRequiredMixin,
@@ -36,6 +37,7 @@ class Actions(views.StaffuserRequiredMixin,
 
 
 class CopyReportingStatus(views.StaffuserRequiredMixin,
+                          CompanyMixin,
                           generic.View):
 
     raise_exception = True
@@ -54,12 +56,7 @@ class CopyReportingStatus(views.StaffuserRequiredMixin,
                            _('Previous or current year data not found'))
             return HttpResponseRedirect(reverse('management:actions'))
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
-
-        companies = (Company.objects.
-                    filter(obligation__id__in=user_obligations).
-                    all())
+        companies = self.get_companies()
 
         for company in companies:
 
@@ -83,6 +80,7 @@ class CopyReportingStatus(views.StaffuserRequiredMixin,
 
 
 class CompaniesJsonExport(views.StaffuserRequiredMixin,
+                          CompanyMixin,
                           generic.View):
 
     raise_exception = True
@@ -91,11 +89,9 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
 
         companies = []
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
+        companies_list = self.get_companies()
 
-        for company in (Company.objects.
-                        filter(obligation__id__in=user_obligations).all()):
+        for company in companies_list:
 
             people = []
             for person in company.people.all():
@@ -129,6 +125,7 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
 
 
 class CompaniesExcelExport(views.StaffuserRequiredMixin,
+                           CompanyMixin,
                            generic.View):
 
     raise_exception = True
@@ -139,12 +136,7 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
                   'addr_place2', 'country', 'vat_number', 'obligation']
         rows = []
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
-
-        companies = (Company.objects.
-                    filter(obligation__id__in=user_obligations).
-                    all())
+        companies = self.get_companies()
 
         for company in companies:
             account = company.account
@@ -167,6 +159,7 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
 
 
 class PersonsExport(views.StaffuserRequiredMixin,
+                    CompanyMixin,
                     generic.View):
 
     raise_exception = True
@@ -178,12 +171,12 @@ class PersonsExport(views.StaffuserRequiredMixin,
                   'fax']
         rows = []
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
+        user_obligations = self.get_obligations()
 
-        persons = (Person.objects.
-                    filter(company__obligation__id__in=user_obligations).
-                    all())
+        persons = (
+            Person.objects.filter(company__obligation__id__in=user_obligations)
+            .all()
+        )
 
         for person in persons:
             org = person.company

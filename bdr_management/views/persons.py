@@ -13,6 +13,7 @@ from braces import views
 from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
+from bdr_management.views.mixins import CompanyMixin
 from bdr_registry.models import Person, Company
 
 
@@ -33,6 +34,7 @@ class Persons(views.StaffuserRequiredMixin,
 
 
 class PersonsFilter(views.StaffuserRequiredMixin,
+                    CompanyMixin,
                     base.FilterView):
 
     raise_exception = True
@@ -53,12 +55,12 @@ class PersonsFilter(views.StaffuserRequiredMixin,
 
     def get_queryset(self, opt):
 
-        user_obligations = [obligation['id'] for obligation
-                            in self.request.user.obligations.values()]
+        user_obligations = self.get_obligations()
 
-        queryset = (Person.objects.
-                    filter(company__obligation__id__in=user_obligations).
-                    all())
+        queryset = (
+            Person.objects.filter(company__obligation__id__in=user_obligations)
+            .all()
+        )
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(
