@@ -76,6 +76,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.staticfiles',
+    'django_nose',
     'frame',
     'south',
     'gunicorn',
@@ -140,6 +141,13 @@ DATE_FORMAT = '%d %b %Y'
 BDR_HELPDESK_GROUP = 'BDR helpdesk'
 
 LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=bdr_registry,bdr_management',
+]
 
 try:
     from localsettings import *
