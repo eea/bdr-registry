@@ -105,6 +105,14 @@ class ObligationFactory(django.DjangoModelFactory):
     email_template = factory.SubFactory(EmailTemplateFactory)
 
 
+class SiteConfigurationFactory(django.DjangoModelFactory):
+
+    FACTORY_FOR = 'bdr_registry.SiteConfiguration'
+
+    reporting_year = 2015
+    self_register_email_template = factory.SubFactory(EmailTemplateFactory)
+
+
 @mute_signals(signals.post_save)
 class CompanyFactory(django.DjangoModelFactory):
 

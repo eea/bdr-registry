@@ -161,4 +161,6 @@ if 'test' in sys.argv:
     except ImportError:
         pass
 
+    # pop 'django.contrib.auth.middleware.RemoteUserMiddleware'
+    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES[:-1]
 FIRST_REPORTING_YEAR = 2012

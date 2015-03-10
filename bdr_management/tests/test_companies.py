@@ -54,6 +54,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         self.assertEqual(404, resp.status_int)
 
     def test_reset_password(self):
+        factories.SiteConfigurationFactory()
         org = factories.CompanyWithAccountFactory()
         self.assertIsNone(org.account.password)
         url = self.reverse('management:reset_password', pk=org.pk)
@@ -82,6 +83,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
 
     @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
     def test_reset_password_with_perform_send(self):
+        factories.SiteConfigurationFactory()
         obligation = factories.ObligationFactory()
         org = factories.CompanyWithAccountFactory(obligation=obligation)
         self.assertEqual(1, org.people.count())
@@ -100,12 +102,14 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         self.assertIn(email, mail.outbox[0].to)
 
     def test_reset_password_link_with_account(self):
+        factories.SiteConfigurationFactory()
         org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(1, len(resp.pyquery('#reset-password-action')))
 
     def test_reset_password_link_without_account(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:companies_view', pk=org.pk)
@@ -124,12 +128,14 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.patcher.stop()
 
     def test_create_company_account_get_with_account(self):
+        factories.SiteConfigurationFactory()
         org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:create_account', pk=org.pk)
         resp = self.app.get(url, user='admin', expect_errors=True)
         self.assertEqual(404, resp.status_int)
 
     def test_create_company_account_get_without_account(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_account', pk=org.pk)
@@ -139,6 +145,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.assertEqual(resp.context['object'], org)
 
     def test_create_company_account(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         org = factories.CompanyFactory(obligation=obligation)
@@ -159,6 +166,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
 
     @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
     def test_create_company_account_with_perform_send(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         obligation = factories.ObligationFactory()
         person = factories.PersonFactory()
@@ -179,12 +187,14 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         self.assertIn(email, mail.outbox[0].to)
 
     def test_create_account_link_with_account(self):
+        factories.SiteConfigurationFactory()
         org = factories.CompanyWithAccountFactory()
         url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(0, len(resp.pyquery('#create-account-action')))
 
     def test_create_account_link_without_account(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:companies_view', pk=org.pk)
@@ -196,6 +206,7 @@ class CompanyCreateReportingFolderTests(base.BaseWebTest):
 
     @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_get_without_settings(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
@@ -209,6 +220,7 @@ class CompanyCreateReportingFolderTests(base.BaseWebTest):
 
     @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_post_without_settings(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         org = factories.CompanyFactory()
         url = self.reverse('management:create_reporting_folder', pk=org.pk)
@@ -263,12 +275,22 @@ class CompanyNameHistoryTests(base.BaseWebTest):
         return company
 
     def test_create_company_adds_name_history(self):
+        factories.SiteConfigurationFactory()
+        obligation = factories.ObligationFactory()
+        country = factories.CountryFactory()
+        self.company_form['obligation'] = obligation.id
+        self.company_form['country'] = country.id
         company = self.create_company()
         self.assertEqual(company.namehistory.count(), 1)
         self.assertEqual(company.namehistory.first().name,
                          self.company_form['name'])
 
     def test_rename_company_adds_name_history(self):
+        factories.SiteConfigurationFactory()
+        obligation = factories.ObligationFactory()
+        country = factories.CountryFactory()
+        self.company_form['obligation'] = obligation.id
+        self.company_form['country'] = country.id
         company = self.create_company()
         url = self.reverse('management:companies_edit', **{'pk': company.pk})
         old_name = self.company_form['name']
