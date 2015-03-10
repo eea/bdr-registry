@@ -6,6 +6,7 @@ from django.core import mail
 from django.contrib.auth.models import User, Group
 from django.conf import settings
 from bdr_registry import models
+from bdr_management.tests import factories, base
 from mock import patch
 
 
@@ -62,8 +63,8 @@ def quiet_request_logging():
 class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
-        self.denmark = models.Country.objects.get(name="Denmark")
-        self.fgas = models.Obligation.objects.get(code='fgas')
+        self.denmark = factories.CountryFactory(name="Denmark", code='dk')
+        self.fgas = factories.ObligationFactory(code='fgas', name='F-gases')
 
     def assert_object_has_items(self, obj, data):
         for key in data:
@@ -126,12 +127,12 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(len(mail.outbox), 1)
 
 
-class ApiTest(TestCase):
+class ApiTest(base.BaseWebTest):
 
     def setUp(self):
         self.apikey = models.ApiKey.objects.create().key
-        self.dk = models.Country.objects.get(name="Denmark")
-        self.fgas = models.Obligation.objects.get(code='fgas')
+        self.dk = factories.CountryFactory(name="Denmark", code='dk')
+        self.fgas = factories.ObligationFactory(code='fgas', name='F-gases')
 
     def test_response_empty_when_no_companies_in_db(self):
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
@@ -260,5 +261,6 @@ class ApiTest(TestCase):
         self.assertEqual(resp.content, expected)
 
     def test_requests_with_no_api_key_are_rejected(self):
+        factories.CountryFactory()
         resp = self.client.get('/organisation/all')
         self.assertEqual(resp.status_code, 403)

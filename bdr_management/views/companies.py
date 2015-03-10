@@ -305,6 +305,11 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin,
     def get_success_url(self):
         return reverse('company', kwargs=self.kwargs)
 
+    def get_form_kwargs(self):
+        kwargs = super(CompaniesUpdate, self).get_form_kwargs()
+        kwargs['obligations'] = self.get_obligations()
+        return kwargs
+
 
 class CompanyDelete(views.GroupRequiredMixin,
                     base.ModelTableEditMixin,

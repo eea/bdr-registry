@@ -46,8 +46,12 @@ class CompanyManagementTests(BaseWebTest):
     def test_company_add_post_by_bdr_group(self):
         factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
+        obligation = factories.ObligationFactory()
+        country = factories.CountryFactory()
         url = self.reverse('management:companies_add')
         form = factories.company_with_person_form()
+        form['country'] = country.id
+        form['obligation'] = obligation.id
         resp = self.app.post(url, params=form, user=user)
         self.assertRedirects(resp, self.reverse('management:companies'))
         self.assertTrue(Company.objects.exists())
@@ -63,8 +67,12 @@ class CompanyManagementTests(BaseWebTest):
     def test_company_add_post_by_superuser(self):
         factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
+        obligation = factories.ObligationFactory()
+        country = factories.CountryFactory()
         url = self.reverse('management:companies_add')
         form = factories.company_with_person_form()
+        form['country'] = country.id
+        form['obligation'] = obligation.id
         resp = self.app.post(url, params=form, user=user)
         self.assertRedirects(resp, self.reverse('management:companies'))
         self.assertTrue(Company.objects.exists())
