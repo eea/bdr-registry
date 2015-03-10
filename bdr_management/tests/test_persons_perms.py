@@ -7,6 +7,7 @@ from bdr_registry.models import Person
 class PersonManagementTests(BaseWebTest):
 
     def test_persons_view_by_staff_user(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         resp = self.app.get(self.reverse('management:persons'),
                             user=user.username)
@@ -18,6 +19,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_person_view_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
         url = self.reverse('management:persons_view', pk=person.pk)
@@ -25,12 +27,14 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_view_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         person = factories.PersonFactory()
         url = self.reverse('management:persons_view', pk=person.pk)
         resp = self.app.get(url, user=None, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
     def test_person_add_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -38,6 +42,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_person_add_post_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -47,12 +52,14 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(Person.objects.count(), 0)
 
     def test_person_add_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
     def test_person_add_post_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
         form = factories.person_form()
@@ -61,6 +68,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(Person.objects.count(), 0)
 
     def test_person_add_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -68,6 +76,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_add_post_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -79,6 +88,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(Person.objects.first().company, company)
 
     def test_person_add_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -86,6 +96,7 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_add_post_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:persons_add', pk=company.pk)
@@ -313,6 +324,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_add_post_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('person_add', pk=company.pk)
@@ -324,6 +336,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(Person.objects.first().company.pk, company.pk)
 
     def test_person_add_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(id=100, account=account)
@@ -332,6 +345,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_add_post_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -344,6 +358,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(Person.objects.first().company.pk, company.pk)
 
     def test_add_person_to_missing_company(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         url = self.reverse('person_add', pk=123)
         form = factories.person_form()
@@ -356,12 +371,14 @@ class PersonTests(BaseWebTest):
         self.assertEqual(resp.status_int, 404)
 
     def test_person_update_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         person = factories.PersonFactory()
         url = self.reverse('person_update', pk=person.pk)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
     def test_person_update_post_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         person = factories.PersonFactory()
         form = factories.person_form(person.company.pk)
         url = self.reverse('person_update', pk=person.pk)
@@ -372,6 +389,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(new_person.first_name, person.first_name)
 
     def test_person_update_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
         url = self.reverse('person_update', pk=person.pk)
@@ -379,6 +397,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_person_update_post_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         person = factories.PersonFactory()
         form = factories.person_form(person.company.pk)
@@ -390,6 +409,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(new_person.first_name, person.first_name)
 
     def test_person_update_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -399,6 +419,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_update_post_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -414,6 +435,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(person.company, new_person.company)
 
     def test_person_update_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         person = factories.PersonFactory()
         url = self.reverse('person_update', pk=person.pk)
@@ -421,6 +443,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_update_post_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         person = factories.PersonFactory()
         form = factories.person_form(person.company.pk)
@@ -434,6 +457,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(person.company, new_person.company)
 
     def test_person_update_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         person = factories.PersonFactory()
         url = self.reverse('person_update', pk=person.pk)
@@ -441,6 +465,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
     def test_person_update_post_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         person = factories.PersonFactory()
         form = factories.person_form(person.company.pk)
@@ -454,6 +479,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(person.company, new_person.company)
 
     def test_person_delete_by_staff_user(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         person1 = factories.PersonFactory(company=company)
@@ -463,6 +489,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_person_delete_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         person1 = factories.PersonFactory(company=company)
@@ -473,6 +500,7 @@ class PersonTests(BaseWebTest):
         self.assertRedirects(resp, success_url)
 
     def test_person_delete_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -484,6 +512,7 @@ class PersonTests(BaseWebTest):
         self.assertRedirects(resp, success_url)
 
     def test_person_delete_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         person1 = factories.PersonFactory(company=company)
         factories.PersonFactory(company=company)
@@ -492,6 +521,7 @@ class PersonTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_delete_last_person(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         person = factories.PersonFactory(company=company)
         url = self.reverse('person_delete', pk=person.pk)

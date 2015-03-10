@@ -7,6 +7,7 @@ from bdr_registry.models import Comment
 class CommentManagementTests(BaseWebTest):
 
     def test_comment_add_by_staff_user(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:comment_add', pk=company.pk)
@@ -17,6 +18,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_add_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:comment_add', pk=company.pk)
@@ -29,6 +31,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:comment_add', pk=company.pk)
@@ -41,6 +44,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, expect_errors=True)
@@ -50,6 +54,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_delete_by_staff(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
@@ -60,6 +65,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
@@ -73,6 +79,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, pk=company.pk)
 
     def test_comment_delete_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
@@ -85,6 +92,7 @@ class CommentManagementTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, pk=company.pk)
 
     def test_comment_delete_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
         url = self.reverse('management:comment_delete', pk=company.pk,
@@ -97,6 +105,7 @@ class CommentManagementTests(BaseWebTest):
 class CommentTests(BaseWebTest):
 
     def test_comment_add_by_staff_user(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('comment_add', pk=company.pk)
@@ -107,6 +116,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_add_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('comment_add', pk=company.pk)
@@ -117,6 +127,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_superuser(self):
+        factories.SiteConfigurationFactory()
         user = factories.SuperUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('comment_add', pk=company.pk)
@@ -127,6 +138,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -138,6 +150,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectInDatabase(Comment, text='hey')
 
     def test_comment_add_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, expect_errors=True)
@@ -147,6 +160,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, text='hey')
 
     def test_comment_delete_by_staff_user(self):
+        factories.SiteConfigurationFactory()
         user = factories.StaffUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
@@ -156,6 +170,7 @@ class CommentTests(BaseWebTest):
         self.assertEqual(resp.status_int, 403)
 
     def test_comment_delete_by_bdr_group(self):
+        factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
@@ -167,6 +182,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_owner(self):
+        factories.SiteConfigurationFactory()
         user = factories.UserFactory()
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
@@ -179,6 +195,7 @@ class CommentTests(BaseWebTest):
         self.assertObjectNotInDatabase(Comment, pk=comment.pk)
 
     def test_comment_delete_by_anonymous(self):
+        factories.SiteConfigurationFactory()
         company = factories.CompanyFactory()
         comment = factories.CommentFactory(company=company)
         url = self.reverse('comment_delete', pk=company.pk,
