@@ -126,10 +126,13 @@ def edit_company(request):
     return HttpResponseRedirect(location)
 
 
+
 class CompanyForm(ModelForm):
 
-    obligation = ModelChoiceField(queryset=models.Obligation.objects,
-                                  required=True)
+    obligation = ModelChoiceField(
+        queryset=models.Obligation.objects.exclude(code__in=settings.SELF_OBL_EXCLUDE),
+        required=True,
+    )
 
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)

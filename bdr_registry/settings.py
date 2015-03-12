@@ -139,11 +139,11 @@ BDR_AUDIT_LOG_FILE = None
 DATE_FORMAT = '%d %b %Y'
 
 BDR_HELPDESK_GROUP = 'BDR helpdesk'
-
 LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
+SELF_OBL_EXCLUDE = ['fgas']
+FIRST_REPORTING_YEAR = 2012
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
 NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=bdr_registry,bdr_management',
@@ -163,4 +163,4 @@ if 'test' in sys.argv:
 
     # pop 'django.contrib.auth.middleware.RemoteUserMiddleware'
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES[:-1]
-FIRST_REPORTING_YEAR = 2012
+
