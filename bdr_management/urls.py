@@ -77,6 +77,16 @@ urlpatterns = patterns(
         views.PersonManagementDelete.as_view(),
         name='persons_delete'),
 
+    url(r'^companies/(?P<cpk>\d+)/persons/(?P<pk>\d+)/?$',
+        views.PersonFromCompanyView.as_view(),
+        name='person_from_company'),
+    url(r'^companies/(?P<cpk>\d+)/persons/(?P<pk>\d+)/edit/?$',
+        views.PersonFromCompanyEdit.as_view(),
+        name='person_from_company_edit'),
+    url(r'^companies/(?P<cpk>\d+)/persons/(?P<pk>\d+)/delete/?$',
+        views.PersonFromCompanyDelete.as_view(),
+        name='person_from_company_delete'),
+
     url(r'^obligations/?$',
         views.Obligations.as_view(),
         name='obligations'),

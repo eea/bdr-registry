@@ -80,7 +80,7 @@
   <ul>
     {% for person in object.people.all %}
       <li>
-        <a href="{% url person_route pk=person.pk %}"
+        <a href="{% url person_route cpk=object.pk pk=person.pk %}"
            class="bold">
           {{ person.formal_name }}</a>
       </li>

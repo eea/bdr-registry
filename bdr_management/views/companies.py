@@ -150,7 +150,7 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
         data['comment_add_url'] = reverse('management:comment_add',
                                           kwargs=self.kwargs)
         data['comment_delete_route'] = 'management:comment_delete'
-        data['person_route'] = 'management:persons_view'
+        data['person_route'] = 'management:person_from_company'
         data['management'] = True
 
         return data
