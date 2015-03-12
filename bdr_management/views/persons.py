@@ -115,6 +115,30 @@ class PersonManagementView(views.StaffuserRequiredMixin,
         return reverse('management:persons')
 
 
+class PersonFromCompanyView(PersonManagementView):
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:companies'), _('Companies')),
+            Breadcrumb(reverse('management:companies_view',
+                kwargs={'pk': self.kwargs['cpk']}), self.object.company),
+            Breadcrumb('', self.object)
+        ]
+        data = super(PersonFromCompanyView, self).get_context_data(**kwargs)
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_edit_url(self):
+        return reverse('management:person_from_company_edit', kwargs=self.kwargs)
+
+    def get_delete_url(self):
+        return reverse('management:person_from_company_delete', kwargs=self.kwargs)
+
+    def get_back_url(self):
+        return reverse('management:companies_view', kwargs={'pk': self.kwargs['cpk']})
+
+
 class PersonView(base.PersonUserRequiredMixin,
                  PersonBaseView):
 
@@ -173,6 +197,26 @@ class PersonManagementEdit(views.GroupRequiredMixin,
 
     def get_success_url(self):
         return reverse('management:persons_view', kwargs=self.kwargs)
+
+
+class PersonFromCompanyEdit(PersonManagementEdit):
+
+    def get_context_data(self, **kwargs):
+        data = super(PersonFromCompanyEdit, self).get_context_data(**kwargs)
+        data['cancel_url'] = reverse('management:person_from_company', kwargs=self.kwargs)
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:companies'), _('Companies')),
+            Breadcrumb(reverse('management:companies_view',
+                kwargs={'pk': self.kwargs['cpk']}), self.object.company),
+            Breadcrumb(data['cancel_url'], self.object),
+            Breadcrumb('', _(u'Edit %s' % self.object))
+        ]
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_success_url(self):
+        return reverse('management:person_from_company', kwargs=self.kwargs)
 
 
 class PersonEdit(base.PersonUserRequiredMixin,
@@ -258,6 +302,28 @@ class PersonManagementDelete(views.GroupRequiredMixin,
     def get_view_url(self):
         return reverse('management:persons_view',
                        kwargs={'pk': self.get_object().pk})
+
+
+class PersonFromCompanyDelete(PersonManagementDelete):
+
+    def get_context_data(self, **kwargs):
+        data = super(PersonFromCompanyDelete, self).get_context_data(**kwargs)
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:companies'), _('Companies')),
+            Breadcrumb(reverse('management:companies_view',
+                kwargs={'pk': self.kwargs['cpk']}), self.object.company),
+            Breadcrumb(data['cancel_url'], self.object),
+            Breadcrumb('', _(u'Delete %s' % self.object))
+        ]
+        data['breadcrumbs'] = breadcrumbs
+        return data
+
+    def get_success_url(self):
+        return reverse('management:companies_view', kwargs={'pk': self.kwargs['cpk']})
+
+    def get_view_url(self):
+        return reverse('management:person_from_company', kwargs=self.kwargs)
 
 
 class PersonDelete(base.PersonUserRequiredMixin,
