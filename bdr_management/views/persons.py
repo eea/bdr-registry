@@ -155,7 +155,7 @@ class PersonView(base.PersonUserRequiredMixin,
         return data
 
     def get_back_url(self):
-        return reverse('home')
+        return reverse('company', kwargs={'pk': self.object.company.id})
 
     def get_edit_url(self):
         return reverse('person_update', kwargs=self.kwargs)
