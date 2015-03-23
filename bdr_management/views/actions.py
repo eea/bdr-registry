@@ -1,4 +1,5 @@
 import json
+import csv
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -156,6 +157,31 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
 
         xls_doc = backend.generate_excel(header, rows)
         return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
+
+
+class CompaniesCsvExport(views.StaffuserRequiredMixin,
+                         generic.View):
+    raise_exception = True
+
+    def get(self, request):
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="companies.csv"'
+
+        companies = Company.objects.filter(active=False,
+                                           obligation__name="F-gases")
+
+        writer = csv.writer(response)
+        writer.writerow(["Company name", "Date registered", "Address street",
+                         "Postal Code", "Address place 1", "Address place 2",
+                         "EORI", "VAT", "Country", "Website", "Obligation"])
+        for c in companies:
+            row = [c.name, c.date_registered.isoformat(), c.addr_street,
+                   c.addr_postalcode, c.addr_place1, c.addr_place2, c.eori,
+                   c.vat_number, c.country.name, c.website, c.obligation.name]
+            row = map(lambda x: x.encode("utf-8") if isinstance(x, unicode) else x, row)
+            writer.writerow(row)
+
+        return response
 
 
 class PersonsExport(views.StaffuserRequiredMixin,
