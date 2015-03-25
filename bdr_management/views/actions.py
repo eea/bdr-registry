@@ -167,15 +167,14 @@ class CompaniesCsvExport(views.StaffuserRequiredMixin,
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename="companies.csv"'
 
-        companies = Company.objects.filter(active=False,
-                                           obligation__name="F-gases")
+        companies = Company.objects.filter(obligation__name="F-gases")
 
         writer = csv.writer(response)
-        writer.writerow(["Company name", "Date registered", "Address street",
+        writer.writerow(["Company name", "Date registered", "Active", "Address street",
                          "Postal Code", "Address place 1", "Address place 2",
                          "EORI", "VAT", "Country", "Website", "Obligation"])
         for c in companies:
-            row = [c.name, c.date_registered.isoformat(), c.addr_street,
+            row = [c.name, c.date_registered.isoformat(), c.active, c.addr_street,
                    c.addr_postalcode, c.addr_place1, c.addr_place2, c.eori,
                    c.vat_number, c.country.name, c.website, c.obligation.name]
             row = map(lambda x: x.encode("utf-8") if isinstance(x, unicode) else x, row)
