@@ -117,4 +117,10 @@ The command to run the server in production::
 
     $ DJANGO_SETTINGS_MODULE=localsettings ./manage.py run_gunicorn
 
+
+To resend emails failed to send initially, use::
+
+    $ ./manage.py resend_failed
+
+
 .. _virtualenv: http://www.virtualenv.org/
