@@ -1,4 +1,5 @@
-from bdr_registry.models import Obligation, Company
+from bdr_registry.models import Obligation, Company, Account
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class CompanyMixin(object):
@@ -15,6 +16,20 @@ class CompanyMixin(object):
         return (
             Company.objects.filter(obligation__id__in=o_ids).all()
         )
+
+    def get_account(self, uid):
+        try:
+            return Account.objects.get(uid=uid)
+        except ObjectDoesNotExist:
+            return None
+
+    def get_account_company(self, uid):
+        account = self.get_account(uid)
+        if account:
+            try:
+                return Company.objects.get(account=account)
+            except ObjectDoesNotExist:
+                return None
 
     def dispatch(self, request, *args, **kwargs):
         # if request.user and not request.user.obligations.count():

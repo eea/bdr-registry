@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import json
 import requests
 from braces import views
 from django.conf import settings
@@ -7,6 +8,7 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.views import generic
 from django.http import Http404, HttpResponseRedirect
@@ -105,6 +107,44 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
         else:
             start_date = date(today.year, 1, 1)
         return start_date
+
+
+class CompanyFilteredByAccountUID(views.StaffuserRequiredMixin,
+                                  CompanyMixin,
+                                  generic.View):
+    raise_exception = True
+
+    def get(self, request, account_uid=None):
+        data = {}
+        company = self.get_account_company(uid=account_uid)
+        if company:
+            people = []
+            for person in company.people.all():
+                people.append({
+                    'title': person.title,
+                    'first_name': person.first_name,
+                    'last_name': person.family_name,
+                    'email': person.email,
+                    'phone': person.phone,
+                    'phone2': person.phone2,
+                    'phone3': person.phone3
+                })
+            data = {
+                'userid': None if company.account is None else company.account.uid,
+                'name': company.name,
+                'date_registered': company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
+                'active': company.active,
+                'addr_street': company.addr_street,
+                'addr_place1': company.addr_place1,
+                'addr_place2': company.addr_place2,
+                'country': company.country.code,
+                'vat_number': company.vat_number,
+                'obligation': company.obligation.code,
+                'persons': people
+            }
+        data = json.dumps(data, indent=4)
+
+        return HttpResponse(data, content_type="application/json")
 
 
 class CompaniesBaseView(base.ModelTableViewMixin,

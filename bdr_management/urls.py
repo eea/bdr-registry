@@ -27,6 +27,9 @@ urlpatterns = patterns(
     url(r'^companies/(?P<pk>\d+)/?$',
         views.CompaniesManagementView.as_view(),
         name='companies_view'),
+    url(r'^companies/account/(?P<account_uid>\w+)/?$',
+        views.CompanyFilteredByAccountUID.as_view(),
+        name='account_company'),
 
     url(r'^companies/add/?$',
         views.CompanyAdd.as_view(),
