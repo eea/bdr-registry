@@ -5,6 +5,8 @@ obligation_folder_name = request.form['obligation_folder_name']
 account_uid = request.form['account_uid']
 organisation_name = request.form['organisation_name']
 
+print country_code, obligation_folder_name, account_uid, organisation_name
+
 root = container.restrictedTraverse('/')
 obligation = dict(root.objectItems()).get(obligation_folder_name)
 if obligation is None:
@@ -17,13 +19,13 @@ if country is None:
 folder = dict(country.objectItems()).get(account_uid)
 if folder is None:
     country.manage_addCollection(
-        dataflow_uris=obligation.dataflow_uris,  # list of URIs
+        dataflow_uris=list(obligation.dataflow_uris),  # list of URIs
         country=country.country,  # URI
         id=account_uid,
         title=organisation_name,
         allow_collections=0, allow_envelopes=1,
         descr='', locality='',
-        partofyear='', year='', endyear='')
+        partofyear='', year='', endyear='', old_company_id=account_uid)
     folder = dict(country.objectItems()).get(account_uid)
     folder.manage_setLocalRoles(account_uid, ['Owner'])
     created = 'true'
