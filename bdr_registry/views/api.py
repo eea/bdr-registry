@@ -38,7 +38,7 @@ def company_all(request):
                            for k in
                            ['pk', 'name', 'addr_street', 'addr_postalcode',
                             'eori', 'vat_number', 'addr_place1',
-                            'addr_place2'])
+                            'addr_place2', 'active'])
         if company.account is not None:
             item['account'] = company.account.uid
         if company.obligation is not None:
