@@ -166,12 +166,22 @@ class CompaniesBaseView(base.ModelTableViewMixin,
         years = [unicode(stat.reporting_year) for stat in statuses
                  if stat.reported]
         data['reporting_years'] = years
-        folder_path = '/{0}/{1}/{2}'.format(
-                self.object.obligation.reportek_slug,
-                self.object.country.code,
-                self.object.account.uid)        
-        data['has_reporting_folder'] = self.has_reporting_folder(folder_path)
-        data['reporting_folder'] = folder_path
+
+        if self.object.account:
+            data['has_account'] = True
+        else:
+            data['has_account'] = False
+
+        if data['has_account']:
+            folder_path = '/{0}/{1}/{2}'.format(
+                    self.object.obligation.reportek_slug,
+                    self.object.country.code,
+                    self.object.account.uid)
+            data['has_reporting_folder'] = self.has_reporting_folder(folder_path)
+            data['reporting_folder'] = folder_path
+        else:
+            data['has_reporting_folder'] = False
+            data['reporting_folder'] = ''
         return data
 
     def has_reporting_folder(self, folder_path):

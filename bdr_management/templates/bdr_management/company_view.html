@@ -15,12 +15,12 @@
         {% if management %}
           <p class="h4 no-margins">Actions:</p>
           <ul>
-            {% if object.account %}
+            {% if has_account %}
             <li>
               <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
                 {% trans "Reset password" %}</a>
             </li>
-            {% if not has_reporting_folder %}
+            {% if not has_reporting_folder and has_account %}
             <li>
               <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
                 {% trans "Create reporting folder" %}</a>
@@ -28,7 +28,7 @@
             {% endif %}
             {% endif %}
 
-            {% if not object.account %}
+            {% if not has_account %}
             <li>
               <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
                 {% trans "Create account" %}</a>
@@ -49,7 +49,7 @@
     {% endif %}
   </div>
 
-  {% if has_reporting_folder %}
+  {% if has_reporting_folder and has_account %}
   <h2>{% trans "Reporting folder" %}</h2>
   <p>You can see the company deliveries here: <a href="{{ reporting_folder }}">{{ reporting_folder }}</a></p>
   {% endif %}
