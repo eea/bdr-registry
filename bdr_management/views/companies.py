@@ -343,12 +343,12 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                 reporting_status.reported = reported
                 reporting_status.save()
 
-        if self.object.name.strip() != request.POST.get('name'):
+        if company.name.strip() != request.POST.get('name'):
             url = settings.BDR_API_URL + '/update_organisation_name'
             form = {
-                'country_code': self.object.country.code,
-                'obligation_folder_name': self.object.obligation.reportek_slug,
-                'account_uid': self.object.account.uid,
+                'country_code': company.country.code,
+                'obligation_folder_name': company.obligation.reportek_slug,
+                'account_uid': company.account.uid,
                 'organisation_name': request.POST.get('name'),
             }
             resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
