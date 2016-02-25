@@ -111,6 +111,7 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
                 'name': company.name,
                 'date_registered': company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
                 'active': company.active,
+                'outdated': company.outdated,
                 'addr_street': company.addr_street,
                 'addr_place1': company.addr_place1,
                 'addr_place2': company.addr_place2,
@@ -132,7 +133,7 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
     raise_exception = True
 
     def get(self, request):
-        header = ['userid', 'name', 'date_registered', 'active',
+        header = ['userid', 'name', 'date_registered', 'active', 'outdated',
                   'addr_street', 'addr_place1', 'addr_postalcode',
                   'addr_place2', 'country', 'vat_number', 'obligation']
         rows = []
@@ -146,6 +147,7 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
                 company.name,
                 company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
                 'on' if company.active else '',
+                'on' if company.outdated else '',
                 company.addr_street,
                 company.addr_place1,
                 company.addr_postalcode,
@@ -170,13 +172,14 @@ class CompaniesCsvExport(views.StaffuserRequiredMixin,
         companies = Company.objects.filter(obligation__name="F-gases")
 
         writer = csv.writer(response)
-        writer.writerow(["Company name", "Date registered", "Active", "Address street",
-                         "Postal Code", "Address place 1", "Address place 2",
-                         "EORI", "VAT", "Country", "Website", "Obligation"])
+        writer.writerow(["Company name", "Date registered", "Active", "Outdated",
+                         "Address street", "Postal Code", "Address place 1",
+                         "Address place 2", "EORI", "VAT", "Country", "Website",
+                         "Obligation"])
         for c in companies:
-            row = [c.name, c.date_registered.isoformat(), c.active, c.addr_street,
-                   c.addr_postalcode, c.addr_place1, c.addr_place2, c.eori,
-                   c.vat_number, c.country.name, c.website, c.obligation.name]
+            row = [c.name, c.date_registered.isoformat(), c.active, c.outdated,
+                   c.addr_street, c.addr_postalcode, c.addr_place1, c.addr_place2,
+                   c.eori, c.vat_number, c.country.name, c.website, c.obligation.name]
             row = map(lambda x: x.encode("utf-8") if isinstance(x, unicode) else x, row)
             writer.writerow(row)
 
