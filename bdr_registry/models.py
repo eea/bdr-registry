@@ -133,6 +133,7 @@ class Company(models.Model):
     name = models.CharField(_('Company name'), max_length=255)
     date_registered = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
+    outdated = models.BooleanField(default=False)
     addr_street = models.CharField(_('Street and number'), max_length=255)
     addr_place1 = models.CharField(_('Municipality'), max_length=255)
     addr_postalcode = models.CharField(_('Postal code'), max_length=255)
