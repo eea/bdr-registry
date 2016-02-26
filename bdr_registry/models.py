@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
 from django.db import models
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
 from solo.models import SingletonModel
@@ -83,7 +84,14 @@ class AccountManager(models.Manager):
 
     def create_for_obligation(self, obligation):
         next_id = obligation.generate_account_id()
-        uid = u"{o.code}{next_id}".format(o=obligation, next_id=next_id)
+        if hasattr(settings, 'ACCOUNTS_PREFIX'):
+            prefix = settings.ACCOUNTS_PREFIX
+        else:
+            prefix = ''
+        uid = u"{prefix}{o.code}{next_id}".format(
+                        prefix=prefix,
+                        o=obligation,
+                        next_id=next_id)
         return self.create(uid=uid)
 
 
