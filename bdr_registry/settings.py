@@ -126,6 +126,7 @@ LOGGING = {
 }
 
 
+BDR_SERVER_URL = 'https://bdr.eionet.europa.eu/'
 BDR_HELPDESK_EMAIL = ''
 
 EMAIL_BACKEND = 'post_office.EmailBackend'
