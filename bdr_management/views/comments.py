@@ -63,6 +63,7 @@ class CommentManagementCreate(GroupRequiredMixin,
 class CommentCreate(base.CompanyUserRequiredMixin,
                     CommentCreateBase):
 
+    group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
 
     def get_context_data(self, **kwargs):
@@ -111,6 +112,7 @@ class CommentManagementDelete(GroupRequiredMixin,
 class CommentDelete(base.CompanyUserRequiredMixin,
                     CommentDeleteBase):
 
+    group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
 
     def get_success_url(self):

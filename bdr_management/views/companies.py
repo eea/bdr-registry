@@ -221,7 +221,7 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
         data['comment_delete_route'] = 'management:comment_delete'
         data['person_route'] = 'management:person_from_company'
         data['management'] = True
-
+        data['can_view_comments'] = self.can_view_comments()
         return data
 
     def get_edit_url(self):
@@ -233,6 +233,14 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
     def get_back_url(self):
         return reverse('management:companies')
 
+    def can_view_comments(self):
+        user = self.request.user
+        group = settings.BDR_HELPDESK_GROUP
+
+        if user.is_superuser or (
+                    user.is_staff and
+                    group in user.groups.values_list('name', flat=True)):
+            return True
 
 class CompaniesUpdateView(base.CompanyUserRequiredMixin,
                           CompaniesBaseView):

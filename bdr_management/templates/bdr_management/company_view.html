@@ -54,6 +54,7 @@
   <p>You can see the company deliveries here: <a href="{{ reporting_folder }}">{{ reporting_folder }}</a></p>
   {% endif %}
 
+  {% if can_view_comments %}
   <h2>{% trans "Comments" %}</h2>
 
   <ul class="no-list">
@@ -82,6 +83,7 @@
     <a href="{{ comment_add_url}}" class="btn">
       {% trans "Add comment" %}</a>
   </div>
+  {% endif %}
   {% endif %}
 
 
