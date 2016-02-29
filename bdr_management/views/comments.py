@@ -61,6 +61,7 @@ class CommentManagementCreate(GroupRequiredMixin,
 
 
 class CommentCreate(base.CompanyUserRequiredMixin,
+                    GroupRequiredMixin,
                     CommentCreateBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
