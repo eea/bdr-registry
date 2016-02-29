@@ -3,6 +3,7 @@ from django.forms import BooleanField, Form, ModelForm
 from bdr_registry.models import Company
 from django.conf import settings
 
+
 class CompanyForm(ModelForm):
     class Meta():
         model = Company

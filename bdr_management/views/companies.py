@@ -388,6 +388,7 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin,
     def get_form_kwargs(self):
         kwargs = super(CompaniesUpdate, self).get_form_kwargs()
         kwargs['obligations'] = self.get_obligations()
+        kwargs['request'] = self.request
         return kwargs
 
 
