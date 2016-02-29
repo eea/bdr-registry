@@ -12,6 +12,9 @@ from bdr_registry.views import valid_email
 
 
 def sync_accounts_with_ldap(accounts):
+    if hasattr(settings, 'DISABLE_LDAP_CONNECTION'):
+        return
+
     ldap_editor = create_ldap_editor()
     counters = defaultdict(int)
     for account in accounts:

@@ -185,9 +185,12 @@ class CompaniesBaseView(base.ModelTableViewMixin,
         return data
 
     def has_reporting_folder(self, folder_path):
+        if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
+            return False
+
         url = settings.BDR_API_URL + folder_path
 
-        #resp = requests.get(url, auth=settings.BDR_API_AUTH, verify=False)
+        # resp = requests.get(url, auth=settings.BDR_API_AUTH, verify=False)
         resp = requests.get(url, verify=False)
         if resp.status_code == 200:
             return True
@@ -316,6 +319,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
     def get_form_kwargs(self):
         kwargs = super(CompaniesManagementEdit, self).get_form_kwargs()
         kwargs['obligations'] = self.get_obligations()
+        kwargs['request'] = self.request
         return kwargs
 
     def get_success_url(self):
