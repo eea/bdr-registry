@@ -162,7 +162,7 @@
   </ul>
 
   {% if user.is_staff %}
-    <h2>{% trans "Management" %}</h2>
+    <h2>{% trans "BDR registry" %}</h2>
     <ul>
       <li>
         <a href="{% url 'management:companies' %}">
@@ -170,15 +170,15 @@
       </li>
       <li>
         <a href="{% url 'management:persons' %}">
-          {% trans "Persons" %}</a>
+          {% trans "Contact persons" %}</a>
       </li>
       <li>
         <a href="{% url 'management:obligations' %}">
-          {% trans "Obligations" %}</a>
+          {% trans "Manage obligations" %}</a>
       </li>
       <li>
         <a href="{% url 'management:email_templates' %}">
-          {% trans "Email Templates" %}</a>
+          {% trans "Manage email templates" %}</a>
       </li>
       <li>
         <a href="{% url 'management:settings_view' %}">
