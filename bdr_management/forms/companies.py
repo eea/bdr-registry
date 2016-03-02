@@ -23,6 +23,9 @@ class CompanyForm(ModelForm):
             self.fields['obligation'].widget.attrs['disabled'] = 'disabled'
 
             if not self.has_edit_permission():
+                self.fields['name'].required = False
+                self.fields['name'].widget.attrs['disabled'] = 'disabled'
+                self.fields['account'].widget.attrs['disabled'] = 'disabled'
                 self.fields['vat_number'].widget.attrs['disabled'] = 'disabled'
                 self.fields['eori'].widget.attrs['disabled'] = 'disabled'
                 self.fields['country'].required = False
@@ -40,10 +43,20 @@ class CompanyForm(ModelForm):
                     group in user.groups.values_list('name', flat=True)):
             return True
 
+    def clean_name(self):
+        if self.instance and self.instance.id:
+            return self.instance.name
+        return self.cleaned_data['name']
+
     def clean_obligation(self):
         if self.instance and self.instance.id:
             return self.instance.obligation
         return self.cleaned_data['obligation']
+
+    def clean_account(self):
+        if self.instance and self.instance.id:
+            return self.instance.account
+        return self.cleaned_data['account']
 
     def clean_country(self):
         if self.instance and self.instance.id and not self.has_edit_permission():
@@ -60,6 +73,15 @@ class CompanyForm(ModelForm):
             return self.instance.eori
         return self.cleaned_data['eori']
 
+    def clean_active(self):
+        if self.instance and self.instance.id and not self.has_edit_permission():
+            return self.instance.active
+        return self.cleaned_data['active']
+
+    def clean_outdated(self):
+        if self.instance and self.instance.id and not self.has_edit_permission():
+            return self.instance.outdated
+        return self.cleaned_data['outdated']
 
 class CompanyDeleteForm(Form):
     delete_reporting_folder = BooleanField()

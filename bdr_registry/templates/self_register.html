@@ -43,6 +43,12 @@
   {% blocktrans %}For undertakings reporting for the first time, the account request will be evaluated and login and password will be provided.{% endblocktrans %}
 </p>
 
+<p>
+  {% blocktrans with helpdesk_email="<a href='mailto:bdr.helpdesk@eea.europa.eu'>bdr.helpdesk@eea.europa.eu</a>" %}
+    For future changes on the VAT number please contact the helpdesk at: {{ helpdesk_email }}.
+  {% endblocktrans %}
+</p>
+
 <form method="post" class="form box-small">
   {% csrf_token %}
   <div class="row">

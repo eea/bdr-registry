@@ -157,6 +157,9 @@ class CompaniesBaseView(base.ModelTableViewMixin,
     def get_context_data(self, **kwargs):
         reporting_year = SiteConfiguration.objects.get().reporting_year
 
+        if not self.has_edit_permission():
+            self.exclude = ['active', 'outdated']
+
         data = super(CompaniesBaseView, self).get_context_data()
         company = self.object
         statuses = company.reporting_statuses.filter(
@@ -182,7 +185,18 @@ class CompaniesBaseView(base.ModelTableViewMixin,
         else:
             data['has_reporting_folder'] = False
             data['reporting_folder'] = ''
+
         return data
+
+    def has_edit_permission(self):
+
+        user = self.request.user
+        group = settings.BDR_HELPDESK_GROUP
+
+        if user.is_superuser or (
+                    user.is_staff and
+                    group in user.groups.values_list('name', flat=True)):
+            return True
 
     def has_reporting_folder(self, folder_path):
         if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
@@ -241,6 +255,7 @@ class CompaniesManagementView(views.StaffuserRequiredMixin,
                     user.is_staff and
                     group in user.groups.values_list('name', flat=True)):
             return True
+
 
 class CompaniesUpdateView(base.CompanyUserRequiredMixin,
                           CompaniesBaseView):
@@ -355,7 +370,8 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                 reporting_status.reported = reported
                 reporting_status.save()
 
-        if company.name.strip() != request.POST.get('name'):
+        company_name = request.POST.get('name')
+        if company_name and company.name.strip() != company_name:
             url = settings.BDR_API_URL + '/update_organisation_name'
             form = {
                 'country_code': company.country.code,
@@ -383,12 +399,8 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin,
         data = super(CompaniesUpdate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
+        data['update_view'] = True
         return data
-
-    def get_form(self, form_class):
-        form = super(CompaniesUpdate, self).get_form(form_class)
-        form.fields.pop('name')
-        return form
 
     def get_success_url(self):
         return reverse('company', kwargs=self.kwargs)
