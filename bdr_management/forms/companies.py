@@ -26,10 +26,13 @@ class CompanyForm(ModelForm):
                 self.fields['name'].required = False
                 self.fields['name'].widget.attrs['disabled'] = 'disabled'
                 self.fields['account'].widget.attrs['disabled'] = 'disabled'
-                self.fields['vat_number'].widget.attrs['disabled'] = 'disabled'
+                self.fields['vat_number'].required = False
                 self.fields['eori'].widget.attrs['disabled'] = 'disabled'
                 self.fields['country'].required = False
                 self.fields['country'].widget.attrs['disabled'] = 'disabled'
+
+            if not (self.has_edit_permission() or self.instance.vat_number==u'MISSING'):
+                self.fields['vat_number'].widget.attrs['disabled'] = 'disabled'
 
         set_empty_label(self.fields, '')
 
@@ -64,7 +67,10 @@ class CompanyForm(ModelForm):
         return self.cleaned_data['country']
 
     def clean_vat_number(self):
-        if self.instance and self.instance.id and not self.has_edit_permission():
+        if (self.instance and
+                self.instance.id and
+                not (self.has_edit_permission() or
+                             self.instance.vat_number==u'MISSING')):
             return self.instance.vat_number
         return self.cleaned_data['vat_number']
 

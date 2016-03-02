@@ -141,8 +141,7 @@ class Company(models.Model):
                             max_length=255, null=True, blank=True)
     eori = models.CharField(_('EORI number'), help_text=EORI_LABEL,
                             max_length=17, null=True, blank=True)
-    vat_number = models.CharField(_('VAT number'),
-                            max_length=17, null=True, blank=True)
+    vat_number = models.CharField(_('VAT number'), max_length=17)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, related_name='companies')
     account = models.OneToOneField(Account, null=True, blank=True,
