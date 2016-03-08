@@ -47,7 +47,7 @@ class CompanyForm(ModelForm):
             return True
 
     def clean_name(self):
-        if self.instance and self.instance.id:
+        if self.instance and self.instance.id and not self.has_edit_permission():
             return self.instance.name
         return self.cleaned_data['name']
 
