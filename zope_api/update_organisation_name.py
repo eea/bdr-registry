@@ -5,6 +5,7 @@ country_code = request.form['country_code']
 obligation_code = request.form['obligation_folder_name']
 account = request.form['account_uid']
 org_name = request.form['organisation_name']
+updated = False
 
 root = container.restrictedTraverse('/')
 obligation = dict(root.objectItems()).get(obligation_code)
@@ -15,7 +16,5 @@ if obligation:
         if collection:
             collection.manage_changeCollection(title=org_name)
             updated = True
-
-updated = False
 
 return {"updated": updated}
