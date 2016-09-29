@@ -1,8 +1,8 @@
 import functools
 
+from django.apps import apps
 from django.db.models import Model
 from django.core.urlresolvers import reverse
-from django.db.models.loading import get_model
 
 from django_webtest import WebTest
 from webtest.forms import Select, MultipleSelect
@@ -66,12 +66,11 @@ class BaseWebTest(WebTest):
                 model, str(kwargs)
             ))
 
-
     def _get_model(self, model, kwargs):
         if isinstance(model, basestring):
             app = kwargs.pop('app', None)
             self.assertIsNotNone(app)
-            return get_model(app, model)
+            return apps.get_model(app, model)
         else:
             return model
 

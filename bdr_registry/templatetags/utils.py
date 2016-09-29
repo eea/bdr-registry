@@ -75,7 +75,13 @@ def custom_render_field(field):
     if field.field.required:
         label.attrib['class'] = 'required'
     div.append(label)
-    input_elem = ElementTree.fromstring(field.as_widget().encode('utf-8'))
+
+    # TODO find a better way to suppress ParseError: not well-formed
+    widget = field.as_widget().encode('utf-8')
+    if 'required' in widget:
+        widget = widget.replace('required', '')
+
+    input_elem = ElementTree.fromstring(widget)
     if field.errors:
         input_elem.attrib['class'] = 'form-error'
     div.append(input_elem)

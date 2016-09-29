@@ -14,10 +14,10 @@ from django.template.response import TemplateResponse
 from django.contrib.admin import helpers
 from django.core import mail
 from django.conf import settings
+from django.conf.urls import url
 from django.template.loader import render_to_string
-from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
 import post_office
 import requests
@@ -348,11 +348,11 @@ class OrganisationAdmin(ReadOnlyAdmin):
     actions = [create_accounts, reset_password, create_reporting_folder]
 
     def get_urls(self):
-        my_urls = patterns('',
-            (r'^(?P<pk>\d+)/name_history/$',
+        my_urls = [
+            url(r'^(?P<pk>\d+)/name_history/$',
                 self.admin_site.admin_view(self.name_history)),
-            (r'^export$', self.admin_site.admin_view(self.export)),
-        )
+            url(r'^export$', self.admin_site.admin_view(self.export)),
+        ]
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
     def name_history(self, request, pk):
@@ -400,9 +400,9 @@ class PersonAdmin(ReadOnlyAdmin):
                      'organisation__name', 'organisation__account__uid']
 
     def get_urls(self):
-        my_urls = patterns('',
-            (r'^export$', self.admin_site.admin_view(self.export)),
-        )
+        my_urls = [
+            url(r'^export$', self.admin_site.admin_view(self.export)),
+        ]
         return my_urls + super(PersonAdmin, self).get_urls()
 
     def export(self, request):
@@ -448,12 +448,13 @@ class UserAdminForm(UserChangeForm):
 
     class Meta:
         model = User
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         super(UserAdminForm, self).__init__(*args, **kwargs)
 
         if self.instance:
-          self.fields['obligations'].initial = self.instance.obligations.all()
+            self.fields['obligations'].initial = self.instance.obligations.all()
 
     def save(self, commit=True):
         user = super(UserAdminForm, self).save(commit=False)

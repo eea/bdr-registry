@@ -15,10 +15,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
-from django.db import transaction
 from django.conf import settings
-from django.http import (HttpResponse, HttpResponseForbidden,
-                         HttpResponseNotFound)
+from django.http import HttpResponse, HttpResponseNotFound
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
@@ -126,7 +124,6 @@ def edit_company(request):
     return HttpResponseRedirect(location)
 
 
-
 class CompanyForm(ModelForm):
 
     obligation = ModelChoiceField(
@@ -166,23 +163,18 @@ class SelfRegister(View):
     def post(self, request):
         company_form, person_form = self.make_forms(request.POST.dict())
 
-        if company_form.is_valid():
+        if company_form.is_valid() and person_form.is_valid():
             company = company_form.save()
+            person = person_form.save(commit=False)
+            person.company = company
+            person.save()
 
-            if person_form.is_valid():
-                person = person_form.save(commit=False)
-                person.company = company
-                person.save()
+            send_notification_email({
+                'company': company,
+                'person': person,
+            })
 
-                send_notification_email({
-                    'company': company,
-                    'person': person,
-                })
-
-                return redirect('self_register_done')
-
-            else:
-                transaction.rollback()
+            return redirect('self_register_done')
 
         return self.render_forms(request, company_form, person_form)
 

@@ -222,8 +222,6 @@ class PersonFromCompanyEdit(PersonManagementEdit):
 class PersonEdit(base.PersonUserRequiredMixin,
                  PersonEditBase):
 
-    fields = ('title', 'family_name', 'first_name', 'email', 'phone',
-              'phone2', 'phone3', 'fax')
     raise_exception = True
 
     def get_context_data(self, **kwargs):

@@ -157,8 +157,10 @@ class EmailTemplateCreate(views.GroupRequiredMixin,
                           SuccessMessageMixin,
                           generic.CreateView):
 
-    template_name = 'bdr_management/email_template_edit.html'
     model = EmailTemplate
+    form_class = EmailTemplateForm
+
+    template_name = 'bdr_management/email_template_edit.html'
     success_message = _('Template created successfully')
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True

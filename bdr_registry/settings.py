@@ -4,7 +4,6 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 ADMIN_ALL_BDR_TABLES = DEBUG
 
 ASSETS_DEBUG = True
@@ -43,11 +42,6 @@ LOGIN_REDIRECT_URL = SITE_URL
 
 BDR_REVERSE_PROXY = False
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'frame.middleware.RequestMiddleware',
     'frame.middleware.UserMiddleware',
@@ -56,7 +50,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.transaction.TransactionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'bdr_registry.local.ThreadLocalRequestMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
@@ -65,9 +58,6 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'bdr_registry.urls'
 
 WSGI_APPLICATION = 'bdr_registry.wsgi.application'
-
-TEMPLATE_DIRS = (
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -78,7 +68,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django_nose',
     'frame',
-    'south',
     'gunicorn',
     'raven.contrib.django',
     'widget_tweaks',
@@ -89,15 +78,27 @@ INSTALLED_APPS = (
     'bdr_registry',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = [
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.static',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    'bdr_registry.context_processors.settings_context',
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'OPTIONS': {
+            'debug': DEBUG,
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+                'bdr_registry.context_processors.settings_context',
+            ],
+            'loaders': [
+                'django.template.loaders.filesystem.Loader',
+                'django.template.loaders.app_directories.Loader',
+            ],
+        }
+    },
 ]
 
 LOGGING = {
@@ -144,7 +145,7 @@ LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
 SELF_OBL_EXCLUDE = ['fgas']
 FIRST_REPORTING_YEAR = 2012
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=bdr_registry,bdr_management',
@@ -164,4 +165,3 @@ if 'test' in sys.argv:
 
     # pop 'django.contrib.auth.middleware.RemoteUserMiddleware'
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES[:-1]
-

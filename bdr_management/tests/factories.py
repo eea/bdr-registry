@@ -1,9 +1,11 @@
 from django.conf import settings
+from django.contrib.auth import models as auth_models
 import factory
 from factory import fuzzy, django
 
 from django.db.models import signals
 from .base import mute_signals
+from bdr_registry import models
 
 
 text_fuzzer = fuzzy.FuzzyText()
@@ -13,8 +15,9 @@ integer_fuzzer = fuzzy.FuzzyInteger(1000)
 
 class UserFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'auth.User'
-    FACTORY_DJANGO_GET_OR_CREATE = ('username', 'email')
+    class Meta:
+        model = auth_models.User
+        django_get_or_create = ('username', 'email')
 
     first_name = factory.Sequence(lambda n: 'user_%d' % n)
     last_name = factory.Sequence(lambda n: 'user_%d' % n)
@@ -65,23 +68,26 @@ class BDRGroupUserFactory(UserFactory):
 
 class BDRGroupFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'auth.Group'
+    class Meta:
+        model = auth_models.Group
 
     name = settings.BDR_HELPDESK_GROUP
 
 
 class AccountFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Account'
-    FACTORY_DJANGO_GET_OR_CREATE = ('uid',)
+    class Meta:
+        model = models.Account
+        django_get_or_create = ('uid',)
 
     uid = fuzzy.FuzzyText()
 
 
 class CountryFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Country'
-    FACTORY_DJANGO_GET_OR_CREATE = ('name', 'code')
+    class Meta:
+        model = models.Country
+        django_get_or_create = ('name', 'code')
 
     name = 'Romania'
     code = 'RO'
@@ -89,16 +95,18 @@ class CountryFactory(django.DjangoModelFactory):
 
 class EmailTemplateFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'post_office.EmailTemplate'
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
+    class Meta:
+        model = models.EmailTemplate
+        django_get_or_create = ('name',)
 
     name = fuzzy.FuzzyText()
 
 
 class ObligationFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Obligation'
-    FACTORY_DJANGO_GET_OR_CREATE = ('name', 'code')
+    class Meta:
+        model = models.Obligation
+        django_get_or_create = ('name', 'code')
 
     name = fuzzy.FuzzyText()
     code = factory.Iterator(['ods', 'fgas'])
@@ -107,7 +115,8 @@ class ObligationFactory(django.DjangoModelFactory):
 
 class SiteConfigurationFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.SiteConfiguration'
+    class Meta:
+        model = models.SiteConfiguration
 
     reporting_year = 2015
     self_register_email_template = factory.SubFactory(EmailTemplateFactory)
@@ -116,8 +125,9 @@ class SiteConfigurationFactory(django.DjangoModelFactory):
 @mute_signals(signals.post_save)
 class CompanyFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Company'
-    FACTORY_DJANGO_GET_OR_CREATE = ('name',)
+    class Meta:
+        model = models.Company
+        django_get_or_create = ('name',)
 
     name = fuzzy.FuzzyText()
     addr_street = fuzzy.FuzzyText()
@@ -125,7 +135,6 @@ class CompanyFactory(django.DjangoModelFactory):
     addr_postalcode = fuzzy.FuzzyInteger(99999)
     country = factory.SubFactory(CountryFactory)
     obligation = factory.SubFactory(ObligationFactory)
-
 
     @factory.post_generation
     def people(self, create, extracted, **kwargs):
@@ -138,8 +147,9 @@ class CompanyFactory(django.DjangoModelFactory):
 
 class PersonFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Person'
-    FACTORY_DJANGO_GET_OR_CREATE = ('email',)
+    class Meta:
+        model = models.Person
+        django_get_or_create = ('email',)
 
     first_name = fuzzy.FuzzyText()
     family_name = fuzzy.FuzzyText()
@@ -163,7 +173,8 @@ class CompanyWithAccountFactory(CompanyFactory):
 
 class CommentFactory(django.DjangoModelFactory):
 
-    FACTORY_FOR = 'bdr_registry.Comment'
+    class Meta:
+        model = models.Comment
 
     text = fuzzy.FuzzyText()
     company = factory.SubFactory(CompanyFactory)
@@ -196,4 +207,3 @@ def company_with_person_form():
     form = company_form()
     form.update(person_form())
     return form
-

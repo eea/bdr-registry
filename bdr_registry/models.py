@@ -40,6 +40,7 @@ class Country(models.Model):
     def __unicode__(self):
         return self.name
 
+
 def validate_comma_separated_email_list(value):
     """
     Validate every email address in a comma separated list of emails.
@@ -54,6 +55,7 @@ def validate_comma_separated_email_list(value):
         except ValidationError:
             raise ValidationError('Invalid email: %s' % email, code='invalid')
 
+
 class Obligation(models.Model):
 
     name = models.CharField(max_length=255)
@@ -61,7 +63,7 @@ class Obligation(models.Model):
     reportek_slug = models.CharField(max_length=255)
     email_template = models.ForeignKey(EmailTemplate)
     bcc = models.TextField(blank=True, validators=[validate_comma_separated_email_list])
-    admins = models.ManyToManyField(User, related_name='obligations', null=True, blank=True)
+    admins = models.ManyToManyField(User, related_name='obligations', blank=True)
 
     def __unicode__(self):
         return self.name
@@ -180,7 +182,7 @@ class CompanyNameHistory(models.Model):
 
     name = models.CharField(max_length=255)
     company = models.ForeignKey(Company, related_name='namehistory')
-    user = models.ForeignKey('auth.User', null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
     time = models.DateTimeField(auto_now_add=True)
 
     def __unicode__(self):

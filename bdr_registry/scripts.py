@@ -14,7 +14,7 @@ log.setLevel(logging.DEBUG)
 HOURS_2 = timedelta(hours=2)
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def import_companies(csv_file):
     for byte_row in csv.DictReader(csv_file):
         row = {k: byte_row[k].decode('utf-8') for k in byte_row}
@@ -60,7 +60,7 @@ def import_companies(csv_file):
             p2 = models.Person.objects.create(company=org, **p2_data)
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def update_companies_from_ldap():
     import ldap
     conn = ldap.initialize(settings.AUTH_LDAP_SERVER_URI)
@@ -101,10 +101,12 @@ def update_companies_from_ldap():
                  org.account.uid, org.pk, org.name)
 
 
-@transaction.commit_on_success
+@transaction.atomic
 def update_companies_from_csv(csv_file, commit=False):
+    sid = transaction.savepoint()
     for byte_row in csv.DictReader(csv_file, dialect='excel-tab'):
         row_dict = {k: byte_row[k].decode('utf-8') for k in byte_row}
+
         def row(*keys):
             for k in keys:
                 if k in row_dict:
@@ -170,4 +172,4 @@ def update_companies_from_csv(csv_file, commit=False):
 
     if not commit:
         log.warn("Rolling back transaction")
-        transaction.rollback()
+        transaction.savepoint_rollback(sid)

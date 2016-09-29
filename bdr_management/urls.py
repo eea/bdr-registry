@@ -1,12 +1,10 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from bdr_management import views
 from django.views.generic import RedirectView
 
 
-urlpatterns = patterns(
-    '',
-
+urlpatterns = [
     url(r'^$', RedirectView.as_view(url='companies')),
 
     url(r'^companies/?$',
@@ -143,5 +141,4 @@ urlpatterns = patterns(
     url(r'^actions/copy-report-status/?$',
         views.CopyReportingStatus.as_view(),
         name='copy_report_status'),
-
-)
+]

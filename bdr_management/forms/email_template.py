@@ -7,9 +7,8 @@ class EmailTemplateForm(ModelForm):
 
     class Meta():
         model = EmailTemplate
-        exclude = ('id', 'description')
+        fields = ('name', 'subject', 'html_content')
 
     def __init__(self, *args, **kwargs):
         super(EmailTemplateForm, self).__init__(*args, **kwargs)
         set_empty_label(self.fields, '')
-

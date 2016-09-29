@@ -209,7 +209,7 @@ class CompaniesBaseView(base.ModelTableViewMixin,
         if resp.status_code == 200:
             return True
         else:
-            return False 
+            return False
 
 
 class CompaniesManagementView(views.StaffuserRequiredMixin,
@@ -352,6 +352,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         curr_year = SiteConfiguration.objects.get().reporting_year
         reporting_years = ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
+        company = None
         for year in reporting_years:
             submitted_val = request.POST.get(unicode(year.year))
             if submitted_val == 'inactive':
@@ -371,7 +372,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                 reporting_status.save()
 
         company_name = request.POST.get('name')
-        if company_name and company.name.strip() != company_name:
+        if company and company_name and company.name.strip() != company_name:
             url = settings.BDR_API_URL + '/update_organisation_name'
             form = {
                 'country_code': company.country.code,

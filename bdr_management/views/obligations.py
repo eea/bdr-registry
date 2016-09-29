@@ -156,8 +156,10 @@ class ObligationCreate(views.GroupRequiredMixin,
                        SuccessMessageMixin,
                        generic.CreateView):
 
-    template_name = 'bdr_management/obligation_add.html'
     model = Obligation
+    fields = '__all__'
+
+    template_name = 'bdr_management/obligation_add.html'
     success_message = _('Obligation created successfully')
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
