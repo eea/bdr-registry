@@ -32,9 +32,6 @@ COMMENT_FIXTURE = {
     'text': "This is a comment"
 }
 
-LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
-
-
 def create_user_and_login(client,
                           username='test_user', password='pw',
                           staff=False, superuser=False):
@@ -99,7 +96,7 @@ class FormSubmitTest(TransactionTestCase):
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
-                         'http://testserver/self_register/done')
+                         '/self_register/done')
 
     def test_invalid_person_rolls_back_saved_company(self):
         form_data = self.prepare_form_data()
