@@ -85,7 +85,7 @@ SECRET_KEY = 'foo'  # replace this with a random string
 
 ## integration with BDR Zope application
 # BDR_REPORTEK_ORGANISATION_URL = '#'
-# BDR_API_URL = 'http://example.com/api'
+BDR_API_URL = 'http://example.com/api'
 # BDR_API_AUTH = ('apiuser', secure_str('apipassword'))
 # BDR_AUDIT_LOG_FILE = './bdr_audit.log'
 

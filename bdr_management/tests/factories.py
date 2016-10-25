@@ -110,6 +110,7 @@ class ObligationFactory(django.DjangoModelFactory):
 
     name = fuzzy.FuzzyText()
     code = factory.Iterator(['ods', 'fgas'])
+    reportek_slug = fuzzy.FuzzyText()
     email_template = factory.SubFactory(EmailTemplateFactory)
 
 
