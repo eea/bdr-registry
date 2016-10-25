@@ -135,6 +135,7 @@ class CompanyFactory(django.DjangoModelFactory):
     addr_postalcode = fuzzy.FuzzyInteger(99999)
     country = factory.SubFactory(CountryFactory)
     obligation = factory.SubFactory(ObligationFactory)
+    vat_number = fuzzy.FuzzyText()
 
     @factory.post_generation
     def people(self, create, extracted, **kwargs):
@@ -188,7 +189,8 @@ def company_form():
         'addr_postalcode': text_fuzzer.fuzz(),
         'addr_place2': text_fuzzer.fuzz(),
         'country': '1',
-        'obligation': '1'
+        'obligation': '1',
+        'vat_number': '1'
     }.copy()
 
 

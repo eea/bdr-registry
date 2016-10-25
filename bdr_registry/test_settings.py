@@ -10,3 +10,13 @@ from django_assets.env import DjangoResolver
 use_staticfiles = property(lambda self: True)
 DjangoResolver.use_staticfiles = use_staticfiles
 
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ':memory:',
+  }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 25

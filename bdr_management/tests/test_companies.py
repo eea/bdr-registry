@@ -253,7 +253,8 @@ class CompanyNameHistoryTests(base.BaseWebTest):
             'addr_postalcode': "123456",
             'addr_place2': "Hovedstaden",
             'country': '1',
-            'obligation': '1'
+            'obligation': '1',
+            'vat_number': 'vat number'
         }
         self.person_form = {
             'title': "Mr.",

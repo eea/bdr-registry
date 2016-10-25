@@ -16,6 +16,7 @@ ORG_FIXTURE = {
     'addr_place1': "Copenhagen",
     'addr_postalcode': "123456",
     'addr_place2': "Hovedstaden",
+    'vat_number': "vat number",
 }
 
 
@@ -30,8 +31,6 @@ PERSON_FIXTURE = {
 COMMENT_FIXTURE = {
     'text': "This is a comment"
 }
-
-OBLIGATON_CODE = "fgas"
 
 LOGIN_PREFIX = 'http://testserver/accounts/login/?next='
 
@@ -64,7 +63,7 @@ class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
         self.denmark = factories.CountryFactory(name="Denmark", code='dk')
-        self.fgas = factories.ObligationFactory(code='fgas', name='F-gases')
+        self.ods = factories.ObligationFactory(code='ods', name='ODS')
 
     def assert_object_has_items(self, obj, data):
         for key in data:
@@ -73,7 +72,7 @@ class FormSubmitTest(TransactionTestCase):
     def prepare_form_data(self):
         form_data = {
             'company-country': self.denmark.pk,
-            'company-obligation': self.fgas.pk,
+            'company-obligation': self.ods.pk,
         }
         for key, value in ORG_FIXTURE.items():
             form_data['company-' + key] = value
@@ -84,6 +83,8 @@ class FormSubmitTest(TransactionTestCase):
         return form_data
 
     def test_submitted_company_and_person_are_saved(self):
+        factories.SiteConfigurationFactory()
+                
         resp = self.client.post('/self_register', self.prepare_form_data())
 
         self.assertEqual(models.Company.objects.count(), 1)
@@ -109,6 +110,8 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(resp.status_code, 200)
 
     def test_mail_is_sent_after_successful_self_registration(self):
+        factories.SiteConfigurationFactory()
+
         user1 = User.objects.create(username='user1', password='pass1',
                                     email='example@example.com',
                                     is_staff=True)
@@ -121,7 +124,7 @@ class FormSubmitTest(TransactionTestCase):
         bdr_group.user_set.add(user1)
         bdr_group.user_set.add(user2)
 
-        self.fgas.admins = [user1]
+        self.ods.admins = [user1]
 
         self.client.post('/self_register', self.prepare_form_data())
         self.assertEqual(len(mail.outbox), 1)
@@ -132,7 +135,7 @@ class ApiTest(base.BaseWebTest):
     def setUp(self):
         self.apikey = models.ApiKey.objects.create().key
         self.dk = factories.CountryFactory(name="Denmark", code='dk')
-        self.fgas = factories.ObligationFactory(code='fgas', name='F-gases')
+        self.ods = factories.ObligationFactory(code='ods', name='ODS')
 
     def test_response_empty_when_no_companies_in_db(self):
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
@@ -142,9 +145,9 @@ class ApiTest(base.BaseWebTest):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_single_company_from_db(self):
-        account = models.Account.objects.create(uid='fgas12345')
+        account = models.Account.objects.create(uid='ods12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
-                      account=account, obligation=self.fgas)
+                      account=account, obligation=self.ods)
         org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(company=org,
                                      first_name="Joe",
@@ -161,7 +164,7 @@ class ApiTest(base.BaseWebTest):
 
         # By default, MySQL DateTime doesn't store fractional seconds,
         # so we'll get them back trimmed
-        expected_comment_created = str(comment.created.replace(microsecond=0))
+        expected_comment_created = str(comment.created)
 
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
@@ -171,12 +174,12 @@ class ApiTest(base.BaseWebTest):
                         '<addr_street>teh street</addr_street>'
                         '<addr_postalcode>123456</addr_postalcode>'
                         '<eori></eori>'
-                        '<vat_number></vat_number>'
+                        '<vat_number>vat number</vat_number>'
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
-                        '<account>fgas12345</account>'
-                        '<obligation name="F-gases">fgas</obligation>'
+                        '<account>ods12345</account>'
+                        '<obligation name="ODS">ods</obligation>'
                         '<country name="Denmark">dk</country>'
                         '<person>'
                           '<name>Joe Smith</name>'
@@ -193,9 +196,9 @@ class ApiTest(base.BaseWebTest):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_all_person_data(self):
-        account = models.Account.objects.create(uid='fgas12345')
+        account = models.Account.objects.create(uid='ods12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
-                      account=account, obligation=self.fgas)
+                      account=account, obligation=self.ods)
         org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(company=org,
                                      first_name="Joe",
@@ -207,6 +210,7 @@ class ApiTest(base.BaseWebTest):
                                      fax="555 6789")
 
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
@@ -215,12 +219,12 @@ class ApiTest(base.BaseWebTest):
                         '<addr_street>teh street</addr_street>'
                         '<addr_postalcode>123456</addr_postalcode>'
                         '<eori></eori>'
-                        '<vat_number></vat_number>'
+                        '<vat_number>vat number</vat_number>'
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
-                        '<account>fgas12345</account>'
-                        '<obligation name="F-gases">fgas</obligation>'
+                        '<account>ods12345</account>'
+                        '<obligation name="ODS">ods</obligation>'
                         '<country name="Denmark">dk</country>'
                         '<person>'
                           '<name>Joe Smith</name>'
@@ -235,14 +239,14 @@ class ApiTest(base.BaseWebTest):
         self.assertEqual(resp.content, expected)
 
     def test_response_contains_company_with_matching_uid(self):
-        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.fgas)
-        account1 = models.Account.objects.create(uid='fgas0001')
-        account2 = models.Account.objects.create(uid='fgas0002')
+        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.ods)
+        account1 = models.Account.objects.create(uid='ods0001')
+        account2 = models.Account.objects.create(uid='ods0002')
         models.Company.objects.create(account=account1, **kwargs)
         org2 = models.Company.objects.create(account=account2, **kwargs)
 
         resp = self.client.get('/organisation/all'
-                               '?account_uid=fgas0002'
+                               '?account_uid=ods0002'
                                '&apikey=' + self.apikey)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
@@ -252,12 +256,12 @@ class ApiTest(base.BaseWebTest):
                         '<addr_street>teh street</addr_street>'
                         '<addr_postalcode>123456</addr_postalcode>'
                         '<eori></eori>'
-                        '<vat_number></vat_number>'
+                        '<vat_number>vat number</vat_number>'
                         '<addr_place1>Copenhagen</addr_place1>'
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
-                        '<account>fgas0002</account>'
-                        '<obligation name="F-gases">fgas</obligation>'
+                        '<account>ods0002</account>'
+                        '<obligation name="ODS">ods</obligation>'
                         '<country name="Denmark">dk</country>'
                       '</organisation>'
                     '</organisations>')

@@ -165,14 +165,14 @@ class ObligationCreate(views.GroupRequiredMixin,
     raise_exception = True
 
     def get_success_url(self):
-        return reverse('management:email_templates', kwargs=self.kwargs)
+        return reverse('management:obligations', kwargs=self.kwargs)
 
     def get_context_data(self, **kwargs):
-        back_url = reverse('management:email_templates', kwargs=self.kwargs)
+        back_url = reverse('management:obligations', kwargs=self.kwargs)
         breadcrumbs = [
             Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(back_url, _('Email templates')),
-            Breadcrumb('', _('Create new template'))
+            Breadcrumb(back_url, _('Obligations')),
+            Breadcrumb('', _('Create new obligation'))
         ]
         data = super(ObligationCreate, self).get_context_data(**kwargs)
         data['breadcrumbs'] = breadcrumbs

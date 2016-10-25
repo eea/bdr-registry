@@ -139,7 +139,8 @@ class CommentTests(BaseWebTest):
 
     def test_comment_add_by_owner(self):
         factories.SiteConfigurationFactory()
-        user = factories.UserFactory()
+        bdr_group = factories.BDRGroupFactory()
+        user = factories.UserFactory(groups=(bdr_group,))
         account = factories.AccountFactory(uid=user.username)
         company = factories.CompanyFactory(account=account)
         url = self.reverse('comment_add', pk=company.pk)
