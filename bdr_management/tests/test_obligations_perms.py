@@ -140,3 +140,29 @@ class ObligationManagementTests(BaseWebTest):
         url = self.reverse('management:obligation_delete', pk=obligation.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:obligations'))
+
+    def test_obligation_update_by_bdr_group_check_admins(self):
+        user = factories.BDRGroupUserFactory()
+        obligation = factories.ObligationFactory()
+        obligation.admins = [user]
+        url = self.reverse('management:obligation_edit',
+                           **{'pk': obligation.pk})
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+        resp = self.app.post(url, {'name': obligation.name,
+            'code': obligation.code,
+            'reportek_slug': obligation.reportek_slug,
+            'email_template': obligation.email_template.id,
+            'bcc': obligation.bcc,
+            'admins': [u.id for u in obligation.admins.all()]},
+            user=user.username)
+
+        url = self.reverse('management:obligation_view',
+                           **{'pk': obligation.pk})
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['location'], url)
+
+        user_obligations = user.obligations.values()
+        self.assertEqual(len(user_obligations), 1)
+        self.assertEqual(user_obligations[0]['id'], obligation.id)
