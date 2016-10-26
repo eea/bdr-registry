@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
@@ -68,6 +68,7 @@ class Obligation(models.Model):
     def __unicode__(self):
         return self.name
 
+    @transaction.atomic
     def generate_account_id(self):
         query = (NextAccountId.objects.select_for_update()
                  .filter(obligation=self))
