@@ -6,6 +6,17 @@
 
 <h1>{% trans "BDR company database" %}</h1>
 
-<p>{% trans "Company" %} <a href="{% url "self_register" %}">{% trans "self-registration" %}</a>.</p>
+{% with company_details=view.get_user_company_details %}
+
+	{% if company_details.has_company %}
+		<p>{% trans "Your company" %} <a href="{% url 'company' company_details.company.id %}">{{ company_details.company.name }}</a></p>
+		{% if company_details.has_reporting_folder %}
+			<p>{% trans "Reporting folder" %} <a href="{{ company_details.reporting_folder_path }}">{{ company_details.reporting_folder_path }}</a></p>
+		{% endif %}
+	{% else %}
+		<p>{% trans "Company" %} <a href="{% url "self_register" %}">{% trans "self-registration" %}</a>.</p>
+	{% endif %}
+
+{% endwith %}
 
 {% endblock %}

@@ -1,3 +1,4 @@
+import requests
 import random
 import string
 from django.contrib.auth.models import User
@@ -157,6 +158,24 @@ class Company(models.Model):
     def __unicode__(self):
         return self.name
 
+    def build_reporting_folder_path(self):
+        folder_path = '/{0}/{1}/{2}'.format(
+                self.obligation.reportek_slug,
+                self.country.code,
+                self.account.uid)
+        return folder_path
+
+    def has_reporting_folder(self, folder_path=None):
+        if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
+            return False
+        if folder_path is None:
+            folder_path = self.build_reporting_folder_path()
+        url = settings.BDR_API_URL + folder_path
+        resp = requests.get(url, verify=False)
+        if resp.status_code == 200:
+            return True
+        else:
+            return False
 
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
