@@ -1,3 +1,5 @@
+from django.test import Client
+import json
 
 from .base import BaseWebTest
 from bdr_management.tests import factories
@@ -141,7 +143,7 @@ class ObligationManagementTests(BaseWebTest):
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:obligations'))
 
-    def test_obligation_update_by_bdr_group_check_admins(self):
+    def test_obligation_after_update_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         obligation = factories.ObligationFactory()
         obligation.admins = [user]
@@ -150,6 +152,7 @@ class ObligationManagementTests(BaseWebTest):
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
 
+        #modify the obligation
         resp = self.app.post(url, {'name': obligation.name,
             'code': obligation.code,
             'reportek_slug': obligation.reportek_slug,
@@ -158,11 +161,37 @@ class ObligationManagementTests(BaseWebTest):
             'admins': [u.id for u in obligation.admins.all()]},
             user=user.username)
 
+        #render obligation page
         url = self.reverse('management:obligation_view',
                            **{'pk': obligation.pk})
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'], url)
 
+        #user has only one obligation
         user_obligations = user.obligations.values()
         self.assertEqual(len(user_obligations), 1)
-        self.assertEqual(user_obligations[0]['id'], obligation.id)
+
+        #set user password
+        user.set_password('q')
+        user.save()
+
+        #render obligations page
+        url = self.reverse('management:obligations')
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+
+        #login user and make the ajax request
+        client = Client(HTTP_USER_AGENT='Mozilla/5.0')
+        logged_in = client.login(username=user.username, password='q')
+        self.assertEqual(logged_in, True)
+
+        url = self.reverse('management:obligations_filter')
+        kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+        data = {'sColumns': 'id,name'}
+        resp = client.get(url, data, **kwargs)
+        self.assertEqual(resp.status_code, 200)
+
+        #make sure the user's obligation id is present in returned data
+        data = json.loads(resp.content)
+        ids = [row[0] for row in data['aaData']]
+        self.assertEqual(user_obligations[0]['id'] in ids, True)
