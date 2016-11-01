@@ -10,7 +10,7 @@ import base64
 from django.contrib.auth.models import User
 from django.db.models import Q
 
-from django.views.generic import View
+from django.views.generic import View, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
@@ -47,9 +47,34 @@ class CanEdit(object):
         return False
 
 
-def home(request):
-    return TemplateResponse(request, 'home.html', {})
+class home(TemplateView):
 
+    template_name = 'home.html'
+
+    def get_user_company_details(self):
+        info = {
+            'has_company': False,
+            'company': None,
+            'has_reporting_folder': False,
+            'reporting_folder_path': None
+        }
+        try:
+            account = models.Account.objects.get(uid=self.request.user)
+        except models.Account.DoesNotExist:
+            pass
+        else:
+            try:
+                company = models.Company.objects.get(account=account)
+            except models.Company.DoesNotExist:
+                pass
+            else:
+                info['has_company'] = True
+                info['company'] = company
+                info['reporting_folder_path'] = \
+                    company.build_reporting_folder_path()
+                info['has_reporting_folder'] = \
+                    company.has_reporting_folder(info['reporting_folder_path'])
+        return info
 
 ORG_CREATE_EXCLUDE = ('account', 'active', 'comments')
 ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')

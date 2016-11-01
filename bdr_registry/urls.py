@@ -46,7 +46,7 @@ person_patterns = [
 
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
+    url(r'^$', views.home.as_view(), name='home'),
     url(r'^accounts/login/?$', auth_views.login,
         {'template_name': 'login.html'},
         name='login'),

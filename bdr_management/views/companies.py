@@ -176,11 +176,9 @@ class CompaniesBaseView(base.ModelTableViewMixin,
             data['has_account'] = False
 
         if data['has_account']:
-            folder_path = '/{0}/{1}/{2}'.format(
-                    self.object.obligation.reportek_slug,
-                    self.object.country.code,
-                    self.object.account.uid)
-            data['has_reporting_folder'] = self.has_reporting_folder(folder_path)
+            folder_path = self.object.build_reporting_folder_path()
+            data['has_reporting_folder'] = self.object.has_reporting_folder(
+                folder_path)
             data['reporting_folder'] = folder_path
         else:
             data['has_reporting_folder'] = False
@@ -197,19 +195,6 @@ class CompaniesBaseView(base.ModelTableViewMixin,
                     user.is_staff and
                     group in user.groups.values_list('name', flat=True)):
             return True
-
-    def has_reporting_folder(self, folder_path):
-        if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
-            return False
-
-        url = settings.BDR_API_URL + folder_path
-
-        # resp = requests.get(url, auth=settings.BDR_API_AUTH, verify=False)
-        resp = requests.get(url, verify=False)
-        if resp.status_code == 200:
-            return True
-        else:
-            return False
 
 
 class CompaniesManagementView(views.StaffuserRequiredMixin,

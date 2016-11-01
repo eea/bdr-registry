@@ -1,0 +1,20 @@
+Changelog
+=========
+
+
+1.0.dev0 - (unreleased)
+-----------------------
+* Feature: Link to BDR-registry and back to the report questionnaire:
+- Since Django 1.7 select_for_update() requires a transaction:
+  fixed generate_account_id accordingly.
+- defined 'home' as TemplateView and implemented 'get_user_company_details'
+  method to retrieve info about current user's company (if the case)
+- moved 'has_reporting_folder' from view to model because we need to be able
+  to call it from other views
+- added docs
+  [chiridra refs #69698]
+
+1.0 - (2014-06-02)
+------------------
+* Initial release
+  [nituacor]
