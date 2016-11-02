@@ -15,6 +15,12 @@ Changelog
 
     [chiridra refs #69698]
 
+* Task: Docker deployment of BDR-Test
+    - Used django-getenv to load some settings from env
+    - No need to load localsettings from env (configure.py)
+
+    [chiridra refs #78711]
+
 1.0 - (2014-06-02)
 ------------------
 * Initial release

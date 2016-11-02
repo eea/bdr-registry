@@ -18,8 +18,8 @@ RUN set -x \
     && gosu nobody true
 
 RUN useradd --system -U -u 500 bdrreg \
- && mkdir -p $BDR_REG_ROOT/logs $BDR_REG_ROOT/static \
- && chown -R bdrreg:bdrreg $BDR_REG_ROOT
+    && mkdir -p $BDR_REG_ROOT/logs $BDR_REG_ROOT/static \
+    && chown -R bdrreg:bdrreg $BDR_REG_ROOT
 
 VOLUME ["$BDR_REG_ROOT/static"]
 
@@ -41,7 +41,7 @@ COPY . $BDR_REG_APP
 WORKDIR $BDR_REG_APP
 
 RUN pip install -r requirements.txt \
- && chown -R 500:500 $BDR_REG_ROOT
+    && chown -R 500:500 $BDR_REG_ROOT
 
 ENTRYPOINT ["./docker-setup.sh"]
 CMD ["run"]

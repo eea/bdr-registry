@@ -1,29 +1,20 @@
 from bdr_registry.settings import *
 
 
-class secure_str(str):
-    """
-    A string that doesn't print its contents on `repr()`. Useful to
-    protect passwords.
-    """
-    __slots__ = ()
-    __repr__ = object.__repr__
-
-
 # DEBUG = TEMPLATE_DEBUG = True
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': './db.sqlite',  # path to database file
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': './db.sqlite',  # path to database file
+#     }
+# }
 
-STATIC_ROOT = ''
-STATIC_URL = '/static/'
-SITE_URL = '/'
-LOGIN_REDIRECT_URL = SITE_URL
-SECRET_KEY = 'foo'  # replace this with a random string
+# STATIC_ROOT = ''
+# STATIC_URL = '/static/'
+# SITE_URL = '/'
+# LOGIN_REDIRECT_URL = SITE_URL
+# SECRET_KEY = 'foo'  # replace this with a random string
 # BDR_REVERSE_PROXY = True  # enable this when behind a reverse proxy
 
 
@@ -52,10 +43,11 @@ SECRET_KEY = 'foo'  # replace this with a random string
 # AUTH_LDAP_SERVER_URI = "ldap://localhost:389/"
 # AUTH_LDAP_BIND_DN = ""
 # AUTH_LDAP_BIND_PASSWORD = ""
+# AUTH_LDAP_BASE_DN = "o=EIONET,l=Europe"
 #
 # import ldap
 # from django_auth_ldap.config import LDAPSearch
-# AUTH_LDAP_USER_SEARCH = LDAPSearch("o=EIONET,l=Europe",
+# AUTH_LDAP_USER_SEARCH = LDAPSearch(AUTH_LDAP_BASE_DN,
 #                                    ldap.SCOPE_SUBTREE,
 #                                    "(uid=%(user)s)")
 #
@@ -85,8 +77,11 @@ SECRET_KEY = 'foo'  # replace this with a random string
 
 ## integration with BDR Zope application
 # BDR_REPORTEK_ORGANISATION_URL = '#'
-BDR_API_URL = 'http://example.com/api'
-# BDR_API_AUTH = ('apiuser', secure_str('apipassword'))
+# BDR_API_URL = 'http://example.com/api'
+# BDR_API_AUTH_USER = 'apiuser'
+# BDR_API_AUTH_PASSWORD = 'apipassword'
+# BDR_API_AUTH = (BDR_API_AUTH_USER, secure_str(BDR_API_AUTH_PASSWORD))
+
 # BDR_AUDIT_LOG_FILE = './bdr_audit.log'
 
-REPORTING_YEAR = 2014
+# REPORTING_YEAR = 2014
