@@ -8,9 +8,11 @@ and then manage a list of contacts for their company. BDR helpdesk
 can manage accounts and passwords and download CSV reports of
 organisations.
 
+Base docker image: `hub.docker.com`_
+
 .. _bdr-registry: https://bdr.eionet.europa.eu/registry/
 .. _BDR Zope: https://bdr.eionet.europa.eu/
-
+.. _hub.docker.com: https://hub.docker.com/r/eeacms/reportek.bdr-registry/
 
 Workflows
 ---------
