@@ -19,12 +19,15 @@ DEBUG = env('DEBUG', False)
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', ['localhost', '127.0.0.1'])
 ADMIN_ALL_BDR_TABLES = env('ADMIN_ALL_BDR_TABLES', False)
 
-DATABASES = env('DATABASES', {
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': './db.sqlite',  # path to database file
+        'ENGINE': env('DATABASES_ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': env('MYSQL_DATABASE', '/db.sqlite'),
+        'USER': env('MYSQL_USER', ''),
+        'PASSWORD': env('MYSQL_PASSWORD', ''),
+        'HOST': env('DATABASES_HOST', ''),
     }
-})
+}
 
 ASSETS_DEBUG = True
 
