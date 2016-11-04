@@ -7,6 +7,15 @@ if [ ! -z "$LDAPS_CACERT" ]; then
   dpkg-reconfigure --force ca-certificates
 fi
 
+if [ -z "$MYSQL_ADDR" ]; then
+  MYSQL_ADDR="mysql"
+fi
+
+while ! nc -z $MYSQL_ADDR 3306; do
+  echo "Waiting for MySQL server at '$MYSQL_ADDR' to accept connections on port 3306..."
+  sleep 3s
+done
+
 if ! test -e $BDR_REG_APP/bdr_registry/localsettings.py; then
     gosu bdrreg python configure.py
 fi

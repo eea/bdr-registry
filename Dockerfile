@@ -25,6 +25,7 @@ VOLUME ["$BDR_REG_ROOT/static"]
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
+    netcat \
     sudo \
     python-setuptools \
     python-dev \
