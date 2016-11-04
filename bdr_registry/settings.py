@@ -22,9 +22,9 @@ ADMIN_ALL_BDR_TABLES = env('ADMIN_ALL_BDR_TABLES', False)
 DATABASES = {
     'default': {
         'ENGINE': env('DATABASES_ENGINE', 'django.db.backends.sqlite3'),
-        'NAME': env('MYSQL_DATABASE', '/db.sqlite'),
-        'USER': env('MYSQL_USER', ''),
-        'PASSWORD': env('MYSQL_PASSWORD', ''),
+        'NAME': env('DATABASES_NAME', '/db.sqlite'),
+        'USER': env('DATABASES_USER', ''),
+        'PASSWORD': env('DATABASES_PASSWORD', ''),
         'HOST': env('DATABASES_HOST', ''),
     }
 }
