@@ -16,7 +16,7 @@ while ! nc -z $MYSQL_ADDR 3306; do
   sleep 3s
 done
 
-#create database for fcs service
+#create database for service
 if ! mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME;"; then
   echo "CREATE DATABASE $DATABASES_NAME"
   mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE $DATABASES_NAME;"
@@ -30,7 +30,7 @@ fi
 
 args=("$@")
 gosu bdrreg python manage.py collectstatic --noinput
-gosu bdrreg python manage.py migrate
+gosu bdrreg python manage.py migrate --fake-initial
 
 case $1 in
     manage)
