@@ -16,6 +16,14 @@ while ! nc -z $MYSQL_ADDR 3306; do
   sleep 3s
 done
 
+#create database for fcs service
+if ! mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "use $DATABASES_NAME;"; then
+  echo "CREATE DATABASE $DATABASES_NAME"
+  mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE DATABASE $DATABASES_NAME;"
+  mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE USER '$DATABASES_USER'@'%' IDENTIFIED BY '$DATABASES_PASSWORD';"
+  mysql -h mysql -u root -p$MYSQL_ROOT_PASSWORD -e "GRANT ALL PRIVILEGES ON $DATABASES_NAME.* TO '$DATABASES_USER'@'%';"
+fi
+
 if ! test -e $BDR_REG_APP/bdr_registry/localsettings.py; then
     gosu bdrreg python configure.py
 fi
