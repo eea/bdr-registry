@@ -41,6 +41,8 @@ case $1 in
             --name bdr_registry \
             --bind 0.0.0.0:$BDR_REG_PORT \
             --workers 3
+            --access-logfile -
+            --error-logfile -
         ;;
     *)
 esac
