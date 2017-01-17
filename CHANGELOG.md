@@ -1,11 +1,19 @@
 Changelog
 =========
 
-1.2.dev0 - (unreleased)
+1.3.dev0 - (unreleased)
 -----------------------
 
+1.2 - (2017-01-17)
+------------------
+* Task: use logspout cu send logs to graylog
+  - bumped factory-boy to 2.8.1
+  - added extra parameters to gunicorn to route access/error log
+    to stdout/stderr
+  [chiridra refs #80762]
+
 1.1 - (2016-11-25)
------------------------
+------------------
 * Feature: Link to BDR-registry and back to the report questionnaire:
   - Since Django 1.7 select_for_update() requires a transaction:
     fixed generate_account_id accordingly.
