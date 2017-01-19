@@ -30,7 +30,7 @@ fi
 
 args=("$@")
 gosu bdrreg python manage.py collectstatic --noinput
-gosu bdrreg python manage.py migrate --fake-initial
+gosu bdrreg python manage.py migrate
 
 case $1 in
     manage)
