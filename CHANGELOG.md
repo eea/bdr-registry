@@ -1,8 +1,14 @@
 Changelog
 =========
 
-1.3.dev0 - (unreleased)
+1.3.2.dev0 - (unreleased)
 -----------------------
+
+1.3.1 - (2017-04-03)
+-----------------------
+* Bug: reset password for company
+  - use strip on person's email
+  [chiridra refs #83867]
 
 1.2 - (2017-01-17)
 ------------------

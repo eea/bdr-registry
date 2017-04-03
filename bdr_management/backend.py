@@ -38,7 +38,7 @@ def send_password_email_to_people(company):
     bcc = [s.strip() for s in bcc if valid_email(s.strip())]
     for person in company.people.all():
         reporting_year = config.reporting_year
-        mail.send(recipients=[person.email],
+        mail.send(recipients=[person.email.strip()],
                   bcc=bcc,
                   sender=settings.BDR_EMAIL_FROM,
                   template=template,
