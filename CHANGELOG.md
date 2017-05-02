@@ -3,6 +3,10 @@ Changelog
 
 1.3.2.dev0 - (unreleased)
 -----------------------
+* BDR registry integration of invitations and reminders:
+  middleware and email sending
+  - added API method to export all persons in JSON format
+  [chiridra refs #84119]
 
 1.3.1 - (2017-04-03)
 -----------------------

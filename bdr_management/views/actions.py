@@ -224,3 +224,43 @@ class PersonsExport(views.StaffuserRequiredMixin,
             ]])
         xls_doc = backend.generate_excel(header, rows)
         return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
+
+
+class PersonsExportJson(views.StaffuserRequiredMixin,
+                    CompanyMixin,
+                    generic.View):
+
+    raise_exception = True
+
+    def get(self, request):
+
+        persons = []
+
+        user_obligations = self.get_obligations()
+
+        persons_list = (
+            Person.objects.filter(company__obligation__id__in=user_obligations)
+            .all()
+        )
+
+        for person in persons_list:
+            org = person.company
+            account = org.account
+            if account is None:
+                continue
+            persons.append({
+                'userid': account.uid,
+                'companyname': org.name,
+                'country': org.country.name,
+                'contactname': (u'{p.title} {p.first_name} {p.family_name}'
+                                .format(p=person)),
+                'contactemail': person.email,
+                'phone': person.phone,
+                'phone2': person.phone2,
+                'phone3': person.phone3,
+                'fax': person.fax
+            })
+
+        data = json.dumps(persons, indent=4)
+
+        return HttpResponse(data, content_type="application/json")
