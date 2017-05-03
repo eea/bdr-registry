@@ -6,6 +6,8 @@ Changelog
 * BDR registry integration of invitations and reminders:
   middleware and email sending
   - added API method to export all persons in JSON format
+  - added country_name for CompaniesJsonExport since only the
+    country code did not suffice
   [chiridra refs #84119]
 
 1.3.1 - (2017-04-03)

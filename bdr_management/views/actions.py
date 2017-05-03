@@ -116,6 +116,7 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
                 'addr_place1': company.addr_place1,
                 'addr_place2': company.addr_place2,
                 'country': company.country.code,
+                'country_name': company.country.name,
                 'vat_number': company.vat_number,
                 'obligation': company.obligation.code,
                 'persons': people
