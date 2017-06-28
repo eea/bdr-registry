@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.2.dev0 - (unreleased)
+1.3.2 - (2017-06-28)
 -----------------------
 * BDR registry integration of invitations and reminders:
   middleware and email sending
