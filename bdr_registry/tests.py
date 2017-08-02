@@ -70,6 +70,7 @@ class FormSubmitTest(TransactionTestCase):
         form_data = {
             'company-country': self.denmark.pk,
             'company-obligation': self.ods.pk,
+            settings.HONEYPOT_FIELD_NAME: settings.HONEYPOT_VALUE()
         }
         for key, value in ORG_FIXTURE.items():
             form_data['company-' + key] = value
