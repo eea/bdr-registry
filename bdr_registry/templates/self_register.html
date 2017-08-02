@@ -2,6 +2,7 @@
 {% load widget_tweaks %}
 {% load i18n %}
 {% load assets %}
+{% load honeypot %}
 
 {% block head %}
 
@@ -51,6 +52,7 @@
 
 <form method="post" class="form box-small">
   {% csrf_token %}
+  {% render_honeypot_field %}
   <div class="row">
     <!-- Company details -->
     <div class="col-sm-6">

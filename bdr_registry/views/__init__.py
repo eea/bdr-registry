@@ -22,7 +22,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from django.template.response import TemplateResponse
+from django.utils.decorators import method_decorator
+from bdr_registry.honeypot import custom_check_honeypot
 
 from post_office.mail import send
 
@@ -170,6 +171,10 @@ CommentForm = modelform_factory(models.Comment, exclude=['company'])
 
 
 class SelfRegister(View):
+
+    @method_decorator(custom_check_honeypot)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SelfRegister, self).dispatch(request, *args, **kwargs)
 
     def make_forms(self, post_data=None):
         return (CompanyForm(post_data, prefix='company'),

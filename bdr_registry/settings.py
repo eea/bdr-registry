@@ -3,6 +3,7 @@ import sys
 from getenv import env
 import ldap
 from django_auth_ldap.config import LDAPSearch
+from bdr_registry.honeypot import honey_pot_value
 
 class secure_str(str):
     """
@@ -95,6 +96,7 @@ INSTALLED_APPS = (
     'raven.contrib.django',
     'widget_tweaks',
     'django_assets',
+    'honeypot',
     'post_office',
     'bdr_management',
     'solo',
@@ -211,6 +213,11 @@ NOSE_ARGS = [
     '--with-coverage',
     '--cover-package=bdr_registry,bdr_management',
 ]
+
+# random name, not honeypot :)
+HONEYPOT_FIELD_NAME = 'company_identifier'
+HONEYPOT_FORMAT = "%d%m%Y%H%S%M"
+HONEYPOT_VALUE = honey_pot_value
 
 try:
     from localsettings import *

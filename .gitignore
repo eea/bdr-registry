@@ -3,3 +3,5 @@
 supervisord.conf
 /static
 .idea/
+sandbox/
+localsettings.py
