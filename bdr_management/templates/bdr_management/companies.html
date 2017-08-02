@@ -10,6 +10,7 @@
   {% assign '["id", "name", "obligation", "account", "country", "vat_number", "date_registered"]' as columns %}
   {% assign '' as column_defs %}
   {% assign '[[0, "desc"]]' as column_sorting %}
+  {% assign '{"sRowSelect": "multi", "aButtons": []}' as table_tools %}
 
   <div class="push-bottom clearfix">
       <h1 class="input-align inline-block no-margins">
@@ -26,10 +27,49 @@
 
   {% include 'bdr_management/_company_filters.html' %}
 
-  <table data-toggle='datatable' data-source='{{ url }}'
+  <div class="pull-right push-bottom">
+    <form action="{% url 'management:companies_delete_multiple' %}"
+          method="POST" id="delete" style="display: none">
+      {% csrf_token %}
+      <button class="btn btn-blue">
+        {% trans "Delete selected companies" %}
+      </button>
+    </form>
+  </div>
+
+  <script>
+  $(document).ready(function() {
+
+      $('table').click('tr', function () {
+          var oTT = TableTools.fnGetInstance('table');
+          var aData = oTT.fnGetSelectedData();
+          var delete_button = $('#delete');
+          delete_button.hide();
+          if (aData.length) {
+              delete_button.show();
+          }
+      });
+
+      $("#delete").submit(function () {
+          var oTT = TableTools.fnGetInstance('table');
+          var aData = oTT.fnGetSelectedData();
+          var ids = $.map(aData, function (row) {
+              return row[0];
+          });
+          $('<input />')
+              .attr('type', 'hidden')
+              .attr('name', "companies")
+              .attr('value', ids.join(','))
+              .appendTo('#delete');
+      });
+  });
+  </script>
+
+  <table data-toggle='datatable' data-source='{{ url }}' id="table"
          data-columns='{{ columns }}'
          data-column-defs='{{ column_defs }}'
-         data-column-sorting='{{ column_sorting }}'>
+         data-column-sorting='{{ column_sorting }}'
+         data-tools='{{ table_tools }}'>
 
     <thead>
       <tr>

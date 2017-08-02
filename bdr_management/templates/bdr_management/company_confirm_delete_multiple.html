@@ -1,0 +1,42 @@
+{% extends 'bdr_management/_management_base.html' %}
+{% load utils %}
+{% load i18n %}
+
+
+{% block content %}
+
+  <h1>{{ object }}</h1>
+
+  <form method="post">{% csrf_token %}
+    <div class="warning">
+      <p class="large no-top">
+        {% trans "Are you sure you want to delete the following companies?" %}</p>
+      <ul>
+        <select name="companies" multiple hidden>
+          {% for company in companies %}
+            <option value="{{ company.pk }}" selected>{{ company.pk }}</option>
+          {% endfor %}
+        </select>
+        {% for company in companies %}
+          <li>{{ company }}</li>
+        {% endfor %}
+      </ul>
+      {{ form.as_p }}
+      <input type="hidden" name="action" value="delete">
+    </div>
+    <div class="btn-toolbar">
+      <input type="submit" class="btn-blue" value="{% trans 'Confirm' %}"/>
+      <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel
+      </button>
+    </div>
+  </form>
+
+  {% if people %}
+    <h2>{% trans "Warning: the following persons will be also deleted:" %}</h2>
+    <ul>
+      {% for person in people %}
+        <li>{{ person }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

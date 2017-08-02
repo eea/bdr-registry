@@ -89,6 +89,7 @@ class CompanyForm(ModelForm):
             return self.instance.outdated
         return self.cleaned_data['outdated']
 
+
 class CompanyDeleteForm(Form):
     delete_reporting_folder = BooleanField()
     delete_account = BooleanField()
