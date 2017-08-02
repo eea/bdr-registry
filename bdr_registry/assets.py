@@ -4,6 +4,7 @@ from django_assets import Bundle, register
 
 MANAGEMENT_JS_ASSETS = (
     'js/jquery.dataTables.min.js',
+    'js/jquery.dataTables.tabletools.min.js',
     'js/jquery.customDataTable.js',
     'js/main.js',
 )
@@ -13,7 +14,8 @@ MANAGEMENT_CSS_ASSETS = (
 	'css/formalize.css',
     'css/bootstrap.grid.css',
     'css/eionet-ui.css',
-    'css/jquery.dataTables.css'
+    'css/jquery.dataTables.css',
+    'css/jquery.dataTables.tabletools.css'
 )
 
 

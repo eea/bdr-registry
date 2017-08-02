@@ -19,7 +19,7 @@ from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
-from bdr_registry.models import (Company, Account, ReportingYear,
+from bdr_registry.models import (Company, Account, ReportingYear, Person,
                                  ReportingStatus, SiteConfiguration)
 
 
@@ -428,6 +428,53 @@ class CompanyDelete(views.GroupRequiredMixin,
     def delete(self, request, *args, **kwargs):
         messages.success(request, _('Company deleted'))
         return super(CompanyDelete, self).delete(request, *args, **kwargs)
+
+
+class CompanyDeleteMultiple(views.GroupRequiredMixin,
+                            generic.TemplateView):
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    success_url = reverse_lazy('management:companies')
+    template_name = 'bdr_management/company_confirm_delete_multiple.html'
+    raise_exception = True
+
+    def get_context_data(self, **kwargs):
+        breadcrumbs = [
+            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse('management:companies'),
+                       _('Companies')),
+            Breadcrumb('', _('Delete multiple companies'))
+        ]
+        context = super(CompanyDeleteMultiple, self).get_context_data(**kwargs)
+        context['breadcrumbs'] = breadcrumbs
+        context['form'] = CompanyDeleteForm()
+        context['cancel_url'] = self.success_url
+        context['companies'] = self.get_companies()
+        context['people'] = self.get_people()
+        return context
+
+    def get_company_ids(self):
+        return self.request.POST.get('companies', '').split(',')
+
+    def get_companies(self):
+        return Company.objects.filter(pk__in=self.get_company_ids())
+
+    def get_people(self):
+        return Person.objects.filter(company__pk__in=self.get_company_ids())
+
+    def delete(self, request, companies):
+        messages.success(request, _('Companies deleted'))
+        companies.delete()
+        return HttpResponseRedirect(self.success_url)
+
+    def post(self, request, *args, **kwargs):
+        action = self.request.POST.get('action', '')
+        companies = self.get_companies()
+        if not companies.exists():
+            raise Http404
+        if action == 'delete':
+            return self.delete(request, companies)
+        return self.get(request, *args, **kwargs)
 
 
 class CompanyAdd(views.GroupRequiredMixin,

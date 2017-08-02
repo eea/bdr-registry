@@ -21,9 +21,10 @@
                     return { sName: el };
                 }),
                 column_defs = el.data('column-defs') || [],
-                column_sorting = el.data('column-sorting') || [];
+                column_sorting = el.data('column-sorting') || [],
+                table_tools = eval(el.data('tools')) || undefined;
 
-            window.dt = el.dataTable({
+            var options = {
                 bProcessing: true,
                 bServerSide: true,
                 iDisplayLength: 50,
@@ -36,7 +37,12 @@
                 oLanguage: {
                   sProcessing: 'Loading ...'
                 }
-            });
+            };
+            if (table_tools) {
+                options['sDom'] = 'T<"clear">lfrtip';
+                options['oTableTools'] = table_tools;
+            }
+            window.dt = el.dataTable(options);
 
         }
     };
