@@ -23,7 +23,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from bdr_registry.honeypot import custom_check_honeypot
+from honeypot.decorators import check_honeypot
 
 from post_office.mail import send
 
@@ -172,7 +172,7 @@ CommentForm = modelform_factory(models.Comment, exclude=['company'])
 
 class SelfRegister(View):
 
-    @method_decorator(custom_check_honeypot)
+    @method_decorator(check_honeypot)
     def dispatch(self, request, *args, **kwargs):
         return super(SelfRegister, self).dispatch(request, *args, **kwargs)
 

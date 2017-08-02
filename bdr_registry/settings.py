@@ -3,7 +3,7 @@ import sys
 from getenv import env
 import ldap
 from django_auth_ldap.config import LDAPSearch
-from bdr_registry.honeypot import honey_pot_value
+from bdr_registry.honeypot import honey_pot_value, honey_pot_checker
 
 class secure_str(str):
     """
@@ -218,6 +218,7 @@ NOSE_ARGS = [
 HONEYPOT_FIELD_NAME = 'company_identifier'
 HONEYPOT_FORMAT = "%d%m%Y%H%S%M"
 HONEYPOT_VALUE = honey_pot_value
+HONEYPOT_VERIFIER = honey_pot_checker
 
 try:
     from localsettings import *
