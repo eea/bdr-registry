@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.3.3 - (2017-08-08)
+--------------------
+* Task: mitigate bot auto registration:
+  - added honeypot to company self register
+  [andreadima refs #87121]
+  - added company batch delete support
+  [andreadima refs #87109]
+
 1.3.2 - (2017-06-28)
 -----------------------
 * BDR registry integration of invitations and reminders:
