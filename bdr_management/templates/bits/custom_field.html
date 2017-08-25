@@ -1,0 +1,9 @@
+<div class="form-group">
+  {{ label }}
+  {{ input }}
+  {% for error in errors %}
+    <div class="bdr-error">
+      {{ error }}
+    </div>
+  {% endfor %}
+</div>

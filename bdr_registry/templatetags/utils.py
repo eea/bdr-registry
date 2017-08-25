@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import re
 from datetime import datetime
@@ -6,8 +7,6 @@ from datetime import datetime
 from django import template
 from django.conf import settings
 from django.template.defaultfilters import urlize
-
-from xml.etree import ElementTree
 
 import bdr_management
 from bdr_registry.models import Company, EmailTemplate
@@ -69,27 +68,15 @@ def has_permission(user, object):
 
 @register.filter
 def custom_render_field(field):
-    div = ElementTree.Element('div')
-    div.attrib['class'] = 'form-group'
-    label = ElementTree.fromstring(field.label_tag().encode('utf-8'))
-    if field.field.required:
-        label.attrib['class'] = 'required'
-    div.append(label)
-
-    # TODO find a better way to suppress ParseError: not well-formed
-    widget = field.as_widget().encode('utf-8')
-    if 'required' in widget:
-        widget = widget.replace('required', '')
-
-    input_elem = ElementTree.fromstring(widget)
+    attrs = {}
     if field.errors:
-        input_elem.attrib['class'] = 'form-error'
-    div.append(input_elem)
+        attrs = {'class':'form-error'}
 
-    for err in field.errors:
-        err_div = ElementTree.Element('div')
-        err_div.text = err
-        err_div.attrib['class'] = 'bdr-error'
-        div.append(err_div)
+    context = {
+        'label': field.label_tag().encode('utf-8'),
+        'input': field.as_widget(attrs=attrs).encode('utf-8'),
+        'errors': [err for err in field.errors]
+    }
 
-    return mark_safe(ElementTree.tostring(div))
+    return render_to_string('bits/custom_field.html', context)
+
