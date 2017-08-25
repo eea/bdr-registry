@@ -90,7 +90,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         email = org.people.first().email
         url = self.reverse('management:reset_password', pk=org.pk)
         success_url = self.reverse('management:companies_view', pk=org.pk)
-        resp = self.app.post(url, {'perform_send': '1'}, user='admin')
+        resp = self.app.post(url, user='admin', params={'perform_send': '1'})
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
         expected_messages = [
@@ -176,7 +176,9 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         email = org.people.first().email
         url = self.reverse('management:create_account', pk=org.pk)
         success_url = self.reverse('management:companies_view', pk=org.pk)
-        resp = self.app.post(url, {'perform_send': '1'}, user=user.username)
+        resp = self.app.post(url,
+                             user=user.username,
+                             params={'perform_send': '1'})
         self.assertRedirects(resp, success_url)
         resp = resp.follow()
         expected_messages = ["Account created.",
@@ -268,10 +270,10 @@ class CompanyNameHistoryTests(base.BaseWebTest):
 
     def create_company(self):
         url = self.reverse('management:companies_add')
+        data = self.company_form.items() + self.person_form.items()
         self.app.post(
-            url,
-            self.company_form.items() + self.person_form.items(),
-            user='admin')
+            url, user='admin', params=data
+            )
         company = Company.objects.all().first()
         return company
 
@@ -297,7 +299,7 @@ class CompanyNameHistoryTests(base.BaseWebTest):
         old_name = self.company_form['name']
         new_name = 'New name'
         self.company_form.update({'name': new_name})
-        self.app.post(url, self.company_form, user=self.user)
+        self.app.post(url, params=self.company_form, user=self.user)
         self.assertEqual(company.namehistory.count(), 2)
         self.assertEqual(company.namehistory.first().name, old_name)
         self.assertEqual(company.namehistory.all()[1].name, new_name)
