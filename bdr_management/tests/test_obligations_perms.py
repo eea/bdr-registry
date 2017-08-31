@@ -153,13 +153,18 @@ class ObligationManagementTests(BaseWebTest):
         self.assertEqual(200, resp.status_int)
 
         #modify the obligation
-        resp = self.app.post(url, {'name': obligation.name,
+        params={
+            'name': obligation.name,
             'code': obligation.code,
             'reportek_slug': obligation.reportek_slug,
             'email_template': obligation.email_template.id,
             'bcc': obligation.bcc,
-            'admins': [u.id for u in obligation.admins.all()]},
-            user=user.username)
+            'admins': [u.id for u in obligation.admins.all()]
+        }
+        resp = self.app.post(url,
+                             params=params,
+                             user=user.username
+        )
 
         #render obligation page
         url = self.reverse('management:obligation_view',

@@ -13,7 +13,10 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username, expect_errors=True)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username,
+                             expect_errors=True)
         self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Comment, text='hey')
 
@@ -24,7 +27,9 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username)
         self.assertRedirects(resp,
                              self.reverse('management:companies_view',
                                           pk=company.pk))
@@ -37,7 +42,9 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username)
         self.assertRedirects(resp,
                              self.reverse('management:companies_view',
                                           pk=company.pk))
@@ -49,7 +56,7 @@ class CommentManagementTests(BaseWebTest):
         url = self.reverse('management:comment_add', pk=company.pk)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
-        resp = self.app.post(url, {'text': 'hey'}, expect_errors=True)
+        resp = self.app.post(url, params={'text': 'hey'}, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Comment, text='hey')
 
@@ -111,7 +118,10 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username, expect_errors=True)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username,
+                             expect_errors=True)
         self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Comment, text='hey')
 
@@ -122,7 +132,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username)
         self.assertRedirects(resp, self.reverse('company', pk=company.pk))
         self.assertObjectInDatabase(Comment, text='hey')
 
@@ -133,7 +145,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username)
         self.assertRedirects(resp, self.reverse('company', pk=company.pk))
         self.assertObjectInDatabase(Comment, text='hey')
 
@@ -146,7 +160,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        resp = self.app.post(url, {'text': 'hey'}, user=user.username)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             user=user.username)
         self.assertRedirects(resp, self.reverse('company', pk=company.pk))
         self.assertObjectInDatabase(Comment, text='hey')
 
@@ -156,7 +172,9 @@ class CommentTests(BaseWebTest):
         url = self.reverse('comment_add', pk=company.pk)
         resp = self.app.get(url, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
-        resp = self.app.post(url, {'text': 'hey'}, expect_errors=True)
+        resp = self.app.post(url,
+                             params={'text': 'hey'},
+                             expect_errors=True)
         self.assertEqual(resp.status_int, 403)
         self.assertObjectNotInDatabase(Comment, text='hey')
 
