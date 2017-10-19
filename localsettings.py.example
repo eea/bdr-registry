@@ -85,3 +85,7 @@ from bdr_registry.settings import *
 # BDR_AUDIT_LOG_FILE = './bdr_audit.log'
 
 # REPORTING_YEAR = 2014
+
+# RAVEN_CONFIG = {
+#    'dsn': 'https://example.sentry.io..',
+# }
