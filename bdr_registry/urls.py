@@ -11,7 +11,7 @@ from bdr_registry.views import api as api_views
 
 admin.autodiscover()
 
-
+handler500 = 'bdr_registry.views.errors.handler500'
 company_patterns = [
     url(r'^add/?$',
         views.CompanyCreate.as_view()),

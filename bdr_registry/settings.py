@@ -93,7 +93,6 @@ INSTALLED_APPS = (
     'django_nose',
     'frame',
     'gunicorn',
-    'raven.contrib.django',
     'widget_tweaks',
     'django_assets',
     'honeypot',
@@ -102,6 +101,11 @@ INSTALLED_APPS = (
     'solo',
     'bdr_registry',
 )
+
+# sentry configuration
+if env('SENTRY_DSN', ''):
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+    RAVEN_CONFIG = {'dsn': env('SENTRY_DSN')}
 
 TEMPLATES = [
     {
@@ -117,6 +121,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.request',
                 'bdr_registry.context_processors.settings_context',
+                'bdr_registry.context_processors.sentry',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
