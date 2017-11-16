@@ -165,14 +165,13 @@ class CompanyManagementTests(BaseWebTest):
         self.assertObjectNotInDatabase(Company, name='NewName')
 
     def test_bdr_group_can_edit_company(self):
-        factories.SiteConfigurationFactory()
+        fac = factories.SiteConfigurationFactory()
         user = factories.BDRGroupUserFactory()
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_edit', pk=company.pk)
         form = self.get_company_form_params(company)
         form.update({'name': 'NewName'})
         resp = self.app.post(url, user=user.username, params=form)
-
         self.assertRedirects(
             resp,
             self.reverse('management:companies_view', pk=company.pk))
