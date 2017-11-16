@@ -1,9 +1,11 @@
-import logging
-from cStringIO import StringIO
 import csv
+import logging
+import post_office
+import requests
+from io import StringIO
 from collections import defaultdict
-from django import forms
 
+from django import forms
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin.widgets import FilteredSelectMultiple
@@ -19,12 +21,12 @@ from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from django.http import HttpResponse
-import post_office
-import requests
+
+from bdr_registry import models
+from .audit import log
+from .ldap_editor import create_ldap_editor
+
 from solo.admin import SingletonModelAdmin
-import models
-from ldap_editor import create_ldap_editor
-import audit
 
 
 log = logging.getLogger(__name__)
@@ -240,7 +242,7 @@ def create_reporting_folder(modeladmin, request, queryset):
             'account_uid': org.account.uid,
             'organisation_name': org.name,
         }
-        audit.log("Creating zope folder for uid=%s", org.account.uid)
+        log("Creating zope folder for uid=%s", org.account.uid)
         resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
         if resp.status_code != 200 or 'unauthorized' in resp.content.lower():
             logging.error("BDR API request failed: %r", resp)

@@ -68,7 +68,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         expected_messages = [
             "Password has been reset."]
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
 
     def test_reset_password_changes_old(self):
@@ -97,7 +97,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
             "Password has been reset.",
             'Emails have been sent to 1 person(s).']
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
         self.assertEqual(1, len(mail.outbox))
         self.assertIn(email, mail.outbox[0].to)
 
@@ -161,7 +161,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
 
         expected_messages = ["Account created."]
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
         self.assertEqual(0, len(mail.outbox))
 
     @override_settings(BDR_EMAIL_FROM='test@eaudeweb.ro')
@@ -184,7 +184,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         expected_messages = ["Account created.",
                              'Emails have been sent to 1 person(s).']
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
         self.assertEqual(1, len(mail.outbox))
         self.assertIn(email, mail.outbox[0].to)
 
@@ -218,7 +218,7 @@ class CompanyCreateReportingFolderTests(base.BaseWebTest):
         resp = resp.follow()
         expected_messages = ['BDR_API_URL and BDR_API_AUTH not configured']
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
 
     @override_settings(BDR_API_URL=None, BDR_API_AUTH=None)
     def test_create_reporting_folder_post_without_settings(self):
@@ -232,7 +232,7 @@ class CompanyCreateReportingFolderTests(base.BaseWebTest):
         resp = resp.follow()
         expected_messages = ['BDR_API_URL and BDR_API_AUTH not configured']
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
 
     @override_settings(BDR_API_URL=BDR_API_URL, BDR_API_AUTH=BDR_API_AUTH)
     def test_create_reporting_folder_get(self):
@@ -270,7 +270,7 @@ class CompanyNameHistoryTests(base.BaseWebTest):
 
     def create_company(self):
         url = self.reverse('management:companies_add')
-        data = self.company_form.items() + self.person_form.items()
+        data = {**self.company_form, **self.person_form}
         self.app.post(
             url, user='admin', params=data
             )

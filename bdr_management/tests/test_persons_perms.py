@@ -242,7 +242,7 @@ class PersonManagementTests(BaseWebTest):
             u'Cannot delete the only designated company reporter '
             u'for "%s"' % person.company]
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)
 
     def test_delete_missing_person(self):
         user = factories.SuperUserFactory()
@@ -532,4 +532,4 @@ class PersonTests(BaseWebTest):
             u'Cannot delete the only designated company reporter '
             u'for "%s"' % person.company]
         actual_messages = map(str, resp.context['messages'])
-        self.assertItemsEqual(expected_messages, actual_messages)
+        self.assertCountEqual(expected_messages, actual_messages)

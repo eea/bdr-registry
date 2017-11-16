@@ -35,7 +35,7 @@ from bdr_registry.settings import *
 ## sentry configuration
 # INSTALLED_APPS += ('raven.contrib.django',)
 # RAVEN_CONFIG = {
-#     'dsn': 'http://example.com/.....',
+#     'dsn': '',
 # }
 
 

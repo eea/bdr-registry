@@ -2,14 +2,15 @@
 
 import logging
 from django.conf import settings
-import local
+
+from .local import get_request
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
 def log(message, *args, **kwargs):
-    request = local.get_request()
+    request = get_request()
     kwargs.setdefault('extra', {}).update({
         'request_username': request.user.username,
         'request_ip': request.META['REMOTE_ADDR'],

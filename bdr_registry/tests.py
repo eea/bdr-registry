@@ -93,7 +93,7 @@ class FormSubmitTest(TransactionTestCase):
         self.assert_object_has_items(org, ORG_FIXTURE)
         self.assert_object_has_items(person, PERSON_FIXTURE)
         self.assertEqual(person.company, org)
-        self.assertItemsEqual(org.people.all(), [person])
+        self.assertCountEqual(org.people.all(), [person])
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
@@ -140,7 +140,7 @@ class ApiTest(base.BaseWebTest):
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations></organisations>')
-        self.assertEqual(resp.content, expected)
+        self.assertEqual(resp.content.decode(), expected)
 
     def test_response_contains_single_company_from_db(self):
         account = models.Account.objects.create(uid='ods12345')
@@ -191,7 +191,7 @@ class ApiTest(base.BaseWebTest):
                         '</comment>'
                       '</organisation>'
                     '</organisations>')
-        self.assertEqual(resp.content, expected)
+        self.assertEqual(resp.content.decode(), expected)
 
     def test_response_contains_all_person_data(self):
         account = models.Account.objects.create(uid='ods12345')
@@ -234,7 +234,7 @@ class ApiTest(base.BaseWebTest):
                         '</person>'
                       '</organisation>'
                     '</organisations>')
-        self.assertEqual(resp.content, expected)
+        self.assertEqual(resp.content.decode(), expected)
 
     def test_response_contains_company_with_matching_uid(self):
         kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.ods)
@@ -263,7 +263,7 @@ class ApiTest(base.BaseWebTest):
                         '<country name="Denmark">dk</country>'
                       '</organisation>'
                     '</organisations>')
-        self.assertEqual(resp.content, expected)
+        self.assertEqual(resp.content.decode(), expected)
 
     def test_requests_with_no_api_key_are_rejected(self):
         factories.CountryFactory()

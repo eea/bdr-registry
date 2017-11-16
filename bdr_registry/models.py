@@ -10,7 +10,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
 from solo.models import SingletonModel
-import local
+from .local import *
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
 

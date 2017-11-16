@@ -67,7 +67,7 @@ class BaseWebTest(WebTest):
             ))
 
     def _get_model(self, model, kwargs):
-        if isinstance(model, basestring):
+        if isinstance(model, str):
             app = kwargs.pop('app', None)
             self.assertIsNotNone(app)
             return apps.get_model(app, model)

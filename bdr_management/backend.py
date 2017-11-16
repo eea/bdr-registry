@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from cStringIO import StringIO
+from io import StringIO
 import xlwt
 
 from django.conf import settings
