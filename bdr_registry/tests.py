@@ -9,6 +9,10 @@ from bdr_registry import models
 from bdr_management.tests import factories, base
 from mock import patch
 
+import requests
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 ORG_FIXTURE = {
     'name': "Teh company",
@@ -31,6 +35,7 @@ PERSON_FIXTURE = {
 COMMENT_FIXTURE = {
     'text': "This is a comment"
 }
+
 
 def create_user_and_login(client,
                           username='test_user', password='pw',

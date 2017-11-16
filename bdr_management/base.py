@@ -54,7 +54,7 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
 
     def _process_field_value(self, value):
         if isinstance(value, Model):
-            return unicode(value)
+            return str(value)
         return value
 
     def get_ajax(self, request):

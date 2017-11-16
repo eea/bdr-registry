@@ -166,7 +166,7 @@ class CompaniesBaseView(base.ModelTableViewMixin,
             reporting_year__year__gte=settings.FIRST_REPORTING_YEAR).filter(
             reporting_year__year__lte=reporting_year
         )
-        years = [unicode(stat.reporting_year) for stat in statuses
+        years = [str(stat.reporting_year) for stat in statuses
                  if stat.reported]
         data['reporting_years'] = years
 
@@ -299,7 +299,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                 company=company,
                 reporting_year=year
             )
-            years_dict[unicode(year.year)] = status.reported
+            years_dict[str(year.year)] = status.reported
         data['years'] = years_dict
 
     def get_back_url(self):
@@ -339,7 +339,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         company = None
         for year in reporting_years:
-            submitted_val = request.POST.get(unicode(year.year))
+            submitted_val = request.POST.get(str(year.year))
             if submitted_val == 'inactive':
                 reported = False
             elif submitted_val == 'active':

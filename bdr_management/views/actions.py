@@ -181,7 +181,7 @@ class CompaniesCsvExport(views.StaffuserRequiredMixin,
             row = [c.name, c.date_registered.isoformat(), c.active, c.outdated,
                    c.addr_street, c.addr_postalcode, c.addr_place1, c.addr_place2,
                    c.eori, c.vat_number, c.country.name, c.website, c.obligation.name]
-            row = map(lambda x: x.encode("utf-8") if isinstance(x, unicode) else x, row)
+            row = map(lambda x: x.encode("utf-8") if isinstance(x, str) else x, row)
             writer.writerow(row)
 
         return response

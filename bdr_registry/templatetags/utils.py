@@ -41,15 +41,15 @@ def process_field(value, management):
         if management:
             return mark_safe('<a href="%s">%s</a' % (
                 reverse('management:companies_view', kwargs={'pk': value.pk}),
-                unicode(value)))
+                str(value)))
         else:
             return mark_safe('<a href="%s">%s</a' % (
                 reverse('company', kwargs={'pk': value.pk}),
-                unicode(value)))
+                str(value)))
     if isinstance(value, EmailTemplate):
         return mark_safe('<a href="%s">%s</a' % (
             reverse('management:email_template_view', kwargs={'pk': value.pk}),
-            unicode(value)))
+            str(value)))
     return urlize(value)
 
 
