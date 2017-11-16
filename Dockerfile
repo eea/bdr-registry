@@ -26,7 +26,6 @@ VOLUME ["$BDR_REG_ROOT/static"]
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
     netcat \
-    mysql-client \
     sudo \
     python-setuptools \
     python-dev \
@@ -35,7 +34,6 @@ RUN apt-get update \
     libxml2-dev \
     libxslt1-dev \
     libbz2-dev \
-    libmysqlclient-dev \
     libldap2-dev \
     libsasl2-dev
 
