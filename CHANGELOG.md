@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.5 - (2017-12-12)
+--------------------
+* Bug fix: downgraded post-office package
+  [dianaboiangiu]
+
 1.3.4 - (2017-12-12)
 --------------------
 * Bug fix: convert nr_of_sorting_cols arg to int before comparison to int
