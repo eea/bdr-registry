@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.3.4 - (2017-12-12)
+--------------------
+* Bug fix: convert nr_of_sorting_cols arg to int before comparison to int
+  [dianaboiangiu]
+
 1.3.3 - (2017-08-08)
 --------------------
 * Task: mitigate bot auto registration:
