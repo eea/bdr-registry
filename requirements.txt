@@ -3,7 +3,7 @@ django-assets==0.12
 django-auth-ldap==1.2.8
 django-braces==1.11.0
 django-nose==1.4.5
-django-post-office==3.0.3
+django-post-office==2.0.8
 django-solo==1.1.2
 django-widget-tweaks==1.4.1
 eea.frame==0.5.4
