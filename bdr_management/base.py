@@ -94,7 +94,7 @@ class FilterView(JSONResponseMixin, AjaxResponseMixin, View):
 
         with_filter['filters'] = filters
 
-        nr_of_sorting_cols = args.get('iSortingCols', 0)
+        nr_of_sorting_cols = int(args.get('iSortingCols', 0))
         if nr_of_sorting_cols > 0:
             column = columns[int(args.get('iSortCol_0', 0))]
             direction = args.get('sSortDir_0', 'asc')
