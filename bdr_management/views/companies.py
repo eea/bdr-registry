@@ -628,7 +628,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
 
         if resp.status_code != 200:
             messages.error(request, "BDR API request failed: %s" % resp)
-        elif 'unauthorized' in resp.content.lower():
+        elif 'unauthorized' in bytes.decode(resp.content.lower()):
             messages.error(request, "BDR API request failed: Unauthorized")
         else:
             rv = resp.json()
