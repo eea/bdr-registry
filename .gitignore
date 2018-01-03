@@ -5,3 +5,4 @@ supervisord.conf
 .idea/
 sandbox/
 localsettings.py
+.cache/
