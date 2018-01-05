@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from io import StringIO
+from io import BytesIO
 import xlwt
 
 from django.conf import settings
@@ -56,7 +56,6 @@ def generate_excel(header, rows):
     headerfont = xlwt.Font()
     headerfont.bold = True
     style.font = headerfont
-
     wb = xlwt.Workbook(encoding='utf-8')
     ws = wb.add_sheet('Sheet 1')
     row = 0
@@ -70,8 +69,7 @@ def generate_excel(header, rows):
         row += 1
         for col in range(0, len(item)):
             ws.row(row).set_cell_text(col, item[col], style)
-
-    output = StringIO()
+    output = BytesIO()
     wb.save(output)
 
     return output.getvalue()

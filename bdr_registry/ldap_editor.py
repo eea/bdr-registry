@@ -9,7 +9,8 @@ log.setLevel(logging.DEBUG)
 
 
 def encrypt_password(password):
-    return "{SHA}" + base64.b64encode(hashlib.sha1(password).digest())
+    password = password.encode('utf-8')
+    return "{SHA}" + bytes.decode(base64.b64encode(hashlib.sha1(password).digest()))
 
 
 class LdapEditor(object):

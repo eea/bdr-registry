@@ -253,7 +253,7 @@ class ReportingYear(models.Model):
                                        through='ReportingStatus')
 
     def __str__(self):
-        return unicode(self.year)
+        return str(self.year)
 
 
 class ReportingStatus(models.Model):
