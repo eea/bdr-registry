@@ -1,5 +1,19 @@
 Changelog
 =========
+1.3.8 - (2018-01-05)
+--------------------
+* Bug fix: fixed form rendering and string-bytes bugs
+  [dianaboiangiu]
+
+1.3.7 - (2018-01-03)
+--------------------
+* Bug fix: fixed python3 string-unicode bugs
+  [dianaboiangiu]
+
+1.3.6 - (2018-01-03)
+--------------------
+* Bug fix: fixed incorrect paths
+  [nico4]
 
 1.3.5 - (2017-12-12)
 --------------------
