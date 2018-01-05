@@ -70,13 +70,11 @@ def has_permission(user, object):
 def custom_render_field(field):
     attrs = {}
     if field.errors:
-        attrs = {'class':'form-error'}
-
+        attrs = {'class': 'form-error'}
     context = {
-        'label': field.label_tag().encode('utf-8'),
-        'input': field.as_widget(attrs=attrs).encode('utf-8'),
+        'label': field.label_tag(),
+        'input': field.as_widget(attrs=attrs),
         'errors': [err for err in field.errors]
     }
-
     return render_to_string('bits/custom_field.html', context)
 
