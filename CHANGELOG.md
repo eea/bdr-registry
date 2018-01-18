@@ -1,5 +1,11 @@
 Changelog
 =========
+
+1.3.9 - (2018-01-18)
+--------------------
+* Add management command to load companies directly from portal
+  [dianaboiangiu]
+
 1.3.8 - (2018-01-05)
 --------------------
 * Bug fix: fixed form rendering and string-bytes bugs
