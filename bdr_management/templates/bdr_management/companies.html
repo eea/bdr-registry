@@ -1,71 +1,89 @@
-{% extends 'bdr_management/_management_base.html' %} {% load utils %} {% load i18n %} {% block content %} {% url 'management:companies_filter'
-as url %} {% assign '["id", "name", "obligation", "account", "country", "vat_number", "eori", "date_registered"]' as columns
-%} {% assign '' as column_defs %} {% assign '[[0, "desc"]]' as column_sorting %} {% assign '{"sRowSelect": "multi", "aButtons":
-[]}' as table_tools %}
+{% extends 'bdr_management/_management_base.html' %}
 
-<div class="push-bottom clearfix">
-  <h1 class="input-align inline-block no-margins">
-    {% trans "Companies" %}</h1>
-  <div class="pull-right h1-align">
-    <a class="btn btn-green" href="{% url 'management:companies_add' %}">
-      {% trans "Add a new company" %}</a>
+{% load utils %}
+{% load i18n %}
+
+{% block content %}
+
+  {% url 'management:companies_filter' as url %}
+
+  {% assign '["id", "name", "obligation", "account", "country", "vat_number", "eori", "date_registered"]' as columns %}
+  {% assign '' as column_defs %}
+  {% assign '[[0, "desc"]]' as column_sorting %}
+  {% assign '{"sRowSelect": "multi", "aButtons": []}' as table_tools %}
+
+  <div class="push-bottom clearfix">
+      <h1 class="input-align inline-block no-margins">
+        {% trans "Companies" %}</h1>
+      <div class="pull-right h1-align">
+        <a class="btn btn-green"
+         href="{% url 'management:companies_add' %}">
+         {% trans "Add a new company" %}</a>
+      </div>
   </div>
-</div>
-<hr /> {% include 'bdr_management/_company_filters.html' %}
+  <hr />
 
-<div class="pull-right push-bottom">
-  <form action="{% url 'management:companies_delete_multiple' %}" method="POST" id="delete" style="display: none">
-    {% csrf_token %}
-    <button class="btn btn-blue">
-      {% trans "Delete selected companies" %}
-    </button>
-  </form>
-</div>
 
-<script>
-  $(document).ready(function () {
 
-    $('table').click('tr', function () {
-      var oTT = TableTools.fnGetInstance('table');
-      var aData = oTT.fnGetSelectedData();
-      var delete_button = $('#delete');
-      delete_button.hide();
-      if (aData.length) {
-        delete_button.show();
-      }
-    });
+  {% include 'bdr_management/_company_filters.html' %}
 
-    $("#delete").submit(function () {
-      var oTT = TableTools.fnGetInstance('table');
-      var aData = oTT.fnGetSelectedData();
-      var ids = $.map(aData, function (row) {
-        return row[0];
+  <div class="pull-right push-bottom">
+    <form action="{% url 'management:companies_delete_multiple' %}"
+          method="POST" id="delete" style="display: none">
+      {% csrf_token %}
+      <button class="btn btn-blue">
+        {% trans "Delete selected companies" %}
+      </button>
+    </form>
+  </div>
+
+  <script>
+  $(document).ready(function() {
+
+      $('table').click('tr', function () {
+          var oTT = TableTools.fnGetInstance('table');
+          var aData = oTT.fnGetSelectedData();
+          var delete_button = $('#delete');
+          delete_button.hide();
+          if (aData.length) {
+              delete_button.show();
+          }
       });
-      $('<input />')
-        .attr('type', 'hidden')
-        .attr('name', "companies")
-        .attr('value', ids.join(','))
-        .appendTo('#delete');
-    });
+
+      $("#delete").submit(function () {
+          var oTT = TableTools.fnGetInstance('table');
+          var aData = oTT.fnGetSelectedData();
+          var ids = $.map(aData, function (row) {
+              return row[0];
+          });
+          $('<input />')
+              .attr('type', 'hidden')
+              .attr('name', "companies")
+              .attr('value', ids.join(','))
+              .appendTo('#delete');
+      });
   });
-</script>
+  </script>
 
-<table data-toggle='datatable' data-source='{{ url }}' id="table" data-columns='{{ columns }}' data-column-defs='{{ column_defs }}'
-  data-column-sorting='{{ column_sorting }}' data-tools='{{ table_tools }}'>
+  <table data-toggle='datatable' data-source='{{ url }}' id="table"
+         data-columns='{{ columns }}'
+         data-column-defs='{{ column_defs }}'
+         data-column-sorting='{{ column_sorting }}'
+         data-tools='{{ table_tools }}'>
 
-  <thead>
-    <tr>
-      <th>{% trans "ID" %}</th>
-      <th>{% trans "Company name" %}</th>
-      <th>{% trans "Obligation" %}</th>
-      <th>{% trans "Account" %}</th>
-      <th>{% trans "Country" %}</th>
-      <th>{% trans "VAT number" %}</th>
-      <th>{% trans "EORI number" %}</th>
-      <th>{% trans "Date registered" %}</th>
-    </tr>
-  </thead>
+    <thead>
+      <tr>
+        <th>{% trans "ID" %}</th>
+        <th>{% trans "Company name" %}</th>
+        <th>{% trans "Obligation" %}</th>
+        <th>{% trans "Account" %}</th>
+        <th>{% trans "Country" %}</th>
+        <th>{% trans "VAT number" %}</th>
+        <th>{% trans "EORI number" %}</th>
+        <th>{% trans "Date registered" %}</th>
+      </tr>
+    </thead>
 
-</table>
+  </table>
 
 {% endblock %}
