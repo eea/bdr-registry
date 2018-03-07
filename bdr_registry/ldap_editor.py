@@ -31,11 +31,11 @@ class LdapEditor(object):
     def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
         attrs = [
-            ('uid', [uid]),
-            ('cn', [name]),
-            ('objectClass', ['top', 'organizationalRole',
-                             'simpleSecurityObject', 'uidObject']),
-            ('userPassword', [encrypt_password(password)]),
+            ('uid', [str.encode(uid)]),
+            ('cn', [str.encode(name)]),
+            ('objectClass', [b'top', b'organizationalRole',
+                             b'simpleSecurityObject', b'uidObject']),
+            ('userPassword', [str.encode(encrypt_password(password))]),
         ]
 
         try:
@@ -48,18 +48,18 @@ class LdapEditor(object):
             return False
 
         else:
-            assert result == (ldap.RES_ADD, [])
+            assert result == (ldap.RES_ADD, [], 2, [])
             log.info("Created account uid=%s.", uid)
             return True
 
     def reset_password(self, uid, password):
         attrs = [
-            (ldap.MOD_REPLACE, 'userPassword', [encrypt_password(password)]),
+            (ldap.MOD_REPLACE, 'userPassword', [str.encode(encrypt_password(password))]),
         ]
         log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
         audit_log("Resetting LDAP password for uid=%s", uid)
         result = self.conn.modify_s(self._account_dn(uid), attrs)
-        assert result == (ldap.RES_MODIFY, [])
+        assert result == (ldap.RES_MODIFY, [], 3, [])
         log.info("Password reset for uid=%s.", uid)
 
 
