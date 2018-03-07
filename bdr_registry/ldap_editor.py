@@ -26,7 +26,7 @@ class LdapEditor(object):
         self.conn = conn
 
     def _account_dn(self, uid):
-        return 'uid=' + uid + ',' + self.users_dn
+        return str.encode('uid=' + uid + ',' + self.users_dn)
 
     def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
