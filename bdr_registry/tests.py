@@ -65,7 +65,7 @@ class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
         self.denmark = factories.CountryFactory(name="Denmark", code='dk')
-        self.ods = factories.ObligationFactory(code='ods', name='ODS')
+        self.obligation = factories.ObligationFactory(code='obl', name='Obligation')
 
     def assert_object_has_items(self, obj, data):
         for key in data:
@@ -74,7 +74,7 @@ class FormSubmitTest(TransactionTestCase):
     def prepare_form_data(self):
         form_data = {
             'company-country': self.denmark.pk,
-            'company-obligation': self.ods.pk,
+            'company-obligation': self.obligation.pk,
             settings.HONEYPOT_FIELD_NAME: settings.HONEYPOT_VALUE()
         }
         for key, value in ORG_FIXTURE.items():
@@ -127,7 +127,7 @@ class FormSubmitTest(TransactionTestCase):
         bdr_group.user_set.add(user1)
         bdr_group.user_set.add(user2)
 
-        self.ods.admins = [user1]
+        self.obligation.admins = [user1]
 
         self.client.post('/self_register', self.prepare_form_data())
         self.assertEqual(len(mail.outbox), 1)
@@ -138,7 +138,7 @@ class ApiTest(base.BaseWebTest):
     def setUp(self):
         self.apikey = models.ApiKey.objects.create().key
         self.dk = factories.CountryFactory(name="Denmark", code='dk')
-        self.ods = factories.ObligationFactory(code='ods', name='ODS')
+        self.obligation = factories.ObligationFactory(code='obl', name='Obligation')
 
     def test_response_empty_when_no_companies_in_db(self):
         resp = self.client.get('/organisation/all?apikey=' + self.apikey)
@@ -150,7 +150,7 @@ class ApiTest(base.BaseWebTest):
     def test_response_contains_single_company_from_db(self):
         account = models.Account.objects.create(uid='ods12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
-                      account=account, obligation=self.ods)
+                      account=account, obligation=self.obligation)
         org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(company=org,
                                      first_name="Joe",
@@ -182,7 +182,7 @@ class ApiTest(base.BaseWebTest):
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
                         '<account>ods12345</account>'
-                        '<obligation name="ODS">ods</obligation>'
+                        '<obligation name="Obligation">obl</obligation>'
                         '<country name="Denmark">dk</country>'
                         '<person>'
                           '<name>Joe Smith</name>'
@@ -201,7 +201,7 @@ class ApiTest(base.BaseWebTest):
     def test_response_contains_all_person_data(self):
         account = models.Account.objects.create(uid='ods12345')
         kwargs = dict(ORG_FIXTURE, country=self.dk,
-                      account=account, obligation=self.ods)
+                      account=account, obligation=self.obligation)
         org = models.Company.objects.create(**kwargs)
         models.Person.objects.create(company=org,
                                      first_name="Joe",
@@ -227,7 +227,7 @@ class ApiTest(base.BaseWebTest):
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
                         '<account>ods12345</account>'
-                        '<obligation name="ODS">ods</obligation>'
+                        '<obligation name="Obligation">obl</obligation>'
                         '<country name="Denmark">dk</country>'
                         '<person>'
                           '<name>Joe Smith</name>'
@@ -242,7 +242,7 @@ class ApiTest(base.BaseWebTest):
         self.assertEqual(resp.content.decode(), expected)
 
     def test_response_contains_company_with_matching_uid(self):
-        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.ods)
+        kwargs = dict(ORG_FIXTURE, country=self.dk, obligation=self.obligation)
         account1 = models.Account.objects.create(uid='ods0001')
         account2 = models.Account.objects.create(uid='ods0002')
         models.Company.objects.create(account=account1, **kwargs)
@@ -264,7 +264,7 @@ class ApiTest(base.BaseWebTest):
                         '<addr_place2>Hovedstaden</addr_place2>'
                         '<active>True</active>'
                         '<account>ods0002</account>'
-                        '<obligation name="ODS">ods</obligation>'
+                        '<obligation name="Obligation">obl</obligation>'
                         '<country name="Denmark">dk</country>'
                       '</organisation>'
                     '</organisations>')
