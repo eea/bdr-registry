@@ -349,16 +349,6 @@
     }
 },
 {
-    "pk": 3,
-    "model": "bdr_registry.obligation",
-    "fields": {
-        "email_template": 3,
-        "code": "mercury",
-        "name": "Mercury",
-        "reportek_slug": "mercury"
-    }
-},
-{
     "pk": 4,
     "model": "bdr_registry.obligation",
     "fields": {

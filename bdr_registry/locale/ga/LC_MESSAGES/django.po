@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-06 17:53+0200\n"
+"POT-Creation-Date: 2018-03-12 16:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,98 +18,247 @@ msgstr ""
 "Plural-Forms: nplurals=5; plural=(n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : "
 "4)\n"
 
-#: models.py:95
+#: admin.py:481
+msgid "Personal info"
+msgstr ""
+
+#: admin.py:482
+msgid "Permissions"
+msgstr ""
+
+#: admin.py:484
+msgid "Important dates"
+msgstr ""
+
+#: admin.py:485
+msgid "Obligations"
+msgstr ""
+
+#: models.py:135
 msgid "Economic Operators Registration and Identification number (EORI)"
 msgstr ""
 
-#: models.py:97 templates/company_update.html:34
+#: models.py:137 templates/company_update.html:34
 msgid "Company name"
 msgstr ""
 
-#: models.py:100
-msgid "Street and nr"
+#: models.py:141
+msgid "Street and number"
 msgstr ""
 
-#: models.py:101
-msgid "Place 1 / Municipality"
+#: models.py:142
+msgid "Municipality"
 msgstr ""
 
-#: models.py:102
+#: models.py:143
 msgid "Postal code"
 msgstr ""
 
-#: models.py:103
-msgid "Place 2 / Region"
+#: models.py:144
+msgid "Region"
 msgstr ""
 
-#: models.py:105
+#: models.py:146
 msgid "EORI number"
 msgstr ""
 
-#: models.py:107
+#: models.py:148
 msgid "VAT number"
 msgstr ""
 
-#: models.py:152
+#: models.py:214
 msgid "Title"
 msgstr ""
 
-#: models.py:153
+#: models.py:215
 msgid "Family name"
 msgstr ""
 
-#: models.py:154
+#: models.py:216
 msgid "First name"
 msgstr ""
 
-#: models.py:156
+#: models.py:218
 msgid "Email address"
 msgstr ""
 
-#: models.py:157
-msgid "Email address 2"
-msgstr ""
-
-#: models.py:159
+#: models.py:220
 msgid "Telephone"
 msgstr ""
 
-#: models.py:160
+#: models.py:221
 msgid "Telephone 2"
 msgstr ""
 
-#: models.py:162
+#: models.py:223
 msgid "Telephone 3"
 msgstr ""
 
-#: models.py:165
+#: models.py:225
 msgid "Fax"
+msgstr ""
+
+#: models.py:239
+msgid "Comment"
+msgstr ""
+
+#: templates/403.html:9
+msgid "Forbidden"
+msgstr ""
+
+#: templates/404.html:9
+msgid "Page not found."
+msgstr ""
+
+#: templates/500.html:18
+msgid "Internal server error"
+msgstr ""
+
+#: templates/500.html:20
+msgid "The server got mixed up. Sorry about that."
+msgstr ""
+
+#: templates/bdr_layout.html:10
+msgid "BDR Company Registry"
+msgstr ""
+
+#: templates/bdr_layout.html:78
+msgid "EEA"
+msgstr ""
+
+#: templates/bdr_layout.html:79
+msgid "EnviroWindows"
+msgstr ""
+
+#: templates/bdr_layout.html:83
+msgid "Login"
+msgstr ""
+
+#: templates/bdr_layout.html:86
+msgid "Logout"
+msgstr ""
+
+#: templates/bdr_layout.html:88
+msgid "Print this page"
+msgstr ""
+
+#: templates/bdr_layout.html:88
+msgid "Print"
+msgstr ""
+
+#: templates/bdr_layout.html:89
+msgid "Switch to/from full screen mode"
+msgstr ""
+
+#: templates/bdr_layout.html:99 templates/bdr_layout.html:109
+msgid "Eionet"
+msgstr ""
+
+#: templates/bdr_layout.html:100
+msgid "Data reporting for business"
+msgstr ""
+
+#: templates/bdr_layout.html:101
+msgid "This site is part of the Reportnet"
+msgstr ""
+
+#: templates/bdr_layout.html:107
+msgid "You are here:"
+msgstr ""
+
+#: templates/bdr_layout.html:112
+msgid "BDR"
+msgstr ""
+
+#: templates/bdr_layout.html:126
+msgid "Registry"
+msgstr ""
+
+#: templates/bdr_layout.html:140
+msgid "BDR home"
+msgstr ""
+
+#: templates/bdr_layout.html:144
+msgid "Search"
+msgstr ""
+
+#: templates/bdr_layout.html:148
+msgid "Help F-gases"
+msgstr ""
+
+#: templates/bdr_layout.html:152
+msgid "Help ODS"
+msgstr ""
+
+#: templates/bdr_layout.html:156
+msgid "Help Cars and Vans"
+msgstr ""
+
+#: templates/bdr_layout.html:160
+msgid "Confidentiality"
+msgstr ""
+
+#: templates/bdr_layout.html:165 templates/self_register.html:21
+msgid "Self-registration"
+msgstr ""
+
+#: templates/bdr_layout.html:171
+msgid "BDR registry"
+msgstr ""
+
+#: templates/bdr_layout.html:175
+msgid "Companies"
+msgstr ""
+
+#: templates/bdr_layout.html:179
+msgid "Contact persons"
+msgstr ""
+
+#: templates/bdr_layout.html:183
+msgid "Manage obligations"
+msgstr ""
+
+#: templates/bdr_layout.html:187
+msgid "Manage email templates"
+msgstr ""
+
+#: templates/bdr_layout.html:191
+msgid "Settings"
+msgstr ""
+
+#: templates/bdr_layout.html:195
+msgid "Actions"
+msgstr ""
+
+#: templates/bdr_layout.html:198
+msgid "Account administration"
+msgstr ""
+
+#: templates/bdr_layout.html:198
+msgid "Account admin"
 msgstr ""
 
 #: templates/comment_update.html:6
 msgid "Update comment"
 msgstr ""
 
-#: templates/comment_update.html:32 templates/organisation_add_comment.html:31
-#: templates/organisation_add_person.html:31
-#: templates/company_update.html:108 templates/person_update.html:31
+#: templates/comment_update.html:23 templates/company_add_person.html:31
+#: templates/company_update.html:108 templates/organisation_add_comment.html:24
+#: templates/person_update.html:31
 msgid "Save"
 msgstr ""
 
-#: templates/comment_update.html:34 templates/organisation_add_comment.html:33
-#: templates/organisation_add_person.html:33 templates/person_update.html:33
+#: templates/comment_update.html:25 templates/company_add_person.html:33
+#: templates/honeypot/bdr_registry/honeypot_error.html:22
+#: templates/organisation_add_comment.html:26 templates/person_update.html:33
 msgid "Back"
 msgstr ""
 
-#: templates/organisation_add_comment.html:6
-msgid "Add comment"
-msgstr ""
-
-#: templates/organisation_add_person.html:6
+#: templates/company_add_person.html:6
 msgid "Add person"
 msgstr ""
 
-#: templates/organisation_name_history.html:9
+#: templates/company_name_history.html:8
 msgid "Home"
 msgstr ""
 
@@ -121,7 +270,7 @@ msgstr ""
 msgid "Update company"
 msgstr ""
 
-#: templates/company_update.html:23 templates/self_register.html:37
+#: templates/company_update.html:23 templates/self_register.html:50
 msgid "Company details"
 msgstr ""
 
@@ -133,7 +282,7 @@ msgstr ""
 msgid "helpdesk"
 msgstr ""
 
-#: templates/company_update.html:68 templates/self_register.html:62
+#: templates/company_update.html:68 templates/self_register.html:71
 msgid "About EORI number"
 msgstr ""
 
@@ -153,91 +302,126 @@ msgstr ""
 msgid "Comments"
 msgstr ""
 
-#: templates/company_update.html:127
+#: templates/company_update.html:132
 msgid "New comment"
 msgstr ""
 
-#: templates/company_update.html:131
+#: templates/company_update.html:136
 msgid "People"
 msgstr ""
 
-#: templates/company_update.html:145
+#: templates/company_update.html:150
 msgid "New person"
+msgstr ""
+
+#: templates/home.html:7
+msgid "BDR registry of companies"
+msgstr ""
+
+#: templates/home.html:12
+msgid "Your company's details"
+msgstr ""
+
+#: templates/home.html:14
+msgid "Your company's reporting folder"
+msgstr ""
+
+#: templates/home.html:17
+msgid "Company"
+msgstr ""
+
+#: templates/home.html:17
+msgid "self-registration"
+msgstr ""
+
+#: templates/honeypot/bdr_registry/honeypot_error.html:20
+msgid "The self registry form has expired. Please try again."
+msgstr ""
+
+#: templates/login.html:8
+msgid "Your username and password didn't match. Please try again."
+msgstr ""
+
+#: templates/login.html:11
+msgid "Log in"
+msgstr ""
+
+#: templates/login.html:27
+msgid "login"
+msgstr ""
+
+#: templates/organisation_add_comment.html:6
+msgid "Add comment"
 msgstr ""
 
 #: templates/person_update.html:6
 msgid "Update person details"
 msgstr ""
 
-#: templates/self_register.html:7 templates/self_register_done.html:6
-msgid "Self registration"
+#: templates/self_register.html:22
+msgid "Reporting manufacturers"
 msgstr ""
 
-#: templates/self_register.html:8
-msgid "Reporting undertakings"
-msgstr ""
-
-#: templates/self_register.html:11
+#: templates/self_register.html:25
 msgid ""
-"Designated reporters of an undertaking, who have to report in accordance "
-"with Article 6 of the F-Gas Regulation or Article 27 of the ODS Regulation, "
-"should register in order to be able to report."
-msgstr ""
-
-#: templates/self_register.html:16
-#, python-format
-msgid ""
-"In case you or another person in your company already have received a "
-"username and password but have forgotten it or in case you need further "
-"assistance logging in, please contact the helpdesk at: %(helpdesk_email)s."
-msgstr ""
-
-#: templates/self_register.html:20
-msgid ""
-"In case your undertaking is a first time reporter and has therefore not yet "
-"received a username and password, please proceed to the"
-msgstr ""
-
-#: templates/self_register.html:20
-msgid "self-registration form"
-msgstr ""
-
-#: templates/self_register.html:20
-msgid "below"
-msgstr ""
-
-#: templates/self_register.html:24
-msgid "Self-registration form"
-msgstr ""
-
-#: templates/self_register.html:26
-#, python-format
-msgid ""
-"Please note that this registration form should only be used if your company "
-"has not yet received a login and a password. In the case of a forgotten "
-"login or password or in the case of a change of reporter details, please "
-"contact the helpdesk at: %(helpdesk_email)s."
+"Manufacturers, who want to report to report error notifications in "
+"accordance with Article 8(5) of Regulation (EC) 443/2009 and/or Article 8(5) "
+"of Regulation (EU) 510/2011, should register in order to be able to report."
 msgstr ""
 
 #: templates/self_register.html:30
+#, python-format
 msgid ""
-"For undertakings reporting for the first time, the account request will be "
-"evaluated and login and password will be provided."
+"In case you or another person in your company already have an account but "
+"have forgotten the login credentials or in case you need further assistance "
+"logging in, please contact the helpdesk at: %(helpdesk_email)s."
 msgstr ""
 
-#: templates/self_register.html:73
-msgid "Designated company reporter nr 1"
+#: templates/self_register.html:34
+msgid ""
+"In case your undertaking is a first time reporter and has no account yet, "
+"then please proceed to the"
 msgstr ""
 
-#: templates/self_register.html:102
+#: templates/self_register.html:34
+msgid "self-registration form"
+msgstr ""
+
+#: templates/self_register.html:34
+msgid "below"
+msgstr ""
+
+#: templates/self_register.html:38
+msgid "Self-registration form"
+msgstr ""
+
+#: templates/self_register.html:41
+msgid ""
+"In case you need to get both CARS and VANS accounts, then please be so kind "
+"as to fill in the form for both obligations."
+msgstr ""
+
+#: templates/self_register.html:82
+msgid "Reporter"
+msgstr ""
+
+#: templates/self_register.html:106
+msgid "Later you can add other reporters."
+msgstr ""
+
+#: templates/self_register.html:111
 msgid "Request account"
+msgstr ""
+
+#: templates/self_register_done.html:6
+msgid "Self registration"
 msgstr ""
 
 #: templates/self_register_done.html:8
 msgid ""
-"The request for registration was completed successfully. An email was sent "
-"to your account with the registration details. The BDR team will review your "
-"request and take the appropriate actions."
+"The request for registration was completed successfully. The BDR Helpdesk "
+"team will review your request and take the appropriate actions and inform "
+"you as soon as possible concerning the registration details."
 msgstr ""
 
 #: templates/self_register_done.html:10
