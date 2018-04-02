@@ -12,11 +12,13 @@ from django.db.models import Q
 
 from django.views.generic import View, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.detail import DetailView
 from django.shortcuts import render, redirect, get_object_or_404
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseNotFound
+from django.http import Http404
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
@@ -287,6 +289,24 @@ class PersonDelete(DeleteView):
         company = self.object.company
         url = reverse('company_update', args=[company.pk])
         return HttpResponseRedirect(url)
+
+
+class PersonRegister(DetailView):
+
+    template_name = 'bdr_management/register_account.html'
+    raise_exception = True
+    model = models.Person
+
+    def dispatch(self, request, *args, **kwargs):
+        person = self.get_object()
+        account = person.account
+        token_is_valid = account.validate_registration_token(
+            kwargs.get('token')
+        )
+        if token_is_valid:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            raise Http404
 
 
 class CompanyAddComment(CreateView):

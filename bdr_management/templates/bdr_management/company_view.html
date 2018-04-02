@@ -11,29 +11,26 @@
 
     {% if user|has_permission:object %}
       <div class="box-small no-borders pull-left"
-           style="margin-left:24px;">
+           style="margin-left:24px; max-width: 12rem">
         {% if management %}
           <p class="h4 no-margins">Actions:</p>
+{#          TODO: count and display number of persons with and without accounts. #}
+{#          TODO: Replace "Create account" with: Create accounts for NUM persons. Update transaltions. #}
+{#          TODO: Replace "Reset password" with: Reset password for NUM persons.  Update transaltions. #}
+{#          TODO: Remove  "has_account" checks. Keep only "has_reporting_folder". #}
           <ul>
-            {% if has_account %}
-            <li>
-              <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
-                {% trans "Reset password" %}</a>
+            <li><a id="reset-password-action" href="{% url 'management:reset_passwords' pk=object.pk %}">
+              {% trans "Reset password for {NUM} persons" %}</a>
             </li>
-            {% if not has_reporting_folder and has_account %}
+            {% if not has_reporting_folder %}
             <li>
               <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
                 {% trans "Create reporting folder" %}</a>
             </li>
             {% endif %}
-            {% endif %}
-
-            {% if not has_account %}
-            <li>
-              <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
-                {% trans "Create account" %}</a>
+            <li><a id="create-account-action" href="{% url 'management:create_accounts' pk=object.pk %}">
+              {% trans "Create accounts for {NUM} persons" %}</a>
             </li>
-            {% endif %}
           </ul>
         {% endif %}
 
@@ -49,7 +46,7 @@
     {% endif %}
   </div>
 
-  {% if has_reporting_folder and has_account %}
+  {% if has_reporting_folder %}
   <h2>{% trans "Reporting folder" %}</h2>
   <p>You can see the company deliveries here: <a href="{{ reporting_folder }}">{{ reporting_folder }}</a></p>
   {% endif %}
@@ -90,15 +87,25 @@
   <h2>{% trans "Persons" %}</h2>
   <ul>
     {% for person in object.people.all %}
+{#      TODO: Add reset password, create/reset account buttons #}
       <li>
         {% if management %}
-          <a href="{% url person_route cpk=object.pk pk=person.pk %}"
-             class="bold">
+          <a href="{% url person_route cpk=object.pk pk=person.pk %}" class="bold">
         {% else %}
           <a href="{% url person_route pk=person.pk %}"
              class="bold">
         {% endif %}
-      {{ person.formal_name }}</a>
+        {{ person.formal_name }}</a>
+        {% if management %}
+          {% if not person.has_account %}
+            <a id="create-account-action" href="{% url 'management:create_account' pk=person.pk %}">
+              {% trans "Create account" %}</a>
+          {% endif %}
+          {% if person.has_account %}
+            <a id="reset-account-action" href="{% url 'management:reset_password' pk=person.pk %}">
+              {% trans "Reset password" %}</a>
+          {% endif %}
+        {% endif %}
       </li>
     {% endfor %}
   </ul>

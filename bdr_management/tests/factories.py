@@ -121,6 +121,7 @@ class SiteConfigurationFactory(django.DjangoModelFactory):
 
     reporting_year = 2015
     self_register_email_template = factory.SubFactory(EmailTemplateFactory)
+    register_new_account = (factory.SubFactory(EmailTemplateFactory))
 
 
 @mute_signals(signals.post_save)

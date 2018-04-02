@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Create account for {{ company }}</h1>
+<h1>Create accounts for {{ company }}</h1>
 
 <form method="POST" action="" class="push-top">
 {% csrf_token %}
@@ -16,7 +16,7 @@
 
     <div id="company-persons">
       <ul>
-        {% for person in company.people.all %}
+        {% for person in persons %}
           <li class="bold">{{ person }}</li>
         {% endfor %}
       </ul>
@@ -25,7 +25,7 @@
 
   <div class="btn-toolbar">
     <button class="btn-blue" type="submit">Create account</button>
-    <a class="btn" href="{% url 'management:companies_view' pk=object.pk %}">
+    <a class="btn" href="{% url 'management:companies_view' pk=company.pk %}">
       Cancel
     </a>
   </div>

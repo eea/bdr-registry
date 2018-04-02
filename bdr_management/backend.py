@@ -3,12 +3,13 @@ from collections import defaultdict
 from io import BytesIO
 import xlwt
 
+from django.core.urlresolvers import reverse
+
 from django.conf import settings
 from post_office import mail
 
 from bdr_registry.ldap_editor import create_ldap_editor
 from bdr_registry.models import SiteConfiguration
-from bdr_registry.views import valid_email
 
 
 def sync_accounts_with_ldap(accounts):
@@ -30,24 +31,34 @@ def sync_accounts_with_ldap(accounts):
 
 
 def send_password_email_to_people(company):
+    raise DeprecationWarning
 
+
+def send_registration_email(person):
     config = SiteConfiguration.objects.get()
+    company = person.company
+    account = person.account
+    template = config.register_new_account
 
-    template = company.obligation.email_template
-    bcc = company.obligation.bcc.split(',')
-    bcc = [s.strip() for s in bcc if valid_email(s.strip())]
-    for person in company.people.all():
-        reporting_year = config.reporting_year
-        mail.send(recipients=[person.email.strip()],
-                  bcc=bcc,
-                  sender=settings.BDR_EMAIL_FROM,
-                  template=template,
-                  context={'company': company, 'person': person,
-                           'reporting_year': reporting_year,
-                           'next_year': reporting_year + 1},
-                  priority='now')
+    token_url = reverse(
+        'person_register',
+        kwargs=dict(
+            pk=person.pk,
+            token=account.get_registration_token()
+        )
+    )
 
-    return company.people.count()
+    mail.send(
+        recipients=[person.email.strip()],
+        sender=settings.BDR_EMAIL_FROM,
+        template=template,
+        priority='now',
+        context=dict(
+            company=company,
+            person=person,
+            registration_url=token_url,
+        )
+    )
 
 
 def generate_excel(header, rows):

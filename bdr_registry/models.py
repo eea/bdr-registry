@@ -1,18 +1,26 @@
 import requests
 import random
 import string
+from datetime import datetime
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from django.db import models, transaction
+from django.db import models
+from django.db.models.signals import pre_save
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
+from django.dispatch import receiver
+
 from solo.models import SingletonModel
 from .local import *
 from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
+
+import pyotp
 
 
 def generate_key(size=20):
@@ -62,6 +70,7 @@ class Obligation(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
     reportek_slug = models.CharField(max_length=255)
+    # TODO: update email templates
     email_template = models.ForeignKey(EmailTemplate)
     bcc = models.TextField(blank=True, validators=[validate_comma_separated_email_list])
     admins = models.ManyToManyField(User, related_name='obligations', blank=True)
@@ -69,61 +78,59 @@ class Obligation(models.Model):
     def __str__(self):
         return self.name
 
-    @transaction.atomic
-    def generate_account_id(self):
-        query = (NextAccountId.objects.select_for_update()
-                 .filter(obligation=self))
-        try:
-            next_row = query[0]
-        except IndexError:
-            next_row = NextAccountId(obligation=self, next_id=1)
-            next_row.save()
-        value = next_row.next_id
-        next_row.next_id += 1
-        next_row.save()
-        return value
-
 
 class AccountManager(models.Manager):
 
-    def create_for_obligation(self, obligation):
-        next_id = obligation.generate_account_id()
-        if hasattr(settings, 'ACCOUNTS_PREFIX'):
-            prefix = settings.ACCOUNTS_PREFIX
-        else:
-            prefix = ''
-        uid = u"{prefix}{o.code}{next_id}".format(
-                        prefix=prefix,
-                        o=obligation,
-                        next_id=next_id)
+    def create_for_obligation(self, obligation, name):
+        # TODO: delete this? move code in registration form
+        # TODO: Check that name is available (maybe in the registration form?)
+        prefix = getattr(settings, 'ACCOUNTS_PREFIX', '')
+        uid = f"{prefix}{obligation.code}_{name}"
         return self.create(uid=uid)
 
 
 class Account(models.Model):
 
-    uid = models.CharField(max_length=255, unique=True)
+    uid = models.CharField(max_length=255, unique=True, null=True)
     password = models.CharField(max_length=255, null=True, blank=True)
+
+    # oauth_register is used for initial registration and reset operations.
+    # It validates the TOTP token sent via email. This can bee freely changed.
+    oauth_register = models.CharField(
+        max_length=255, default=pyotp.random_base32())
+
+    # oauth_secret is used for 2FA and will not be changed unless the user
+    # specifically requests it from an admin.
+    oauth_secret = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return self.uid
-
-    def set_random_password(self):
-        self.password = generate_key(size=8)
-        self.save()
 
     objects = AccountManager()
 
     class Meta:
         ordering = ['uid']
 
+    def registration_complete(self):
+        # After completing the registration, an oauth_secret will be set.
+        return bool(self.oauth_secret)
 
-class NextAccountId(models.Model):
+    def get_registration_token(self):
+        totp = pyotp.TOTP(self.oauth_register, interval=86400)
+        return totp.now()
 
-    next_id = models.IntegerField()
-    obligation = models.OneToOneField(Obligation, null=True, blank=True)
+    def validate_registration_token(self, token):
+        return pyotp.TOTP(self.oauth_register, interval=86400).verify(token)
 
-    def __str__(self):
-        return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
+
+@receiver(pre_save, sender=Account)
+def account_pre_save(sender, instance, **kwargs):
+    # Ensure password is hashed.
+    instance.password = (
+        make_password(instance.password)
+        if instance.password
+        else None
+    )
 
 
 class Company(models.Model):
@@ -148,8 +155,6 @@ class Company(models.Model):
     vat_number = models.CharField(_('VAT number'), max_length=17)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, related_name='companies')
-    account = models.OneToOneField(Account, null=True, blank=True,
-                                   related_name='company')
     website = models.URLField(null=True, blank=True)
 
     def get_absolute_url(self):
@@ -159,11 +164,11 @@ class Company(models.Model):
         return self.name
 
     def build_reporting_folder_path(self):
-        folder_path = '/{0}/{1}/{2}'.format(
+        # TODO: ask if using the year is ok. It used to be account.uid.
+        return '/{0}/{1}/{2}'.format(
                 self.obligation.reportek_slug,
                 self.country.code,
-                self.account.uid)
-        return folder_path
+                datetime.now().year)
 
     def has_reporting_folder(self, folder_path=None):
         if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
@@ -176,6 +181,10 @@ class Company(models.Model):
             return True
         else:
             return False
+
+    def persons_without_accounts(self):
+        return self.people.filter(account__isnull=True)
+
 
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
@@ -226,10 +235,17 @@ class Person(models.Model):
                            max_length=255, null=True, blank=True)
 
     company = models.ForeignKey(Company, related_name='people')
+    account = models.OneToOneField(
+        Account, null=True, blank=True, related_name='person'
+    )
 
     @property
     def formal_name(self):
         return u"{p.title} {p.first_name} {p.family_name}".format(p=self)
+
+    @property
+    def has_account(self):
+        return bool(self.account)
 
     def __str__(self):
         return u"{p.first_name} {p.family_name}".format(p=self)
@@ -274,4 +290,11 @@ class ReportingStatus(models.Model):
 class SiteConfiguration(SingletonModel):
 
     reporting_year = models.PositiveIntegerField()
-    self_register_email_template = models.ForeignKey(EmailTemplate)
+    self_register_email_template = models.ForeignKey(
+        EmailTemplate,
+        related_name='self_register'
+    )
+    register_new_account = models.ForeignKey(
+        EmailTemplate, null=True, blank=True,
+        related_name='register_new_account'
+    )

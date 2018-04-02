@@ -122,6 +122,7 @@ def create_accounts(modeladmin, request, queryset):
 def reset_password(modeladmin, request, queryset):
     organisations_with_account = [o for o in queryset if o.account is not None]
 
+    # TODO: This needs to move Account management and will be reset per-Person.
     if request.POST.get('perform_send'):
         return send_password_email(modeladmin, request, queryset)
 
@@ -496,7 +497,6 @@ if not settings.ADMIN_ALL_BDR_TABLES:
 
 if settings.ADMIN_ALL_BDR_TABLES:
     admin.site.register(models.Account, AccountAdmin)
-    admin.site.register(models.NextAccountId)
     admin.site.register(models.Company, OrganisationAdmin)
     admin.site.register(models.Person, PersonAdmin)
     admin.site.register(models.Obligation)

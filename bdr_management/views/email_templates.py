@@ -42,12 +42,7 @@ class EmailTemplatesFilter(views.StaffuserRequiredMixin,
 
     def get_queryset(self, opt):
 
-        user_templates = [
-            obligation['email_template_id']
-            for obligation in self.request.user.obligations.values()
-        ]
-
-        queryset = EmailTemplate.objects.filter(pk__in=user_templates).all()
+        queryset = EmailTemplate.objects.all()
 
         if 'order_by' in opt and opt['order_by']:
             queryset = queryset.order_by(opt['order_by'])

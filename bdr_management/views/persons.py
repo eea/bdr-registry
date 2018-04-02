@@ -3,18 +3,23 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
+from django.http import Http404
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views import generic
 
+
 from braces import views
 
 from bdr_management import base
+from bdr_management import backend
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_management.views.mixins import CompanyMixin
-from bdr_registry.models import Person, Company
+from bdr_registry.models import Person
+from bdr_registry.models import Company
+from bdr_registry.models import Account
 
 
 class Persons(views.StaffuserRequiredMixin,
@@ -417,3 +422,66 @@ class PersonCreate(base.CompanyUserRequiredMixin,
         data['breadcrumbs'] = breadcrumbs
         data['cancel_url'] = back_url
         return data
+
+
+class ResetPassword(views.GroupRequiredMixin, generic.DetailView):
+    # TODO: implement this
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
+    template_name = 'bdr_management/reset_password.html'
+    model = Person
+
+    def dispatch(self, request, *args, **kwargs):
+        self.company = self.get_object()
+        if not self.company.account:
+            raise Http404
+        return super(ResetPassword, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        self.company.account.set_random_password()
+        backend.sync_accounts_with_ldap([self.company.account])
+        msg = _('Password has been reset.')
+        messages.success(request, msg)
+
+        if request.POST.get('perform_send'):
+            n = backend.send_password_email_to_people(self.company)
+            messages.success(
+                request,
+                'Emails have been sent to %d person(s).' % n
+            )
+        return redirect('management:companies_view',
+                        pk=self.company.pk)
+
+
+class CreateAccount(views.GroupRequiredMixin, generic.DetailView):
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
+    template_name = 'bdr_management/create_account.html'
+    model = Person
+
+    def dispatch(self, request, *args, **kwargs):
+        self.company = self.get_object()
+        if self.company.account:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk, p_pk):
+        obligation = self.company.obligation
+        account = Account.objects.create_for_obligation(obligation)
+        account.set_random_password()
+        self.company.account = account
+        self.company.save()
+        backend.sync_accounts_with_ldap([account])
+        msg = "Account created."
+        messages.success(request, msg)
+
+        if request.POST.get('perform_send'):
+            n = backend.send_password_email_to_people(self.company)
+            messages.success(
+                request,
+                'Emails have been sent to %d person(s).' % n
+            )
+        return redirect('management:companies_view',
+                        pk=self.company.pk)

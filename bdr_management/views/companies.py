@@ -15,12 +15,15 @@ from django.http import Http404, HttpResponseRedirect
 from django.shortcuts import redirect
 
 from bdr_management.forms import PersonFormWithoutCompany
-from bdr_management import base, forms, backend
+from bdr_management import base
+from bdr_management import forms
+from bdr_management import backend
 from bdr_management.base import Breadcrumb
-from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
+from bdr_management.forms.companies import CompanyForm
+from bdr_management.forms.companies import CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
-from bdr_registry.models import (Company, Account, ReportingYear, Person,
-                                 ReportingStatus, SiteConfiguration)
+
+from bdr_registry import models
 
 
 class Companies(views.StaffuserRequiredMixin,
@@ -151,11 +154,11 @@ class CompaniesBaseView(base.ModelTableViewMixin,
                         generic.DetailView):
 
     template_name = 'bdr_management/company_view.html'
-    model = Company
+    model = models.Company
     exclude = ('id', )
 
     def get_context_data(self, **kwargs):
-        reporting_year = SiteConfiguration.objects.get().reporting_year
+        reporting_year = models.SiteConfiguration.objects.get().reporting_year
 
         if not self.has_edit_permission():
             self.exclude = ['active', 'outdated']
@@ -170,10 +173,8 @@ class CompaniesBaseView(base.ModelTableViewMixin,
                  if stat.reported]
         data['reporting_years'] = years
 
-        if self.object.account:
-            data['has_account'] = True
-        else:
-            data['has_account'] = False
+        # TODO: remove, placeholder until migrating view
+        data['has_account'] = False
 
         if data['has_account']:
             folder_path = self.object.build_reporting_folder_path()
@@ -277,7 +278,7 @@ class CompanyBaseEdit(base.ModelTableViewMixin,
                       generic.UpdateView):
 
     template_name = 'bdr_management/company_edit.html'
-    model = Company
+    model = models.Company
     success_message = _('Company edited successfully')
     form_class = CompanyForm
 
@@ -289,13 +290,13 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
     raise_exception = True
 
     def set_reporting_years(self, data):
-        curr_year = SiteConfiguration.objects.get().reporting_year
-        years = ReportingYear.objects.filter(
+        curr_year = models.SiteConfiguration.objects.get().reporting_year
+        years = models.ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         years_dict = {}
         company = self.object
         for year in years:
-            status, _ = ReportingStatus.objects.get_or_create(
+            status, _ = models.ReportingStatus.objects.get_or_create(
                 company=company,
                 reporting_year=year
             )
@@ -334,8 +335,8 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
         return reverse('management:companies_view', kwargs=self.kwargs)
 
     def post(self, request, *args, **kwargs):
-        curr_year = SiteConfiguration.objects.get().reporting_year
-        reporting_years = ReportingYear.objects.filter(
+        curr_year = models.SiteConfiguration.objects.get().reporting_year
+        reporting_years = models.ReportingYear.objects.filter(
             year__gte=settings.FIRST_REPORTING_YEAR).filter(year__lte=curr_year)
         company = None
         for year in reporting_years:
@@ -346,8 +347,8 @@ class CompaniesManagementEdit(views.GroupRequiredMixin,
                 reported = True
             else:
                 reported = None
-            company = Company.objects.get(pk=kwargs['pk'])
-            reporting_status, created = ReportingStatus.objects.get_or_create(
+            company = models.Company.objects.get(pk=kwargs['pk'])
+            reporting_status, created = models.ReportingStatus.objects.get_or_create(
                 company=company,
                 reporting_year=year,
                 defaults={'reported': reported})
@@ -403,7 +404,7 @@ class CompanyDelete(views.GroupRequiredMixin,
                     generic.DeleteView):
 
     group_required = settings.BDR_HELPDESK_GROUP
-    model = Company
+    model = models.Company
     success_url = reverse_lazy('management:companies')
     template_name = 'bdr_management/company_confirm_delete.html'
     raise_exception = True
@@ -457,10 +458,10 @@ class CompanyDeleteMultiple(views.GroupRequiredMixin,
         return self.request.POST.get('companies', '').split(',')
 
     def get_companies(self):
-        return Company.objects.filter(pk__in=self.get_company_ids())
+        return models.Company.objects.filter(pk__in=self.get_company_ids())
 
     def get_people(self):
-        return Person.objects.filter(company__pk__in=self.get_company_ids())
+        return models.Person.objects.filter(company__pk__in=self.get_company_ids())
 
     def delete(self, request, companies):
         messages.success(request, _('Companies deleted'))
@@ -485,7 +486,7 @@ class CompanyAdd(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
     template_name = 'bdr_management/company_add.html'
-    model = Company
+    model = models.Company
     form_class = CompanyForm
     success_message = _('Company created successfully')
 
@@ -534,19 +535,20 @@ class CompanyAdd(views.GroupRequiredMixin,
         return context
 
 
-class ResetPassword(views.GroupRequiredMixin,
+class ResetPasswords(views.GroupRequiredMixin,
                     generic.DetailView):
+    # TODO: update to handle individual person account (include person pk in request)
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
-    template_name = 'bdr_management/reset_password.html'
-    model = Company
+    template_name = 'bdr_management/bulk_reset_password.html'
+    model = models.Company
 
     def dispatch(self, request, *args, **kwargs):
         self.company = self.get_object()
         if not self.company.account:
             raise Http404
-        return super(ResetPassword, self).dispatch(request, *args, **kwargs)
+        return super(ResetPasswords, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
         self.company.account.set_random_password()
@@ -564,38 +566,41 @@ class ResetPassword(views.GroupRequiredMixin,
                         pk=self.company.pk)
 
 
-class CreateAccount(views.GroupRequiredMixin,
-                    generic.DetailView):
+class CreateAccounts(views.GroupRequiredMixin, generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
-    template_name = 'bdr_management/create_account.html'
-    model = Company
+    template_name = 'bdr_management/bulk_create_account.html'
+    model = models.Company
 
-    def dispatch(self, request, *args, **kwargs):
-        self.company = self.get_object()
-        if self.company.account:
-            raise Http404
-        return super(CreateAccount, self).dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        company = self.object
+        data.update(dict(
+            company=company,
+            persons=company.persons_without_accounts(),
+        ))
+        return data
 
     def post(self, request, pk):
-        obligation = self.company.obligation
-        account = Account.objects.create_for_obligation(obligation)
-        account.set_random_password()
-        self.company.account = account
-        self.company.save()
-        backend.sync_accounts_with_ldap([account])
-        msg = "Account created."
-        messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.company)
+            company = self.get_object()
+            persons_without_accounts = company.persons_without_accounts()
+
+            for person in persons_without_accounts:
+                account = models.Account.objects.create()
+                person.account = account
+                person.save()
+                backend.send_registration_email(person)
+
+            len_persons = len(persons_without_accounts)
             messages.success(
                 request,
-                'Emails have been sent to %d person(s).' % n
+                'Emails have been sent to %d person(s).' % (len_persons, )
             )
-        return redirect('management:companies_view',
-                        pk=self.company.pk)
+
+        return redirect('management:companies_view', pk=company.pk)
 
 
 class CreateReportingFolder(views.GroupRequiredMixin,
@@ -606,7 +611,7 @@ class CreateReportingFolder(views.GroupRequiredMixin,
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
     template_name = 'bdr_management/create_reporting_folder.html'
-    model = Company
+    model = models.Company
 
     def dispatch(self, request, *args, **kwargs):
         self.company = self.get_object()
@@ -649,7 +654,7 @@ class CompanyNameHistory(views.StaffuserRequiredMixin,
                          generic.DetailView):
 
     template_name = 'bdr_management/company_name_history.html'
-    model = Company
+    model = models.Company
     raise_exception = True
 
     def get_context_data(self, **kwargs):

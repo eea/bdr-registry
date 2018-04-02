@@ -36,7 +36,7 @@ class CompanyResetPasswordTests(base.BaseWebTest):
         url = self.reverse('management:reset_password', pk=org.pk)
         resp = self.app.get(url, user='admin')
         self.assertEqual(200, resp.status_int)
-        self.assertTemplateUsed(resp, 'bdr_management/reset_password.html')
+        self.assertTemplateUsed(resp, 'bdr_management/bulk_reset_password.html')
         self.assertEqual(resp.context['object'], org)
 
     def test_reset_password_get_without_account(self):
@@ -141,7 +141,7 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         url = self.reverse('management:create_account', pk=org.pk)
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
-        self.assertTemplateUsed(resp, 'bdr_management/create_account.html')
+        self.assertTemplateUsed(resp, 'bdr_management/bulk_create_account.html')
         self.assertEqual(resp.context['object'], org)
 
     def test_create_company_account(self):

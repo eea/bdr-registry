@@ -5,7 +5,10 @@ from django.views.generic.base import TemplateView
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from bdr_registry import views
-from bdr_management import views as management_views
+from bdr_management.views import companies
+from bdr_management.views import persons
+from bdr_management.views import comments
+
 from bdr_registry.views import api as api_views
 
 
@@ -16,32 +19,35 @@ company_patterns = [
     url(r'^add/?$',
         views.CompanyCreate.as_view()),
     url(r'^(?P<pk>\d+)/?$',
-        management_views.CompaniesUpdateView.as_view(),
+        companies.CompaniesUpdateView.as_view(),
         name='company'),
     url(r'^(?P<pk>\d+)/update/?$',
-        management_views.CompaniesUpdate.as_view(),
+        companies.CompaniesUpdate.as_view(),
         name='company_update'),
     url(r'^(?P<pk>\d+)/persons/add/?$',
-        management_views.PersonCreate.as_view(),
+        persons.PersonCreate.as_view(),
         name='person_add'),
     url(r'^(?P<pk>\d+)/comment/add/?$',
-        management_views.CommentCreate.as_view(),
+        comments.CommentCreate.as_view(),
         name='comment_add'),
     url(r'^(?P<pk>\d+)/comment/(?P<comment_pk>\d+)/delete/?$',
-        management_views.CommentDelete.as_view(),
+        comments.CommentDelete.as_view(),
         name='comment_delete'),
 ]
 
 person_patterns = [
     url(r'^(?P<pk>\d+)/?$',
-        management_views.PersonView.as_view(),
+        persons.PersonView.as_view(),
         name='person'),
     url(r'^(?P<pk>\d+)/update/?$',
-        management_views.PersonEdit.as_view(),
+        persons.PersonEdit.as_view(),
         name='person_update'),
     url(r'^(?P<pk>\d+)/delete/?$',
-        management_views.PersonDelete.as_view(),
+        persons.PersonDelete.as_view(),
         name='person_delete'),
+    url(r'^(?P<pk>\d+)/register/(?P<token>\w+)/?',
+        views.PersonRegister.as_view(),
+        name='person_register'),
 ]
 
 

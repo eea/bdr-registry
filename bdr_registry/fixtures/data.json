@@ -306,7 +306,7 @@
     "pk": 4,
     "model": "post_office.emailtemplate",
     "fields": {
-        "last_updated": "2014-05-14T11:37:51Z",
+        "last_updated": "2014 -05-14T11:37:51Z",
         "name": "vans",
         "created": "2014-05-13T14:49:55Z",
         "html_content": "<!DOCTYPE html>\r\n<html xmlns=\"http://www.w3.org/1999/html\">\r\n<head>\r\n  <meta charset=\"utf-8\">\r\n  <title>Reporting data on VANS covering {{ reporting_year }}</title>\r\n</head>\r\n\r\n<body>\r\n\r\n<p>Dear {{ person.formal_name }},</p>\r\n\r\n  <p>\r\n    This message is addressed to you as the contact person of a manufacturer\r\n    reporting data concerning CO2 emissions from vans  in accordance with\r\n    Article 8(5) of Regulation (EU) No 510/2011.\r\n  </p>\r\n\r\n  <p>\r\n    The report shall be submitted to the European Environment Agency\r\n    (EEA) using the online Business Data Repository (BDR) at\r\n    <a href=\"https://bdr.eionet.europa.eu/\">bdr.eionet.europa.eu</a>.\r\n  </p>\r\n\r\n  <p>\r\n    In order to submit your report you will need to login using the\r\n    username and password for your company. The company for which you\r\n    have received reporting rights is <strong>{{ company.name }}</strong>\r\n    in <strong>{{ company.country.name }}</strong>. The username for your\r\n    company is <strong>{{ company.account.uid }}</strong> and the password\r\n    is <strong>{{ company.account.password }}</strong>.\r\n  </p>\r\n\r\n  <p>\r\n    Please note that this password will be valid for reporting during the\r\n    year {{ reporting_year }}.  To ensure confidentiality we will reset the password at\r\n    the beginning of {{ next_year }}.\r\n  </p>\r\n\r\n  <h1>How to submit your report?</h1>\r\n\r\n  <p>\r\n    Detailed information on how to upload your delivery to BDR is\r\n    available in the BDR User Manual at: https://circabc.europa.eu/w/browse/a41f7626-c660-4ee6-9b4b-8f198de8ab5c   </p>\r\n\r\n  <h1>Reporting requirements and forms</h1>\r\n\r\n  <p>\r\n    From this year the EEA is collecting the corrections from cars\r\n    manufacturers using the BDR. When notifying corrections back to the\r\n    Commission, the manufacturer must include all records and all entries that\r\n    are relevant for it; i.e. both those that the manufacturer considers\r\n    correct as well as those that have been corrected.\r\n    For {{ reporting_year }}, manufacturers can provide data in several formats:\r\n    .xls, .csv, .xml, .mdb.\r\n  </p>\r\n\r\n  <h1>BDR Helpdesk</h1>\r\n\r\n  <p>\r\n    Please feel free to contact the BDR Helpdesk\r\n    (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):\r\n  </p>\r\n\r\n  <ul>\r\n    <li>\r\n      If you received this e-mail but you think that you are no longer\r\n      subject to the reporting obligations, please be so kind to inform\r\n      us accordingly.\r\n    </li>\r\n\r\n  </ul>\r\n\r\n  <p>Thank you in advance for your co-operation.</p>\r\n\r\n  <p>\r\n    Yours faithfully<br />\r\n    BDR Helpdesk\r\n  </p>\r\n\r\n</body>\r\n</html>\r\n",
@@ -327,6 +327,21 @@
         "content": "",
         "subject": "New company registered"
     }
+},
+{
+    "model": "post_office.emailtemplate",
+    "pk": 6,
+    "fields": {
+        "name": "Register new account",
+        "description": "",
+        "created": "2018-04-02T16:31:50.667Z",
+        "last_updated": "2018-04-02T16:39:57.679Z",
+        "subject": "Register new account",
+        "content": "",
+        "html_content": "<p>Dear {{ person.formal_name }},</p><p>&nbsp;</p><p>This message is addressed to you as the contact person for&nbsp;<strong>{{ company.name }}</strong>&nbsp;in&nbsp;<strong>{{ company.country.name }}</strong>. In order to report data, you will need to register an account by clicking on the following URL: <strong>{{ registration_url }}</strong></p><p><strong>The URL is valid for 24 hours. Please make sure to complete the registration process in this time.</strong></p><h1>BDR Helpdesk</h1><p>Please feel free to contact the BDR Helpdesk (<a href=\"mailto:BDR.helpdesk@eea.europa.eu\">BDR.helpdesk@eea.europa.eu</a>):</p><p>Thank you in advance for your co-operation.</p><p>Yours faithfully<br />BDR Helpdesk</p>",
+        "language": "",
+        "default_template": null
+  }
 },
 {
     "pk": 1,
@@ -384,7 +399,8 @@
     "model": "bdr_registry.siteconfiguration",
     "fields": {
         "reporting_year": 2014,
-        "self_register_email_template": 5
+        "self_register_email_template": 5,
+        "register_new_account": 6
     }
 }
 ]
