@@ -13,6 +13,7 @@ RUN apt-get update \
     python-setuptools \
     python-dev \
     build-essential \
+    libpq-dev \
     libssl-dev \
     libxml2-dev \
     libxslt1-dev \
