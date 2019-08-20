@@ -1,6 +1,10 @@
 BDR Organisations Registry
 ==========================
 
+.. image:: https://travis-ci.org/eea/bdr-registry.svg?branch=master
+
+.. image:: https://dockerbuildbadges.quelltext.eu/status.svg?organization=eeacms&repository=reportek.bdr-registry
+
 `bdr-registry`_ is a registry of company contacts (implemented as a
 Django application) for the reporting process which is handled by the
 `BDR Zope`_ application. Reporters from organisations can self-register
