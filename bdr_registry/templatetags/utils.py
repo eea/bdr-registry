@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 import re
+import requests
 from datetime import datetime
 
 from django import template
@@ -10,6 +11,7 @@ from django.template.defaultfilters import urlize
 
 import bdr_management
 from bdr_registry.models import Company, EmailTemplate
+from bdr_registry.settings import BDR_SIDEMENU_URL, BDR_API_AUTH_USER, BDR_API_AUTH_PASSWORD
 
 register = template.Library()
 numeric_test = re.compile('^\d+$')
@@ -78,3 +80,11 @@ def custom_render_field(field):
     }
     return render_to_string('bits/custom_field.html', context)
 
+
+@register.simple_tag
+def get_sidebar(user):
+    params = {'username': user.username }
+    response = requests.get(BDR_SIDEMENU_URL, params=params,
+                            auth=requests.HTTPBasicAuth(BDR_API_AUTH_USER, BDR_API_AUTH_PASSWORD))
+    if response.status_code == 200:
+        return mark_safe(response.text)

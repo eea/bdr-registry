@@ -156,6 +156,16 @@ LOGGING = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'TIMEOUT': 3000,
+        'OPTIONS' : {
+            'MAX_ENTRIES': 150
+        }
+    }
+}
+
 BDR_REVERSE_PROXY = env('BDR_REVERSE_PROXY', False)
 BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://example.com/')
 
@@ -206,6 +216,7 @@ BDR_API_AUTH_USER = env('BDR_API_AUTH_USER', '')
 BDR_API_AUTH_PASSWORD = env('BDR_API_AUTH_PASSWORD', '')
 BDR_API_AUTH = (BDR_API_AUTH_USER, secure_str(BDR_API_AUTH_PASSWORD))
 
+BDR_SIDEMENU_URL =env('BDR_SIDEMENU_URL', 'http://example.com/left_menu')
 DATE_FORMAT = '%d %b %Y'
 
 BDR_HELPDESK_GROUP = 'BDR helpdesk'
