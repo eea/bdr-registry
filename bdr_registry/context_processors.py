@@ -17,3 +17,8 @@ def sentry(request):
         'sentry_id': sentry_id,
         'sentry_public_id': env('SENTRY_PUBLIC_DSN', ''),
     }
+
+def use_sidemenu(request):
+    return {
+        'USE_SIDEMENU': env('USE_SIDEMENU', False)
+    }

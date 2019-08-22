@@ -134,9 +134,39 @@
 
 
 <div id="leftcolumn" class="localnav">
-  {% cache 3000 sidebar request.user %}
-    {% get_sidebar request.user %}
-  {% endcache %}
+  {% if USE_SIDEMENU %}
+    {% cache 3000 sidebar request.user %}
+      {% get_sidebar request.user %}
+    {% endcache %}
+  {% else %}
+    <h2>Services</h2>
+      <ul>
+        <li><a href="/" title="{% trans 'BDR home' %}">{% trans "BDR home" %}</a></li>
+        <li><a href="/searchdataflow" title="{% trans 'Search' %}">{% trans "Search" %}</a></li>
+        <li><a href="/help/fgases" title="{% trans 'Help F-gases' %}">{% trans "Help F-gases" %}</a></li>
+        <li><a href="/help/ods" title="{% trans 'Help ODS' %}">{% trans "Help ODS" %}</a></li>
+        <li><a href="/help/cars_vans" title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a></li>
+        <li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>
+        {% if user.is_anonymous %}
+          <li><a href="/selfregister" title="{% trans 'Self-registration' %}">{% trans "Self-registration" %}</a></li>
+        {% endif %}
+      </ul>
+
+      {% if user.is_staff %}
+        <h2>{% trans "BDR registry" %}</h2>
+        <ul>
+          <li><a href="{% url 'management:companies' %}">{% trans "Companies" %}</a></li>
+          <li><a href="{% url 'management:persons' %}">{% trans "Contact persons" %}</a></li>
+          <li><a href="{% url 'management:obligations' %}">{% trans "Manage obligations" %}</a></li>
+          <li><a href="{% url 'management:email_templates' %}">{% trans "Manage email templates" %}</a></li>
+          <li><a href="{% url 'management:settings_view' %}">{% trans "Settings" %}</a></li>
+          <li><a href="{% url 'management:actions' %}">{% trans "Actions" %}</a></li>
+          {% if user.is_superuser %}
+            <li><a href="{% url 'admin:index' %}" title="{% trans 'Account administration' %}">{% trans "Account admin" %}</a></li>
+          {% endif %}
+        </ul>
+      {% endif %}
+  {% endif %}
 </div> {# /#leftcolumn #}
 
 <div id="workarea">

@@ -122,6 +122,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'bdr_registry.context_processors.settings_context',
                 'bdr_registry.context_processors.sentry',
+                'bdr_registry.context_processors.use_sidemenu',
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -216,6 +217,7 @@ BDR_API_AUTH_USER = env('BDR_API_AUTH_USER', '')
 BDR_API_AUTH_PASSWORD = env('BDR_API_AUTH_PASSWORD', '')
 BDR_API_AUTH = (BDR_API_AUTH_USER, secure_str(BDR_API_AUTH_PASSWORD))
 
+USE_SIDEMENU = env('USE_SIDEMENU', False)
 BDR_SIDEMENU_URL =env('BDR_SIDEMENU_URL', 'http://example.com/left_menu')
 DATE_FORMAT = '%d %b %Y'
 
