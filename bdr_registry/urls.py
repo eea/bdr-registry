@@ -51,6 +51,7 @@ urlpatterns = [
         {'template_name': 'login.html'},
         name='login'),
     url(r'^accounts/logout/?$', views.logout_view, name='logout'),
+    url(r'^captcha/', include('captcha.urls')),
     url(r'^self_register/?$', views.SelfRegister.as_view(),
         name='self_register'),
     url(r'^self_register/done/?$',

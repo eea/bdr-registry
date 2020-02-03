@@ -1,3 +1,5 @@
+from captcha.fields import CaptchaField
+
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
@@ -156,6 +158,7 @@ class CompanyForm(ModelForm):
         queryset=models.Obligation.objects.exclude(code__in=settings.SELF_OBL_EXCLUDE),
         required=True,
     )
+    captcha = CaptchaField()
 
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)

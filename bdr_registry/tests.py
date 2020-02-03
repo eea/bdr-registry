@@ -1,7 +1,7 @@
 import logging
 from contextlib import contextmanager
 
-from django.test import TestCase, TransactionTestCase
+from django.test import override_settings, TestCase, TransactionTestCase
 from django.core import mail
 from django.contrib.auth.models import User, Group
 from django.conf import settings
@@ -85,6 +85,7 @@ class FormSubmitTest(TransactionTestCase):
             form_data['comment-' + key] = value
         return form_data
 
+    @override_settings(CAPTCHA_TEST_MODE=True)
     def test_submitted_company_and_person_are_saved(self):
         factories.SiteConfigurationFactory()
                 
@@ -112,6 +113,7 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(models.Company.objects.count(), 0)
         self.assertEqual(resp.status_code, 200)
 
+    @override_settings(CAPTCHA_TEST_MODE=True)
     def test_mail_is_sent_after_successful_self_registration(self):
         factories.SiteConfigurationFactory()
 

@@ -100,6 +100,7 @@ INSTALLED_APPS = (
     'bdr_management',
     'solo',
     'bdr_registry',
+    'captcha',
 )
 
 # sentry configuration
