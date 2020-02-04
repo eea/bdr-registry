@@ -1,4 +1,4 @@
-Django==1.11.23
+Django==1.11.27
 django-assets==0.12
 django-auth-ldap==1.2.8
 django-braces==1.11.0

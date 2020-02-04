@@ -253,3 +253,4 @@ if 'test' in sys.argv:
 
     # pop 'django.contrib.auth.middleware.RemoteUserMiddleware'
     MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES[:-1]
+    CAPTCHA_TEST_MODE = True
