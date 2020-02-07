@@ -1,6 +1,47 @@
 Changelog
 =========
 
+1.4.7 - (2020-02-07)
+--------------------
+* Add captcha on self registration page
+  [dianaboiangiu]
+
+1.4.6 - (2019-08-22)
+--------------------
+* Grab sidemenu from BDR
+  [dianaboiangiu]
+
+1.4.5 - (2018-03-12)
+--------------------
+* Update text on self registration
+* Remove obligations from self registration
+  [dianaboiangiu]
+
+1.4.4 - (2018-03-07)
+--------------------
+* Fix bytes error in create account
+  [dianaboiangiu]
+
+1.4.3 - (2018-03-07)
+-------------------
+* Fix bytes error in create account
+  [dianaboiangiu]
+
+1.4.2 - (2018-03-07)
+--------------------
+* Fix create accont, password reset
+  [dianaboiangiu]
+
+1.4.1 - (2018-02-20)
+--------------------
+* Fix typo
+  [nico4]
+
+1.4.0 - (2018-02-20)
+--------------------
+* Aaa EORI column
+  [nico4]
+
 1.3.9 - (2018-01-18)
 --------------------
 * Add management command to load companies directly from portal
