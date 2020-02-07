@@ -153,7 +153,8 @@ class CompanyCreateAccountTests(base.BaseWebTest):
         success_url = self.reverse('management:companies_view', pk=org.pk)
         resp = self.app.post(url, user=user.username)
         self.assertRedirects(resp, success_url)
-        resp = resp.follow()
+        headers = {'Accept-Encoding': 'deflate'}
+        resp = resp.follow(headers=headers)
         org = self.assertObjectInDatabase('Company', app='bdr_registry',
                                           pk=org.pk)
         self.assertIsNotNone(org.account)

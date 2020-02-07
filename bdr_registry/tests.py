@@ -75,6 +75,8 @@ class FormSubmitTest(TransactionTestCase):
         form_data = {
             'company-country': self.denmark.pk,
             'company-obligation': self.obligation.pk,
+            'company-captcha_0': 'PASSED',
+            'company-captcha_1': 'PASSED',
             settings.HONEYPOT_FIELD_NAME: settings.HONEYPOT_VALUE()
         }
         for key, value in ORG_FIXTURE.items():
@@ -85,10 +87,10 @@ class FormSubmitTest(TransactionTestCase):
             form_data['comment-' + key] = value
         return form_data
 
-    @override_settings(CAPTCHA_TEST_MODE=True)
+
     def test_submitted_company_and_person_are_saved(self):
         factories.SiteConfigurationFactory()
-                
+
         resp = self.client.post('/self_register', self.prepare_form_data())
 
         self.assertEqual(models.Company.objects.count(), 1)
