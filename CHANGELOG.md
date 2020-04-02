@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.8 - (2020-04-02)
+--------------------
+* Add new HDV obligation
+  [dianaboiangiu]
+
 1.4.7 - (2020-02-07)
 --------------------
 * Add captcha on self registration page
