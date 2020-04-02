@@ -30,6 +30,7 @@ from honeypot.decorators import check_honeypot
 from post_office.mail import send
 
 from bdr_registry import models
+from bdr_registry import forms
 from bdr_management.forms.utils import set_empty_label
 
 
@@ -163,14 +164,67 @@ class CompanyForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)
         set_empty_label(self.fields, '')
+        self.fields['addr_street'].required = True
+        self.fields['addr_place1'].required = True
+        self.fields['addr_postalcode'].required = True
+        self.fields['vat_number'].required = True
+        self.fields['country'].required = True
 
     class Meta:
         model = models.Company
+        fields = ['name', 'outdated', 'addr_street', 'addr_place1',
+                  'addr_postalcode', 'addr_place2', 'eori',
+                  'vat_number', 'country', 'website', 'obligation']
+
         exclude = ORG_CREATE_EXCLUDE
 
 
 PersonForm = modelform_factory(models.Person, exclude=['company'])
 CommentForm = modelform_factory(models.Comment, exclude=['company'])
+
+
+class SelfRegisterHDV(View):
+
+    @method_decorator(check_honeypot)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SelfRegisterHDV, self).dispatch(request, *args, **kwargs)
+
+    def make_forms(self, post_data=None):
+        return (forms.CompanyHDVForm(post_data, prefix='company'),
+                forms.PersonHDVForm(post_data, prefix='person'))
+
+    def render_forms(self, request, organisation_form,
+                     person_form):
+        return render(request, 'self_register_hdv.html', {
+            'organisation_form': organisation_form,
+            'person_form': person_form,
+        })
+
+    def get(self, request):
+        return self.render_forms(request, *self.make_forms())
+
+    def post(self, request):
+        company_form, person_form = self.make_forms(request.POST.dict())
+
+        if company_form.is_valid() and person_form.is_valid():
+            data = company_form.cleaned_data
+            data.pop('captcha')
+            obligation = models.Obligation.objects.get(code='hdv')
+            company = models.Company.objects.create(
+                obligation=obligation, **data
+            )
+            person = person_form.save(commit=False)
+            person.company = company
+            person.save()
+
+            send_notification_email({
+                'company': company,
+                'person': person,
+            })
+
+            return redirect('self_register_done_hdv')
+
+        return self.render_forms(request, company_form, person_form)
 
 
 class SelfRegister(View):

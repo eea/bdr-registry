@@ -115,9 +115,10 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
                 'addr_street': company.addr_street,
                 'addr_place1': company.addr_place1,
                 'addr_place2': company.addr_place2,
-                'country': company.country.code,
-                'country_name': company.country.name,
+                'country': '' if not company.country else company.country.code,
+                'country_name': '' if not company.country else company.country.name,
                 'vat_number': company.vat_number,
+                'world_manufacturer_identifier': company.world_manufacturer_identifier,
                 'obligation': company.obligation.code,
                 'persons': people
             })
@@ -136,7 +137,8 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
     def get(self, request):
         header = ['userid', 'name', 'date_registered', 'active', 'outdated',
                   'addr_street', 'addr_place1', 'addr_postalcode',
-                  'addr_place2', 'country', 'vat_number', 'obligation']
+                  'addr_place2', 'country', 'vat_number', 'world_manufacturer_identifier',
+                  'obligation']
         rows = []
 
         companies = self.get_companies()
@@ -153,8 +155,9 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
                 company.addr_place1 or '',
                 company.addr_postalcode or '',
                 company.addr_place2 or '',
-                company.country.name or  '',
+                '' if not company.country else (company.country.name or ''),
                 company.vat_number or '',
+                company.world_manufacturer_identifier or '',
                 company.obligation.code if company.obligation else '',
             ]])
 

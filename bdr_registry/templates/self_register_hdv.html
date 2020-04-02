@@ -1,0 +1,115 @@
+{% extends "bdr_layout.html" %}
+{% load widget_tweaks %}
+{% load i18n %}
+{% load assets %}
+{% load honeypot %}
+
+{% block head %}
+
+  {% assets "management_css" %}
+    <link rel="stylesheet" href="{{ ASSET_URL }}" />
+  {% endassets %}
+
+  {% assets "management_js" %}
+    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+
+{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Reporter registration for HDV manufacturers" %}</h1>
+<h2>{% trans "Reporting manufacturers" %}</h2>
+
+<p>
+  {% blocktrans %}Manufacturers who are required to report in accordance with Article 5 of Regulation (EU) 2018/956 should register here in order to be able to report.{% endblocktrans %}
+</p>
+
+<ul>
+  <li>
+    {% blocktrans with helpdesk_email="<a href='mailto:HDV-monitoring@eea.europa.eu'>HDV-monitoring@eea.europa.eu</a>" %}In case you or another person in your company already have an account but have forgotten the login credentials or in case you need further assistance logging in, please contact: {{ helpdesk_email }}.{% endblocktrans %}
+  </li>
+  <li>
+    {% trans "In case your undertaking is a first time reporter and has no account yet, then please proceed to the" %} <a href="#theform">{% trans "registration form" %}</a> below.Login credentials will be provided upon the approval of your account request.
+  </li>
+</ul>
+
+<h2 id="theform">{% trans "Registration form" %}</h2>
+
+{% url "self_register" as cars_vans_link %}
+<p>
+  {% blocktrans %}The registration form below is for reporters providing data on behalf of heavy duty vehicle manufacturers. If more than one reporter is required for your company, each reporter should fill in the form to create an account. If you are looking for data exchange on cars and vans, please consult the <a href="{{ cars_vans_link }}">cars and vans page</a>.{% endblocktrans %}
+</p>
+
+<form method="post" class="form box-small">
+  {% csrf_token %}
+  {% render_honeypot_field %}
+  <div class="row">
+    <!-- Company details -->
+    <div class="col-sm-6">
+      <p class="h4 text-center">{% trans "Company details" %}</p>
+
+      <table class="table-list full-width no-background">
+      {% for field in organisation_form %}
+        <tr>
+          <th class="text-right small">
+            <label for="id_{{ field.name }}" class="input-align {% if field.field.required %}required{% endif %}">
+              {{ field.label }}
+            </label>
+          </th>
+          <td class="bold">
+            {% for err in field.errors %}
+              <div class="bdr-error">{{ err }}</div>
+            {% endfor %}
+            {% if field.help_text %}
+              {% render_field field title=field.help_text %}
+            {% else %}
+              {{ field }}
+            {% endif %}
+            {% if field.name == 'eori' %}
+              <a class="input-align small no-bold" href="http://ec.europa.eu/ecip/security_amendment/who_is_concerned/index_en.htm#eori">
+                {% trans "About EORI number" %}</a>
+            {% endif %}
+
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    </div>
+
+    <!-- Company reporter -->
+    <div class="col-sm-6">
+      <p class="h4 text-center">{% trans "Reporter" %}</p>
+
+      <table class="table-list full-width no-background">
+      {% for field in person_form %}
+        <tr>
+          <th class="text-right small">
+            <label for="id_{{ field.name }}" class="input-align
+                {% if field.field.required %}required{% endif %}">
+              {{ field.label }}
+            </label>
+          </th>
+          <td class="bold">
+            {% for err in field.errors %}
+              <div class="bdr-error">{{ err }}</div>
+            {% endfor %}
+            {% if field.help_text %}
+              {% render_field field title=field.help_text %}
+            {% else %}
+              {{ field }}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </table>
+    <p class="text-center">{% trans "Later you can add other reporters." %}</p>
+    </div>
+  </div>
+  <hr />
+  <div class="btn-toolbar text-center no-bottom">
+    <button type="submit" class="btn-blue">{% trans "Request account" %}</button>
+  </div>
+</form>
+
+{% endblock %}

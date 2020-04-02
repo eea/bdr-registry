@@ -224,7 +224,7 @@ DATE_FORMAT = '%d %b %Y'
 
 BDR_HELPDESK_GROUP = 'BDR helpdesk'
 LOCALITIES_TABLE_URL = 'https://bdr.eionet.europa.eu/localities_table'
-SELF_OBL_EXCLUDE = ['fgas', 'ods', 'mercury']
+SELF_OBL_EXCLUDE = ['fgas', 'ods', 'mercury', 'hdv']
 FIRST_REPORTING_YEAR = 2012
 
 #TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

@@ -25,6 +25,7 @@
           href="https://bdr.eionet.europa.eu/styles/eionet2007.css"
           media="screen"
           title="Eionet 2007 style" />
+    <link rel="stylesheet" href="/static/eionet2007.css" media="screen" title="Static" />
     <link rel="stylesheet"
           media="handheld"
           href="https://www.eionet.europa.eu/styles/eionet2007/handheld.css" />
@@ -148,7 +149,7 @@
         <li><a href="/help/cars_vans" title="{% trans 'Help Cars and Vans' %}">{% trans "Help Cars and Vans" %}</a></li>
         <li><a href="/help/dataconfidentiality" title="{% trans 'Confidentiality' %}">{% trans "Confidentiality" %}</a></li>
         {% if user.is_anonymous %}
-          <li><a href="/selfregister" title="{% trans 'Self-registration' %}">{% trans "Self-registration" %}</a></li>
+          <li><a href="/self_register" title="{% trans 'Self-registration' %}">{% trans "Self-registration" %}</a></li>
         {% endif %}
       </ul>
 

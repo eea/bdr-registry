@@ -138,14 +138,15 @@ class Company(models.Model):
     date_registered = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=True)
     outdated = models.BooleanField(default=False)
-    addr_street = models.CharField(_('Street and number'), max_length=255)
-    addr_place1 = models.CharField(_('Municipality'), max_length=255)
-    addr_postalcode = models.CharField(_('Postal code'), max_length=255)
+    addr_street = models.CharField(_('Street and number'), max_length=255, blank=True)
+    addr_place1 = models.CharField(_('Municipality'), max_length=255, blank=True)
+    addr_postalcode = models.CharField(_('Postal code'), max_length=255, blank=True)
     addr_place2 = models.CharField(_('Region'),
                             max_length=255, null=True, blank=True)
     eori = models.CharField(_('EORI number'), help_text=EORI_LABEL,
                             max_length=17, null=True, blank=True)
-    vat_number = models.CharField(_('VAT number'), max_length=17)
+    vat_number = models.CharField(_('VAT number'), max_length=17, blank=True)
+    world_manufacturer_identifier = models.CharField(_('World Manufacturer Identifier (WMI)'), max_length=20, blank=True)
     country = models.ForeignKey(Country)
     obligation = models.ForeignKey(Obligation, related_name='companies')
     account = models.OneToOneField(Account, null=True, blank=True,
@@ -217,7 +218,7 @@ class Person(models.Model):
 
     email = models.EmailField(_('Email address'))
 
-    phone = models.CharField(_('Telephone'), max_length=255)
+    phone = models.CharField(_('Telephone'), max_length=255, blank=True)
     phone2 = models.CharField(_('Telephone 2'),
                             max_length=255, null=True, blank=True)
     phone3 = models.CharField(_('Telephone 3'),
@@ -229,7 +230,8 @@ class Person(models.Model):
 
     @property
     def formal_name(self):
-        return u"{p.title} {p.first_name} {p.family_name}".format(p=self)
+        title = self.title or ''
+        return u"{title} {p.first_name} {p.family_name}".format(title=title,p=self)
 
     def __str__(self):
         return u"{p.first_name} {p.family_name}".format(p=self)

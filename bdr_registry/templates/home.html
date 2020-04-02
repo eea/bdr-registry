@@ -15,6 +15,7 @@
 		{% endif %}
 	{% else %}
 		<p>{% trans "Company" %} <a href="{% url "self_register" %}">{% trans "self-registration" %}</a>.</p>
+		<p>{% trans "Company" %} <a href="{% url "self_register_hpv" %}">{% trans "self-registration for HDV manufacturers" %}</a>.</p>
 	{% endif %}
 
 {% endwith %}

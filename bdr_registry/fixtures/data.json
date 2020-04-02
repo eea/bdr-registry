@@ -359,6 +359,16 @@
     }
 },
 {
+  "pk": 5,
+  "model": "bdr_registry.obligation",
+  "fields": {
+      "email_template": 5,
+      "code": "hdv",
+      "name": "Heavy duty vehicle",
+      "reportek_slug": "hdv"
+  }
+},
+{
     "pk": 1,
     "model": "bdr_registry.reportingyear",
     "fields": {
