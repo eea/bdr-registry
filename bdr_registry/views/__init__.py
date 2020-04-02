@@ -439,6 +439,9 @@ def send_notification_email(context):
         Q(obligations__pk=company.obligation.pk))
         if valid_email(u.email)]
 
+    if company.obligation.code == 'hdv':
+        recipients.append('HDV-monitoring@eea.europa.eu')
+
     config = models.SiteConfiguration.objects.get()
     template = config.self_register_email_template
 
