@@ -178,8 +178,15 @@ class CompanyForm(ModelForm):
 
         exclude = ORG_CREATE_EXCLUDE
 
+class PersonForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(PersonForm, self).__init__(*args, **kwargs)
+        self.fields['phone'].required = True
 
-PersonForm = modelform_factory(models.Person, exclude=['company'])
+    class Meta:
+        model = models.Person
+        exclude = ('company',)
+
 CommentForm = modelform_factory(models.Comment, exclude=['company'])
 
 

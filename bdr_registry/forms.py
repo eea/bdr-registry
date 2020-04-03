@@ -20,7 +20,8 @@ class CompanyHDVForm(ModelForm):
 
     class Meta:
         model = models.Company
-        fields = ['name', 'addr_street', 'addr_place1', 'addr_postalcode', 'country', 'world_manufacturer_identifier']
+        fields = ['name', 'addr_street', 'addr_place1', 'addr_postalcode', 'country',
+                  'world_manufacturer_identifier']
 
 
 class PersonHDVForm(ModelForm):

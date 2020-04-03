@@ -147,7 +147,7 @@ class Company(models.Model):
                             max_length=17, null=True, blank=True)
     vat_number = models.CharField(_('VAT number'), max_length=17, blank=True)
     world_manufacturer_identifier = models.CharField(_('World Manufacturer Identifier (WMI)'), max_length=20, blank=True)
-    country = models.ForeignKey(Country)
+    country = models.ForeignKey(Country, null=True, blank=True)
     obligation = models.ForeignKey(Obligation, related_name='companies')
     account = models.OneToOneField(Account, null=True, blank=True,
                                    related_name='company')
