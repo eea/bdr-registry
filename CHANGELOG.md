@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.10 - (2020-04-03)
+--------------------
+* Upgrade security packages
+  [dianaboiangiu]
+
 1.4.9 - (2020-04-03)
 --------------------
 * Allow null values for HDV countries
