@@ -38,7 +38,7 @@
 
 {% url "self_register" as cars_vans_link %}
 <p>
-  {% blocktrans %}The registration form below is for reporters providing data on behalf of heavy duty vehicle manufacturers. If more than one reporter is required for your company, each reporter should fill in the form to create an account. If you are looking for data exchange on cars and vans, please consult the <a href="{{ cars_vans_link }}">cars and vans page</a>.{% endblocktrans %}
+  {% blocktrans with helpdesk_email="<a href='mailto:HDV-monitoring@eea.europa.eu'>HDV-monitoring@eea.europa.eu</a>" %}The registration form below is for reporters providing data on behalf of heavy duty vehicle manufacturers. If more than one reporter is required for your company, please send an email to {{ helpdesk_email }} by indicating the name and contact details of the additional reporter(s). If you are looking for data exchange on cars and vans, please consult the <a href="{{ cars_vans_link }}">cars and vans page</a>.{% endblocktrans %}
 </p>
 
 <form method="post" class="form box-small">
@@ -103,7 +103,11 @@
         </tr>
       {% endfor %}
       </table>
-    <p class="text-center">{% trans "Later you can add other reporters." %}</p>
+    <p class="text-left" style="margin-left:30%;">
+      {% blocktrans with helpdesk_email="<a href='mailto:HDV-monitoring@eea.europa.eu'>HDV-monitoring@eea.europa.eu</a>" %}
+        Later you can add other reporters by sending <br> an email to {{ helpdesk_email }} <br>(see more information above).
+      {% endblocktrans %}
+    </p>
     </div>
   </div>
   <hr />
