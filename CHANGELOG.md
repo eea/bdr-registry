@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.9 - (2020-04-03)
+--------------------
+* Allow null values for HDV countries
+  [dianaboiangiu]
+
 1.4.8 - (2020-04-02)
 --------------------
 * Add new HDV obligation
