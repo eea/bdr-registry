@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.11 - (2020-04-03)
+--------------------
+* Update self registry hdv text
+  [dianaboiangiu]
+
 1.4.10 - (2020-04-03)
 --------------------
 * Upgrade security packages
