@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.13 - (2020-04-06)
+---------------------
+* Implement small HDV fixes
+  [dianaboiangiu]
+
 1.4.12 - (2020-04-06)
 ---------------------
 * Set HDV sender e-mail address
