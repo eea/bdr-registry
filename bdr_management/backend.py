@@ -36,11 +36,15 @@ def send_password_email_to_people(company):
     template = company.obligation.email_template
     bcc = company.obligation.bcc.split(',')
     bcc = [s.strip() for s in bcc if valid_email(s.strip())]
+    if company.obligation.code == 'hdv':
+        sender = settings.HDV_EMAIL_FROM
+    else:
+        sender = settings.BDR_EMAIL_FROM
     for person in company.people.all():
         reporting_year = config.reporting_year
         mail.send(recipients=[person.email.strip()],
                   bcc=bcc,
-                  sender=settings.BDR_EMAIL_FROM,
+                  sender=sender,
                   template=template,
                   context={'company': company, 'person': person,
                            'reporting_year': reporting_year,

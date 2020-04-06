@@ -173,7 +173,9 @@ BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://example.com/')
 
 # email addresses
 BDR_HELPDESK_EMAIL = env('BDR_HELPDESK_EMAIL', '')
+
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
+HDV_EMAIL_FROM = env('HDV_EMAIL_FROM', '')
 
 # email server
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'post_office.EmailBackend')
