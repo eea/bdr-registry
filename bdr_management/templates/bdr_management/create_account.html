@@ -24,7 +24,11 @@
   </div>
 
   <div class="btn-toolbar">
-    <button class="btn-blue" type="submit">Create account</button>
+    {% if company.country.code %}
+      <button class="btn-blue" type="submit">Create account</button>
+    {% else %}
+      <p class="inform">The company's country must be set before the account creation.</p>
+    {% endif %}
     <a class="btn" href="{% url 'management:companies_view' pk=object.pk %}">
       Cancel
     </a>
