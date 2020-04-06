@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.4.12 - (2020-04-06)
+---------------------
+* Set HDV sender e-mail address
+  [dianaboiangiu]
+
 1.4.11 - (2020-04-03)
 --------------------
 * Update self registry hdv text
