@@ -3,10 +3,10 @@
 
 {% block content %}
 
-<h1>{% trans "Registration HDV-monitoring" %}</h1>
+<h1>{% trans "Registration for reporting data on HDVs" %}</h1>
 
-<p>{% blocktrans %}The request for registration was completed successfully. The HDV-monitoring team will review your request and take the appropriate actions and inform you as soon as possible concerning the registration details.{% endblocktrans %}</p>
+<p>{% blocktrans %}The request for registration was completed successfully. The HDV monitoring team will review your request, take appropriate action and inform you as soon as possible concerning the registration details.{% endblocktrans %}</p>
 
-<p>{% blocktrans with helpdesk_email="<a href='mailto:HDV-monitoring@eea.europa.eu'>HDV-monitoring@eea.europa.eu</a>" %}For questions please contact the {{ helpdesk_email }}.{% endblocktrans %}</p>
+<p>{% blocktrans with helpdesk_email="<a href='mailto:HDV-monitoring@eea.europa.eu'>HDV-monitoring@eea.europa.eu</a>" %}If you have questions in the meantime, please contact {{ helpdesk_email }}.{% endblocktrans %}</p>
 
 {% endblock %}
