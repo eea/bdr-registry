@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.0 - (2020-04-07)
+--------------------
+* Update self register done page for HDV
+  [dianaboiangiu]
+
 1.4.13 - (2020-04-06)
 ---------------------
 * Implement small HDV fixes
