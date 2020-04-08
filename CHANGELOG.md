@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.1 - (2020-04-08)
+--------------------
+* Set different sending address for HDV
+  [dianaboiangiu]
+
 1.5.0 - (2020-04-07)
 --------------------
 * Update self register done page for HDV
