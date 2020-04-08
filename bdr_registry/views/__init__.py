@@ -447,12 +447,13 @@ def send_notification_email(context):
         if valid_email(u.email)]
 
     if company.obligation.code == 'hdv':
-        recipients.append('HDV-monitoring@eea.europa.eu')
-
+        sender = settings.HDV_EMAIL_FROM
+    else:
+        sender = settings.BDR_EMAIL_FROM
     config = models.SiteConfiguration.objects.get()
     template = config.self_register_email_template
 
-    send(recipients=recipients, sender=settings.BDR_EMAIL_FROM,
+    send(recipients=recipients, sender=sender,
          template=template, context=context, priority='now')
 
 
