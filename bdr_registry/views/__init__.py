@@ -448,6 +448,7 @@ def send_notification_email(context):
 
     if company.obligation.code == 'hdv':
         sender = settings.HDV_EMAIL_FROM
+        recipients.append(settings.HDV_EMAIL_FROM)
     else:
         sender = settings.BDR_EMAIL_FROM
     config = models.SiteConfiguration.objects.get()
