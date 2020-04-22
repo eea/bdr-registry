@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.3 - (2020-04-10)
+--------------------
+* Set different sending address for HDV
+  [dianaboiangiu]
+
 1.5.2 - (2020-04-09)
 --------------------
 * Add to mail for HDV
