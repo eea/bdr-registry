@@ -177,6 +177,12 @@ BDR_HELPDESK_EMAIL = env('BDR_HELPDESK_EMAIL', '')
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
 HDV_EMAIL_FROM = env('HDV_EMAIL_FROM', '')
 
+HDV_MAIL_HEADERS = {
+    "X-OTRS-IsVisibleForCustomer": "0",
+    "X-OTRS-Loop": "True",
+    "X-OTRS-Queue": "HDV CO2 monitoring",
+}
+
 # email server
 EMAIL_BACKEND = env('EMAIL_BACKEND', 'post_office.EmailBackend')
 EMAIL_HOST = env('EMAIL_HOST', 'localhost')
