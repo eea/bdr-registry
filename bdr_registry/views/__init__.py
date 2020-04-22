@@ -449,7 +449,6 @@ def send_notification_email(context):
     if company.obligation.code == 'hdv':
         sender = settings.HDV_EMAIL_FROM
         headers = settings.HDV_MAIL_HEADERS
-        recipients.append('HDV-monitoring@eea.europa.eu')
     else:
         sender = settings.BDR_EMAIL_FROM
         headers = None
