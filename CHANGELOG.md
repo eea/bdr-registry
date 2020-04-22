@@ -1,7 +1,12 @@
 Changelog
 =========
 
-1.5.3 - (2020-04-10)
+1.5.4 - (2020-04-22)
+--------------------
+* Set headers for HDV mails
+  [dianaboiangiu]
+
+1.5.3 - (2020-04-22)
 --------------------
 * Set different sending address for HDV
   [dianaboiangiu]
