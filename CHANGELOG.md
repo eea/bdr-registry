@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.5.5 - (2020-04-22)
+--------------------
+* Set HDV mailing for OTRS
+  [dianaboiangiu]
+
 1.5.4 - (2020-04-22)
 --------------------
 * Set headers for HDV mails
