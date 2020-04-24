@@ -449,15 +449,18 @@ def send_notification_email(context):
     if company.obligation.code == 'hdv':
         sender = settings.HDV_EMAIL_FROM
         headers = settings.HDV_MAIL_HEADERS
+        bcc = company.obligation.bcc.split(',')
+        bcc = [s.strip() for s in bcc if valid_email(s.strip())]
     else:
         sender = settings.BDR_EMAIL_FROM
         headers = None
+        bcc=None
     config = models.SiteConfiguration.objects.get()
     template = config.self_register_email_template
 
 
     send(recipients=recipients, sender=sender, headers=headers,
-         template=template, context=context, priority='now')
+         bcc=bcc, template=template, context=context, priority='now')
 
 
 def crashme(request):
