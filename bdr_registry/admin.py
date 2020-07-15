@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 import post_office
 import requests
@@ -288,8 +289,9 @@ def set_role_for_person_account(request, company, person, action):
         'c_folder': company.account.uid,
         'action': action,
     }
-
-    resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
+    headers = {'Content-type': 'application/json'}
+    resp = requests.post(url, data=json.dumps(form), auth=settings.BDR_API_AUTH,
+                         headers=headers, verify=False)
     if resp.status_code != 200 or 'unauthorized' in resp.content.lower():
         logging.error("BDR API request failed: %r", resp)
         errors.append(person.account.uid)
