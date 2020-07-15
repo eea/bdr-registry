@@ -113,6 +113,12 @@ class Account(models.Model):
 
     objects = AccountManager()
 
+    @property
+    def related_user(self):
+        user = User.objects.filter(username=self.uid)
+        if user:
+            return user.first()
+
     class Meta:
         ordering = ['uid']
 
@@ -178,6 +184,12 @@ class Company(models.Model):
         else:
             return False
 
+    @property
+    def main_reporter(self):
+        person = self.people.filter(is_main_user=True)
+        if person:
+            return person.first()
+
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
 
@@ -225,7 +237,9 @@ class Person(models.Model):
                             max_length=255, null=True, blank=True)
     fax = models.CharField(_('Fax'),
                            max_length=255, null=True, blank=True)
-
+    account = models.OneToOneField(Account, null=True, blank=True,
+                                   related_name='person')
+    is_main_user = models.BooleanField(default=False)
     company = models.ForeignKey(Company, related_name='people')
 
     @property

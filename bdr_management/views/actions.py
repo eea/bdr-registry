@@ -93,7 +93,6 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
         companies_list = self.get_companies()
 
         for company in companies_list:
-
             people = []
             for person in company.people.all():
                 people.append({
@@ -199,7 +198,7 @@ class PersonsExport(views.StaffuserRequiredMixin,
     def get(self, request):
 
         header = ['userid', 'companyname', 'country',
-                  'contactname', 'contactemail', 'phone', 'phone2', 'phone3',
+                  'contactname', 'contactemail', 'account', 'phone', 'phone2', 'phone3',
                   'fax']
         rows = []
 
@@ -209,7 +208,6 @@ class PersonsExport(views.StaffuserRequiredMixin,
             Person.objects.filter(company__obligation__id__in=user_obligations)
             .all()
         )
-
         for person in persons:
             org = person.company
             account = org.account
@@ -221,6 +219,7 @@ class PersonsExport(views.StaffuserRequiredMixin,
                 org.country.name,
                 u"{p.title} {p.first_name} {p.family_name}".format(p=person),
                 person.email,
+                getattr(person.account, 'uid',''),
                 person.phone,
                 person.phone2,
                 person.phone3,

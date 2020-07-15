@@ -10,42 +10,74 @@
     {% include 'bdr_management/_view.html' %}
 
     {% if user|has_permission:object %}
-      <div class="box-small no-borders pull-left"
-           style="margin-left:24px;">
-        {% if management %}
-          <p class="h4 no-margins">Actions:</p>
+      {% if management or reporting_years %}
+        <div class="box-small no-borders pull-left"
+            style="margin-left:24px;">
+          {% if management %}
+            <p class="h4 no-margins">Actions:</p>
+            <ul>
+              {% if has_account %}
+                {% if company.main_reporter %}
+                  <li>
+                    <a id="reset-password-action-company-account" href="{% url 'management:reset_password_company_account' pk=object.pk %}">
+                      {% trans "Reset company account password" %}</a>
+                  </li>
+                {% else %}
+                  <li>
+                    <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
+                      {% trans "Reset password" %}</a>
+                  </li>
+                {% endif %}
+              {% if not has_reporting_folder and has_account %}
+              <li>
+                <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
+                  {% trans "Create reporting folder" %}</a>
+              </li>
+              {% endif %}
+              {% endif %}
+
+              {% if not has_account %}
+              <li>
+                <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
+                  {% trans "Create account" %}</a>
+              </li>
+              {% endif %}
+              <li>
+                <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
+                  {% trans "Set company account owner" %}</a>
+              </li>
+            </ul>
+          {% endif %}
+
+          {% if reporting_years %}
+          <p class="h4 no-margins">{% trans "Reporting years" %}:</p>
           <ul>
-            {% if has_account %}
-            <li>
-              <a id="reset-password-action" href="{% url 'management:reset_password' pk=object.pk %}">
-                {% trans "Reset password" %}</a>
-            </li>
-            {% if not has_reporting_folder and has_account %}
-            <li>
-              <a id="create-reporting-folder-action" href="{% url 'management:create_reporting_folder' pk=object.pk %}">
-                {% trans "Create reporting folder" %}</a>
-            </li>
-            {% endif %}
-            {% endif %}
-
-            {% if not has_account %}
-            <li>
-              <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
-                {% trans "Create account" %}</a>
-            </li>
-            {% endif %}
+            {% for year in reporting_years %}
+              <li>{{ year }}</li>
+            {% endfor %}
           </ul>
-        {% endif %}
+          {% endif %}
+        </div>
+      {%endif %}
+    {% endif %}
 
-        {% if reporting_years %}
-        <p class="h4 no-margins">{% trans "Reporting years" %}:</p>
+    {% if has_account and user|is_company_account:object %}
+      <div class="box-small no-borders pull-left"
+      style="margin-left:24px;">
+        <p class="h4 no-margins">Actions:</p>
         <ul>
-          {% for year in reporting_years %}
-            <li>{{ year }}</li>
-          {% endfor %}
-         </ul>
-         {% endif %}
+          <li>
+            <a id="reset-password-action-company-account" href="{% url 'management:reset_password_company_account' pk=object.pk %}">
+              {% trans "Reset company account password" %}</a>
+          </li>
+
+          <li>
+            <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
+              {% trans "Set company account owner" %}</a>
+          </li>
+        </ul>
       </div>
+
     {% endif %}
   </div>
 
@@ -99,10 +131,21 @@
              class="bold">
         {% endif %}
       {{ person.formal_name }}</a>
+      {% if person.account %}
+        - Account: {{ person.account }}
+        {% if person.account.related_user and not person.account.related_user.is_active %}
+          <span style="color:red;">(disabled)</span>
+        {% endif %}
+      {% else %}
+        - This person has no account set.
+      {% endif %}
+      {% if person.is_main_user %}
+        <span style="color:blue;">This person is the owner of the company's account.</span>
+      {% endif %}
       </li>
     {% endfor %}
   </ul>
-  {% if user|has_permission:object %}
+  {% if user|has_permission:object and user|is_staff_or_company_account:object %}
     <div class="btn-toolbar">
       <a href="{{ person_add_url }}" class="btn">
         {% trans "Add a new person" %}</a>

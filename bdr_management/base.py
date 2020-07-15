@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from bdr_registry.models import Company, Person
+from bdr_registry.models import Company, Person, Account
 from braces.views._access import AccessMixin
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
@@ -178,7 +178,6 @@ def has_permission(user, company):
 
     if user.is_superuser:
         return True
-
     required_group = settings.BDR_HELPDESK_GROUP
     if required_group in user.groups.values_list('name', flat=True):
         return True
@@ -187,5 +186,16 @@ def has_permission(user, company):
         account = company.account
         if account and (account.uid == user.username):
             return True
+        account =  get_object_or_404(Account, uid=user.username)
+        if account.person.company == company:
+            return True
+    return False
 
+
+def is_staff_user(user, company):
+    if user.is_superuser:
+        return True
+    required_group = settings.BDR_HELPDESK_GROUP
+    if required_group in user.groups.values_list('name', flat=True):
+        return True
     return False

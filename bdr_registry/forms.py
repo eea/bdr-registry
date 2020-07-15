@@ -3,6 +3,7 @@ from captcha.fields import CaptchaField
 from django.conf import settings
 from django.forms.models import ModelForm, modelform_factory
 from django.forms.models import ModelChoiceField
+from django.forms import Form
 
 from bdr_registry import models
 from bdr_management.forms.utils import set_empty_label

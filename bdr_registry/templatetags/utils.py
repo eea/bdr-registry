@@ -14,7 +14,7 @@ from django.conf import settings
 from django.template.defaultfilters import urlize
 
 import bdr_management
-from bdr_registry.models import Company, EmailTemplate
+from bdr_registry.models import Company, EmailTemplate, Person
 from bdr_registry.settings import BDR_SIDEMENU_URL, BDR_API_AUTH_USER, BDR_API_AUTH_PASSWORD
 
 register = template.Library()
@@ -71,6 +71,55 @@ def has_permission(user, object):
 
     return bdr_management.base.has_permission(user, company)
 
+@register.filter
+def is_staff_or_company_account(user, object):
+    if object and isinstance(object, Company):
+        company = object
+    elif object and hasattr(object, 'company'):
+        company = object.company
+    else:
+        company = None
+
+    if user.is_superuser:
+        return True
+
+    account = company.account
+    if account is not None:
+        if account.uid == user.username:
+            return True
+
+    return False
+
+@register.filter
+def is_company_account(user, object):
+    if object and isinstance(object, Company):
+        company = object
+    elif object and hasattr(object, 'company'):
+        company = object.company
+    else:
+        company = None
+
+    account = company.account
+    if account is not None:
+        if account.uid == user.username:
+            return True
+
+    return False
+
+
+@register.filter
+def is_persons_account(user, object):
+    if object and isinstance(object, Person):
+        person = object
+
+    account = person.account
+    if account is not None:
+        if account.uid == user.username:
+            return True
+
+    return False
+
+    return bdr_management.base.has_permission(user, company)
 
 @register.filter
 def custom_render_field(field):

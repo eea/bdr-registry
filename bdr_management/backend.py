@@ -11,16 +11,20 @@ from bdr_registry.models import SiteConfiguration
 from bdr_registry.views import valid_email
 
 
-def sync_accounts_with_ldap(accounts):
+def sync_accounts_with_ldap(accounts, person=None):
     if hasattr(settings, 'DISABLE_LDAP_CONNECTION'):
         return
 
     ldap_editor = create_ldap_editor()
     counters = defaultdict(int)
     for account in accounts:
+        if person:
+            company = account.person.company
+        else:
+            company = account.company
         if ldap_editor.create_account(account.uid,
-                                      account.company.name,
-                                      account.company.country.name,
+                                      company.name,
+                                      company.country.name,
                                       account.password):
             counters['create'] += 1
         else:
@@ -29,10 +33,9 @@ def sync_accounts_with_ldap(accounts):
     return dict(counters)
 
 
-def send_password_email_to_people(company):
+def send_password_email_to_people(company, person=None, company_account=None):
 
     config = SiteConfiguration.objects.get()
-
     template = company.obligation.email_template
     bcc = company.obligation.bcc.split(',')
     bcc = [s.strip() for s in bcc if valid_email(s.strip())]
@@ -40,6 +43,32 @@ def send_password_email_to_people(company):
         sender = settings.HDV_EMAIL_FROM
     else:
         sender = settings.BDR_EMAIL_FROM
+    if company_account:
+        reporting_year = config.reporting_year
+        mail.send(recipients=[person.email.strip()],
+                  bcc=bcc,
+                  sender=sender,
+                  template=template,
+                  context={'company': company, 'person': person,
+                           'account': company.account,
+                           'reporting_year': reporting_year,
+                           'next_year': reporting_year + 1},
+                  priority='now')
+        return 1
+    if person:
+        reporting_year = config.reporting_year
+        mail.send(recipients=[person.email.strip()],
+                  bcc=bcc,
+                  sender=sender,
+                  template=template,
+                  context={'company': company,
+                           'person': person,
+                           'account': person.account,
+                           'reporting_year': reporting_year,
+                           'personal_account': True,
+                           'next_year': reporting_year + 1},
+                  priority='now')
+        return 1
     for person in company.people.all():
         reporting_year = config.reporting_year
         mail.send(recipients=[person.email.strip()],
@@ -47,6 +76,7 @@ def send_password_email_to_people(company):
                   sender=sender,
                   template=template,
                   context={'company': company, 'person': person,
+                           'account': company.account,
                            'reporting_year': reporting_year,
                            'next_year': reporting_year + 1},
                   priority='now')
