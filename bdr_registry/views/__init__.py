@@ -195,7 +195,7 @@ class PersonForm(ModelForm):
 
     class Meta:
         model = models.Person
-        exclude = ('company',)
+        exclude = ('company', 'account', 'is_main_user')
 
 CommentForm = modelform_factory(models.Comment, exclude=['company'])
 

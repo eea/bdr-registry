@@ -7,7 +7,7 @@ class PersonForm(ModelForm):
 
     class Meta():
         model = Person
-        exclude = ('id', 'account')
+        exclude = ('id', 'account', 'is_main_user')
 
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
@@ -18,7 +18,7 @@ class PersonFormWithoutCompany(ModelForm):
 
     class Meta():
         model = Person
-        exclude = ('id', 'company',)
+        exclude = ('id', 'company', 'account', 'is_main_user')
 
     def save(self, **kwargs):
         person = super(PersonFormWithoutCompany, self).save(commit=False)

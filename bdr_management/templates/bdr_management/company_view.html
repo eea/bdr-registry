@@ -41,11 +41,13 @@
                 <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
                   {% trans "Create account" %}</a>
               </li>
-              {% endif %}
+              {% else %}
               <li>
                 <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
                   {% trans "Set company account owner" %}</a>
               </li>
+              {% endif %}
+
             </ul>
           {% endif %}
 
