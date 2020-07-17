@@ -14,8 +14,9 @@
 			<p>{% trans "Your company's reporting folder" %} <a href="{{ company_details.reporting_folder_path }}">{{ company_details.reporting_folder_path }}</a></p>
 		{% endif %}
 	{% else %}
-		<p>{% trans "Company" %} <a href="{% url "self_register" %}">{% trans "self-registration" %}</a>.</p>
-		<p>{% trans "Company" %} <a href="{% url "self_register_hpv" %}">{% trans "self-registration for HDV manufacturers" %}</a>.</p>
+		<p>{% trans "Company" %} <a href="{% url 'self_register' %}">{% trans "self-registration" %}</a>.</p>
+		<p>{% trans "Company" %} <a href="{% url 'self_register_hpv' %}">{% trans "self-registration for HDV manufacturers" %}</a>.</p>
+		<p><a href="{% url 'person_set_request' %}">Reset your password</a></p>
 	{% endif %}
 
 {% endwith %}

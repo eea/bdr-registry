@@ -20,6 +20,7 @@ from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb, is_staff_user
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
+from bdr_management.views.password_set import SetPasswordMixin
 from bdr_registry.admin import set_role_for_person_account
 from bdr_registry.models import (Company, Account, ReportingYear, Person, User,
                                  ReportingStatus, SiteConfiguration)
@@ -538,6 +539,7 @@ class CompanyAdd(views.GroupRequiredMixin,
 
 
 class ResetPassword(views.GroupRequiredMixin,
+                    SetPasswordMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
@@ -558,7 +560,9 @@ class ResetPassword(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.company)
+            token = self.send_password(self.company.account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.company, url)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n
@@ -567,7 +571,7 @@ class ResetPassword(views.GroupRequiredMixin,
                         pk=self.company.pk)
 
 
-class ResetPasswordCompanyAccount(generic.DetailView):
+class ResetPasswordCompanyAccount(SetPasswordMixin, generic.DetailView):
 
     raise_exception = True
     template_name = 'bdr_management/reset_password_company.html'
@@ -588,7 +592,9 @@ class ResetPasswordCompanyAccount(generic.DetailView):
         msg = _('Password has been reset.')
         messages.success(request, msg)
         person = self.company.main_reporter
-        backend.send_password_email_to_people(self.company, person, True)
+        token = self.send_password(self.company.account)
+        url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+        backend.send_password_email_to_people(self.company, url, person, True)
         messages.success(
             request,
             'Email has been sent to {} .'.format(person)
@@ -639,7 +645,7 @@ class SetCompanyAccountOwner(generic.DetailView):
                         pk=self.company.pk)
 
 
-class CreateAccountPerson(generic.DetailView):
+class CreateAccountPerson(generic.DetailView, SetPasswordMixin):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
@@ -658,7 +664,7 @@ class CreateAccountPerson(generic.DetailView):
 
     def post(self, request, pk):
         obligation = self.person.company.obligation
-        account = Account.objects.create_for_obligation(obligation)
+        account = Account.objects.create_for_person(self.person.company, self.person)
         account.set_random_password()
         self.person.account = account
         self.person.save()
@@ -667,7 +673,9 @@ class CreateAccountPerson(generic.DetailView):
         msg = "Account created."
         messages.success(request, msg)
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.person.company, self.person)
+            token = self.send_password(account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.person.company, url, self.person)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n
@@ -731,6 +739,7 @@ class EnableAccountPerson(generic.DetailView):
 
 
 class CreateAccount(views.GroupRequiredMixin,
+                    SetPasswordMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
@@ -755,7 +764,9 @@ class CreateAccount(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.company)
+            token = self.send_password(account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.company, url)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n

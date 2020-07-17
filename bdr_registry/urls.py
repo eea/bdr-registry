@@ -44,6 +44,14 @@ person_patterns = [
         name='person_delete'),
 ]
 
+password_set = [
+    url(r'^request/?$',
+        management_views.PasswordSetRequest.as_view(),
+        name='person_set_request'),
+    url(r'^set_new_password/(?P<token>[\w\.-]+)/',
+        management_views.PasswordSetNewPassword.as_view(),
+        name='person_set_new_password')
+]
 
 urlpatterns = [
     url(r'^$', views.home.as_view(), name='home'),
@@ -70,7 +78,7 @@ urlpatterns = [
     url(r'^company/', include(company_patterns)),
     url(r'^person/', include(person_patterns)),
     url(r'^admin/', include(admin.site.urls)),
-
+    url(r'^password_set/', include(password_set)),
     # Api views
     url(r'^api/company/obligation/(?P<obligation_slug>.*)/',
         api_views.company_by_obligation),

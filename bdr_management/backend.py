@@ -33,7 +33,7 @@ def sync_accounts_with_ldap(accounts, person=None):
     return dict(counters)
 
 
-def send_password_email_to_people(company, person=None, company_account=None):
+def send_password_email_to_people(company, url=None, person=None, company_account=None):
 
     config = SiteConfiguration.objects.get()
     template = company.obligation.email_template
@@ -51,6 +51,7 @@ def send_password_email_to_people(company, person=None, company_account=None):
                   template=template,
                   context={'company': company, 'person': person,
                            'account': company.account,
+                           'url': url,
                            'reporting_year': reporting_year,
                            'next_year': reporting_year + 1},
                   priority='now')
@@ -64,6 +65,7 @@ def send_password_email_to_people(company, person=None, company_account=None):
                   context={'company': company,
                            'person': person,
                            'account': person.account,
+                           'url': url,
                            'reporting_year': reporting_year,
                            'personal_account': True,
                            'next_year': reporting_year + 1},
@@ -77,6 +79,7 @@ def send_password_email_to_people(company, person=None, company_account=None):
                   template=template,
                   context={'company': company, 'person': person,
                            'account': company.account,
+                           'url': url,
                            'reporting_year': reporting_year,
                            'next_year': reporting_year + 1},
                   priority='now')

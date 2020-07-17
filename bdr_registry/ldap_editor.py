@@ -62,6 +62,16 @@ class LdapEditor(object):
         assert result == (ldap.RES_MODIFY, [], 3, [])
         log.info("Password reset for uid=%s.", uid)
 
+    def reset_password_assert_2(self, uid, password):
+        attrs = [
+            (ldap.MOD_REPLACE, 'userPassword', [str.encode(encrypt_password(password))]),
+        ]
+        log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
+        audit_log("Resetting LDAP password for uid=%s", uid)
+        result = self.conn.modify_s(self._account_dn(uid), attrs)
+        assert result == (ldap.RES_MODIFY, [], 2, [])
+        log.info("Password reset for uid=%s.", uid)
+
 
 def create_ldap_editor():
     from django.conf import settings
