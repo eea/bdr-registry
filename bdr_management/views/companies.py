@@ -606,7 +606,7 @@ class ResetPasswordCompanyAccount(SetPasswordMixin, generic.DetailView):
                         pk=self.company.pk)
 
 
-class SetCompanyAccountOwner(generic.DetailView):
+class SetCompanyAccountOwner(generic.DetailView, SetPasswordMixin):
 
     raise_exception = True
     template_name = 'bdr_management/company_account_owner.html'
@@ -636,8 +636,10 @@ class SetCompanyAccountOwner(generic.DetailView):
         person = Person.objects.get(id=reporter)
         person.is_main_user = True
         person.save()
-
-        messages.success(request, 'Person {} has been set as company account owner'.format(person))
+        token = self.send_password(self.company.account)
+        url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+        n = backend.send_password_email_to_people(self.company, url, person, self.company.account)
+        messages.success(request, 'Person {} has been set as company account owner.A password reset e-mail has been sent to this person.'.format(person))
         if is_staff_user(request.user, self.company):
             return redirect('management:companies_view',
                             pk=self.company.pk)
