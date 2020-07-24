@@ -19,6 +19,11 @@ class AccountForm(ModelForm):
         model = Account
         fields = ()
 
+    def clean_username(self):
+        account = self.cleaned_data['username']
+        if not hasattr(account, 'person'):
+            raise ValidationError("The account is not a personal account.")
+        return account
 
 class PasswordResetForm(Form):
     email = EmailField(
