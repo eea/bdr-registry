@@ -175,7 +175,6 @@ class ModelTableViewMixin(ModelTableMixin):
 
 
 def has_permission(user, company):
-
     if user.is_superuser:
         return True
     required_group = settings.BDR_HELPDESK_GROUP
@@ -186,7 +185,10 @@ def has_permission(user, company):
         account = company.account
         if account and (account.uid == user.username):
             return True
-        account =  get_object_or_404(Account, uid=user.username)
+        account =  Account.objects.filter(uid=user.username)
+        if not account:
+            return False
+        account = account.first()
         if account.person.company == company:
             return True
     return False

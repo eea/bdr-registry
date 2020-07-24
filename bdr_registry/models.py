@@ -186,11 +186,13 @@ class Company(models.Model):
         return self.name
 
     def build_reporting_folder_path(self):
-        folder_path = '/{0}/{1}/{2}'.format(
-                self.obligation.reportek_slug,
-                self.country.code,
-                self.account.uid)
-        return folder_path
+        if self.account:
+            folder_path = '/{0}/{1}/{2}'.format(
+                    self.obligation.reportek_slug,
+                    self.country.code,
+                    self.account.uid)
+            return folder_path
+        return  ''
 
     def has_reporting_folder(self, folder_path=None):
         if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):

@@ -269,12 +269,13 @@ class PersonDeleteBase(base.ModelTableEditMixin,
             messages.success(request, _("Person deleted"))
             response = super(PersonDeleteBase, self).delete(
                 request, *args, **kwargs)
-            user = User.objects.filter(username=self.object.account.uid)
-            if user:
-                user = user.first()
-                user.is_active = False
-                user.save()
-            set_role_for_person_account(request, self.object.company, self.object, 'remove')
+            if self.object.account:
+                user = User.objects.filter(username=self.object.account.uid)
+                if user:
+                    user = user.first()
+                    user.is_active = False
+                    user.save()
+                set_role_for_person_account(request, self.object.company, self.object, 'remove')
             return response
         else:
             return self.cannot_delete_last_reporter()
