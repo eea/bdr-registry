@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.http import HttpResponseForbidden
 from django.utils.translation import ugettext as _
 from django.views import generic
