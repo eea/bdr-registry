@@ -19,9 +19,6 @@ class SetPasswordMixin:
     def compose_url(self, url):
         url_paths = []
         url_paths.append(settings.BDR_SERVER_URL.strip('/'))
-        prefix = settings.SITE_URL.strip('/')
-        if prefix:
-            url_paths.append(prefix)
         url_paths.append(url.strip('/'))
         return "/".join(url_paths)
         return url
@@ -123,9 +120,10 @@ class PasswordSetNewPassword(base.ModelTableViewMixin,
             messages.success(request, msg)
             tokens = AccountUniqueToken.objects.filter(account=self.account)
             tokens.delete()
-            return self.form_valid(form)
+            self.form_valid(form)
+            return redirect(settings.BDR_SERVER_URL)
         else:
             return self.form_invalid(form)
 
     def get_success_url(self, **kwargs):
-        return reverse('login')
+        return settings.BDR_SERVER_URL
