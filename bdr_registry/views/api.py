@@ -1,6 +1,8 @@
 import xmltodict
 import json
+from django.conf import settings
 from functools import wraps
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core import serializers
@@ -47,8 +49,8 @@ def company_all(request):
                 '#text': company.obligation.code,
             }
         item['country'] = {
-            '@name': company.country.name,
-            '#text': company.country.code,
+            '@name': getattr(company.country, 'name', ''),
+            '#text': getattr(company.country, 'code', '')
         }
 
         def person_data(person):
@@ -92,4 +94,40 @@ def company_by_obligation(request, obligation_slug):
         d['date_registered'] = company.date_registered.strftime(DATE_FORMAT)
         d['account'] = company.account and company.account.uid
         data.append(d)
+    return HttpResponse(json.dumps(data), content_type='application/json')
+
+
+@api_key_required
+def companies_for_username(request, username):
+    data = []
+    account = models.Account.objects.filter(uid=username)
+    if account:
+        account = account.first()
+        if hasattr(account, 'person'):
+            company = account.person.company
+        else:
+            company = account.company
+
+        folder_path = company.build_reporting_folder_path()
+        has_reporting_folder = company.has_reporting_folder(folder_path)
+        if has_reporting_folder:
+            reporting_folder = []
+            reporting_folder.append(settings.BDR_SERVER_URL.strip('/'))
+            reporting_folder.append(company.build_reporting_folder_path())
+            reporting_folder = "/".join(reporting_folder)
+        else:
+            reporting_folder = ''
+
+        registry_url = []
+        registry_url.append(settings.BDR_SERVER_URL.strip('/'))
+        registry_url.append(reverse('company', kwargs={"pk": company.id}))
+        registry_url = "/".join(registry_url)
+
+        company_data = {
+            "company_name": company.name,
+            "reporting_folder": reporting_folder,
+            "has_reporting_folder": has_reporting_folder,
+            "registry_url": registry_url,
+        }
+        data.append(company_data)
     return HttpResponse(json.dumps(data), content_type='application/json')

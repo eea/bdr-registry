@@ -22,7 +22,6 @@ class SetPasswordMixin:
         url_paths.append(settings.BDR_SERVER_URL.strip('/'))
         url_paths.append(url.strip('/'))
         return "/".join(url_paths)
-        return url
 
     def send_mail(self, person, token):
         if person.company.obligation.code == 'hdv':
