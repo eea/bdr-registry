@@ -113,14 +113,14 @@ def companies_for_username(request, username):
         if has_reporting_folder:
             reporting_folder = []
             reporting_folder.append(settings.BDR_SERVER_URL.strip('/'))
-            reporting_folder.append(company.build_reporting_folder_path())
+            reporting_folder.append(company.build_reporting_folder_path().strip('/'))
             reporting_folder = "/".join(reporting_folder)
         else:
             reporting_folder = ''
 
         registry_url = []
         registry_url.append(settings.BDR_SERVER_URL.strip('/'))
-        registry_url.append(reverse('company', kwargs={"pk": company.id}))
+        registry_url.append(reverse('company', kwargs={"pk": company.id}).strip('/'))
         registry_url = "/".join(registry_url)
 
         company_data = {
