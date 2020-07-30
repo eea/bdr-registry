@@ -83,6 +83,5 @@ urlpatterns = [
     url(r'^api/company/obligation/(?P<obligation_slug>.*)/',
         api_views.company_by_obligation),
     url(r'^organisation/all/?$', api_views.company_all),
-    url(r'^username/companies/', api_views.companies_for_username)
 ]
 urlpatterns += staticfiles_urlpatterns()

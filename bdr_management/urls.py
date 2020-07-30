@@ -32,6 +32,10 @@ urlpatterns = [
         views.CompanyFilteredByAccountUID.as_view(),
         name='account_company'),
 
+    url(r'^username/companies/',
+        views.CompaniesForUsernameView.as_view(),
+        name='companies_for_username'),
+
     url(r'^companies/add/?$',
         views.CompanyAdd.as_view(),
         name='companies_add'),

@@ -1,5 +1,6 @@
 import json
 import csv
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
@@ -11,7 +12,7 @@ from django.contrib import messages
 from bdr_management import backend
 
 from bdr_management.base import Breadcrumb
-from bdr_registry.models import (ReportingYear, Company, ReportingStatus,
+from bdr_registry.models import (Account, ReportingYear, Company, ReportingStatus,
                                  Person, SiteConfiguration)
 from bdr_management.views.mixins import CompanyMixin
 
@@ -267,3 +268,43 @@ class PersonsExportJson(views.StaffuserRequiredMixin,
         data = json.dumps(persons, indent=4)
 
         return HttpResponse(data, content_type="application/json")
+
+
+
+class CompaniesForUsernameView(views.StaffuserRequiredMixin,
+                               generic.View):
+
+    def get(self, request):
+        username = request.GET.get('username', '')
+        data = []
+        account = Account.objects.filter(uid=username)
+        if account:
+            account = account.first()
+            if hasattr(account, 'person'):
+                company = account.person.company
+            else:
+                company = account.company
+
+            folder_path = company.build_reporting_folder_path()
+            has_reporting_folder = company.has_reporting_folder(folder_path)
+            if has_reporting_folder:
+                reporting_folder = []
+                reporting_folder.append(settings.BDR_SERVER_URL.strip('/'))
+                reporting_folder.append(company.build_reporting_folder_path().strip('/'))
+                reporting_folder = "/".join(reporting_folder)
+            else:
+                reporting_folder = ''
+
+            registry_url = []
+            registry_url.append(settings.BDR_SERVER_URL.strip('/'))
+            registry_url.append(reverse('company', kwargs={"pk": company.id}).strip('/'))
+            registry_url = "/".join(registry_url)
+
+            company_data = {
+                "company_name": company.name,
+                "reporting_folder": reporting_folder,
+                "has_reporting_folder": has_reporting_folder,
+                "registry_url": registry_url,
+            }
+            data.append(company_data)
+        return HttpResponse(json.dumps(data), content_type='application/json')
