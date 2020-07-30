@@ -98,7 +98,8 @@ def company_by_obligation(request, obligation_slug):
 
 
 @api_key_required
-def companies_for_username(request, username):
+def companies_for_username(request):
+    username = request.GET.get('username', '')
     data = []
     account = models.Account.objects.filter(uid=username)
     if account:
