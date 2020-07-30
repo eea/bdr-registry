@@ -270,7 +270,6 @@ class PersonsExportJson(views.StaffuserRequiredMixin,
         return HttpResponse(data, content_type="application/json")
 
 
-
 class CompaniesForUsernameView(views.StaffuserRequiredMixin,
                                generic.View):
 
@@ -288,10 +287,7 @@ class CompaniesForUsernameView(views.StaffuserRequiredMixin,
             folder_path = company.build_reporting_folder_path()
             has_reporting_folder = company.has_reporting_folder(folder_path)
             if has_reporting_folder:
-                reporting_folder = []
-                reporting_folder.append(settings.BDR_SERVER_URL.strip('/'))
-                reporting_folder.append(company.build_reporting_folder_path().strip('/'))
-                reporting_folder = "/".join(reporting_folder)
+                reporting_folder = company.build_reporting_folder_path()
             else:
                 reporting_folder = ''
 
