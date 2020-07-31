@@ -16,7 +16,7 @@
 
     {% if user|has_permission:object %}
       <div class="pull-right h1-align">
-        {% if not object.account and  user|is_staff_or_company_account:object and object.company.has_main_reporter and not has_reporting_folder %}
+        {% if not object.account and  user|is_staff_or_company_account:object and object.company.has_main_reporter and has_reporting_folder %}
             <a href="{% url 'management:create_account_person' object.pk %}" class="btn">{% trans "Add account" %}</a>
         {% elif object.account.related_user.is_active and user|is_staff_or_company_account:object %}
           <a href="{% url 'management:disable_account_person' object.pk %}" class="btn">{% trans "Disable account" %}</a>
