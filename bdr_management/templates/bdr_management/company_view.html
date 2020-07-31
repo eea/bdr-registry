@@ -17,7 +17,7 @@
             <p class="h4 no-margins">Actions:</p>
             <ul>
               {% if has_account %}
-                {% if company.main_reporter %}
+                {% if company.main_reporter and company.obligation.code == 'hdv' %}
                   <li>
                     <a id="reset-password-action-company-account" href="{% url 'management:reset_password_company_account' pk=object.pk %}">
                       {% trans "Reset company account password" %}</a>
@@ -37,15 +37,15 @@
               {% endif %}
 
               {% if not has_account %}
-              <li>
-                <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
-                  {% trans "Create account" %}</a>
-              </li>
-              {% else %}
-              <li>
-                <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
-                  {% trans "Set company account owner" %}</a>
-              </li>
+                <li>
+                  <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
+                    {% trans "Create account" %}</a>
+                </li>
+              {% elif company.obligation.code == 'hdv' %}
+                <li>
+                  <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
+                    {% trans "Set company account owner" %}</a>
+                </li>
               {% endif %}
 
             </ul>
@@ -63,7 +63,7 @@
       {%endif %}
     {% endif %}
 
-    {% if has_account and user|is_company_account:object %}
+    {% if has_account and user|is_company_account:object and company.obligation.code == 'hdv' %}
       <div class="box-small no-borders pull-left"
       style="margin-left:24px;">
         <p class="h4 no-margins">Actions:</p>
@@ -133,16 +133,20 @@
              class="bold">
         {% endif %}
       {{ person.formal_name }}</a>
-      {% if person.account %}
-        - Account: {{ person.account }}
-        {% if person.account.related_user and not person.account.related_user.is_active %}
-          <span style="color:red;">(disabled)</span>
+
+      {% if company.obligation.code == 'hdv' %}
+        {% if person.account %}
+          - Account: {{ person.account }}
+          {% if person.account.related_user and not person.account.related_user.is_active %}
+            <span style="color:red;">(disabled)</span>
+          {% endif %}
+        {% else %}
+          - This person has no account set.
         {% endif %}
-      {% else %}
-        - This person has no account set.
-      {% endif %}
-      {% if person.is_main_user %}
-        <span style="color:blue;">This person is the owner of the company's account.</span>
+        {% if person.is_main_user %}
+          <span style="color:blue;">This person is the owner of the company's account.</span>
+        {% endif %}
+
       {% endif %}
       </li>
     {% endfor %}
