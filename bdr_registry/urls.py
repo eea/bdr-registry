@@ -63,7 +63,7 @@ urlpatterns = [
     url(r'^self_register/?$', views.SelfRegister.as_view(),
         name='self_register'),
     url(r'^self_register_hdv/?$', views.SelfRegisterHDV.as_view(),
-        name='self_register_hpv'),
+        name='self_register_hdv'),
     url(r'^self_register/done/?$',
         TemplateView.as_view(template_name='self_register_done.html'),
         name='self_register_done'),

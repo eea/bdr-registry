@@ -18,6 +18,8 @@ class CompanyHDVForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(CompanyHDVForm, self).__init__(*args, **kwargs)
         set_empty_label(self.fields, '')
+        self.fields['world_manufacturer_identifier'].required = True
+
 
     class Meta:
         model = models.Company
