@@ -291,12 +291,12 @@ class CompaniesForUsernameView(views.StaffuserRequiredMixin,
             else:
                 reporting_folder = ''
 
-
+            registry_url = reverse('company', kwargs={"pk": company.id}).strip('/')
             company_data = {
                 "company_name": company.name,
                 "reporting_folder": reporting_folder,
                 "has_reporting_folder": has_reporting_folder,
-                "registry_url": reverse('company', kwargs={"pk": company.id}),
+                "registry_url": "/".join(['/registry',registry_url]),
             }
             data.append(company_data)
         return HttpResponse(json.dumps(data), content_type='application/json')
