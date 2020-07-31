@@ -33,7 +33,7 @@ def sync_accounts_with_ldap(accounts, person=None):
     return dict(counters)
 
 
-def send_password_email_to_people(company, url=None, person=None, company_account=None, use_reset_url=None):
+def send_password_email_to_people(company, url=None, person=None, company_account=None, use_reset_url=None, send_bcc=True):
 
     config = SiteConfiguration.objects.get()
     template = company.obligation.email_template
@@ -43,6 +43,8 @@ def send_password_email_to_people(company, url=None, person=None, company_accoun
         sender = settings.HDV_EMAIL_FROM
     else:
         sender = settings.BDR_EMAIL_FROM
+    if not send_bcc:
+        bcc = []
     if company_account:
         reporting_year = config.reporting_year
         mail.send(recipients=[person.email.strip()],
