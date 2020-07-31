@@ -212,6 +212,12 @@ class Company(models.Model):
         if person:
             return person.first()
 
+    @property
+    def has_main_reporter(self):
+        main_user = self.people.filter(is_main_user=True)
+        if main_user:
+            return True
+
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
 
