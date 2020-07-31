@@ -291,16 +291,12 @@ class CompaniesForUsernameView(views.StaffuserRequiredMixin,
             else:
                 reporting_folder = ''
 
-            registry_url = []
-            registry_url.append(settings.BDR_SERVER_URL.strip('/'))
-            registry_url.append(reverse('company', kwargs={"pk": company.id}).strip('/'))
-            registry_url = "/".join(registry_url)
 
             company_data = {
                 "company_name": company.name,
                 "reporting_folder": reporting_folder,
                 "has_reporting_folder": has_reporting_folder,
-                "registry_url": registry_url,
+                "registry_url": reverse('company', kwargs={"pk": company.id}),
             }
             data.append(company_data)
         return HttpResponse(json.dumps(data), content_type='application/json')
