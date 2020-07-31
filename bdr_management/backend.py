@@ -33,7 +33,9 @@ def sync_accounts_with_ldap(accounts, person=None):
     return dict(counters)
 
 
-def send_password_email_to_people(company, url=None, person=None, company_account=None, use_reset_url=None, send_bcc=True):
+def send_password_email_to_people(company, url=None, person=None, company_account=None,
+                                  use_reset_url=None, send_bcc=True, subject_extra ='',
+                                  set_owner=None, password_reset=None, personal_account=None):
 
     config = SiteConfiguration.objects.get()
     template = company.obligation.email_template
@@ -54,6 +56,10 @@ def send_password_email_to_people(company, url=None, person=None, company_accoun
                   context={'company': company, 'person': person,
                            'account': company.account,
                            'url': url,
+                           'set_owner': set_owner,
+                           'password_reset': password_reset,
+                           'personal_account': personal_account,
+                           'subject_extra': subject_extra,
                            'reporting_year': reporting_year,
                            'use_reset_url': use_reset_url,
                            'next_year': reporting_year + 1},
@@ -69,6 +75,10 @@ def send_password_email_to_people(company, url=None, person=None, company_accoun
                            'person': person,
                            'account': person.account,
                            'url': url,
+                           'set_owner': set_owner,
+                           'password_reset': password_reset,
+                           'personal_account': personal_account,
+                           'subject_extra': subject_extra,
                            'reporting_year': reporting_year,
                             'use_reset_url': use_reset_url,
                            'personal_account': True,
@@ -84,6 +94,10 @@ def send_password_email_to_people(company, url=None, person=None, company_accoun
                   context={'company': company, 'person': person,
                            'account': company.account,
                            'url': url,
+                           'set_owner': set_owner,
+                           'password_reset': password_reset,
+                           'personal_account': personal_account,
+                           'subject_extra': subject_extra,
                            'use_reset_url': use_reset_url,
                            'reporting_year': reporting_year,
                            'next_year': reporting_year + 1},

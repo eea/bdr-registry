@@ -594,7 +594,8 @@ class ResetPasswordCompanyAccount(SetPasswordMixin, generic.DetailView):
         person = self.company.main_reporter
         token = self.send_password(self.company.account)
         url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
-        backend.send_password_email_to_people(self.company, url, person, True, use_reset_url=True, send_bcc=True)
+        backend.send_password_email_to_people(self.company, url, person, True, use_reset_url=True,
+                                              send_bcc=True, password_reset=True, subject_extra=': BDR password re-set')
         messages.success(
             request,
             'Email has been sent to {} .'.format(person)
@@ -638,7 +639,9 @@ class SetCompanyAccountOwner(generic.DetailView, SetPasswordMixin):
         person.save()
         token = self.send_password(self.company.account)
         url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
-        n = backend.send_password_email_to_people(self.company, url, person, self.company.account, use_reset_url=True, send_bcc=True)
+        n = backend.send_password_email_to_people(self.company, url, person, self.company.account,
+                                                  use_reset_url=True, send_bcc=True, subject_extra=': New owner BDR password re-set',
+                                                  set_owner=True)
         messages.success(request, 'Person {} has been set as company account owner.A password reset e-mail has been sent to this person.'.format(person))
         if is_staff_user(request.user, self.company):
             return redirect('management:companies_view',
@@ -677,7 +680,8 @@ class CreateAccountPerson(generic.DetailView, SetPasswordMixin):
         if request.POST.get('perform_send'):
             token = self.send_password(account)
             url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
-            n = backend.send_password_email_to_people(self.person.company, url, self.person, use_reset_url=True, send_bcc=True)
+            n = backend.send_password_email_to_people(self.person.company, url, self.person, use_reset_url=True,
+                                                      send_bcc=True, personal_account=True)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n

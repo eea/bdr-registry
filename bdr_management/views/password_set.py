@@ -39,7 +39,7 @@ class SetPasswordMixin:
                                 context)
         mail.send(recipients=[person.email],
                   sender=sender,
-                  subject='BDR Registry password set',
+                  subject='BDR Registry password re-set',
                   message=text,
                   html_message=template,
                   priority='now')
