@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.6.0 - (2020-08-10)
+* Add support for multiple reporters for a company
+* Add company owner
+* Implement set password functionality
+* Send reset password mail after company owner is changed
+* Add endpoint for showing one account's companies
+* Allow functionality for HDV only
+* Custom email depeding on users
+  [dianaboiangiu]
+
 1.5.5 - (2020-04-22)
 --------------------
 * Set HDV mailing for OTRS
