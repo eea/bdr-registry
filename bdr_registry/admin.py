@@ -1,4 +1,5 @@
 import csv
+import json
 import logging
 import post_office
 import requests
@@ -271,6 +272,45 @@ def create_reporting_folder(modeladmin, request, queryset):
     if errors:
         msg = "%d errors: %s" % (len(errors), ', '.join(errors))
         messages.add_message(request, messages.ERROR, msg)
+
+
+def set_role_for_person_account(request, company, person, action):
+    if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
+        messages.add_message(request, messages.ERROR,
+                             "BDR_API_URL and BDR_API_AUTH not configured")
+        return
+
+    errors = []
+    url = settings.BDR_API_URL + '/manage_ownership'
+    form = {
+        'uid': person.account.uid,
+        'obl_folder': company.obligation.reportek_slug,
+        'country': company.country.code,
+        'c_folder': company.account.uid,
+        'action': action,
+    }
+    headers = {'Content-type': 'application/json'}
+    resp = requests.post(url, data=json.dumps(form), auth=settings.BDR_API_AUTH,
+                         headers=headers, verify=False)
+    if resp.status_code != 200:
+        logging.error("BDR API request failed: %r", resp)
+        errors.append(person.account.uid)
+        return
+    rv = resp.json()
+
+    if rv['errors']:
+        msg = "%s, on person account %s role setting: %s" % (company.account.uid,
+                                                             person.account.uid,
+                                                             ', '.join(rv['errors']))
+        logging.error(msg)
+    else:
+        msg = "{} role for uid={} on folder {}".format(
+            action, person.account.uid, company.account.uid
+        )
+        logging.info(msg)
+    if errors:
+        msg = "%d errors: %s" % (len(errors), ', '.join(errors))
+        logging.error(msg)
 
 
 class PersonInline(admin.StackedInline):

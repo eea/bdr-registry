@@ -70,7 +70,17 @@ class home(TemplateView):
             try:
                 company = models.Company.objects.get(account=account)
             except models.Company.DoesNotExist:
-                pass
+                try:
+                    person = models.Person.objects.get(account=account)
+                except models.Person.DoesNotExist:
+                    pass
+                else:
+                    info['has_company'] = True
+                    info['company'] = person.company
+                    info['reporting_folder_path'] = \
+                        person.company.build_reporting_folder_path()
+                    info['has_reporting_folder'] = \
+                        person.company.has_reporting_folder(info['reporting_folder_path'])
             else:
                 info['has_company'] = True
                 info['company'] = company
@@ -185,7 +195,7 @@ class PersonForm(ModelForm):
 
     class Meta:
         model = models.Person
-        exclude = ('company',)
+        exclude = ('company', 'account', 'is_main_user')
 
 CommentForm = modelform_factory(models.Comment, exclude=['company'])
 

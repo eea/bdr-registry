@@ -5,11 +5,10 @@
 
 {% block content %}
 
-  <h1>{{ object }}</h1>
+  <h1>{{ object }} - account {{ object.account }}</h1>
 
   <form method="post">{% csrf_token %}
-    <p class="large">{% trans "Are you sure you want to delete this person?" %}</p>
-    <p>*If the person had an account, the account will be disabled as well.</p>
+    <p class="large">{% trans "Are you sure you want to enable this account?" %}</p>
     <input type="submit" class="btn-blue" value="{% trans 'Confirm' %}" />
     <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
   </form>

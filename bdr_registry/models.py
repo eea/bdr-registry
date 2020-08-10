@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from django.db import models, transaction
+from django.db import models, transaction, IntegrityError
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
@@ -98,6 +98,21 @@ class AccountManager(models.Manager):
                         next_id=next_id)
         return self.create(uid=uid)
 
+    def create_for_person(self, company, person):
+        uid = u"{company}_{first_name}.{family_name}".format(
+            company=company.account.uid,
+            first_name=person.first_name.lower()[:3],
+            family_name=person.family_name.lower()[:3]
+        )
+        try:
+            return self.create(uid=uid)
+        except IntegrityError:
+            uid = u"{company}_{first_name}.{family_name}".format(
+                company=company.account.uid,
+                first_name=person.first_name.lower()[:4],
+                family_name=person.family_name.lower()[:4]
+            )
+            return self.create(uid=uid)
 
 class Account(models.Model):
 
@@ -113,9 +128,20 @@ class Account(models.Model):
 
     objects = AccountManager()
 
+    @property
+    def related_user(self):
+        user = User.objects.filter(username=self.uid)
+        if user:
+            return user.first()
+
     class Meta:
         ordering = ['uid']
 
+
+class AccountUniqueToken(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    token = models.CharField(max_length=100)
+    datetime = models.DateTimeField(auto_now_add=True)
 
 class NextAccountId(models.Model):
 
@@ -160,11 +186,13 @@ class Company(models.Model):
         return self.name
 
     def build_reporting_folder_path(self):
-        folder_path = '/{0}/{1}/{2}'.format(
-                self.obligation.reportek_slug,
-                self.country.code,
-                self.account.uid)
-        return folder_path
+        if self.account:
+            folder_path = '/{0}/{1}/{2}'.format(
+                    self.obligation.reportek_slug,
+                    self.country.code,
+                    self.account.uid)
+            return folder_path
+        return  ''
 
     def has_reporting_folder(self, folder_path=None):
         if hasattr(settings, 'DISABLE_ZOPE_CONNECTION'):
@@ -177,6 +205,18 @@ class Company(models.Model):
             return True
         else:
             return False
+
+    @property
+    def main_reporter(self):
+        person = self.people.filter(is_main_user=True)
+        if person:
+            return person.first()
+
+    @property
+    def has_main_reporter(self):
+        main_user = self.people.filter(is_main_user=True)
+        if main_user:
+            return True
 
 def organisation_loaded(instance, **extra):
     instance._initial_name = '' if instance.pk is None else instance.name
@@ -225,7 +265,9 @@ class Person(models.Model):
                             max_length=255, null=True, blank=True)
     fax = models.CharField(_('Fax'),
                            max_length=255, null=True, blank=True)
-
+    account = models.OneToOneField(Account, null=True, blank=True,
+                                   related_name='person')
+    is_main_user = models.BooleanField(default=False)
     company = models.ForeignKey(Company, related_name='people')
 
     @property

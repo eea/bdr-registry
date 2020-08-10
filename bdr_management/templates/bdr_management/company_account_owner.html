@@ -1,0 +1,36 @@
+{% extends 'bdr_management/_management_base.html' %}
+
+
+{% block content %}
+
+<h1>Create account for {{ person }}</h1>
+
+<form method="POST" action="" class="push-top">
+  {% csrf_token %}
+
+  <div class="inform">
+      {% if company.main_reporter %}
+        The current company account owner is {{ company.main_reporter }}
+      {% else %}
+        No company account owner is set.
+      {% endif %}
+  </div>
+
+  <p>Setting a main company account owner will direct all notifications and will allow control of the account
+     only on the behaf of that person.
+  </p>
+  <p>Please select a reporter from the following list:</p>
+  <div class="btn-toolbar">
+    <select id="reporter" name="reporter">
+      {% for person in company.people.all %}
+        <option value="{{person.id}}">{{ person.first_name }} {{ person.family_name }}</option>
+      {% endfor %}
+    </select>
+    <button class="btn-blue" type="submit">Set company account owner</button>
+    <a class="btn" href="{{request.META.HTTP_REFERER|escape}}">
+      Cancel
+    </a>
+  </div>
+</form>
+
+{% endblock %}

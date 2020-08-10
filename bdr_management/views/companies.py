@@ -5,22 +5,26 @@ import requests
 from braces import views
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django.views import generic
-from django.http import Http404, HttpResponseRedirect
-from django.shortcuts import redirect
+from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
 
 from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
-from bdr_management.base import Breadcrumb
+from bdr_management.base import Breadcrumb, is_staff_user
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
-from bdr_registry.models import (Company, Account, ReportingYear, Person,
+from bdr_management.views.password_set import SetPasswordMixin
+from bdr_registry.admin import set_role_for_person_account
+from bdr_registry.models import (Company, Account, ReportingYear, Person, User,
                                  ReportingStatus, SiteConfiguration)
+from bdr_registry.views import CanEdit
 
 
 class Companies(views.StaffuserRequiredMixin,
@@ -187,7 +191,6 @@ class CompaniesBaseView(base.ModelTableViewMixin,
         return data
 
     def has_edit_permission(self):
-
         user = self.request.user
         group = settings.BDR_HELPDESK_GROUP
 
@@ -500,9 +503,10 @@ class CompanyAdd(views.GroupRequiredMixin,
             return self.form_invalid(form, person_form)
 
     def form_invalid(self, form, person_form):
-        return self.render_to_response(
-            self.get_context_data(form=self.get_form(self.get_form_class()),
-                                  person_form=person_form))
+        resp =  self.get_context_data(form=self.get_form(self.get_form_class()),
+                                  person_form=person_form)
+        return self.render_to_response(resp
+            )
 
     def form_valid(self, form, person_form):
         self.object = form.save()
@@ -535,6 +539,7 @@ class CompanyAdd(views.GroupRequiredMixin,
 
 
 class ResetPassword(views.GroupRequiredMixin,
+                    SetPasswordMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
@@ -555,7 +560,9 @@ class ResetPassword(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.company)
+            token = self.send_password(self.company.account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.company, url)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n
@@ -564,7 +571,181 @@ class ResetPassword(views.GroupRequiredMixin,
                         pk=self.company.pk)
 
 
+class ResetPasswordCompanyAccount(SetPasswordMixin, generic.DetailView):
+
+    raise_exception = True
+    template_name = 'bdr_management/reset_password_company.html'
+    model = Company
+
+    def dispatch(self, request, *args, **kwargs):
+        self.company = self.get_object()
+        if not self.company.account:
+            raise Http404
+        can_edit = CanEdit(self.company)
+        if not can_edit(request.user):
+            return HttpResponseForbidden()
+        return super(ResetPasswordCompanyAccount, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        self.company.account.set_random_password()
+        backend.sync_accounts_with_ldap([self.company.account])
+        msg = _('Password has been reset.')
+        messages.success(request, msg)
+        person = self.company.main_reporter
+        token = self.send_password(self.company.account)
+        url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+        backend.send_password_email_to_people(self.company, url, person, True, use_reset_url=True,
+                                              send_bcc=True, password_reset=True, subject_extra=': BDR password re-set')
+        messages.success(
+            request,
+            'Email has been sent to {} .'.format(person)
+        )
+        if is_staff_user(request.user, self.company):
+            return redirect('management:companies_view',
+                            pk=self.company.pk)
+        return redirect('company',
+                        pk=self.company.pk)
+
+
+class SetCompanyAccountOwner(generic.DetailView, SetPasswordMixin):
+
+    raise_exception = True
+    template_name = 'bdr_management/company_account_owner.html'
+    model = Company
+
+    def dispatch(self, request, *args, **kwargs):
+        self.company = self.get_object()
+        if not self.company.account:
+            raise Http404
+        can_edit = CanEdit(self.company)
+        if not can_edit(request.user):
+            return HttpResponseForbidden()
+        return super(SetCompanyAccountOwner, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        reporter = request.POST.get('reporter', None)
+        if not reporter:
+            messages.warning(
+                request,
+                'Person not found'
+            )
+            return redirect('company',
+                            pk=self.company.pk)
+        for person in self.company.people.filter(is_main_user=True):
+            person.is_main_user = False
+            person.save()
+        person = Person.objects.get(id=reporter)
+        person.is_main_user = True
+        person.save()
+        token = self.send_password(self.company.account)
+        url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+        n = backend.send_password_email_to_people(self.company, url, person, self.company.account,
+                                                  use_reset_url=True, send_bcc=True, subject_extra=': New owner BDR password re-set',
+                                                  set_owner=True)
+        messages.success(request, 'Person {} has been set as company account owner.A password reset e-mail has been sent to this person.'.format(person))
+        if is_staff_user(request.user, self.company):
+            return redirect('management:companies_view',
+                            pk=self.company.pk)
+        return redirect('company',
+                        pk=self.company.pk)
+
+
+class CreateAccountPerson(generic.DetailView, SetPasswordMixin):
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
+    template_name = 'bdr_management/create_account_for_person.html'
+    model = Person
+
+    def dispatch(self, request, *args, **kwargs):
+        self.person = self.get_object()
+        if self.person.account:
+            raise Http404
+        company = self.person.company
+        can_edit = CanEdit(company)
+        if not can_edit(request.user):
+            return HttpResponseForbidden()
+        return super(CreateAccountPerson, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        obligation = self.person.company.obligation
+        account = Account.objects.create_for_person(self.person.company, self.person)
+        account.set_random_password()
+        self.person.account = account
+        self.person.save()
+        backend.sync_accounts_with_ldap([account], True)
+        set_role_for_person_account(request, self.person.company, self.person, 'add')
+        msg = "Account created."
+        messages.success(request, msg)
+        if request.POST.get('perform_send'):
+            token = self.send_password(account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.person.company, url, self.person, use_reset_url=True,
+                                                      send_bcc=True, personal_account=True)
+            messages.success(
+                request,
+                'Emails have been sent to %d person(s).' % n
+            )
+        return redirect('person',
+                        pk=self.person.pk)
+
+
+class DisableAccountPerson(generic.DetailView):
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
+    template_name = 'bdr_management/disable_account_for_person.html'
+    model = Person
+
+    def dispatch(self, request, *args, **kwargs):
+        self.person = self.get_object()
+        if not self.person.account:
+            raise Http404
+        company = self.person.company
+        can_edit = CanEdit(company)
+        if not can_edit(request.user):
+            return HttpResponseForbidden()
+        return super(DisableAccountPerson, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        account = self.person.account
+        user = User.objects.get(username=account.uid)
+        user.is_active = False
+        user.save()
+        set_role_for_person_account(request, self.person.company, self.person, 'remove')
+        return redirect('person',
+                        pk=self.person.pk)
+
+
+class EnableAccountPerson(generic.DetailView):
+
+    group_required = settings.BDR_HELPDESK_GROUP
+    raise_exception = True
+    template_name = 'bdr_management/enable_account_for_person.html'
+    model = Person
+
+    def dispatch(self, request, *args, **kwargs):
+        self.person = self.get_object()
+        if not self.person.account:
+            raise Http404
+        company = self.person.company
+        can_edit = CanEdit(company)
+        if not can_edit(request.user):
+            return HttpResponseForbidden()
+        return super(EnableAccountPerson, self).dispatch(request, *args, **kwargs)
+
+    def post(self, request, pk):
+        account = self.person.account
+        user = User.objects.get(username=account.uid)
+        user.is_active = True
+        user.save()
+        set_role_for_person_account(request, self.person.company, self.person, 'add')
+        return redirect('person',
+                        pk=self.person.pk)
+
+
 class CreateAccount(views.GroupRequiredMixin,
+                    SetPasswordMixin,
                     generic.DetailView):
 
     group_required = settings.BDR_HELPDESK_GROUP
@@ -589,7 +770,9 @@ class CreateAccount(views.GroupRequiredMixin,
         messages.success(request, msg)
 
         if request.POST.get('perform_send'):
-            n = backend.send_password_email_to_people(self.company)
+            token = self.send_password(account)
+            url = self.compose_url(reverse('person_set_new_password', kwargs={'token': token}))
+            n = backend.send_password_email_to_people(self.company, url)
             messages.success(
                 request,
                 'Emails have been sent to %d person(s).' % n

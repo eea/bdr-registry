@@ -1,0 +1,30 @@
+{% extends 'bdr_management/_management_base.html' %}
+
+
+{% block content %}
+
+<h1>Create account for {{ person }}</h1>
+
+<form method="POST" action="" class="push-top">
+  {% csrf_token %}
+
+  <div class="inform">
+    <label class="large">
+      <input type="checkbox" checked="checked" name="perform_send">
+        Send email for setting a password to: {{ person }}
+    </label>
+  </div>
+
+  <div class="btn-toolbar">
+    {% if person.company.country.code %}
+      <button class="btn-blue" type="submit">Create account</button>
+    {% else %}
+      <p class="inform">The company's country must be set before the account creation.</p>
+    {% endif %}
+    <a class="btn" href="{% url 'management:persons_view' pk=person.pk %}">
+      Cancel
+    </a>
+  </div>
+</form>
+
+{% endblock %}

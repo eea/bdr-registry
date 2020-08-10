@@ -14,7 +14,8 @@ from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_management.views.mixins import CompanyMixin
-from bdr_registry.models import Person, Company
+from bdr_registry.admin import set_role_for_person_account
+from bdr_registry.models import Company, Person, User
 
 
 class Persons(views.StaffuserRequiredMixin,
@@ -86,6 +87,14 @@ class PersonBaseView(base.ModelTableViewMixin,
     template_name = 'bdr_management/person_view.html'
     model = Person
     exclude = ('id', )
+
+    def get_context_data(self, **kwargs):
+        context = super(PersonBaseView, self).get_context_data(**kwargs)
+        company = self.object.company
+        folder_path = company.build_reporting_folder_path()
+        context['has_reporting_folder'] = company.has_reporting_folder(
+                folder_path)
+        return context
 
 
 class PersonManagementView(views.StaffuserRequiredMixin,
@@ -173,6 +182,15 @@ class PersonEditBase(base.ModelTableViewMixin,
     success_message = _('Person edited successfully')
     form_class = PersonForm
 
+    def post(self, request, *args, **kwargs):
+        person = self.get_object()
+        company = person.company
+        response =  super(PersonEditBase, self).post(request, *args, **kwargs)
+        company_updated = self.get_object().company
+        if company != company_updated and person.account:
+            set_role_for_person_account(request, company, person, 'remove')
+            set_role_for_person_account(request, company_updated, person, 'add')
+        return response
 
 class PersonManagementEdit(views.GroupRequiredMixin,
                            PersonEditBase):
@@ -249,8 +267,16 @@ class PersonDeleteBase(base.ModelTableEditMixin,
     def delete(self, request, *args, **kwargs):
         if self.company_has_other_reporters():
             messages.success(request, _("Person deleted"))
-            return super(PersonDeleteBase, self).delete(
+            response = super(PersonDeleteBase, self).delete(
                 request, *args, **kwargs)
+            if self.object.account:
+                user = User.objects.filter(username=self.object.account.uid)
+                if user:
+                    user = user.first()
+                    user.is_active = False
+                    user.save()
+                set_role_for_person_account(request, self.object.company, self.object, 'remove')
+            return response
         else:
             return self.cannot_delete_last_reporter()
 

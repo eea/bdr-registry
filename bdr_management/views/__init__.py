@@ -1,5 +1,6 @@
 from .companies import *
 from .persons import *
+from .password_set import *
 from .comments import *
 from .obligations import *
 from .email_templates import *

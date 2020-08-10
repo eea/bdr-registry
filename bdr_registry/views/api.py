@@ -1,6 +1,8 @@
 import xmltodict
 import json
+from django.conf import settings
 from functools import wraps
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.core import serializers
@@ -47,8 +49,8 @@ def company_all(request):
                 '#text': company.obligation.code,
             }
         item['country'] = {
-            '@name': company.country.name,
-            '#text': company.country.code,
+            '@name': getattr(company.country, 'name', ''),
+            '#text': getattr(company.country, 'code', '')
         }
 
         def person_data(person):

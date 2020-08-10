@@ -1,9 +1,73 @@
 {% extends 'bdr_management/_management_base.html' %}
 {% load utils %}
-
+{% load i18n %}
 
 {% block content %}
 
-  {% include 'bdr_management/_view.html' %}
+{% if back_url %}
+  <div class="">
+    <a href="{{ back_url }}" class="small">
+      {% trans "Back" %}</a>
+  </div>
+  {% endif %}
+  <div class="push-bottom clearfix">
+    <h1 class="pull-left">{{ object }}</h1>
 
+
+    {% if user|has_permission:object %}
+      <div class="pull-right h1-align">
+        {% if object.company.obligation.code == 'hdv' %}
+          {% if not object.account and  user|is_staff_or_company_account:object and object.company.has_main_reporter and has_reporting_folder %}
+              <a href="{% url 'management:create_account_person' object.pk %}" class="btn">{% trans "Add account" %}</a>
+          {% elif object.account.related_user.is_active and user|is_staff_or_company_account:object %}
+            <a href="{% url 'management:disable_account_person' object.pk %}" class="btn">{% trans "Disable account" %}</a>
+          {% elif object.account.related_user and not object.account.related_user.is_active and  user|is_staff_or_company_account:object %}
+            <a href="{% url 'management:enable_account_person' object.pk %}" class="btn">{% trans "Enable account" %}</a>
+          {% endif %}
+        {% endif %}
+        {% if edit_url and user|is_persons_account:object or user|is_staff_or_company_account:object %}
+          <a href="{{ edit_url }}" class="btn btn-blue">{% trans "Edit" %}</a>
+        {% endif %}
+        {% if delete_url and user|is_staff_or_company_account:object %}
+          <a href="{{ delete_url }}" class="btn">{% trans "Delete" %}</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  <hr />
+  {% if not object.account and user|is_staff_or_company_account:object and not has_reporting_folder or not object.company.has_main_reporter %}
+    {% if object.company.obligation.code == 'hdv' %}
+    <div class="inform">
+      For adding a personal account, a company owner must be set and a reporting folder must first be created.
+    </div>
+    {% endif %}
+  {% endif %}
+
+  <form id="delete-form" action="{{ delete_url }}" method="post">
+    <fieldset class="no-borders">
+      {% csrf_token %}
+    </fieldset>
+  </form>
+
+  <div class="pull-left" style="max-width: 600px;">
+    <table class="table-list no-margins">
+      <tbody>
+      {% for field in fields %}
+      <tr>
+        {% if not field.name == 'is_main_user' %}
+        <th class="text-right small">{{ field.verbose_name|capfirst }}</th>
+        <td class="bold">
+          {{ object|getattribute:field.name|process_field:management }}
+          {% if field.name == 'account' %}
+            {% if not object.account.related_user.is_active and object.account.related_user %}
+             <span style="color:red;">(disabled)</span>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% endblock %}

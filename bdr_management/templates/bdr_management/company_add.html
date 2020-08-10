@@ -7,6 +7,10 @@
 
   {% include 'bdr_management/_edit_header.html' %}
 
+  {% if not person_form.valid %}
+    <p class="bdr-error">If you selected an account, that account might be used by a person already.</p>
+  {% endif %}
+
   <div class="row">
     <form class="form col-md-8 push-top" method="post">
       {% csrf_token %}
