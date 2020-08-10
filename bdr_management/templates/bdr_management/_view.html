@@ -11,7 +11,7 @@
 <div class="push-bottom clearfix">
   <h1 class="pull-left">{{ object }}</h1>
 
-  {% if user|has_permission:object %}
+  {% if user|has_permission:object and not user|is_a_personal_account %}
     <div class="pull-right h1-align">
       {% if edit_url %}
         <a href="{{ edit_url }}" class="btn btn-blue">{% trans "Edit" %}</a>

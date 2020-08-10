@@ -30,6 +30,10 @@ class CompanyForm(ModelForm):
                 self.fields['eori'].widget.attrs['disabled'] = 'disabled'
                 self.fields['country'].required = False
                 self.fields['country'].widget.attrs['disabled'] = 'disabled'
+                self.fields['addr_place2'].required = False
+                self.fields['addr_place2'].widget.attrs['disabled'] = 'disabled'
+                self.fields['world_manufacturer_identifier'].required = False
+                self.fields['world_manufacturer_identifier'].widget.attrs['disabled'] = 'disabled'
 
             if not (self.has_edit_permission() or self.instance.vat_number==u'MISSING'):
                 self.fields['vat_number'].widget.attrs['disabled'] = 'disabled'
