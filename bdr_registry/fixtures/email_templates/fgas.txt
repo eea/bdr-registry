@@ -1,25 +1,32 @@
+Reporting data on F-Gases covering {{ reporting_year }}
+
 Dear {{ person.formal_name }},
 
 This message is addressed to you as the contact person of an undertaking that needs to report data on fluorinated greenhouse gases (F-Gases) under Article 6 of Regulation (EC) No 842/2006.
 
 The report needs to be submitted to the European Environment Agency (EEA) using the online Business Data Repository (BDR) at bdr.eionet.europa.eu.
 
-In order to submit your report you will need to login using the username and password for your company. The company for which you have received reporting rights is {{ company.name }} in {{ company.country.name }}. The username for your company is {{ company.account.uid }} and the password is {{ company.account.password }}.
+{% if use_reset_url %}
 
-Please note that this password will be valid for reporting during the year 2014. To assure confidentiality we will reset the password at the beginning of 2015.
+In order to submit your report you will need to login using the username and password for your company. The company for which you have received reporting rights is {{ company.name }} in {{ company.country.name }}.You have received a personal account for reporting under this company. The username is {{ account.uid}} and you can set your password using the following link .
+
+{% else %}
+
+In order to submit your report you will need to login using the username and password for your company. The company for which you have received reporting rights is {{ company.name }} in {{ company.country.name }}. The username for your company is: {{ account.uid }} and the password is {{ account.password }}.
+
+{% endif %}
+
+Please note that this password will be valid for reporting during the year {{ reporting_year }}. To assure confidentiality we will reset the password at the beginning of {{ next_year }}.
 
 How to submit your report?
-
 Detailed information on how to upload your delivery to BDR is available at: bdr.eionet.europa.eu/help/upload.html.
 
 Reporting requirements and forms
-
 From this year the EEA is using online webforms to collect the data you need to submit. This allows amongst others the data to be fed directly into a database without the need for manual processing. The webforms can perform certain checks immediately while you are completing the form or immediately after submission. This will increase the user friendliness and reduce the administrative burden for all stakeholders. It will also reduce the number of questions posed to you after submission. While the webforms by nature will look somewhat different from the Excel sheets used so far, no additional data will be requested compared to previous years. Due to the functionality of the online forms it was possible to eliminate certain tables and to avoid that data needs to be repeated in two different forms.
 
 Reporting is not required if you produce, import or export less than one tonne of fluorinated greenhouse gases.
 
 BDR Helpdesk
-
 Please feel free to contact the BDR Helpdesk (BDR.helpdesk@eea.europa.eu):
 
 if you received this e-mail but you think that you are no longer subject to the reporting obligations, please be so kind to inform us accordingly.

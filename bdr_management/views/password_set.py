@@ -116,8 +116,6 @@ class PasswordSetNewPassword(base.ModelTableViewMixin,
         form = self.get_form()
         if form.is_valid():
             form.save(self.account)
-            msg = _('Password changed succesfully.')
-            messages.success(request, msg)
             tokens = AccountUniqueToken.objects.filter(account=self.account)
             tokens.delete()
             self.form_valid(form)

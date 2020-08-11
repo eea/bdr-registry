@@ -1,0 +1,38 @@
+Reporting data on heavy-duty vehicles
+Dear {{ person.formal_name }},
+
+This message is addressed to you as {% if personal_account %}a reporter for{% else %}the contact person of{% endif %} manufacturer reporting data concerning fuel consumption and CO2 emissions from heavy-duty vehicles in accordance with Article 5 of Regulation (EU) 2018/956.
+
+The data shall be submitted to the European Environment Agency (EEA) using the online Business Data Repository (BDR) at bdr.eionet.europa.eu .
+
+{% if not set_owner and not password_reset and not personal_account %}
+
+In order to submit your report you will need to login using the username and password for your company. The company for which you have received reporting rights is {{company.name}}.
+
+{% endif %}
+
+{% if use_reset_url %}
+
+{% if personal_account %} Your personal username is {{ account.uid }} and you can set your password using the following link .
+
+{% else %}
+
+The username for your company is {{ account.uid}} and you can set your company account password using the following link .
+
+{% endif %}
+
+{% else %}
+
+The username for your company is {{ account.uid }} and the password is {{ account.password }}.
+
+{% endif %}
+
+Information on how to report and where to find information on the reporting requirements and formats is available here .
+
+If you received this e-mail but you think that you are no longer subject to the reporting obligation, please be so kind to inform us accordingly.
+
+Thank you in advance for your co-operation.
+
+Best regards,
+
+HDV CO2 monitoring team

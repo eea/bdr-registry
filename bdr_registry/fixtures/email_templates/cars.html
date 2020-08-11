@@ -13,16 +13,16 @@
 <p>
   In order to submit your report you will need to login using the username and password for your company. The company
   for which you have received reporting rights
-  is&nbsp;<strong>{{ company.name }}</strong>&nbsp;in&nbsp;<strong>{{ company.country.name }}</strong>.You have received
-  a personal account for reporting under this company. The
-  username&nbsp;is&nbsp;<strong>{{ account.uid}}</strong>&nbsp;and you can set your password using the following&nbsp;<a
-  href="{{ url }}">link</a>&nbsp;.
+  is&nbsp;<strong>{{ company.name }}</strong>&nbsp;in&nbsp;<strong>{{ company.country.name }}</strong>.You have
+  received a personal account for reporting under this company. The
+  username&nbsp;is&nbsp;<strong>{{ account.uid}}</strong>&nbsp;and you can set your password using the
+  following&nbsp;<a href="{{ url }}">link</a>&nbsp;.
 </p>
 <p>{% else %}</p>
 <p>
   In order to submit your report you will need to login using the username and password for your company. The company
-  for which you have received reporting rights is <strong>{{ company.name }}</strong>. The username for your company is
-  <strong>{{ account.uid }}</strong> and the password is<strong> {{ account.password }}</strong>.
+  for which you have received reporting rights is <strong>{{ company.name }}</strong>. The username for your company
+  is <strong>{{ account.uid }}</strong> and the password is<strong> {{ account.password }}</strong>.
 </p>
 <p>{% endif %}</p>
 <h1>How to submit your report?</h1>
@@ -34,13 +34,11 @@
 <p>
   The EEA is collecting the corrections from vans manufacturers using the BDR. When notifying corrections back to the
   Commission, the manufacturer must include all records and all entries that are relevant for it; i.e. both those that
-  the manufacturer considers correct as well as those that have been corrected. Data should be provided in .xml format.
-</p>
+  the manufacturer considers correct as well as those that have been corrected. Data should be provided in .xml
+  format.</p>
 <h1>BDR Helpdesk</h1>
 <p>
-  Please feel free to contact the BDR Helpdesk (<a
-  href="mailto:BDR.helpdesk@eea.europa.eu">BDR.helpdesk@eea.europa.eu</a>):
-</p>
+  Please feel free to contact the BDR Helpdesk (<a href="mailto:BDR.helpdesk@eea.europa.eu">BDR.helpdesk@eea.europa.eu</a>):</p>
 <ul>
   <li>
     If you received this e-mail but you think that you are no longer subject to the reporting obligations, please be
