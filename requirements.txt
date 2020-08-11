@@ -9,6 +9,7 @@ django-solo==1.1.2
 django-widget-tweaks==1.4.1
 eea.frame==0.5.4
 gunicorn==19.7.1
+jsonfield==2.1.1
 pyldap==2.4.37
 raven==6.3.0
 requests==2.20.0
