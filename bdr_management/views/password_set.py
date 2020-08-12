@@ -23,15 +23,22 @@ class SetPasswordMixin:
         url_paths.append(url.strip('/'))
         return "/".join(url_paths)
 
-    def send_mail(self, person, token):
-        if person.company.obligation.code == 'hdv':
+    def send_mail(self, token, person=None, company=None):
+        if person:
+            company = person.company
+            account = person.account
+        elif company:
+            person = company.main_reporter
+            account = company.account
+
+        if company.obligation.code == 'hdv':
             sender = settings.HDV_EMAIL_FROM
         else:
             sender = settings.BDR_EMAIL_FROM
         context={
             'url': self.compose_url(reverse('person_set_new_password', kwargs={'token': token})),
             'person': person,
-            'account': person.account
+            'account': account,
         }
         template = render_to_string('emails/password_set_request.html',
                                     context)
@@ -71,10 +78,15 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin,
         form = self.get_form()
         if form.is_valid():
             account = form.cleaned_data['username']
-            email = account.person.email
             token = self.send_password(account)
-            self.send_mail(account.person, token)
-            msg = _('An e-mail with a reset link has been sent.')
+            if hasattr(account, 'person'):
+                email = account.person.email
+                msg = _('An e-mail with a reset link has been sent to {}.'.format(email))
+                self.send_mail(token, person=account.person)
+            if hasattr(account, 'company'):
+                email = account.company.main_reporter.email
+                msg = _('An e-mail with a reset link has been sent to the {} (the company account owner).'.format(email))
+                self.send_mail(token, company=account.company)
             messages.success(request, msg)
             return self.form_valid(form)
         else:

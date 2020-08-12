@@ -22,7 +22,10 @@ class AccountForm(ModelForm):
     def clean_username(self):
         account = self.cleaned_data['username']
         if not hasattr(account, 'person'):
-            raise ValidationError("The account is not a personal account.")
+            if hasattr(account, 'company'):
+                if account.company.has_main_reporter:
+                    return account
+            raise ValidationError("The account is not a personal account or company account with an owner set.")
         return account
 
 class PasswordResetForm(Form):
