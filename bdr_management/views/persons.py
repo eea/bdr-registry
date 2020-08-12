@@ -1,3 +1,5 @@
+from braces import views
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -8,12 +10,11 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views import generic
 
-from braces import views
-
 from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_management.views.mixins import CompanyMixin
+
 from bdr_registry.admin import set_role_for_person_account
 from bdr_registry.models import Company, Person, User
 

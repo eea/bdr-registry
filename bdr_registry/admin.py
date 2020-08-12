@@ -9,19 +9,19 @@ from collections import defaultdict
 from django import forms
 from django.contrib import admin
 from django.contrib import messages
+from django.contrib.admin import helpers
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import User
-from django.template.response import TemplateResponse
-from django.contrib.admin import helpers
 from django.core import mail
 from django.conf import settings
 from django.conf.urls import url
+from django.http import HttpResponse
 from django.template.loader import render_to_string
+from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from django.http import HttpResponse
 
 from bdr_registry import models
 from .audit import log

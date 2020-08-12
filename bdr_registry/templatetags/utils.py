@@ -1,17 +1,14 @@
+from datetime import datetime
 import re
 import requests
 from requests.auth import HTTPBasicAuth
 
-from django.core.urlresolvers import reverse
-from django.template.loader import render_to_string
-from django.utils.safestring import mark_safe
-
-
-from datetime import datetime
-
 from django import template
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.template.defaultfilters import urlize
+from django.template.loader import render_to_string
+from django.utils.safestring import mark_safe
 
 import bdr_management
 from bdr_registry.models import Company, EmailTemplate, Person, Account

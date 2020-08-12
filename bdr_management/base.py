@@ -1,14 +1,15 @@
+from braces.views import AjaxResponseMixin, JSONResponseMixin
+from braces.views._access import AccessMixin
 from collections import namedtuple
 
-from bdr_registry.models import Company, Person, Account
-from braces.views._access import AccessMixin
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.conf import settings
 from django.contrib.auth.views import redirect_to_login
 from django.db.models import Model
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
-from django.core.exceptions import ImproperlyConfigured, PermissionDenied
-from braces.views import AjaxResponseMixin, JSONResponseMixin
+
+from bdr_registry.models import Company, Person, Account
 
 
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])

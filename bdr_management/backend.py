@@ -1,10 +1,9 @@
 from collections import defaultdict
-
 from io import BytesIO
+from post_office import mail
 import xlwt
 
 from django.conf import settings
-from post_office import mail
 
 from bdr_registry.ldap_editor import create_ldap_editor
 from bdr_registry.models import SiteConfiguration

@@ -1,6 +1,7 @@
 from post_office.models import Email, STATUS
 from post_office.mail import _send_bulk
-from django.core.management.base import BaseCommand, CommandError
+
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):

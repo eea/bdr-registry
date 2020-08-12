@@ -1,7 +1,9 @@
-from django.core.management.base import BaseCommand
-from bdr_registry.models import Company, Country, Obligation
 import json
 import requests
+
+from django.core.management.base import BaseCommand
+from bdr_registry.models import Company, Country, Obligation
+
 
 
 class Command(BaseCommand):

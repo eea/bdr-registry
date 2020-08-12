@@ -1,7 +1,8 @@
-import os
-import sys
 from getenv import env
 import ldap
+import os
+import sys
+
 from django_auth_ldap.config import LDAPSearch
 from bdr_registry.honeypot import honey_pot_value, honey_pot_checker
 

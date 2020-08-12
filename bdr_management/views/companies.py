@@ -1,29 +1,31 @@
+from braces import views
 from datetime import date, timedelta
-
 import json
 import requests
-from braces import views
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.translation import ugettext as _
 from django.views import generic
-from django.http import Http404, HttpResponseRedirect, HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
 
-from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management import base, forms, backend
 from bdr_management.base import Breadcrumb, is_staff_user
+from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
 from bdr_management.views.password_set import SetPasswordMixin
+
 from bdr_registry.admin import set_role_for_person_account
-from bdr_registry.models import (Company, Account, ReportingYear, Person, User,
-                                 ReportingStatus, SiteConfiguration)
+from bdr_registry.models import (
+    Account, Company, Person,
+    ReportingStatus, ReportingYear, SiteConfiguration, User
+)
 from bdr_registry.views import CanEdit
 
 

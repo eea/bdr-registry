@@ -1,8 +1,8 @@
-from bdr_management.forms.utils import set_empty_label
-from django.forms import BooleanField, Form, ModelForm
-from bdr_registry.models import Company
 from django.conf import settings
+from django.forms import BooleanField, Form, ModelForm
 
+from bdr_management.forms.utils import set_empty_label
+from bdr_registry.models import Company
 
 class CompanyForm(ModelForm):
     class Meta():

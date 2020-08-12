@@ -1,16 +1,16 @@
-import logging
 from contextlib import contextmanager
-
-from django.test import override_settings, TestCase, TransactionTestCase
-from django.core import mail
-from django.contrib.auth.models import User, Group
-from django.conf import settings
-from bdr_registry import models
-from bdr_management.tests import factories, base
+import logging
 from mock import patch
-
 import requests
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+
+from django.core import mail
+from django.conf import settings
+from django.contrib.auth.models import User, Group
+from django.test import override_settings, TestCase, TransactionTestCase
+
+from bdr_registry import models
+from bdr_management.tests import factories, base
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 

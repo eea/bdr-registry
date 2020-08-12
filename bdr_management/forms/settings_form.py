@@ -1,5 +1,6 @@
-from django.forms import ModelForm
 from django.conf import settings
+from django.forms import ModelForm
+
 from bdr_management.forms import set_empty_label
 from bdr_registry.models import ReportingYear, SiteConfiguration
 

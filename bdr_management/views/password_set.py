@@ -1,19 +1,21 @@
+from datetime import timedelta
+from post_office import mail
+import uuid, hashlib
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
 from django.http import HttpResponseForbidden
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.utils import timezone
 from django.utils.translation import ugettext as _
 from django.views import generic
-import uuid, hashlib
-from django.template.loader import render_to_string
+
 from bdr_management import base
 from bdr_management.base import Breadcrumb
 from bdr_management.forms import AccountForm, SetPasswordForm
-from bdr_registry.models import Account, Company, Person, User, AccountUniqueToken
-from post_office import mail
-from datetime import timedelta
-from django.utils import timezone
+from bdr_registry.models import Account, AccountUniqueToken, Company, Person, User
 
 class SetPasswordMixin:
 

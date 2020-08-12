@@ -1,19 +1,22 @@
-import json
+from braces import views
 import csv
-from django.conf import settings
+import json
+
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext as _
 from django.views import generic
 
-from braces import views
-from django.contrib import messages
-from bdr_management import backend
 
+from bdr_management import backend
 from bdr_management.base import Breadcrumb
-from bdr_registry.models import (Account, ReportingYear, Company, ReportingStatus,
-                                 Person, SiteConfiguration)
+
+from bdr_registry.models import (
+    Account, Company, Person,
+    ReportingStatus, ReportingYear, SiteConfiguration
+)
 from bdr_management.views.mixins import CompanyMixin
 
 

@@ -1,4 +1,5 @@
-from bdr_management.base import Breadcrumb
+from braces.views import GroupRequiredMixin
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -7,9 +8,9 @@ from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views import generic
 
-from braces.views import GroupRequiredMixin
-
 from bdr_management import base, forms
+from bdr_management.base import Breadcrumb
+
 from bdr_registry.models import Company, Comment
 
 

@@ -1,7 +1,7 @@
+import base64
 import logging
 import ldap
 import hashlib
-import base64
 from .audit import log as audit_log
 
 log = logging.getLogger(__name__)

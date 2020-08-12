@@ -1,6 +1,6 @@
-from bdr_registry.models import Obligation, Company, Account
 from django.core.exceptions import ObjectDoesNotExist
 
+from bdr_registry.models import Account, Company, Obligation
 
 class CompanyMixin(object):
     def get_obligations(self, default=True):

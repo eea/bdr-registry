@@ -1,10 +1,10 @@
+from braces import views
+
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.utils.translation import ugettext as _
 from django.views import generic
-
-from braces import views
 
 from bdr_management.base import Breadcrumb
 from bdr_management import base

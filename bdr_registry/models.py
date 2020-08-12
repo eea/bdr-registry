@@ -1,17 +1,18 @@
 import requests
 import random
 import string
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-
-from django.db import models, transaction, IntegrityError
-from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db import models, transaction, IntegrityError
 from django.utils.encoding import force_text
+from django.utils.translation import ugettext_lazy as _
+
 from solo.models import SingletonModel
 from .local import *
-from django.utils.translation import ugettext_lazy as _
 from post_office.models import EmailTemplate
 
 
