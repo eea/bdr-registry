@@ -14,19 +14,19 @@
   </form>
 
   {% if object.companies.all %}
-      <h2>{% trans "Warning: the following companies with their respective persons will be also deleted:" %}</h2>
-      <ul>
-        {% for company in object.companies.all %}
-          <li>
-            {{ company }}
-            <ul>
-              {% for person in company.people.all %}
-                <li>{{ person }}</li>
-              {% endfor %}
-            </ul>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
+    <h2>{% trans "Warning: the following companies with their respective persons will be also deleted:" %}</h2>
+    <ul>
+      {% for company in object.companies.all %}
+        <li>
+          {{ company }}
+          <ul>
+            {% for person in company.people.all %}
+              <li>{{ person }}</li>
+            {% endfor %}
+          </ul>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
 
 {% endblock %}

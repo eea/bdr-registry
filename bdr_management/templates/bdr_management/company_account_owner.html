@@ -9,11 +9,11 @@
   {% csrf_token %}
 
   <div class="inform">
-      {% if company.main_reporter %}
-        The current company account owner is {{ company.main_reporter }}
-      {% else %}
-        No company account owner is set.
-      {% endif %}
+    {% if company.main_reporter %}
+      The current company account owner is {{ company.main_reporter }}
+    {% else %}
+      No company account owner is set.
+    {% endif %}
   </div>
 
   <p>Setting a main company account owner will direct all notifications and will allow control of the account

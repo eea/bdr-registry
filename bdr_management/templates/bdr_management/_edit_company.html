@@ -5,16 +5,16 @@
 
 {% include 'bdr_management/_edit_header.html' %}
 <div class="row">
-<form class="form col-md-10 push-top" method="post">
+  <form class="form col-md-10 push-top" method="post">
     {% csrf_token %}
     {% include 'bdr_management/_edit_company_form_fields.html' %}
 
-  <hr />
+    <hr />
 
-  <div class="btn-toolbar">
-    <button type="submit" class="btn-blue">Save</button>
-    <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
-  </div>
+    <div class="btn-toolbar">
+      <button type="submit" class="btn-blue">Save</button>
+      <button type="button" class="cancel-button" data-href="{{ cancel_url }}">Cancel</button>
+    </div>
 
-</form>
+  </form>
 </div>
