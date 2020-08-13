@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.6.1 - (2020-08-13)
+--------------------
+* Update emailtemplates fixtures
+* Fix postoffice in admin
+* Allow owner company accounts password reset
+* Fix login cache
+  [dianaboiangiu]
+
 1.6.0 - (2020-08-10)
 * Add support for multiple reporters for a company
 * Add company owner
