@@ -133,11 +133,10 @@ class PasswordSetNewPassword(base.ModelTableViewMixin,
             tokens = AccountUniqueToken.objects.filter(account=self.account)
             tokens.delete()
             self.form_valid(form)
-            return redirect('home')
-            # return redirect(settings.BDR_SERVER_URL)
+            request.session.modified = True
+            return redirect(settings.BDR_SERVER_URL)
         else:
             return self.form_invalid(form)
 
     def get_success_url(self, **kwargs):
-        return redirect('home')
-        # return settings.BDR_SERVER_URL
+        return settings.BDR_SERVER_URL
