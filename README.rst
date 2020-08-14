@@ -4,12 +4,12 @@ BDR Organisations Registry
 .. image:: https://travis-ci.org/eea/bdr-registry.svg?branch=master
 	:target: https://travis-ci.org/eea/bdr-registry
 	:alt: Travis
-    
-----------
 
-.. image:: https://dockerbuildbadges.quelltext.eu/status.svg?organization=eeacms&repository=reportek.bdr-registry
+.. image:: https://img.shields.io/docker/build/eeacms/reportek.bdr-registry
 	:target: https://hub.docker.com/r/eeacms/reportek.bdr-registry/builds
+	:alt: Docker image
 
+----------
 
 `bdr-registry`_ is a registry of company contacts (implemented as a
 Django application) for the reporting process which is handled by the
