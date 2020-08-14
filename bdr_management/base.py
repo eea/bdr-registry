@@ -9,7 +9,7 @@ from django.db.models import Model
 from django.shortcuts import get_object_or_404
 from django.views.generic import View
 
-from bdr_registry.models import Company, Person, Account
+from bdr_registry.models import  Account, ApiKey, Company, Person
 
 
 Breadcrumb = namedtuple('Breadcrumb', ['url', 'title'])
@@ -202,3 +202,17 @@ def is_staff_user(user, company):
     if required_group in user.groups.values_list('name', flat=True):
         return True
     return False
+
+
+class ApiAccessMixin(AccessMixin):
+
+    def dispatch(self, request, *args, **kwargs):
+        token = ApiKey.objects.first().key
+        authorization = request.META.get('HTTP_AUTHORIZATION', '')
+        # authorization is actually looking for the header Authorization, but from Django's
+        # behavior this header is found in META, keyword HTTP_AUTHORIZATION
+        authorization_non_header = request.GET.get('apikey', '')
+        if request.user.is_staff or authorization == token or authorization_non_header == token:
+            return super(ApiAccessMixin, self).dispatch(
+                request, *args, **kwargs)
+        return self.handle_no_permission(request)

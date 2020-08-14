@@ -11,7 +11,7 @@ from django.views import generic
 
 
 from bdr_management import backend
-from bdr_management.base import Breadcrumb
+from bdr_management.base import Breadcrumb, ApiAccessMixin
 
 from bdr_registry.models import (
     Account, Company, Person,
@@ -84,7 +84,7 @@ class CopyReportingStatus(views.StaffuserRequiredMixin,
         return HttpResponseRedirect(reverse('management:actions'))
 
 
-class CompaniesJsonExport(views.StaffuserRequiredMixin,
+class CompaniesJsonExport(ApiAccessMixin,
                           CompanyMixin,
                           generic.View):
 
@@ -131,7 +131,7 @@ class CompaniesJsonExport(views.StaffuserRequiredMixin,
         return HttpResponse(data, content_type="application/json")
 
 
-class CompaniesExcelExport(views.StaffuserRequiredMixin,
+class CompaniesExcelExport(ApiAccessMixin,
                            CompanyMixin,
                            generic.View):
 
@@ -168,7 +168,7 @@ class CompaniesExcelExport(views.StaffuserRequiredMixin,
         return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
 
 
-class CompaniesCsvExport(views.StaffuserRequiredMixin,
+class CompaniesCsvExport(ApiAccessMixin,
                          generic.View):
     raise_exception = True
 
@@ -193,7 +193,7 @@ class CompaniesCsvExport(views.StaffuserRequiredMixin,
         return response
 
 
-class PersonsExport(views.StaffuserRequiredMixin,
+class PersonsExport(ApiAccessMixin,
                     CompanyMixin,
                     generic.View):
 
@@ -233,7 +233,7 @@ class PersonsExport(views.StaffuserRequiredMixin,
         return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
 
 
-class PersonsExportJson(views.StaffuserRequiredMixin,
+class PersonsExportJson(ApiAccessMixin,
                     CompanyMixin,
                     generic.View):
 
@@ -273,7 +273,7 @@ class PersonsExportJson(views.StaffuserRequiredMixin,
         return HttpResponse(data, content_type="application/json")
 
 
-class CompaniesForUsernameView(views.StaffuserRequiredMixin,
+class CompaniesForUsernameView(ApiAccessMixin,
                                generic.View):
 
     def get(self, request):

@@ -81,7 +81,7 @@ urlpatterns = [
     url(r'^password_set/', include(password_set)),
     # Api views
     url(r'^api/company/obligation/(?P<obligation_slug>.*)/',
-        api_views.company_by_obligation),
-    url(r'^organisation/all/?$', api_views.company_all),
+        api_views.CompanyByObligationView.as_view()),
+    url(r'^organisation/all/?$', api_views.CompanyAllView.as_view()),
 ]
 urlpatterns += staticfiles_urlpatterns()

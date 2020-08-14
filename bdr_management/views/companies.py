@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 from django.views import generic
 
 from bdr_management import base, forms, backend
-from bdr_management.base import Breadcrumb, is_staff_user
+from bdr_management.base import Breadcrumb, is_staff_user, ApiAccessMixin
 from bdr_management.forms import PersonFormWithoutCompany
 from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
@@ -115,7 +115,8 @@ class CompaniesFilter(views.StaffuserRequiredMixin,
         return start_date
 
 
-class CompanyFilteredByAccountUID(views.StaffuserRequiredMixin,
+
+class CompanyFilteredByAccountUID(ApiAccessMixin,
                                   CompanyMixin,
                                   generic.View):
     raise_exception = True
