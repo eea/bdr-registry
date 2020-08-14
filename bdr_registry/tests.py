@@ -274,7 +274,8 @@ class ApiTest(base.BaseWebTest):
                     '</organisations>')
         self.assertEqual(resp.content.decode(), expected)
 
-    def test_requests_with_no_api_key_are_rejected(self):
-        factories.CountryFactory()
-        resp = self.client.get('/organisation/all')
-        self.assertEqual(resp.status_code, 403)
+    #todo rewrite after auth api authorization is removed
+    # def test_requests_with_no_api_key_are_rejected(self):
+    #     factories.CountryFactory()
+    #     resp = self.client.get('/organisation/all')
+    #     self.assertEqual(resp.status_code, 403)
