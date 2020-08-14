@@ -94,7 +94,7 @@ class CompaniesJsonExport(ApiAccessMixin,
 
         companies = []
 
-        companies_list = self.get_companies()
+        companies_list = self.get_companies(no_user=self.no_user)
 
         for company in companies_list:
             people = []
@@ -144,7 +144,7 @@ class CompaniesExcelExport(ApiAccessMixin,
                   'obligation']
         rows = []
 
-        companies = self.get_companies()
+        companies = self.get_companies(no_user=self.no_user)
 
         for company in companies:
             account = company.account
@@ -206,7 +206,7 @@ class PersonsExport(ApiAccessMixin,
                   'fax']
         rows = []
 
-        user_obligations = self.get_obligations()
+        user_obligations = self.get_obligations(no_user=self.no_user)
 
         persons = (
             Person.objects.filter(company__obligation__id__in=user_obligations)
@@ -243,7 +243,7 @@ class PersonsExportJson(ApiAccessMixin,
 
         persons = []
 
-        user_obligations = self.get_obligations()
+        user_obligations = self.get_obligations(no_user=self.no_user)
 
         persons_list = (
             Person.objects.filter(company__obligation__id__in=user_obligations)

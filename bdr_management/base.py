@@ -206,12 +206,16 @@ def is_staff_user(user, company):
 
 class ApiAccessMixin(AccessMixin):
 
+    no_user = False
+
     def dispatch(self, request, *args, **kwargs):
         token = ApiKey.objects.first().key
         authorization = request.META.get('HTTP_AUTHORIZATION', '')
         # authorization is actually looking for the header Authorization, but from Django's
         # behavior this header is found in META, keyword HTTP_AUTHORIZATION
         authorization_non_header = request.GET.get('apikey', '')
+        if authorization or authorization_non_header:
+            self.no_user = True
         if request.user.is_staff or authorization == token or authorization_non_header == token:
             return super(ApiAccessMixin, self).dispatch(
                 request, *args, **kwargs)
