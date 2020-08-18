@@ -5,7 +5,7 @@ install:
   - pip install -r requirements-dev.txt
   - pip install coveralls
 before_script: cp localsettings.py.example localsettings.py
-script: ./manage.py test
+script: coverage run --source='.' ./manage.py test
 after_success:
   coveralls
 notifications:
