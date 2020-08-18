@@ -5,6 +5,10 @@ BDR Organisations Registry
 	:target: https://travis-ci.org/eea/bdr-registry
 	:alt: Travis
 
+.. image:: https://coveralls.io/repos/github/eea/bdr-registry/badge.svg?branch=master
+	:target: https://coveralls.io/github/eea/bdr-registry?branch=master
+	:alt: Coveralls
+
 .. image:: https://img.shields.io/docker/build/eeacms/reportek.bdr-registry
 	:target: https://hub.docker.com/r/eeacms/reportek.bdr-registry/builds
 	:alt: Docker image
