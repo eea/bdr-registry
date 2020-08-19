@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+import json
 import logging
 from mock import patch
 import requests
@@ -7,7 +8,7 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from django.core import mail
 from django.conf import settings
 from django.contrib.auth.models import User, Group
-from django.test import override_settings, TestCase, TransactionTestCase
+from django.test import Client, override_settings, TestCase, TransactionTestCase
 
 from bdr_registry import models
 from bdr_management.tests import factories, base
@@ -23,6 +24,13 @@ ORG_FIXTURE = {
     'vat_number': "vat number",
 }
 
+ORG_FIXTURE_HDV = {
+    'name': "Teh company",
+    'addr_street': "teh street",
+    'addr_place1': "Copenhagen",
+    'addr_postalcode': "123456",
+    'world_manufacturer_identifier': 'test1234'
+}
 
 PERSON_FIXTURE = {
     'title': "Mr.",
@@ -37,41 +45,19 @@ COMMENT_FIXTURE = {
 }
 
 
-def create_user_and_login(client,
-                          username='test_user', password='pw',
-                          staff=False, superuser=False):
-    user_data = dict(username=username, password=password)
-    user = User.objects.create_user(**user_data)
-    user.is_superuser = superuser
-    user.is_staff = staff
-    user.save()
-    with patch('django_auth_ldap.config._LDAPConfig.ldap') as p:
-        client.login(**user_data)
-    return user
-
-
-@contextmanager
-def quiet_request_logging():
-    logger = logging.getLogger('django.request')
-    previous_level = logger.getEffectiveLevel()
-    logger.setLevel(logging.ERROR)
-    try:
-        yield
-    finally:
-        logger.setLevel(previous_level)
-
 
 class FormSubmitTest(TransactionTestCase):
 
     def setUp(self):
         self.denmark = factories.CountryFactory(name="Denmark", code='dk')
         self.obligation = factories.ObligationFactory(code='obl', name='Obligation')
+        factories.ObligationFactory(code='hdv', name='HDV')
 
     def assert_object_has_items(self, obj, data):
         for key in data:
             self.assertEqual(getattr(obj, key), data[key])
 
-    def prepare_form_data(self):
+    def prepare_form_data(self, org_fixture):
         form_data = {
             'company-country': self.denmark.pk,
             'company-obligation': self.obligation.pk,
@@ -79,7 +65,7 @@ class FormSubmitTest(TransactionTestCase):
             'company-captcha_1': 'PASSED',
             settings.HONEYPOT_FIELD_NAME: settings.HONEYPOT_VALUE()
         }
-        for key, value in ORG_FIXTURE.items():
+        for key, value in org_fixture.items():
             form_data['company-' + key] = value
         for key, value in PERSON_FIXTURE.items():
             form_data['person-' + key] = value
@@ -91,7 +77,7 @@ class FormSubmitTest(TransactionTestCase):
     def test_submitted_company_and_person_are_saved(self):
         factories.SiteConfigurationFactory()
 
-        resp = self.client.post('/self_register', self.prepare_form_data())
+        resp = self.client.post('/self_register', self.prepare_form_data(ORG_FIXTURE))
 
         self.assertEqual(models.Company.objects.count(), 1)
         self.assertEqual(models.Person.objects.count(), 1)
@@ -107,8 +93,28 @@ class FormSubmitTest(TransactionTestCase):
         self.assertEqual(resp['location'],
                          '/self_register/done')
 
+
+    def test_submitted_company_and_person_are_saved_on_hdv(self):
+        factories.SiteConfigurationFactory()
+        data = self.prepare_form_data(ORG_FIXTURE_HDV)
+        resp = self.client.post('/self_register_hdv', data)
+        self.assertEqual(models.Company.objects.count(), 1)
+        self.assertEqual(models.Person.objects.count(), 1)
+        org = models.Company.objects.all()[0]
+        person = models.Person.objects.all()[0]
+
+        self.assert_object_has_items(org, ORG_FIXTURE_HDV)
+        self.assert_object_has_items(person, PERSON_FIXTURE)
+        self.assertEqual(person.company, org)
+        self.assertCountEqual(org.people.all(), [person])
+
+        self.assertEqual(resp.status_code, 302)
+        self.assertEqual(resp['location'],
+                         '/self_register/done/hdv')
+
+
     def test_invalid_person_rolls_back_saved_company(self):
-        form_data = self.prepare_form_data()
+        form_data = self.prepare_form_data(ORG_FIXTURE)
         del form_data['person-email']
         resp = self.client.post('/self_register', form_data)
 
@@ -133,7 +139,7 @@ class FormSubmitTest(TransactionTestCase):
 
         self.obligation.admins = [user1]
 
-        self.client.post('/self_register', self.prepare_form_data())
+        self.client.post('/self_register', self.prepare_form_data(ORG_FIXTURE))
         self.assertEqual(len(mail.outbox), 1)
 
 
@@ -279,3 +285,17 @@ class ApiTest(base.BaseWebTest):
     #     factories.CountryFactory()
     #     resp = self.client.get('/organisation/all')
     #     self.assertEqual(resp.status_code, 403)
+
+    def test_api_company_by_obligation(self):
+        user = factories.SuperUserFactory()
+        obligation = factories.ObligationFactory(code='obl', name='Obligation')
+        company = factories.CompanyFactory(obligation=obligation)
+        url = self.reverse('api_company_by_obligation', obligation_slug=obligation.reportek_slug)
+        user.set_password('q')
+        user.save()
+        client = Client(HTTP_USER_AGENT='Mozilla/5.0')
+        logged_in = self.client.login(username=user.username, password='q')
+        resp = self.client.get(url)
+        data = json.loads(resp.content)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], company.name)
