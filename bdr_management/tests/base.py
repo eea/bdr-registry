@@ -13,36 +13,6 @@ class BaseWebTest(WebTest):
 
     csrf_checks = False
 
-    def populate_fields(self, form, data):
-        for field_name, field in form.field_order:
-            if field_name in data:
-                value = data[field_name]
-                if isinstance(value, Model):
-                    value = value.pk
-                if isinstance(field, MultipleSelect):
-                    if not isinstance(value, list):
-                        value = [value]
-                if isinstance(field, (Select, MultipleSelect)):
-                    field.force_value(value)
-                else:
-                    field.value = value
-        return form
-
-    def normalize_data(self, data):
-
-        def convert_model_to_pk(value):
-            if isinstance(value, Model):
-                return value.pk
-            return value
-
-        new_data = dict(data)
-        for k, v in new_data.items():
-            if isinstance(v, list):
-                new_data[k] = map(convert_model_to_pk, v)
-            else:
-                new_data[k] = convert_model_to_pk(v)
-        return new_data
-
     def reverse(self, view_name, *args, **kwargs):
         return reverse(view_name, args=args, kwargs=kwargs)
 

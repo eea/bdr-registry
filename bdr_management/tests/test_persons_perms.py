@@ -1,8 +1,10 @@
 
+from django.test import Client
+
 from .base import BaseWebTest
 from bdr_management.tests import factories
 from bdr_registry.models import Person
-
+from factory import fuzzy
 
 class PersonManagementTests(BaseWebTest):
 
@@ -32,6 +34,28 @@ class PersonManagementTests(BaseWebTest):
         url = self.reverse('management:persons_view', pk=person.pk)
         resp = self.app.get(url, user=None, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
+
+    def test_email_template_filter_view_by_superuser(self):
+        factories.SiteConfigurationFactory()
+        person = factories.PersonFactory()
+        user = factories.SuperUserFactory()
+        url = self.reverse('management:persons_filter')
+        user.set_password('q')
+        user.save()
+        client = Client(HTTP_USER_AGENT='Mozilla/5.0')
+        logged_in = client.login(username=user.username, password='q')
+        kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+        data = {'sColumns': 'id,name', 'search': 'test', 'order_by': 'name'}
+        resp = client.get(url, data, **kwargs)
+        self.assertEqual(200, resp.status_code)
+
+    def test_person_from_company_view_by_superuser(self):
+        user = factories.SuperUserFactory()
+        company = factories.CompanyFactory()
+        person = factories.PersonFactory(company=company)
+        url = self.reverse('management:person_from_company', cpk=company.pk, pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
 
     def test_person_add_by_staff(self):
         factories.SiteConfigurationFactory()
@@ -198,11 +222,33 @@ class PersonManagementTests(BaseWebTest):
         self.assertEqual(new_person.first_name, form['first_name'])
         self.assertEqual(new_person.company.pk, form['company'])
 
+    def test_person_update_on_management_post_by_superuser(self):
+        user = factories.SuperUserFactory()
+        person = factories.PersonFactory()
+        url = self.reverse('management:person_from_company_edit',
+                           cpk=person.company.pk, pk=person.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(200, resp.status_int)
+        text_fuzzer = fuzzy.FuzzyText()
+        email_fuzzer = fuzzy.FuzzyText(length=6, suffix='@eaudeweb.ro')
+        params = {
+            'title': "Mr.",
+            'first_name': text_fuzzer.fuzz(),
+            'family_name': text_fuzzer.fuzz(),
+            'email': email_fuzzer.fuzz(),
+            'phone': text_fuzzer.fuzz(),
+            'company': person.company.pk
+        }
+        resp = self.app.post(url, user=user.username, params=params)
+        self.assertEqual(302, resp.status_int)
+
     def test_person_delete_by_staff(self):
         user = factories.StaffUserFactory()
         person1 = factories.PersonFactory()
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         resp = self.app.delete(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
@@ -211,6 +257,8 @@ class PersonManagementTests(BaseWebTest):
         person1 = factories.PersonFactory()
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         resp = self.app.delete(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
@@ -219,6 +267,8 @@ class PersonManagementTests(BaseWebTest):
         person1 = factories.PersonFactory()
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:persons'))
 
@@ -227,8 +277,21 @@ class PersonManagementTests(BaseWebTest):
         person1 = factories.PersonFactory()
         factories.PersonFactory(company=person1.company)
         url = self.reverse('management:persons_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:persons'))
+
+    def test_person_delete_company_management_by_bdr_superuser(self):
+        factories.SiteConfigurationFactory()
+        user = factories.SuperUserFactory()
+        person1 = factories.PersonFactory()
+        factories.PersonFactory(company=person1.company)
+        url = self.reverse('management:person_from_company_delete', cpk=person1.company.pk, pk=person1.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
+        resp = self.app.delete(url, user=user.username)
+        self.assertRedirects(resp, self.reverse('management:companies_view', pk=person1.company.pk))
 
     def test_delete_last_person(self):
         company = factories.CompanyFactory()
@@ -485,6 +548,8 @@ class PersonTests(BaseWebTest):
         person1 = factories.PersonFactory(company=company)
         factories.PersonFactory(company=company)
         url = self.reverse('person_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         resp = self.app.delete(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
@@ -507,6 +572,8 @@ class PersonTests(BaseWebTest):
         person1 = factories.PersonFactory(company=company)
         factories.PersonFactory(company=company)
         url = self.reverse('person_delete', pk=person1.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
         resp = self.app.delete(url, user=user.username)
         success_url = self.reverse('company', pk=company.pk)
         self.assertRedirects(resp, success_url)

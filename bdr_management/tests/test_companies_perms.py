@@ -199,6 +199,8 @@ class CompanyManagementTests(BaseWebTest):
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_delete',
                            pk=company.pk)
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         resp = self.app.delete(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
@@ -208,6 +210,8 @@ class CompanyManagementTests(BaseWebTest):
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_delete',
                            pk=company.pk)
+        resp = self.app.get(url, user=user.username, expect_errors=True)
+        self.assertEqual(resp.status_int, 403)
         resp = self.app.delete(url, user=user.username, expect_errors=True)
         self.assertEqual(resp.status_int, 403)
 
@@ -217,6 +221,8 @@ class CompanyManagementTests(BaseWebTest):
         company = factories.CompanyFactory()
         url = self.reverse('management:companies_delete',
                            pk=company.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:companies'))
 

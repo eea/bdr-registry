@@ -176,7 +176,7 @@ BDR_SERVER_URL = env('BDR_SERVER_URL', 'http://example.com/')
 BDR_HELPDESK_EMAIL = env('BDR_HELPDESK_EMAIL', '')
 
 BDR_EMAIL_FROM = env('BDR_EMAIL_FROM', 'bdr@localhost')
-HDV_EMAIL_FROM = env('HDV_EMAIL_FROM', '')
+HDV_EMAIL_FROM = env('HDV_EMAIL_FROM', 'hdv@localhost')
 
 HDV_MAIL_HEADERS = {
     "X-OTRS-IsVisibleForCustomer": "0",

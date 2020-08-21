@@ -77,12 +77,29 @@ class ObligationManagementTests(BaseWebTest):
         url = self.reverse('management:obligations_add')
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        params={
+            'name': 'test',
+            'code': 'test',
+            'reportek_slug': 'test',
+            'email_template': factories.EmailTemplateFactory().pk,
+        }
+        resp = self.app.post(url, user=user.username, params=params)
+        self.assertEqual(302, resp.status_int)
 
     def test_obligation_add_by_superuser(self):
         user = factories.SuperUserFactory()
         url = self.reverse('management:obligations_add')
         resp = self.app.get(url, user=user.username)
         self.assertEqual(200, resp.status_int)
+        params={
+            'name': 'test',
+            'code': 'test',
+            'reportek_slug': 'test',
+            'email_template': factories.EmailTemplateFactory().pk
+        }
+        resp = self.app.post(url, user=user.username, params=params)
+        self.assertEqual(302, resp.status_int)
+
 
     def test_obligation_update_by_staff(self):
         user = factories.StaffUserFactory()
@@ -135,6 +152,13 @@ class ObligationManagementTests(BaseWebTest):
         url = self.reverse('management:obligation_delete', pk=obligation.pk)
         resp = self.app.delete(url, user=user.username)
         self.assertRedirects(resp, self.reverse('management:obligations'))
+
+    def test_obligation_delete_get(self):
+        user = factories.SuperUserFactory()
+        obligation = factories.ObligationFactory()
+        url = self.reverse('management:obligation_delete', pk=obligation.pk)
+        resp = self.app.get(url, user=user.username)
+        self.assertEqual(resp.status_int, 200)
 
     def test_obligation_delete_by_superuser(self):
         user = factories.SuperUserFactory()
@@ -193,6 +217,14 @@ class ObligationManagementTests(BaseWebTest):
         url = self.reverse('management:obligations_filter')
         kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
         data = {'sColumns': 'id,name'}
+        resp = client.get(url, data, **kwargs)
+        self.assertEqual(resp.status_code, 200)
+
+        # filter obligations
+
+        url = self.reverse('management:obligations_filter')
+        kwargs = {'HTTP_X_REQUESTED_WITH': 'XMLHttpRequest'}
+        data = {'sColumns': 'id,name', 'search': 'test', 'order_by': 'name'}
         resp = client.get(url, data, **kwargs)
         self.assertEqual(resp.status_code, 200)
 
