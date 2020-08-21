@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.2 - (2020-08-21)
+--------------------
+* Implement auth/token for API endpoints access
+  [dianaboiangiu]
+
 1.6.1 - (2020-08-13)
 --------------------
 * Update emailtemplates fixtures
@@ -10,6 +15,7 @@ Changelog
   [dianaboiangiu]
 
 1.6.0 - (2020-08-10)
+--------------------
 * Add support for multiple reporters for a company
 * Add company owner
 * Implement set password functionality
