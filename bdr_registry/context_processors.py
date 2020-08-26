@@ -6,6 +6,7 @@ def settings_context(request):
     return {
         'debug': settings.DEBUG,
         'BDR_SERVER_URL': settings.BDR_SERVER_URL,
+        'USE_ZOPE_LOGIN': settings.USE_ZOPE_LOGIN,
     }
 
 
