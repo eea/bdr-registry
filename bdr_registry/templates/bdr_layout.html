@@ -84,13 +84,13 @@
         <div id="righttools">
           {% if user.is_anonymous %}
             {% if USE_ZOPE_LOGIN %}
-              <a id="loginlink" href="{{ BDR_SERVER_URL }}/Login/ldap_login?came_from={{ request.get_full_path }}">{% trans "Login" %}</a>
+              <a id="loginlink" href="{{ BDR_SERVER_URL }}Login/ldap_login?came_from={{ request.get_full_path }}">{% trans "Login" %}</a>
             {% else %}
               <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
             {% endif %}
           {% else %}
             {% if USE_ZOPE_LOGIN %}
-              <a id="logoutlink" href="{{ BDR_SERVER_URL }}/Login/ldap_logout">{% trans "Logout" %} ({{ user.username }})</a>
+              <a id="logoutlink" href="{{ BDR_SERVER_URL }}Login/ldap_logout">{% trans "Logout" %} ({{ user.username }})</a>
             {% else %}
               <a id="logoutlink" href="{% url 'logout' %}">{% trans "Logout" %} ({{ user.username }})</a>
             {% endif %}
