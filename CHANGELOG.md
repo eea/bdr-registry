@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.3 - (2020-08-26)
+--------------------
+* Use zope login/logout
+  [dianaboiangiu]
+
 1.6.2 - (2020-08-21)
 --------------------
 * Implement auth/token for API endpoints access
