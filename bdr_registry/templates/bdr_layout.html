@@ -84,7 +84,7 @@
         <div id="righttools">
           {% if user.is_anonymous %}
             {% if USE_ZOPE_LOGIN %}
-              <a id="loginlink" href="{{ BDR_SERVER_URL }}/acl_users/cookie_auth/login_form?came_from={{ request.get_full_path }}">{% trans "Login" %}</a>
+              <a id="loginlink" href="{{ BDR_SERVER_URL }}/Login/ldap_login?came_from={{ request.get_full_path }}">{% trans "Login" %}</a>
             {% else %}
               <a id="loginlink" href="{% url 'login' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>
             {% endif %}
