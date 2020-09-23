@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.4 - (2020-08-27)
+--------------------
+* Translate non-ASCII characters from account uid
+  [dianaboiangiu]
+
 1.6.3 - (2020-08-26)
 --------------------
 * Use zope login/logout
