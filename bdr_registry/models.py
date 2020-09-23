@@ -1,6 +1,7 @@
 import requests
 import random
 import string
+from unidecode import unidecode
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -105,6 +106,7 @@ class AccountManager(models.Manager):
             first_name=person.first_name.lower()[:3],
             family_name=person.family_name.lower()[:3]
         )
+        uid = unidecode(uid)
         try:
             return self.create(uid=uid)
         except IntegrityError:
@@ -113,6 +115,7 @@ class AccountManager(models.Manager):
                 first_name=person.first_name.lower()[:4],
                 family_name=person.family_name.lower()[:4]
             )
+            uid = unidecode(uid)
             return self.create(uid=uid)
 
 class Account(models.Model):
