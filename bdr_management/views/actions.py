@@ -1,6 +1,9 @@
 from braces import views
 import csv
 import json
+from datetime import datetime
+import xlsxwriter
+from io import BytesIO
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -137,18 +140,40 @@ class CompaniesExcelExport(ApiAccessMixin,
 
     raise_exception = True
 
-    def get(self, request):
-        header = ['userid', 'name', 'date_registered', 'active', 'outdated',
-                  'addr_street', 'addr_place1', 'addr_postalcode',
-                  'addr_place2', 'country', 'vat_number', 'world_manufacturer_identifier',
-                  'obligation']
-        rows = []
+    def generate_excel_file(self, workbook):
+        header = [
+            'userid', 'name', 'date_registered', 'active', 'outdated', 'addr_street', 'addr_place1',
+            'addr_postalcode', 'addr_place2', 'country', 'vat_number', 'world_manufacturer_identifier',
+            'obligation', 'person_title', 'person_first_name', 'person_family_name', 'person_email',
+            'person_phone', 'person_phone2', 'person_phone3'
+        ]
+
+        format_cols_headers = workbook.add_format(
+            {
+                "bold": 1, "align": "center", "valign": "vcenter",
+                "font_name": "Calibri", "font_size": 12, "text_wrap": True,
+                "border": 1,
+            }
+        )
+        format_rows = workbook.add_format(
+            {
+                "align": "left", "valign": "vcenter", "font_name": "Calibri",
+                "font_size": 12, "text_wrap": True,
+            }
+        )
+
+        worksheet = workbook.add_worksheet("Companies")
+        worksheet.set_column("A1:Q1", 30)
+        worksheet.set_column("Q1:Q1", 50)
+        worksheet.set_column("R1:T1", 20)
+        worksheet.write_row("A1", header, format_cols_headers)
 
         companies = self.get_companies(no_user=self.no_user)
+        index = 1
 
         for company in companies:
             account = company.account
-            rows.append([v.encode('utf-8') for v in [
+            company_data = [
                 '' if account is None else account.uid,
                 company.name or '',
                 company.date_registered.strftime('%Y-%m-%d %H:%M:%S'),
@@ -162,10 +187,53 @@ class CompaniesExcelExport(ApiAccessMixin,
                 company.vat_number or '',
                 company.world_manufacturer_identifier or '',
                 company.obligation.code if company.obligation else '',
-            ]])
+            ]
+            people_count = company.people.all().count()
 
-        xls_doc = backend.generate_excel(header, rows)
-        return HttpResponse(xls_doc, content_type="application/vnd.ms-excel")
+            if people_count >= 2:
+                count = 0
+                for field in company_data:
+                    worksheet.merge_range(index, count, index + people_count - 1, count, field, format_rows)
+                    count += 1
+                for person in company.people.all():
+                    data = [
+                        person.title or '', person.first_name or '', person.family_name or '',
+                        person.email or '', person.phone or '', person.phone2 or '', person.phone3 or ''
+                    ]
+                    worksheet.write_row(index, count, data, format_rows)
+                    index += 1
+            elif people_count == 1:
+                person = company.people.first()
+                person_data = [
+                        person.title or '', person.first_name or '', person.family_name or '',
+                        person.email or '', person.phone or '', person.phone2 or '', person.phone3 or ''
+                ]
+                worksheet.write_row(
+                    index,
+                    0,
+                    company_data + person_data,
+                    format_rows,
+                )
+                index += 1
+            else:
+                worksheet.write_row(index, 0, company_data + ["", "", "", "", "", "", ""], format_rows)
+                index += 1
+
+    def get(self, request):
+        output = BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+        self.generate_excel_file(workbook)
+        workbook.close()
+        output.seek(0)
+        date = datetime.now().strftime("%Y_%m_%d")
+        filename = "_".join([date, "companies_export"]) + ".xlsx"
+        cont_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        response = HttpResponse(
+            output,
+            content_type=cont_type,
+        )
+        response["Content-Disposition"] = "attachment; filename=%s" % filename
+        return response
 
 
 class CompaniesCsvExport(ApiAccessMixin,
