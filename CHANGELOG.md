@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.5 - (2021-03-25)
+--------------------
+* Add persons to excel companies download
+  [dianaboiangiu]
+
 1.6.4 - (2020-08-27)
 --------------------
 * Translate non-ASCII characters from account uid
