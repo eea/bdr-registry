@@ -58,12 +58,10 @@ class BDRGroupUserFactory(UserFactory):
 
     is_staff = True
 
-    @classmethod
-    def _prepare(cls, create, **kwargs):
+    @factory.post_generation
+    def set_group(self, create, extracted, **kwargs):
         group = BDRGroupFactory()
-        user = super(BDRGroupUserFactory, cls)._prepare(create, **kwargs)
-        user.groups.add(group)
-        return user
+        self.groups.add(group)
 
 
 class BDRGroupFactory(django.DjangoModelFactory):
