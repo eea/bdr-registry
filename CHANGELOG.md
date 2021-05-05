@@ -1,6 +1,10 @@
 Changelog
 =========
 
+1.6.7 - (2021-05-05)
+--------------------
+  [dianaboiangiu]
+
 1.6.6 - (2021-03-26)
 --------------------
 * Change text for excel companies action
