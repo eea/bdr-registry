@@ -3,6 +3,7 @@ Changelog
 
 1.6.7 - (2021-05-05)
 --------------------
+* Update packages
   [dianaboiangiu]
 
 1.6.6 - (2021-03-26)
