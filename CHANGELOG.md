@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.6.8 - (2021-05-21)
+--------------------
+* Update packages
+  [dianaboiangiu]
+
 1.6.7 - (2021-05-05)
 --------------------
 * Update packages
