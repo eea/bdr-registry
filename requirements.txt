@@ -6,7 +6,7 @@ django-getenv>=1.3.2
 django-honeypot==0.9.0
 django-nose==1.4.7
 # can upgrade to 3.5.3 after django >= 2.2
-django-post-office==3.3.0
+django-post-office==2.0.8
 # can upgrade to 0.5.14 if django >= 2.2
 django-simple-captcha==0.5.12
 django-solo==1.1.5
