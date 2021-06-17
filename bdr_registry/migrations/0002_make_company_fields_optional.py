@@ -3,46 +3,58 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0001_initial'),
+        ("bdr_registry", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='company',
-            name='world_manufacturer_identifier',
-            field=models.CharField(max_length=20, verbose_name='World Manufacturer Identifier (WMI)',
-                                   blank=True),
+            model_name="company",
+            name="world_manufacturer_identifier",
+            field=models.CharField(
+                max_length=20,
+                verbose_name="World Manufacturer Identifier (WMI)",
+                blank=True,
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='company',
-            name='addr_place1',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Municipality'),
+            model_name="company",
+            name="addr_place1",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Municipality"
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='addr_postalcode',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Postal code'),
+            model_name="company",
+            name="addr_postalcode",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Postal code"
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='addr_street',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Street and number'),
+            model_name="company",
+            name="addr_street",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Street and number"
+            ),
         ),
         migrations.AlterField(
-            model_name='company',
-            name='vat_number',
-            field=models.CharField(blank=True, max_length=17, verbose_name='VAT number'),
+            model_name="company",
+            name="vat_number",
+            field=models.CharField(
+                blank=True, max_length=17, verbose_name="VAT number"
+            ),
         ),
         migrations.AlterField(
-            model_name='person',
-            name='phone',
-            field=models.CharField(blank=True, max_length=255, verbose_name='Telephone'),
+            model_name="person",
+            name="phone",
+            field=models.CharField(
+                blank=True, max_length=255, verbose_name="Telephone"
+            ),
         ),
     ]

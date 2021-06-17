@@ -14,167 +14,420 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('post_office', '0004_auto_20160607_0901'),
+        ("post_office", "0004_auto_20160607_0901"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Account',
+            name="Account",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('uid', models.CharField(max_length=255, unique=True)),
-                ('password', models.CharField(blank=True, max_length=255, null=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("uid", models.CharField(max_length=255, unique=True)),
+                ("password", models.CharField(blank=True, max_length=255, null=True)),
             ],
             options={
-                'ordering': ['uid'],
+                "ordering": ["uid"],
             },
         ),
         migrations.CreateModel(
-            name='ApiKey',
+            name="ApiKey",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(default=bdr_registry.models.generate_key, max_length=255)),
-                ('comment', models.CharField(max_length=255)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "key",
+                    models.CharField(
+                        default=bdr_registry.models.generate_key, max_length=255
+                    ),
+                ),
+                ("comment", models.CharField(max_length=255)),
             ],
         ),
         migrations.CreateModel(
-            name='Comment',
+            name="Comment",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.TextField(verbose_name='Comment')),
-                ('created', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.TextField(verbose_name="Comment")),
+                ("created", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Company',
+            name="Company",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, verbose_name='Company name')),
-                ('date_registered', models.DateTimeField(auto_now_add=True)),
-                ('active', models.BooleanField(default=True)),
-                ('outdated', models.BooleanField(default=False)),
-                ('addr_street', models.CharField(max_length=255, verbose_name='Street and number')),
-                ('addr_place1', models.CharField(max_length=255, verbose_name='Municipality')),
-                ('addr_postalcode', models.CharField(max_length=255, verbose_name='Postal code')),
-                ('addr_place2', models.CharField(blank=True, max_length=255, null=True, verbose_name='Region')),
-                ('eori', models.CharField(blank=True, help_text='Economic Operators Registration and Identification number (EORI)', max_length=17, null=True, verbose_name='EORI number')),
-                ('vat_number', models.CharField(max_length=17, verbose_name='VAT number')),
-                ('website', models.URLField(blank=True, null=True)),
-                ('account', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='company', to='bdr_registry.Account')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, verbose_name="Company name")),
+                ("date_registered", models.DateTimeField(auto_now_add=True)),
+                ("active", models.BooleanField(default=True)),
+                ("outdated", models.BooleanField(default=False)),
+                (
+                    "addr_street",
+                    models.CharField(max_length=255, verbose_name="Street and number"),
+                ),
+                (
+                    "addr_place1",
+                    models.CharField(max_length=255, verbose_name="Municipality"),
+                ),
+                (
+                    "addr_postalcode",
+                    models.CharField(max_length=255, verbose_name="Postal code"),
+                ),
+                (
+                    "addr_place2",
+                    models.CharField(
+                        blank=True, max_length=255, null=True, verbose_name="Region"
+                    ),
+                ),
+                (
+                    "eori",
+                    models.CharField(
+                        blank=True,
+                        help_text="Economic Operators Registration and Identification number (EORI)",
+                        max_length=17,
+                        null=True,
+                        verbose_name="EORI number",
+                    ),
+                ),
+                (
+                    "vat_number",
+                    models.CharField(max_length=17, verbose_name="VAT number"),
+                ),
+                ("website", models.URLField(blank=True, null=True)),
+                (
+                    "account",
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="company",
+                        to="bdr_registry.Account",
+                    ),
+                ),
             ],
             options={
-                'verbose_name_plural': 'Companies',
+                "verbose_name_plural": "Companies",
             },
         ),
         migrations.CreateModel(
-            name='CompanyNameHistory',
+            name="CompanyNameHistory",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('time', models.DateTimeField(auto_now_add=True)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='namehistory', to='bdr_registry.Company')),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("time", models.DateTimeField(auto_now_add=True)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="namehistory",
+                        to="bdr_registry.Company",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Country',
+            name="Country",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255, unique=True)),
-                ('code', models.CharField(max_length=255, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255, unique=True)),
+                ("code", models.CharField(max_length=255, unique=True)),
             ],
             options={
-                'verbose_name_plural': 'Countries',
+                "verbose_name_plural": "Countries",
             },
         ),
         migrations.CreateModel(
-            name='NextAccountId',
+            name="NextAccountId",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('next_id', models.IntegerField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("next_id", models.IntegerField()),
             ],
         ),
         migrations.CreateModel(
-            name='Obligation',
+            name="Obligation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=255)),
-                ('code', models.CharField(max_length=255)),
-                ('reportek_slug', models.CharField(max_length=255)),
-                ('bcc', models.TextField(blank=True, validators=[bdr_registry.models.validate_comma_separated_email_list])),
-                ('admins', models.ManyToManyField(blank=True, related_name='obligations', to=settings.AUTH_USER_MODEL)),
-                ('email_template', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post_office.EmailTemplate')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=255)),
+                ("code", models.CharField(max_length=255)),
+                ("reportek_slug", models.CharField(max_length=255)),
+                (
+                    "bcc",
+                    models.TextField(
+                        blank=True,
+                        validators=[
+                            bdr_registry.models.validate_comma_separated_email_list
+                        ],
+                    ),
+                ),
+                (
+                    "admins",
+                    models.ManyToManyField(
+                        blank=True,
+                        related_name="obligations",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "email_template",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="post_office.EmailTemplate",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Person',
+            name="Person",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(blank=True, max_length=255, null=True, verbose_name='Title')),
-                ('family_name', models.CharField(max_length=255, verbose_name='Family name')),
-                ('first_name', models.CharField(max_length=255, verbose_name='First name')),
-                ('email', models.EmailField(max_length=254, verbose_name='Email address')),
-                ('phone', models.CharField(max_length=255, verbose_name='Telephone')),
-                ('phone2', models.CharField(blank=True, max_length=255, null=True, verbose_name='Telephone 2')),
-                ('phone3', models.CharField(blank=True, max_length=255, null=True, verbose_name='Telephone 3')),
-                ('fax', models.CharField(blank=True, max_length=255, null=True, verbose_name='Fax')),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='people', to='bdr_registry.Company')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        blank=True, max_length=255, null=True, verbose_name="Title"
+                    ),
+                ),
+                (
+                    "family_name",
+                    models.CharField(max_length=255, verbose_name="Family name"),
+                ),
+                (
+                    "first_name",
+                    models.CharField(max_length=255, verbose_name="First name"),
+                ),
+                (
+                    "email",
+                    models.EmailField(max_length=254, verbose_name="Email address"),
+                ),
+                ("phone", models.CharField(max_length=255, verbose_name="Telephone")),
+                (
+                    "phone2",
+                    models.CharField(
+                        blank=True,
+                        max_length=255,
+                        null=True,
+                        verbose_name="Telephone 2",
+                    ),
+                ),
+                (
+                    "phone3",
+                    models.CharField(
+                        blank=True,
+                        max_length=255,
+                        null=True,
+                        verbose_name="Telephone 3",
+                    ),
+                ),
+                (
+                    "fax",
+                    models.CharField(
+                        blank=True, max_length=255, null=True, verbose_name="Fax"
+                    ),
+                ),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="people",
+                        to="bdr_registry.Company",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ReportingStatus',
+            name="ReportingStatus",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reported', models.NullBooleanField(default=None)),
-                ('company', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reporting_statuses', to='bdr_registry.Company')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reported", models.NullBooleanField(default=None)),
+                (
+                    "company",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="reporting_statuses",
+                        to="bdr_registry.Company",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='ReportingYear',
+            name="ReportingYear",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('year', models.PositiveIntegerField(unique=True)),
-                ('companies', models.ManyToManyField(related_name='reporting_years', through='bdr_registry.ReportingStatus', to='bdr_registry.Company')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("year", models.PositiveIntegerField(unique=True)),
+                (
+                    "companies",
+                    models.ManyToManyField(
+                        related_name="reporting_years",
+                        through="bdr_registry.ReportingStatus",
+                        to="bdr_registry.Company",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='SiteConfiguration',
+            name="SiteConfiguration",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('reporting_year', models.PositiveIntegerField()),
-                ('self_register_email_template', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='post_office.EmailTemplate')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("reporting_year", models.PositiveIntegerField()),
+                (
+                    "self_register_email_template",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="post_office.EmailTemplate",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='reportingstatus',
-            name='reporting_year',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='reporting_statuses', to='bdr_registry.ReportingYear'),
+            model_name="reportingstatus",
+            name="reporting_year",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="reporting_statuses",
+                to="bdr_registry.ReportingYear",
+            ),
         ),
         migrations.AddField(
-            model_name='nextaccountid',
-            name='obligation',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='bdr_registry.Obligation'),
+            model_name="nextaccountid",
+            name="obligation",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="bdr_registry.Obligation",
+            ),
         ),
         migrations.AddField(
-            model_name='company',
-            name='country',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bdr_registry.Country'),
+            model_name="company",
+            name="country",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="bdr_registry.Country"
+            ),
         ),
         migrations.AddField(
-            model_name='company',
-            name='obligation',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='companies', to='bdr_registry.Obligation'),
+            model_name="company",
+            name="obligation",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="companies",
+                to="bdr_registry.Obligation",
+            ),
         ),
         migrations.AddField(
-            model_name='comment',
-            name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='bdr_registry.Company'),
+            model_name="comment",
+            name="company",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="comments",
+                to="bdr_registry.Company",
+            ),
         ),
         migrations.AlterUniqueTogether(
-            name='reportingstatus',
-            unique_together=set([('company', 'reporting_year')]),
+            name="reportingstatus",
+            unique_together=set([("company", "reporting_year")]),
         ),
     ]

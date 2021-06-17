@@ -1,4 +1,3 @@
-
 # WARNING!!
 # This is a hack until there's a setting in django-assets
 # to force using staticfiles finders and avoid the need
@@ -7,19 +6,20 @@
 # Just put this in your test settings.
 
 from django_assets.env import DjangoResolver
+
 use_staticfiles = property(lambda self: True)
 DjangoResolver.use_staticfiles = use_staticfiles
 
 DATABASES = {
-  'default': {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': ':memory:',
-  }
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    }
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'localhost'
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "localhost"
 EMAIL_PORT = 25
 
-BDR_API_URL = 'http://example.com/api'
+BDR_API_URL = "http://example.com/api"
 REPORTING_YEAR = 2016

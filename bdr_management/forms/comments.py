@@ -3,13 +3,12 @@ from bdr_registry.models import Comment
 
 
 class CommentForm(ModelForm):
-
-    class Meta():
+    class Meta:
         model = Comment
-        fields = ('text',)
+        fields = ("text",)
 
     def save(self, **kwargs):
         comment = super(CommentForm, self).save(commit=False)
-        comment.company = self.initial['company']
+        comment.company = self.initial["company"]
         comment.save()
         return comment

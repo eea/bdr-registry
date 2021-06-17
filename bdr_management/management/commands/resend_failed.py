@@ -10,5 +10,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         failed_emails = Email.objects.filter(status=STATUS.failed)
         (sent_count, failed_count) = _send_bulk(failed_emails)
-        self.stdout.write(
-            "Sent: {}. Failed: {}".format(sent_count, failed_count))
+        self.stdout.write("Sent: {}. Failed: {}".format(sent_count, failed_count))

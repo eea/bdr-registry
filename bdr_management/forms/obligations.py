@@ -5,11 +5,10 @@ from bdr_registry.models import Obligation
 
 
 class ObligationForm(ModelForm):
-
-    class Meta():
+    class Meta:
         model = Obligation
-        exclude = ('id',)
+        exclude = ("id",)
 
     def __init__(self, *args, **kwargs):
         super(ObligationForm, self).__init__(*args, **kwargs)
-        set_empty_label(self.fields, '')
+        set_empty_label(self.fields, "")

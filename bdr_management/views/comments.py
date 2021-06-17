@@ -14,10 +14,9 @@ from bdr_management.base import Breadcrumb
 from bdr_registry.models import Company, Comment
 
 
-class CommentCreateBase(SuccessMessageMixin,
-                        generic.CreateView):
+class CommentCreateBase(SuccessMessageMixin, generic.CreateView):
 
-    template_name = 'bdr_management/comment_edit.html'
+    template_name = "bdr_management/comment_edit.html"
     form_class = forms.CommentForm
     model = Comment
     success_message = _("Comment added successfully")
@@ -28,18 +27,17 @@ class CommentCreateBase(SuccessMessageMixin,
 
     def get_form_kwargs(self, **kwargs):
         data = super(CommentCreateBase, self).get_form_kwargs(**kwargs)
-        data['initial']['company'] = self.company
+        data["initial"]["company"] = self.company
         return data
 
     def get_context_data(self, **kwargs):
         context = super(CommentCreateBase, self).get_context_data(**kwargs)
-        context['title'] = 'Add a new comment'
-        context['object'] = self.company
+        context["title"] = "Add a new comment"
+        context["object"] = self.company
         return context
 
 
-class CommentManagementCreate(GroupRequiredMixin,
-                              CommentCreateBase):
+class CommentManagementCreate(GroupRequiredMixin, CommentCreateBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
@@ -47,23 +45,23 @@ class CommentManagementCreate(GroupRequiredMixin,
     def get_context_data(self, **kwargs):
         back_url = self.get_success_url()
         breadcrumbs = [
-            Breadcrumb(reverse('home'), title=_('Registry')),
-            Breadcrumb(reverse('management:companies'), _('Companies')),
+            Breadcrumb(reverse("home"), title=_("Registry")),
+            Breadcrumb(reverse("management:companies"), _("Companies")),
             Breadcrumb(back_url, self.company),
-            Breadcrumb('', _('Add comment'))
+            Breadcrumb("", _("Add comment")),
         ]
         data = super(CommentManagementCreate, self).get_context_data(**kwargs)
-        data['breadcrumbs'] = breadcrumbs
-        data['cancel_url'] = back_url
+        data["breadcrumbs"] = breadcrumbs
+        data["cancel_url"] = back_url
         return data
 
     def get_success_url(self):
-        return reverse('management:companies_view', kwargs=self.kwargs)
+        return reverse("management:companies_view", kwargs=self.kwargs)
 
 
-class CommentCreate(base.CompanyUserRequiredMixin,
-                    GroupRequiredMixin,
-                    CommentCreateBase):
+class CommentCreate(
+    base.CompanyUserRequiredMixin, GroupRequiredMixin, CommentCreateBase
+):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
@@ -71,51 +69,46 @@ class CommentCreate(base.CompanyUserRequiredMixin,
     def get_context_data(self, **kwargs):
         back_url = self.get_success_url()
         breadcrumbs = [
-            Breadcrumb(reverse('home'), title=_('Registry')),
+            Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(back_url, self.company),
-            Breadcrumb('', _('Add comment'))
+            Breadcrumb("", _("Add comment")),
         ]
         data = super(CommentCreate, self).get_context_data(**kwargs)
-        data['breadcrumbs'] = breadcrumbs
-        data['cancel_url'] = back_url
+        data["breadcrumbs"] = breadcrumbs
+        data["cancel_url"] = back_url
         return data
 
     def get_success_url(self):
-        return reverse('company', kwargs=self.kwargs)
+        return reverse("company", kwargs=self.kwargs)
 
 
 class CommentDeleteBase(generic.DeleteView):
 
-    pk_url_kwarg = 'comment_pk'
+    pk_url_kwarg = "comment_pk"
     model = Comment
 
     def dispatch(self, request, *args, **kwargs):
-        self.company = get_object_or_404(Company,
-                                         pk=self.kwargs['pk'])
-        return super(CommentDeleteBase, self).dispatch(request, *args,
-                                                       **kwargs)
+        self.company = get_object_or_404(Company, pk=self.kwargs["pk"])
+        return super(CommentDeleteBase, self).dispatch(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, _("Comment deleted"))
         return super(CommentDeleteBase, self).delete(request, *args, **kwargs)
 
 
-class CommentManagementDelete(GroupRequiredMixin,
-                              CommentDeleteBase):
+class CommentManagementDelete(GroupRequiredMixin, CommentDeleteBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
 
     def get_success_url(self):
-        return reverse('management:companies_view',
-                       kwargs={'pk': self.company.pk})
+        return reverse("management:companies_view", kwargs={"pk": self.company.pk})
 
 
-class CommentDelete(base.CompanyUserRequiredMixin,
-                    CommentDeleteBase):
+class CommentDelete(base.CompanyUserRequiredMixin, CommentDeleteBase):
 
     group_required = settings.BDR_HELPDESK_GROUP
     raise_exception = True
 
     def get_success_url(self):
-        return reverse('company', kwargs={'pk': self.company.pk})
+        return reverse("company", kwargs={"pk": self.company.pk})

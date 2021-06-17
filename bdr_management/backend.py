@@ -11,7 +11,7 @@ from bdr_registry.views import valid_email
 
 
 def sync_accounts_with_ldap(accounts, person=None):
-    if hasattr(settings, 'DISABLE_LDAP_CONNECTION'):
+    if hasattr(settings, "DISABLE_LDAP_CONNECTION"):
         return
 
     ldap_editor = create_ldap_editor()
@@ -21,26 +21,34 @@ def sync_accounts_with_ldap(accounts, person=None):
             company = account.person.company
         else:
             company = account.company
-        if ldap_editor.create_account(account.uid,
-                                      company.name,
-                                      company.country.name,
-                                      account.password):
-            counters['create'] += 1
+        if ldap_editor.create_account(
+            account.uid, company.name, company.country.name, account.password
+        ):
+            counters["create"] += 1
         else:
             ldap_editor.reset_password(account.uid, account.password)
-            counters['password'] += 1
+            counters["password"] += 1
     return dict(counters)
 
 
-def send_password_email_to_people(company, url=None, person=None, company_account=None,
-                                  use_reset_url=None, send_bcc=True, subject_extra ='',
-                                  set_owner=None, password_reset=None, personal_account=None):
+def send_password_email_to_people(
+    company,
+    url=None,
+    person=None,
+    company_account=None,
+    use_reset_url=None,
+    send_bcc=True,
+    subject_extra="",
+    set_owner=None,
+    password_reset=None,
+    personal_account=None,
+):
 
     config = SiteConfiguration.objects.get()
     template = company.obligation.email_template
-    bcc = company.obligation.bcc.split(',')
+    bcc = company.obligation.bcc.split(",")
     bcc = [s.strip() for s in bcc if valid_email(s.strip())]
-    if company.obligation.code == 'hdv':
+    if company.obligation.code == "hdv":
         sender = settings.HDV_EMAIL_FROM
     else:
         sender = settings.BDR_EMAIL_FROM
@@ -48,59 +56,72 @@ def send_password_email_to_people(company, url=None, person=None, company_accoun
         bcc = []
     if company_account:
         reporting_year = config.reporting_year
-        mail.send(recipients=[person.email.strip()],
-                  bcc=bcc,
-                  sender=sender,
-                  template=template,
-                  context={'company': company, 'person': person,
-                           'account': company.account,
-                           'url': url,
-                           'set_owner': set_owner,
-                           'password_reset': password_reset,
-                           'personal_account': personal_account,
-                           'subject_extra': subject_extra,
-                           'reporting_year': reporting_year,
-                           'use_reset_url': use_reset_url,
-                           'next_year': reporting_year + 1},
-                  priority='now')
+        mail.send(
+            recipients=[person.email.strip()],
+            bcc=bcc,
+            sender=sender,
+            template=template,
+            context={
+                "company": company,
+                "person": person,
+                "account": company.account,
+                "url": url,
+                "set_owner": set_owner,
+                "password_reset": password_reset,
+                "personal_account": personal_account,
+                "subject_extra": subject_extra,
+                "reporting_year": reporting_year,
+                "use_reset_url": use_reset_url,
+                "next_year": reporting_year + 1,
+            },
+            priority="now",
+        )
         return 1
     if person:
         reporting_year = config.reporting_year
-        mail.send(recipients=[person.email.strip()],
-                  bcc=bcc,
-                  sender=sender,
-                  template=template,
-                  context={'company': company,
-                           'person': person,
-                           'account': person.account,
-                           'url': url,
-                           'set_owner': set_owner,
-                           'password_reset': password_reset,
-                           'personal_account': personal_account,
-                           'subject_extra': subject_extra,
-                           'reporting_year': reporting_year,
-                            'use_reset_url': use_reset_url,
-                           'personal_account': True,
-                           'next_year': reporting_year + 1},
-                  priority='now')
+        mail.send(
+            recipients=[person.email.strip()],
+            bcc=bcc,
+            sender=sender,
+            template=template,
+            context={
+                "company": company,
+                "person": person,
+                "account": person.account,
+                "url": url,
+                "set_owner": set_owner,
+                "password_reset": password_reset,
+                "subject_extra": subject_extra,
+                "reporting_year": reporting_year,
+                "use_reset_url": use_reset_url,
+                "personal_account": True,
+                "next_year": reporting_year + 1,
+            },
+            priority="now",
+        )
         return 1
     for person in company.people.all():
         reporting_year = config.reporting_year
-        mail.send(recipients=[person.email.strip()],
-                  bcc=bcc,
-                  sender=sender,
-                  template=template,
-                  context={'company': company, 'person': person,
-                           'account': company.account,
-                           'url': url,
-                           'set_owner': set_owner,
-                           'password_reset': password_reset,
-                           'personal_account': personal_account,
-                           'subject_extra': subject_extra,
-                           'use_reset_url': use_reset_url,
-                           'reporting_year': reporting_year,
-                           'next_year': reporting_year + 1},
-                  priority='now')
+        mail.send(
+            recipients=[person.email.strip()],
+            bcc=bcc,
+            sender=sender,
+            template=template,
+            context={
+                "company": company,
+                "person": person,
+                "account": company.account,
+                "url": url,
+                "set_owner": set_owner,
+                "password_reset": password_reset,
+                "personal_account": personal_account,
+                "subject_extra": subject_extra,
+                "use_reset_url": use_reset_url,
+                "reporting_year": reporting_year,
+                "next_year": reporting_year + 1,
+            },
+            priority="now",
+        )
 
     return company.people.count()
 
@@ -111,8 +132,8 @@ def generate_excel(header, rows):
     headerfont = xlwt.Font()
     headerfont.bold = True
     style.font = headerfont
-    wb = xlwt.Workbook(encoding='utf-8')
-    ws = wb.add_sheet('Sheet 1')
+    wb = xlwt.Workbook(encoding="utf-8")
+    ws = wb.add_sheet("Sheet 1")
     row = 0
 
     for col in range(0, len(header)):

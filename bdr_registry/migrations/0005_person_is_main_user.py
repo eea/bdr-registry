@@ -8,13 +8,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0004_person_account'),
+        ("bdr_registry", "0004_person_account"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='is_main_user',
+            model_name="person",
+            name="is_main_user",
             field=models.BooleanField(default=False),
         ),
     ]

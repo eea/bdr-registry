@@ -9,33 +9,35 @@ log.setLevel(logging.DEBUG)
 
 
 def encrypt_password(password):
-    password = password.encode('utf-8')
+    password = password.encode("utf-8")
     return "{SHA}" + bytes.decode(base64.b64encode(hashlib.sha1(password).digest()))
 
 
 class LdapEditor(object):
 
-    encoding = 'utf-8'
+    encoding = "utf-8"
     users_dn = "ou=Business Reporters,o=EIONET,l=Europe"
 
     def __init__(self, server, bind_dn, bind_password):
         conn = ldap.initialize(server)
         conn.protocol_version = ldap.VERSION3
         conn.timeout = 5
-        result = conn.simple_bind_s(bind_dn, bind_password)
+        conn.simple_bind_s(bind_dn, bind_password)
         self.conn = conn
 
     def _account_dn(self, uid):
-        return 'uid=' + uid + ',' + self.users_dn
+        return "uid=" + uid + "," + self.users_dn
 
     def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
         attrs = [
-            ('uid', [str.encode(uid)]),
-            ('cn', [str.encode(name)]),
-            ('objectClass', [b'top', b'organizationalRole',
-                             b'simpleSecurityObject', b'uidObject']),
-            ('userPassword', [str.encode(encrypt_password(password))]),
+            ("uid", [str.encode(uid)]),
+            ("cn", [str.encode(name)]),
+            (
+                "objectClass",
+                [b"top", b"organizationalRole", b"simpleSecurityObject", b"uidObject"],
+            ),
+            ("userPassword", [str.encode(encrypt_password(password))]),
         ]
 
         try:
@@ -54,7 +56,11 @@ class LdapEditor(object):
 
     def reset_password(self, uid, password):
         attrs = [
-            (ldap.MOD_REPLACE, 'userPassword', [str.encode(encrypt_password(password))]),
+            (
+                ldap.MOD_REPLACE,
+                "userPassword",
+                [str.encode(encrypt_password(password))],
+            ),
         ]
         log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
         audit_log("Resetting LDAP password for uid=%s", uid)
@@ -64,7 +70,11 @@ class LdapEditor(object):
 
     def reset_password_assert_2(self, uid, password):
         attrs = [
-            (ldap.MOD_REPLACE, 'userPassword', [str.encode(encrypt_password(password))]),
+            (
+                ldap.MOD_REPLACE,
+                "userPassword",
+                [str.encode(encrypt_password(password))],
+            ),
         ]
         log.debug("conn.modify_s(%r, %r)", self._account_dn(uid), attrs)
         audit_log("Resetting LDAP password for uid=%s", uid)
@@ -75,9 +85,10 @@ class LdapEditor(object):
 
 def create_ldap_editor():
     from django.conf import settings
+
     config = {
-        'server': settings.LDAP_EDIT_SERVER,
-        'bind_dn': settings.LDAP_EDIT_DN,
-        'bind_password': settings.LDAP_EDIT_PASSWORD,
+        "server": settings.LDAP_EDIT_SERVER,
+        "bind_dn": settings.LDAP_EDIT_DN,
+        "bind_password": settings.LDAP_EDIT_PASSWORD,
     }
     return LdapEditor(**config)

@@ -9,13 +9,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0002_make_company_fields_optional'),
+        ("bdr_registry", "0002_make_company_fields_optional"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='company',
-            name='country',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='bdr_registry.Country'),
+            model_name="company",
+            name="country",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="bdr_registry.Country",
+            ),
         ),
     ]

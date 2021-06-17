@@ -9,17 +9,31 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0005_person_is_main_user'),
+        ("bdr_registry", "0005_person_is_main_user"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AccountUniqueToken',
+            name="AccountUniqueToken",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('token', models.CharField(max_length=100)),
-                ('datetime', models.DateTimeField(auto_now_add=True)),
-                ('account', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bdr_registry.Account')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("token", models.CharField(max_length=100)),
+                ("datetime", models.DateTimeField(auto_now_add=True)),
+                (
+                    "account",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="bdr_registry.Account",
+                    ),
+                ),
             ],
         ),
     ]

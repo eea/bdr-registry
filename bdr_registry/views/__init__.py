@@ -3,11 +3,6 @@ from captcha.fields import CaptchaField
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-try:
-    from collections import OrderedDict
-except ImportError:
-    # python 2.6 or earlier, use backport
-    from ordereddict import OrderedDict
 import base64
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -35,7 +30,6 @@ from bdr_management.forms.utils import set_empty_label
 
 
 class CanEdit(object):
-
     def __init__(self, company):
         self.company = company
 
@@ -53,14 +47,14 @@ class CanEdit(object):
 
 class home(TemplateView):
 
-    template_name = 'home.html'
+    template_name = "home.html"
 
     def get_user_company_details(self):
         info = {
-            'has_company': False,
-            'company': None,
-            'has_reporting_folder': False,
-            'reporting_folder_path': None
+            "has_company": False,
+            "company": None,
+            "has_reporting_folder": False,
+            "reporting_folder_path": None,
         }
         try:
             account = models.Account.objects.get(uid=self.request.user)
@@ -75,56 +69,58 @@ class home(TemplateView):
                 except models.Person.DoesNotExist:
                     pass
                 else:
-                    info['has_company'] = True
-                    info['company'] = person.company
-                    info['reporting_folder_path'] = \
-                        person.company.build_reporting_folder_path()
-                    info['has_reporting_folder'] = \
-                        person.company.has_reporting_folder(info['reporting_folder_path'])
+                    info["has_company"] = True
+                    info["company"] = person.company
+                    info[
+                        "reporting_folder_path"
+                    ] = person.company.build_reporting_folder_path()
+                    info["has_reporting_folder"] = person.company.has_reporting_folder(
+                        info["reporting_folder_path"]
+                    )
             else:
-                info['has_company'] = True
-                info['company'] = company
-                info['reporting_folder_path'] = \
-                    company.build_reporting_folder_path()
-                info['has_reporting_folder'] = \
-                    company.has_reporting_folder(info['reporting_folder_path'])
+                info["has_company"] = True
+                info["company"] = company
+                info["reporting_folder_path"] = company.build_reporting_folder_path()
+                info["has_reporting_folder"] = company.has_reporting_folder(
+                    info["reporting_folder_path"]
+                )
         return info
 
-ORG_CREATE_EXCLUDE = ('account', 'active', 'comments')
-ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ('obligation', 'country')
+
+ORG_CREATE_EXCLUDE = ("account", "active", "comments")
+ORG_ADMIN_EXCLUDE = ORG_CREATE_EXCLUDE + ("obligation", "country")
 
 
 class CompanyCreate(CreateView):
 
     model = models.Company
-    template_name = 'company_add.html'
+    template_name = "company_add.html"
 
     def get_form_class(self):
-        return modelform_factory(models.Company,
-                                 exclude=ORG_CREATE_EXCLUDE)
+        return modelform_factory(models.Company, exclude=ORG_CREATE_EXCLUDE)
 
 
 class CompanyUpdate(UpdateView):
 
     model = models.Company
-    template_name = 'company_update.html'
+    template_name = "company_update.html"
 
     def get_form_class(self):
         exclude = ORG_ADMIN_EXCLUDE
         if not self.request.user.is_superuser:
-            exclude = exclude + ('name',)
+            exclude = exclude + ("name",)
         return modelform_factory(models.Company, exclude=exclude)
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(CompanyUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
-        return reverse('company_update', args=[self.object.pk])
+        return reverse("company_update", args=[self.object.pk])
 
     def get_context_data(self, **kwargs):
         try:
@@ -132,34 +128,33 @@ class CompanyUpdate(UpdateView):
             url = tmpl.format(org=self.object)
         except:
             url = None
-        kwargs['reporting_url'] = url
-        kwargs['helpdesk_email'] = settings.BDR_HELPDESK_EMAIL
+        kwargs["reporting_url"] = url
+        kwargs["helpdesk_email"] = settings.BDR_HELPDESK_EMAIL
         return super(CompanyUpdate, self).get_context_data(**kwargs)
 
 
 def attempt_basic_auth(request):
     if request.user.is_authenticated():
         return
-    authorization = request.META.get('HTTP_AUTHORIZATION')
+    authorization = request.META.get("HTTP_AUTHORIZATION")
     if not authorization:
         return
-    authorization = authorization.lstrip('Basic ')
-    username, password = base64.b64decode(authorization).split(':', 1)
+    authorization = authorization.lstrip("Basic ")
+    username, password = base64.b64decode(authorization).split(":", 1)
     user = authenticate(username=username, password=password)
     if user is not None:
         login(request, user)
-        messages.add_message(request, messages.INFO,
-                             u"Logged in as %s" % user.username)
+        messages.add_message(request, messages.INFO, u"Logged in as %s" % user.username)
 
 
 def edit_company(request):
     attempt_basic_auth(request)
-    uid = request.GET.get('uid')
+    uid = request.GET.get("uid")
     if not uid:
         return HttpResponseNotFound()
     account = get_object_or_404(models.Account, uid=uid)
     org = get_object_or_404(models.Company, account=account)
-    location = reverse('company', kwargs={'pk': org.pk})
+    location = reverse("company", kwargs={"pk": org.pk})
     return HttpResponseRedirect(location)
 
 
@@ -173,49 +168,65 @@ class CompanyForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CompanyForm, self).__init__(*args, **kwargs)
-        set_empty_label(self.fields, '')
-        self.fields['addr_street'].required = True
-        self.fields['addr_place1'].required = True
-        self.fields['addr_postalcode'].required = True
-        self.fields['vat_number'].required = True
-        self.fields['country'].required = True
+        set_empty_label(self.fields, "")
+        self.fields["addr_street"].required = True
+        self.fields["addr_place1"].required = True
+        self.fields["addr_postalcode"].required = True
+        self.fields["vat_number"].required = True
+        self.fields["country"].required = True
 
     class Meta:
         model = models.Company
-        fields = ['name', 'outdated', 'addr_street', 'addr_place1',
-                  'addr_postalcode', 'addr_place2', 'eori',
-                  'vat_number', 'country', 'website', 'obligation']
+        fields = [
+            "name",
+            "outdated",
+            "addr_street",
+            "addr_place1",
+            "addr_postalcode",
+            "addr_place2",
+            "eori",
+            "vat_number",
+            "country",
+            "website",
+            "obligation",
+        ]
 
         exclude = ORG_CREATE_EXCLUDE
+
 
 class PersonForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PersonForm, self).__init__(*args, **kwargs)
-        self.fields['phone'].required = True
+        self.fields["phone"].required = True
 
     class Meta:
         model = models.Person
-        exclude = ('company', 'account', 'is_main_user')
+        exclude = ("company", "account", "is_main_user")
 
-CommentForm = modelform_factory(models.Comment, exclude=['company'])
+
+CommentForm = modelform_factory(models.Comment, exclude=["company"])
 
 
 class SelfRegisterHDV(View):
-
     @method_decorator(check_honeypot)
     def dispatch(self, request, *args, **kwargs):
         return super(SelfRegisterHDV, self).dispatch(request, *args, **kwargs)
 
     def make_forms(self, post_data=None):
-        return (forms.CompanyHDVForm(post_data, prefix='company'),
-                forms.PersonHDVForm(post_data, prefix='person'))
+        return (
+            forms.CompanyHDVForm(post_data, prefix="company"),
+            forms.PersonHDVForm(post_data, prefix="person"),
+        )
 
-    def render_forms(self, request, organisation_form,
-                     person_form):
-        return render(request, 'self_register_hdv.html', {
-            'organisation_form': organisation_form,
-            'person_form': person_form,
-        })
+    def render_forms(self, request, organisation_form, person_form):
+        return render(
+            request,
+            "self_register_hdv.html",
+            {
+                "organisation_form": organisation_form,
+                "person_form": person_form,
+            },
+        )
 
     def get(self, request):
         return self.render_forms(request, *self.make_forms())
@@ -225,41 +236,45 @@ class SelfRegisterHDV(View):
 
         if company_form.is_valid() and person_form.is_valid():
             data = company_form.cleaned_data
-            data.pop('captcha')
-            obligation = models.Obligation.objects.get(code='hdv')
-            company = models.Company.objects.create(
-                obligation=obligation, **data
-            )
+            data.pop("captcha")
+            obligation = models.Obligation.objects.get(code="hdv")
+            company = models.Company.objects.create(obligation=obligation, **data)
             person = person_form.save(commit=False)
             person.company = company
             person.save()
 
-            send_notification_email({
-                'company': company,
-                'person': person,
-            })
+            send_notification_email(
+                {
+                    "company": company,
+                    "person": person,
+                }
+            )
 
-            return redirect('self_register_done_hdv')
+            return redirect("self_register_done_hdv")
 
         return self.render_forms(request, company_form, person_form)
 
 
 class SelfRegister(View):
-
     @method_decorator(check_honeypot)
     def dispatch(self, request, *args, **kwargs):
         return super(SelfRegister, self).dispatch(request, *args, **kwargs)
 
     def make_forms(self, post_data=None):
-        return (CompanyForm(post_data, prefix='company'),
-                PersonForm(post_data, prefix='person'))
+        return (
+            CompanyForm(post_data, prefix="company"),
+            PersonForm(post_data, prefix="person"),
+        )
 
-    def render_forms(self, request, organisation_form,
-                     person_form):
-        return render(request, 'self_register.html', {
-            'organisation_form': organisation_form,
-            'person_form': person_form,
-        })
+    def render_forms(self, request, organisation_form, person_form):
+        return render(
+            request,
+            "self_register.html",
+            {
+                "organisation_form": organisation_form,
+                "person_form": person_form,
+            },
+        )
 
     def get(self, request):
         return self.render_forms(request, *self.make_forms())
@@ -273,76 +288,79 @@ class SelfRegister(View):
             person.company = company
             person.save()
 
-            send_notification_email({
-                'company': company,
-                'person': person,
-            })
+            send_notification_email(
+                {
+                    "company": company,
+                    "person": person,
+                }
+            )
 
-            return redirect('self_register_done')
+            return redirect("self_register_done")
 
         return self.render_forms(request, company_form, person_form)
 
 
 class CompanyAddPerson(CreateView):
 
-    template_name = 'company_add_person.html'
+    template_name = "company_add_person.html"
     model = models.Person
     form_class = PersonForm
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(CompanyAddPerson, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_context_data(self, **kwargs):
         context = super(CompanyAddPerson, self).get_context_data(**kwargs)
-        context['organisation_pk'] = self.kwargs['pk']
+        context["organisation_pk"] = self.kwargs["pk"]
         return context
 
     def form_valid(self, form):
         person = form.save(commit=False)
-        pk = self.kwargs['pk']
+        pk = self.kwargs["pk"]
         person.company = models.Company.objects.get(pk=pk)
         person.save()
-        return HttpResponseRedirect(reverse('company_update', args=[pk]))
+        return HttpResponseRedirect(reverse("company_update", args=[pk]))
 
 
 class PersonUpdate(UpdateView):
 
-    template_name = 'person_update.html'
+    template_name = "person_update.html"
     model = models.Person
     form_class = PersonForm
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Person, pk=pk).company
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(PersonUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
         company = self.object.company
-        return reverse('company_update', args=[company.pk])
+        return reverse("company_update", args=[company.pk])
 
     def form_valid(self, form):
-        messages.add_message(self.request, messages.INFO,
-                             u"Details saved: %s" % self.object)
+        messages.add_message(
+            self.request, messages.INFO, u"Details saved: %s" % self.object
+        )
         return super(PersonUpdate, self).form_valid(form)
 
 
 class PersonDelete(DeleteView):
 
     model = models.Person
-    template_name = 'person_confirm_delete.html'
+    template_name = "person_confirm_delete.html"
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Person, pk=pk).company
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(PersonDelete, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
@@ -350,79 +368,82 @@ class PersonDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.company.people.count() == 1:
-            messages.add_message(self.request, messages.ERROR,
-                                 u"Can't delete last person")
+            messages.add_message(
+                self.request, messages.ERROR, u"Can't delete last person"
+            )
 
         else:
             self.object.delete()
-            messages.add_message(self.request, messages.INFO,
-                                 u"Person deleted: %s" % self.object)
+            messages.add_message(
+                self.request, messages.INFO, u"Person deleted: %s" % self.object
+            )
 
         company = self.object.company
-        url = reverse('company_update', args=[company.pk])
+        url = reverse("company_update", args=[company.pk])
         return HttpResponseRedirect(url)
 
 
 class CompanyAddComment(CreateView):
 
-    template_name = 'organisation_add_comment.html'
+    template_name = "organisation_add_comment.html"
     model = models.Comment
     form_class = CommentForm
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Company, pk=pk)
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(CompanyAddComment, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_context_data(self, **kwargs):
         context = super(CompanyAddComment, self).get_context_data(**kwargs)
-        context['organisation_pk'] = self.kwargs['pk']
+        context["organisation_pk"] = self.kwargs["pk"]
         return context
 
     def form_valid(self, form):
         comment = form.save(commit=False)
-        pk = self.kwargs['pk']
+        pk = self.kwargs["pk"]
         comment.company = models.Company.objects.get(pk=pk)
         comment.save()
-        return HttpResponseRedirect(reverse('company_update', args=[pk]))
+        return HttpResponseRedirect(reverse("company_update", args=[pk]))
 
 
 class CommentUpdate(UpdateView):
 
-    template_name = 'comment_update.html'
+    template_name = "comment_update.html"
     model = models.Comment
     form_class = CommentForm
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Comment, pk=pk).company
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(CommentUpdate, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
 
     def get_success_url(self):
         company = self.object.company
-        return reverse('company_update', args=[company.pk])
+        return reverse("company_update", args=[company.pk])
 
     def form_valid(self, form):
-        messages.add_message(self.request, messages.INFO,
-                             u"Details saved: %s" % self.object)
+        messages.add_message(
+            self.request, messages.INFO, u"Details saved: %s" % self.object
+        )
         return super(CommentUpdate, self).form_valid(form)
 
 
 class CommentDelete(DeleteView):
 
     model = models.Comment
-    template_name = 'comment_confirm_delete.html'
+    template_name = "comment_confirm_delete.html"
 
     def dispatch(self, request, pk):
         company = get_object_or_404(models.Comment, pk=pk).company
         can_edit = CanEdit(company)
-        login_url = reverse('login')
+        login_url = reverse("login")
         dispatch = super(CommentDelete, self).dispatch
         wrapped_dispatch = user_passes_test(can_edit, login_url)(dispatch)
         return wrapped_dispatch(request, pk=pk)
@@ -430,12 +451,15 @@ class CommentDelete(DeleteView):
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
-        messages.add_message(self.request, messages.INFO,
-                             u"Comment from %s successfully deleted" %
-                             self.object.created.strftime('%d %B %Y'))
+        messages.add_message(
+            self.request,
+            messages.INFO,
+            u"Comment from %s successfully deleted"
+            % self.object.created.strftime("%d %B %Y"),
+        )
 
         company = self.object.company
-        url = reverse('company_update', args=[company.pk])
+        url = reverse("company_update", args=[company.pk])
         return HttpResponseRedirect(url)
 
 
@@ -449,28 +473,38 @@ def valid_email(email):
 
 def send_notification_email(context):
 
-    company = context.get('company')
+    company = context.get("company")
 
-    recipients = [u.email for u in User.objects.filter(
-        Q(groups__name=settings.BDR_HELPDESK_GROUP) &
-        Q(obligations__pk=company.obligation.pk))
-        if valid_email(u.email)]
+    recipients = [
+        u.email
+        for u in User.objects.filter(
+            Q(groups__name=settings.BDR_HELPDESK_GROUP)
+            & Q(obligations__pk=company.obligation.pk)
+        )
+        if valid_email(u.email)
+    ]
 
-    if company.obligation.code == 'hdv':
+    if company.obligation.code == "hdv":
         sender = settings.HDV_EMAIL_FROM
         headers = settings.HDV_MAIL_HEADERS
-        bcc = company.obligation.bcc.split(',')
+        bcc = company.obligation.bcc.split(",")
         bcc = [s.strip() for s in bcc if valid_email(s.strip())]
     else:
         sender = settings.BDR_EMAIL_FROM
         headers = None
-        bcc=None
+        bcc = None
     config = models.SiteConfiguration.objects.get()
     template = config.self_register_email_template
 
-
-    send(recipients=recipients, sender=sender, headers=headers,
-         bcc=bcc, template=template, context=context, priority='now')
+    send(
+        recipients=recipients,
+        sender=sender,
+        headers=headers,
+        bcc=bcc,
+        template=template,
+        context=context,
+        priority="now",
+    )
 
 
 def crashme(request):
@@ -488,4 +522,4 @@ def ping(request):
 def logout_view(request):
     logout(request)
     messages.add_message(request, messages.INFO, "You have logged out.")
-    return redirect('home')
+    return redirect("home")

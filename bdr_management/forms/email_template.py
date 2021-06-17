@@ -5,11 +5,10 @@ from bdr_registry.models import EmailTemplate
 
 
 class EmailTemplateForm(ModelForm):
-
-    class Meta():
+    class Meta:
         model = EmailTemplate
-        fields = ('name', 'subject', 'html_content')
+        fields = ("name", "subject", "html_content")
 
     def __init__(self, *args, **kwargs):
         super(EmailTemplateForm, self).__init__(*args, **kwargs)
-        set_empty_label(self.fields, '')
+        set_empty_label(self.fields, "")

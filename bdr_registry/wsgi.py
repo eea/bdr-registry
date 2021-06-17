@@ -21,6 +21,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "bdr_registry.settings")
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 from django.core.wsgi import get_wsgi_application
+
 application = get_wsgi_application()
 
 # Apply WSGI middleware here.
@@ -28,11 +29,12 @@ application = get_wsgi_application()
 # application = HelloWorldApplication(application)
 
 HEADER_MAP = {
-    'REMOTE_ADDR': 'HTTP_X_FORWARDED_FOR',
-    'SCRIPT_NAME': 'HTTP_X_FORWARDED_SCRIPT_NAME',
-    'HTTP_HOST': 'HTTP_X_FORWARDED_HOST',
-    'wsgi.url_scheme': 'HTTP_X_FORWARDED_SCHEME',
+    "REMOTE_ADDR": "HTTP_X_FORWARDED_FOR",
+    "SCRIPT_NAME": "HTTP_X_FORWARDED_SCRIPT_NAME",
+    "HTTP_HOST": "HTTP_X_FORWARDED_HOST",
+    "wsgi.url_scheme": "HTTP_X_FORWARDED_SCHEME",
 }
+
 
 def proxy_middleware(app):
     def proxy_fix(environ, start_response):
@@ -45,6 +47,8 @@ def proxy_middleware(app):
 
     return proxy_fix
 
+
 from django.conf import settings
+
 if settings.BDR_REVERSE_PROXY:
     application = proxy_middleware(application)

@@ -1,11 +1,9 @@
 import functools
 
 from django.apps import apps
-from django.db.models import Model
 from django.urls import reverse
 
 from django_webtest import WebTest
-from webtest.forms import Select, MultipleSelect
 from factory import base
 
 
@@ -20,25 +18,25 @@ class BaseWebTest(WebTest):
         Model = self._get_model(model, kwargs)
 
         if Model is None:
-            self.fail('Model {} does not exist'.format(model))
+            self.fail("Model {} does not exist".format(model))
         try:
             return Model.objects.get(**kwargs)
         except Model.DoesNotExist:
-            self.fail('Object "{}" with kwargs {} does not exist'.format(
-                model, str(kwargs)
-            ))
+            self.fail(
+                'Object "{}" with kwargs {} does not exist'.format(model, str(kwargs))
+            )
 
     def assertObjectNotInDatabase(self, model, **kwargs):
         Model = self._get_model(model, kwargs)
         self.assertIsNotNone(Model)
         if Model.objects.filter(**kwargs).exists():
-            self.fail('Object "{}" with kwargs {} does exist'.format(
-                model, str(kwargs)
-            ))
+            self.fail(
+                'Object "{}" with kwargs {} does exist'.format(model, str(kwargs))
+            )
 
     def _get_model(self, model, kwargs):
         if isinstance(model, str):
-            app = kwargs.pop('app', None)
+            app = kwargs.pop("app", None)
             self.assertIsNotNone(app)
             return apps.get_model(app, model)
         else:
@@ -48,36 +46,37 @@ class BaseWebTest(WebTest):
         form = company.__dict__.copy()
         for field in form:
             if form[field] is None:
-                form[field] = ''
-        form.update({'obligation': company.obligation.pk,
-                     'country': company.country.pk})
+                form[field] = ""
+        form.update(
+            {"obligation": company.obligation.pk, "country": company.country.pk}
+        )
         if company.account is not None:
-            form['account'] = company.account.pk
+            form["account"] = company.account.pk
         return form
 
     def get_login_for_url(self, url):
-        return '%s/?next=%s' % (self.reverse('login'), url)
+        return "%s/?next=%s" % (self.reverse("login"), url)
 
 
 class mute_signals(object):
     """Temporarily disables and then restores any django signals.
 
-        Args:
-        *signals (django.dispatch.dispatcher.Signal): any django signals
+    Args:
+    *signals (django.dispatch.dispatcher.Signal): any django signals
 
-        Examples:
-        with mute_signals(pre_init):
-        user = UserFactory.build()
-        ...
+    Examples:
+    with mute_signals(pre_init):
+    user = UserFactory.build()
+    ...
 
-        @mute_signals(pre_save, post_save)
-        class UserFactory(factory.Factory):
-        ...
+    @mute_signals(pre_save, post_save)
+    class UserFactory(factory.Factory):
+    ...
 
-        @mute_signals(post_save)
-        def generate_users():
-        UserFactory.create_batch(10)
-        """
+    @mute_signals(post_save)
+    def generate_users():
+    UserFactory.create_batch(10)
+    """
 
     def __init__(self, *signals):
         self.signals = signals
@@ -108,8 +107,10 @@ class mute_signals(object):
             return callable_obj
 
         else:
+
             @functools.wraps(callable_obj)
             def wrapper(*args, **kwargs):
                 with self:
                     return callable_obj(*args, **kwargs)
+
             return wrapper

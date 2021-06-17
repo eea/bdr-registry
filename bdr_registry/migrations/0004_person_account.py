@@ -9,14 +9,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0003_auto_20200403_1007'),
+        ("bdr_registry", "0003_auto_20200403_1007"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='person',
-            name='account',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE,
-                                       related_name='person', to='bdr_registry.Account'),
+            model_name="person",
+            name="account",
+            field=models.OneToOneField(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="person",
+                to="bdr_registry.Account",
+            ),
         ),
     ]
