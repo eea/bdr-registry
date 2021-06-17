@@ -4,7 +4,7 @@ import uuid, hashlib
 
 from django.conf import settings
 from django.contrib import messages
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.loader import render_to_string

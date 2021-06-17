@@ -2,7 +2,7 @@ import functools
 
 from django.apps import apps
 from django.db.models import Model
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from django_webtest import WebTest
 from webtest.forms import Select, MultipleSelect

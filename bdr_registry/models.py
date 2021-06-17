@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import models, transaction, IntegrityError
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
@@ -64,7 +64,7 @@ class Obligation(models.Model):
     name = models.CharField(max_length=255)
     code = models.CharField(max_length=255)
     reportek_slug = models.CharField(max_length=255)
-    email_template = models.ForeignKey(EmailTemplate)
+    email_template = models.ForeignKey(EmailTemplate, on_delete=models.PROTECT)
     bcc = models.TextField(blank=True, validators=[validate_comma_separated_email_list])
     admins = models.ManyToManyField(User, related_name='obligations', blank=True)
 
@@ -150,7 +150,7 @@ class AccountUniqueToken(models.Model):
 class NextAccountId(models.Model):
 
     next_id = models.IntegerField()
-    obligation = models.OneToOneField(Obligation, null=True, blank=True)
+    obligation = models.OneToOneField(Obligation, null=True, blank=True, on_delete=models.DO_NOTHING)
 
     def __str__(self):
         return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
@@ -177,9 +177,9 @@ class Company(models.Model):
                             max_length=17, null=True, blank=True)
     vat_number = models.CharField(_('VAT number'), max_length=17, blank=True)
     world_manufacturer_identifier = models.CharField(_('World Manufacturer Identifier (WMI)'), max_length=20, blank=True)
-    country = models.ForeignKey(Country, null=True, blank=True)
-    obligation = models.ForeignKey(Obligation, related_name='companies')
-    account = models.OneToOneField(Account, null=True, blank=True,
+    country = models.ForeignKey(Country, null=True, blank=True, on_delete=models.PROTECT)
+    obligation = models.ForeignKey(Obligation, related_name='companies', on_delete=models.PROTECT)
+    account = models.OneToOneField(Account, null=True, blank=True, on_delete=models.DO_NOTHING,
                                    related_name='company')
     website = models.URLField(null=True, blank=True)
 
@@ -246,8 +246,8 @@ models.signals.post_save.connect(organisation_saved, sender=Company)
 class CompanyNameHistory(models.Model):
 
     name = models.CharField(max_length=255)
-    company = models.ForeignKey(Company, related_name='namehistory')
-    user = models.ForeignKey(User, null=True, blank=True)
+    company = models.ForeignKey(Company, related_name='namehistory', on_delete=models.PROTECT)
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.DO_NOTHING)
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -270,9 +270,10 @@ class Person(models.Model):
     fax = models.CharField(_('Fax'),
                            max_length=255, null=True, blank=True)
     account = models.OneToOneField(Account, null=True, blank=True,
+                                    on_delete=models.DO_NOTHING,
                                    related_name='person')
     is_main_user = models.BooleanField(default=False)
-    company = models.ForeignKey(Company, related_name='people')
+    company = models.ForeignKey(Company, related_name='people', on_delete=models.CASCADE)
 
     @property
     def formal_name(self):
@@ -286,7 +287,7 @@ class Person(models.Model):
 class Comment(models.Model):
     text = models.TextField(_('Comment'))
     created = models.DateTimeField(auto_now_add=True)
-    company = models.ForeignKey(Company,
+    company = models.ForeignKey(Company, on_delete=models.CASCADE,
                                 related_name='comments')
 
     def __str__(self):
@@ -306,9 +307,9 @@ class ReportingYear(models.Model):
 
 class ReportingStatus(models.Model):
 
-    company = models.ForeignKey(Company, related_name='reporting_statuses')
+    company = models.ForeignKey(Company, related_name='reporting_statuses', on_delete=models.CASCADE)
     reporting_year = models.ForeignKey(ReportingYear,
-                                       related_name='reporting_statuses')
+                                       related_name='reporting_statuses',  on_delete=models.PROTECT)
     reported = models.NullBooleanField(default=None)
 
     def __str__(self):
@@ -322,4 +323,4 @@ class ReportingStatus(models.Model):
 class SiteConfiguration(SingletonModel):
 
     reporting_year = models.PositiveIntegerField()
-    self_register_email_template = models.ForeignKey(EmailTemplate)
+    self_register_email_template = models.ForeignKey(EmailTemplate, on_delete=models.PROTECT)

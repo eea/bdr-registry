@@ -1,4 +1,5 @@
 from django.conf.urls import include, url
+from django.urls import include, path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -11,78 +12,76 @@ from bdr_registry.views import api as api_views
 
 admin.autodiscover()
 
-handler500 = 'bdr_registry.views.errors.handler500'
 company_patterns = [
-    url(r'^add/?$',
+    path('add/',
         views.CompanyCreate.as_view()),
-    url(r'^(?P<pk>\d+)/?$',
+    path('<int:pk>/',
         management_views.CompaniesUpdateView.as_view(),
         name='company'),
-    url(r'^(?P<pk>\d+)/update/?$',
+    path('<int:pk>/update/',
         management_views.CompaniesUpdate.as_view(),
         name='company_update'),
-    url(r'^(?P<pk>\d+)/persons/add/?$',
+    path('<int:pk>/persons/add/',
         management_views.PersonCreate.as_view(),
         name='person_add'),
-    url(r'^(?P<pk>\d+)/comment/add/?$',
+    path('<int:pk>/comment/add/',
         management_views.CommentCreate.as_view(),
         name='comment_add'),
-    url(r'^(?P<pk>\d+)/comment/(?P<comment_pk>\d+)/delete/?$',
+    path('<int:pk>/comment/<int:comment_pk>/delete/',
         management_views.CommentDelete.as_view(),
         name='comment_delete'),
 ]
 
 person_patterns = [
-    url(r'^(?P<pk>\d+)/?$',
+    path('<int:pk>/',
         management_views.PersonView.as_view(),
         name='person'),
-    url(r'^(?P<pk>\d+)/update/?$',
+    path('<int:pk>/update/',
         management_views.PersonEdit.as_view(),
         name='person_update'),
-    url(r'^(?P<pk>\d+)/delete/?$',
+    path('<int:pk>/delete/',
         management_views.PersonDelete.as_view(),
         name='person_delete'),
 ]
 
 password_set = [
-    url(r'^request/?$',
+    path('request/',
         management_views.PasswordSetRequest.as_view(),
         name='person_set_request'),
-    url(r'^set_new_password/(?P<token>[\w\.-]+)/',
+    path('set_new_password/<str:token>/',
         management_views.PasswordSetNewPassword.as_view(),
         name='person_set_new_password')
 ]
 
 urlpatterns = [
-    url(r'^$', views.home.as_view(), name='home'),
-    url(r'^accounts/login/?$', auth_views.login,
-        {'template_name': 'login.html'},
+    path('', views.home.as_view(), name='home'),
+    path('accounts/login/', auth_views.LoginView.as_view(template_name='login.html'),
         name='login'),
-    url(r'^accounts/logout/?$', views.logout_view, name='logout'),
-    url(r'^captcha/', include('captcha.urls')),
-    url(r'^self_register/?$', views.SelfRegister.as_view(),
+    path('accounts/logout/', views.logout_view, name='logout'),
+    path('captcha/', include('captcha.urls')),
+    path('self_register/', views.SelfRegister.as_view(),
         name='self_register'),
-    url(r'^self_register_hdv/?$', views.SelfRegisterHDV.as_view(),
+    path('self_register_hdv/', views.SelfRegisterHDV.as_view(),
         name='self_register_hdv'),
-    url(r'^self_register/done/?$',
+    path('self_register/done/',
         TemplateView.as_view(template_name='self_register_done.html'),
         name='self_register_done'),
-    url(r'^self_register/done/hdv/?$',
+    path('self_register/done/hdv/',
         TemplateView.as_view(template_name='self_register_done_hdv.html'),
         name='self_register_done_hdv'),
-    url(r'^crashme/?$', views.crashme),
-    url(r'^ping/?$', views.ping),
-    url(r'^management/', include('bdr_management.urls',
-                                 namespace='management')),
-    url(r'^edit_company$', views.edit_company),
-    url(r'^company/', include(company_patterns)),
-    url(r'^person/', include(person_patterns)),
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^password_set/', include(password_set)),
+    path('crashme/', views.crashme),
+    path('ping/', views.ping),
+    path('management/', include(('bdr_management.urls', 'bdr_manangement'),
+                                namespace='management')),
+    path('edit_company', views.edit_company),
+    path('company/', include(company_patterns)),
+    path('person/', include(person_patterns)),
+    path("admin/", admin.site.urls),
+    path('password_set/', include(password_set)),
     # Api views
-    url(r'^api/company/obligation/(?P<obligation_slug>.*)/',
+    path('api/company/obligation/<slug:obligation_slug>/',
         api_views.CompanyByObligationView.as_view(),
         name='api_company_by_obligation'),
-    url(r'^organisation/all/?$', api_views.CompanyAllView.as_view()),
+    path('organisation/all/', api_views.CompanyAllView.as_view()),
 ]
 urlpatterns += staticfiles_urlpatterns()

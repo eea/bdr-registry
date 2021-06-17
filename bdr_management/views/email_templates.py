@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.urlresolvers import reverse, reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.views import generic

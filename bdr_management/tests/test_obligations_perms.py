@@ -170,7 +170,7 @@ class ObligationManagementTests(BaseWebTest):
     def test_obligation_after_update_by_bdr_group(self):
         user = factories.BDRGroupUserFactory()
         obligation = factories.ObligationFactory()
-        obligation.admins = [user]
+        obligation.admins.set([user])
         url = self.reverse('management:obligation_edit',
                            **{'pk': obligation.pk})
         resp = self.app.get(url, user=user.username)

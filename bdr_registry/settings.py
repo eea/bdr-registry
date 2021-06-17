@@ -67,7 +67,7 @@ SECRET_KEY = env('SECRET_KEY', 'moo4ge4F')
 
 ACCOUNTS_PREFIX = ''
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'frame.middleware.RequestMiddleware',
     'frame.middleware.UserMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -78,7 +78,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'bdr_registry.local.ThreadLocalRequestMiddleware',
     'django.contrib.auth.middleware.RemoteUserMiddleware',
-)
+]
 
 ROOT_URLCONF = 'bdr_registry.urls'
 
@@ -262,5 +262,5 @@ if 'test' in sys.argv:
         pass
 
     # pop 'django.contrib.auth.middleware.RemoteUserMiddleware'
-    MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES[:-1]
+    MIDDLEWARE = MIDDLEWARE[:-1]
     CAPTCHA_TEST_MODE = True

@@ -5,10 +5,14 @@ except ImportError:
 _thread_locals = local()
 
 
-class ThreadLocalRequestMiddleware(object):
+class ThreadLocalRequestMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_request(self, request):
+    def __call__(self, request):
         _thread_locals.request = request
+        response = self.get_response(request)
+        return response
 
 
 def get_request():

@@ -9,6 +9,7 @@ from django.core import mail
 from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.test import Client, override_settings, TestCase, TransactionTestCase
+from django.urls import reverse
 
 from bdr_registry import models
 from bdr_management.tests import factories, base
@@ -77,7 +78,7 @@ class FormSubmitTest(TransactionTestCase):
     def test_submitted_company_and_person_are_saved(self):
         factories.SiteConfigurationFactory()
 
-        resp = self.client.post('/self_register', self.prepare_form_data(ORG_FIXTURE))
+        resp = self.client.post(reverse('self_register'), self.prepare_form_data(ORG_FIXTURE))
 
         self.assertEqual(models.Company.objects.count(), 1)
         self.assertEqual(models.Person.objects.count(), 1)
@@ -91,13 +92,13 @@ class FormSubmitTest(TransactionTestCase):
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
-                         '/self_register/done')
+                         '/self_register/done/')
 
 
     def test_submitted_company_and_person_are_saved_on_hdv(self):
         factories.SiteConfigurationFactory()
         data = self.prepare_form_data(ORG_FIXTURE_HDV)
-        resp = self.client.post('/self_register_hdv', data)
+        resp = self.client.post(reverse('self_register_hdv'), data)
         self.assertEqual(models.Company.objects.count(), 1)
         self.assertEqual(models.Person.objects.count(), 1)
         org = models.Company.objects.all()[0]
@@ -110,13 +111,13 @@ class FormSubmitTest(TransactionTestCase):
 
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp['location'],
-                         '/self_register/done/hdv')
+                         '/self_register/done/hdv/')
 
 
     def test_invalid_person_rolls_back_saved_company(self):
         form_data = self.prepare_form_data(ORG_FIXTURE)
         del form_data['person-email']
-        resp = self.client.post('/self_register', form_data)
+        resp = self.client.post(reverse('self_register'), form_data)
 
         self.assertEqual(models.Company.objects.count(), 0)
         self.assertEqual(resp.status_code, 200)
@@ -137,9 +138,9 @@ class FormSubmitTest(TransactionTestCase):
         bdr_group.user_set.add(user1)
         bdr_group.user_set.add(user2)
 
-        self.obligation.admins = [user1]
+        self.obligation.admins.set([user1])
 
-        self.client.post('/self_register', self.prepare_form_data(ORG_FIXTURE))
+        self.client.post(reverse('self_register'), self.prepare_form_data(ORG_FIXTURE))
         self.assertEqual(len(mail.outbox), 1)
 
 
@@ -151,7 +152,7 @@ class ApiTest(base.BaseWebTest):
         self.obligation = factories.ObligationFactory(code='obl', name='Obligation')
 
     def test_response_empty_when_no_companies_in_db(self):
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey, follow=True)
         self.assertEqual(resp['Content-Type'], 'application/xml')
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations></organisations>')
@@ -173,7 +174,7 @@ class ApiTest(base.BaseWebTest):
         comment = models.Comment.objects.create(company=org,
                                                 text=comment_text)
 
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey, follow=True)
 
         # By default, MySQL DateTime doesn't store fractional seconds,
         # so we'll get them back trimmed
@@ -221,9 +222,7 @@ class ApiTest(base.BaseWebTest):
                                      phone2="556 1234",
                                      phone3="557 1234",
                                      fax="555 6789")
-
-        resp = self.client.get('/organisation/all?apikey=' + self.apikey)
-
+        resp = self.client.get('/organisation/all?apikey=' + self.apikey, follow=True)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
@@ -260,7 +259,7 @@ class ApiTest(base.BaseWebTest):
 
         resp = self.client.get('/organisation/all'
                                '?account_uid=ods0002'
-                               '&apikey=' + self.apikey)
+                               '&apikey=' + self.apikey, follow=True)
         expected = ('<?xml version="1.0" encoding="utf-8"?>\n'
                     '<organisations>'
                       '<organisation>'
@@ -283,7 +282,7 @@ class ApiTest(base.BaseWebTest):
     #todo rewrite after auth api authorization is removed
     # def test_requests_with_no_api_key_are_rejected(self):
     #     factories.CountryFactory()
-    #     resp = self.client.get('/organisation/all')
+    #     resp = self.client.get('/organisation/all')f
     #     self.assertEqual(resp.status_code, 403)
 
     def test_api_company_by_obligation(self):

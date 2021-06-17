@@ -303,4 +303,4 @@ class CompanyNameHistoryTests(base.BaseWebTest):
         self.app.post(url, params=self.company_form, user=self.user)
         self.assertEqual(company.namehistory.count(), 2)
         self.assertEqual(company.namehistory.first().name, old_name)
-        self.assertEqual(company.namehistory.all()[1].name, new_name)
+        self.assertEqual(company.namehistory.all().order_by('time')[1].name, new_name)
