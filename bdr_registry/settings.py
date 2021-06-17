@@ -21,6 +21,8 @@ DEBUG = env('DEBUG', False)
 ALLOWED_HOSTS = env('ALLOWED_HOSTS', ['localhost', '127.0.0.1'])
 ADMIN_ALL_BDR_TABLES = env('ADMIN_ALL_BDR_TABLES', False)
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 DATABASES = {
     'default': {
         'ENGINE': env('DATABASES_ENGINE', 'django.db.backends.sqlite3'),

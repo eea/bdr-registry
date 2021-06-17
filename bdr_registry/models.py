@@ -310,7 +310,7 @@ class ReportingStatus(models.Model):
     company = models.ForeignKey(Company, related_name='reporting_statuses', on_delete=models.CASCADE)
     reporting_year = models.ForeignKey(ReportingYear,
                                        related_name='reporting_statuses',  on_delete=models.PROTECT)
-    reported = models.NullBooleanField(default=None)
+    reported = models.BooleanField(null=True)
 
     def __str__(self):
         return u"company %s reported in %s: %s" % (
