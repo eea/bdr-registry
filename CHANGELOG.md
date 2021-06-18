@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.7.0 - (2021-06-18)
+--------------------
+* Upgrade python 3.8
+* Upgrade to Django 3.2
+* Upgrade all packages
+* Add black and flake8 for code formatting
+  [dianaboiangiu]
+
 1.6.8 - (2021-05-21)
 --------------------
 * Update packages
