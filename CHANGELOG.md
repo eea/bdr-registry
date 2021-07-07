@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.7.1 - (2021-07-07)
+--------------------
+* Fix company delete
+  [dianaboiangiu]
+
 1.7.0 - (2021-06-18)
 --------------------
 * Upgrade python 3.8
