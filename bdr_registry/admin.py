@@ -617,7 +617,7 @@ class UserAdminForm(UserChangeForm):
     def save(self, commit=True):
         user = super(UserAdminForm, self).save(commit=False)
 
-        user.obligations = self.cleaned_data["obligations"]
+        user.obligations.set(self.cleaned_data["obligations"])
 
         if commit:
             user.save()

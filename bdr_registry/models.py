@@ -258,7 +258,7 @@ class CompanyNameHistory(models.Model):
 
     name = models.CharField(max_length=255)
     company = models.ForeignKey(
-        Company, related_name="namehistory", on_delete=models.PROTECT
+        Company, related_name="namehistory", on_delete=models.CASCADE
     )
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.DO_NOTHING)
     time = models.DateTimeField(auto_now_add=True)
