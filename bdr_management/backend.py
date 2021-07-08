@@ -74,6 +74,7 @@ def send_password_email_to_people(
                 "use_reset_url": use_reset_url,
                 "next_year": reporting_year + 1,
             },
+            priority="now",
         )
         return 1
     if person:
@@ -95,7 +96,8 @@ def send_password_email_to_people(
                 "use_reset_url": use_reset_url,
                 "personal_account": True,
                 "next_year": reporting_year + 1,
-            }
+            },
+            priority="now",
         )
         return 1
     for person in company.people.all():
@@ -117,7 +119,8 @@ def send_password_email_to_people(
                 "use_reset_url": use_reset_url,
                 "reporting_year": reporting_year,
                 "next_year": reporting_year + 1,
-            }
+            },
+            priority="now",
         )
 
     return company.people.count()

@@ -54,6 +54,7 @@ class SetPasswordMixin:
             subject="BDR Registry password re-set",
             message=text,
             html_message=template,
+            priority="now",
         )
 
     def send_password(self, account):
