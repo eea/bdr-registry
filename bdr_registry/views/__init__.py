@@ -503,7 +503,6 @@ def send_notification_email(context):
         bcc=bcc,
         template=template,
         context=context,
-        priority="now",
     )
 
 
