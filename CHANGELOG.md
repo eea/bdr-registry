@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.7.3 - (2021-07-08)
+--------------------
+* Fix SMTPServerDisconnected
+  [dianaboiangiu]
+
 1.7.2 - (2021-07-08)
 --------------------
 * Fix SMTPServerDisconnected
