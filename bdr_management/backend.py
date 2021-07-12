@@ -1,6 +1,8 @@
 from collections import defaultdict
 from io import BytesIO
 from post_office import mail
+from post_office.connections import connections
+
 import xlwt
 
 from django.conf import settings
@@ -43,7 +45,7 @@ def send_password_email_to_people(
     password_reset=None,
     personal_account=None,
 ):
-
+    connections.close()
     config = SiteConfiguration.objects.get()
     template = company.obligation.email_template
     bcc = company.obligation.bcc.split(",")
@@ -122,7 +124,7 @@ def send_password_email_to_people(
             },
             priority="now",
         )
-
+    connections.close()
     return company.people.count()
 
 

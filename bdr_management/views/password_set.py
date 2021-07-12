@@ -1,6 +1,8 @@
 from datetime import timedelta
 import hashlib
 from post_office import mail
+from post_office.connections import connections
+
 import uuid
 
 
@@ -28,6 +30,7 @@ class SetPasswordMixin:
         return "/".join(url_paths)
 
     def send_mail(self, token, person=None, company=None):
+        connections.close()
         if person:
             company = person.company
             account = person.account
@@ -56,6 +59,7 @@ class SetPasswordMixin:
             html_message=template,
             priority="now",
         )
+        connections.close()
 
     def send_password(self, account):
         salt = uuid.uuid4().hex + account.uid

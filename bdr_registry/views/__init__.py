@@ -23,6 +23,8 @@ from django.utils.decorators import method_decorator
 from honeypot.decorators import check_honeypot
 
 from post_office.mail import send
+from post_office.connections import connections
+
 
 from bdr_registry import models
 from bdr_registry import forms
@@ -474,7 +476,7 @@ def valid_email(email):
 def send_notification_email(context):
 
     company = context.get("company")
-
+    connections.close()
     recipients = [
         u.email
         for u in User.objects.filter(
@@ -505,6 +507,7 @@ def send_notification_email(context):
         context=context,
         priority="now",
     )
+    connections.close()
 
 
 def crashme(request):
