@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.7.5 - (2021-07-12)
+--------------------
+* Fix SMTPServerDisconnected
+  [dianaboiangiu]
+
 1.7.4 - (2021-07-09)
 --------------------
 * Set priority back on post office
