@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.0 - (2023-06-01)
+--------------------
+* Add new obligation for HDV resimulation
+  [dianaboiangiu]
+
 1.7.5 - (2021-07-12)
 --------------------
 * Fix SMTPServerDisconnected
