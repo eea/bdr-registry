@@ -363,7 +363,7 @@ class PersonsExport(ApiAccessMixin, CompanyMixin, generic.View):
                         account.uid,
                         org.name,
                         org.country.name,
-                        u"{p.title} {p.first_name} {p.family_name}".format(p=person),
+                        "{p.title} {p.first_name} {p.family_name}".format(p=person),
                         person.email,
                         getattr(person.account, "uid", ""),
                         person.phone,
@@ -402,7 +402,7 @@ class PersonsExportJson(ApiAccessMixin, CompanyMixin, generic.View):
                     "companyname": org.name,
                     "country": org.country.name,
                     "contactname": (
-                        u"{p.title} {p.first_name} {p.family_name}".format(p=person)
+                        "{p.title} {p.first_name} {p.family_name}".format(p=person)
                     ),
                     "contactemail": person.email,
                     "phone": person.phone,

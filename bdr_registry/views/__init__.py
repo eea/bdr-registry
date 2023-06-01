@@ -146,7 +146,7 @@ def attempt_basic_auth(request):
     user = authenticate(username=username, password=password)
     if user is not None:
         login(request, user)
-        messages.add_message(request, messages.INFO, u"Logged in as %s" % user.username)
+        messages.add_message(request, messages.INFO, "Logged in as %s" % user.username)
 
 
 def edit_company(request):
@@ -349,7 +349,7 @@ class PersonUpdate(UpdateView):
 
     def form_valid(self, form):
         messages.add_message(
-            self.request, messages.INFO, u"Details saved: %s" % self.object
+            self.request, messages.INFO, "Details saved: %s" % self.object
         )
         return super(PersonUpdate, self).form_valid(form)
 
@@ -371,13 +371,13 @@ class PersonDelete(DeleteView):
         self.object = self.get_object()
         if self.object.company.people.count() == 1:
             messages.add_message(
-                self.request, messages.ERROR, u"Can't delete last person"
+                self.request, messages.ERROR, "Can't delete last person"
             )
 
         else:
             self.object.delete()
             messages.add_message(
-                self.request, messages.INFO, u"Person deleted: %s" % self.object
+                self.request, messages.INFO, "Person deleted: %s" % self.object
             )
 
         company = self.object.company
@@ -432,7 +432,7 @@ class CommentUpdate(UpdateView):
 
     def form_valid(self, form):
         messages.add_message(
-            self.request, messages.INFO, u"Details saved: %s" % self.object
+            self.request, messages.INFO, "Details saved: %s" % self.object
         )
         return super(CommentUpdate, self).form_valid(form)
 
@@ -456,7 +456,7 @@ class CommentDelete(DeleteView):
         messages.add_message(
             self.request,
             messages.INFO,
-            u"Comment from %s successfully deleted"
+            "Comment from %s successfully deleted"
             % self.object.created.strftime("%d %B %Y"),
         )
 

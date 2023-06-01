@@ -166,8 +166,10 @@ class CompaniesBaseView(base.ModelTableViewMixin, generic.DetailView):
     def _get_model_fields(self):
 
         model_fields = super(CompaniesBaseView, self)._get_model_fields()
-        if not self.object.obligation.code == 'hdv_resim':
-            model_fields = filter(lambda x: x.name not in ("linked_hdv_company",), model_fields)
+        if not self.object.obligation.code == "hdv_resim":
+            model_fields = filter(
+                lambda x: x.name not in ("linked_hdv_company",), model_fields
+            )
         return model_fields
 
     def get_context_data(self, **kwargs):
@@ -313,7 +315,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin, CompanyBaseEdit):
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:companies"), _("Companies")),
             Breadcrumb(self.get_back_url(), self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data["breadcrumbs"] = breadcrumbs
 
@@ -366,9 +368,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin, CompanyBaseEdit):
                 "account_uid": company.account.uid,
                 "organisation_name": request.POST.get("name"),
             }
-            requests.post(
-                url, data=form, auth=settings.BDR_API_AUTH, verify=False
-            )
+            requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
 
         return super(CompanyBaseEdit, self).post(request, *args, **kwargs)
 
@@ -382,7 +382,7 @@ class CompaniesUpdate(base.CompanyUserRequiredMixin, CompanyBaseEdit):
         breadcrumbs = [
             Breadcrumb(reverse("home"), _("Registry")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data = super(CompaniesUpdate, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs

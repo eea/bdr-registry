@@ -39,7 +39,7 @@ class CompanyForm(ModelForm):
                 ] = "disabled"
 
             if not (
-                self.has_edit_permission() or self.instance.vat_number == u"MISSING"
+                self.has_edit_permission() or self.instance.vat_number == "MISSING"
             ):
                 self.fields["vat_number"].widget.attrs["disabled"] = "disabled"
 
@@ -80,7 +80,7 @@ class CompanyForm(ModelForm):
             self.instance
             and self.instance.id
             and not (
-                self.has_edit_permission() or self.instance.vat_number == u"MISSING"
+                self.has_edit_permission() or self.instance.vat_number == "MISSING"
             )
         ):
             return self.instance.vat_number

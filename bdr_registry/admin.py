@@ -167,7 +167,7 @@ def send_password_email_to_people(organisations):
     for company in organisations:
         for person in company.people.all():
             if company.obligation.code == "ods":
-                subject = u"Reporting data on ODS covering %s" % reporting_year
+                subject = "Reporting data on ODS covering %s" % reporting_year
                 html = render_to_string(
                     "email_company_ods.html",
                     {
@@ -180,7 +180,7 @@ def send_password_email_to_people(organisations):
                 mail_bcc = settings.BDR_ORGEMAIL_ODS_BCC
 
             elif company.obligation.code == "fgas":
-                subject = u"Reporting data on F-Gases covering %s" % reporting_year
+                subject = "Reporting data on F-Gases covering %s" % reporting_year
                 html = render_to_string(
                     "email_company_fgas.html",
                     {
@@ -194,7 +194,7 @@ def send_password_email_to_people(organisations):
 
             elif company.obligation.code == "vans":
                 subject = (
-                    u"Reporting data on Average CO2 emissions (light commercial vehicles) %s"
+                    "Reporting data on Average CO2 emissions (light commercial vehicles) %s"
                     % reporting_year
                 )
                 html = render_to_string(
@@ -210,7 +210,7 @@ def send_password_email_to_people(organisations):
 
             elif company.obligation.code == "cars":
                 subject = (
-                    u"Reporting data on Average CO2 emissions (passenger cars) covering %s"
+                    "Reporting data on Average CO2 emissions (passenger cars) covering %s"
                     % reporting_year
                 )
                 html = render_to_string(
@@ -531,7 +531,7 @@ class PersonAdmin(ReadOnlyAdmin):
                         account.uid,
                         org.name,
                         org.country.name,
-                        u"{p.title} {p.first_name} {p.family_name}".format(p=person),
+                        "{p.title} {p.first_name} {p.family_name}".format(p=person),
                         person.email,
                     ]
                 ]

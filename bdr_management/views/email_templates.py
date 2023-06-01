@@ -113,7 +113,7 @@ class EmailTemplateEdit(
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:email_templates"), _("Email templates")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data = super(EmailTemplateEdit, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -142,7 +142,7 @@ class EmailTemplateDelete(
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:email_templates"), _("Email templates")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Delete %s" % self.object)),
+            Breadcrumb("", _("Delete %s" % self.object)),
         ]
         data = super(EmailTemplateDelete, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs

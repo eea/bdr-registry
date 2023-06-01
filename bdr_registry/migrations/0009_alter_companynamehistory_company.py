@@ -7,13 +7,17 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bdr_registry', '0008_alter_reportingstatus_reported'),
+        ("bdr_registry", "0008_alter_reportingstatus_reported"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='companynamehistory',
-            name='company',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='namehistory', to='bdr_registry.company'),
+            model_name="companynamehistory",
+            name="company",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="namehistory",
+                to="bdr_registry.company",
+            ),
         ),
     ]

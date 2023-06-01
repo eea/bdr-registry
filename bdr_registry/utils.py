@@ -13,7 +13,9 @@ def create_reporting_folder(company, request=None, *args, **kwargs):
     if not (settings.BDR_API_URL and settings.BDR_API_AUTH):
         logging.error("BDR_API_URL and BDR_API_AUTH not configured")
         if request:
-            messages.error(request, "BDR_API_URL and BDR_API_AUTH not configured" % resp)
+            messages.error(
+                request, "BDR_API_URL and BDR_API_AUTH not configured" % resp
+            )
         return
     url = settings.BDR_API_URL + "/create_organisation_folder"
     form = {

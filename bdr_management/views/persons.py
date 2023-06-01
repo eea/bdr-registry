@@ -18,6 +18,7 @@ from bdr_management.views.mixins import CompanyMixin
 from bdr_registry.models import Company, Person, User
 from bdr_registry.utils import set_role_for_account
 
+
 class Persons(views.StaffuserRequiredMixin, generic.TemplateView):
 
     template_name = "bdr_management/persons.html"
@@ -192,7 +193,7 @@ class PersonManagementEdit(views.GroupRequiredMixin, PersonEditBase):
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:persons"), _("Persons")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data = super(PersonManagementEdit, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -217,7 +218,7 @@ class PersonFromCompanyEdit(PersonManagementEdit):
                 self.object.company,
             ),
             Breadcrumb(data["cancel_url"], self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data["breadcrumbs"] = breadcrumbs
         return data
@@ -235,7 +236,7 @@ class PersonEdit(base.PersonUserRequiredMixin, PersonEditBase):
         breadcrumbs = [
             Breadcrumb(reverse("home"), _("Registry")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data = super(PersonEdit, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -261,7 +262,9 @@ class PersonDeleteBase(base.ModelTableEditMixin, generic.DeleteView):
                     user = user.first()
                     user.is_active = False
                     user.save()
-                set_role_for_account(self.object.company, self.object.account.uid, "remove")
+                set_role_for_account(
+                    self.object.company, self.object.account.uid, "remove"
+                )
             return response
         else:
             return self.cannot_delete_last_reporter()
@@ -276,8 +279,8 @@ class PersonDeleteBase(base.ModelTableEditMixin, generic.DeleteView):
         messages.error(
             self.request,
             _(
-                u"Cannot delete the only designated company reporter "
-                u'for "%s"' % self.get_object().company
+                "Cannot delete the only designated company reporter "
+                'for "%s"' % self.get_object().company
             ),
         )
         return HttpResponseRedirect(self.get_view_url())
@@ -303,7 +306,7 @@ class PersonManagementDelete(views.GroupRequiredMixin, PersonDeleteBase):
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:persons"), _("Persons")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Delete %s" % self.object)),
+            Breadcrumb("", _("Delete %s" % self.object)),
         ]
         data = super(PersonManagementDelete, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -325,7 +328,7 @@ class PersonFromCompanyDelete(PersonManagementDelete):
                 self.object.company,
             ),
             Breadcrumb(data["cancel_url"], self.object),
-            Breadcrumb("", _(u"Delete %s" % self.object)),
+            Breadcrumb("", _("Delete %s" % self.object)),
         ]
         data["breadcrumbs"] = breadcrumbs
         return data
@@ -350,7 +353,7 @@ class PersonDelete(base.PersonUserRequiredMixin, PersonDeleteBase):
         breadcrumbs = [
             Breadcrumb(reverse("home"), _("Registry")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Delete %s" % self.object)),
+            Breadcrumb("", _("Delete %s" % self.object)),
         ]
         data = super(PersonDelete, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs

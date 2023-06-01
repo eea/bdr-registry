@@ -313,8 +313,8 @@ class PersonManagementTests(BaseWebTest):
         )
         resp = resp.follow()
         expected_messages = [
-            u"Cannot delete the only designated company reporter "
-            u'for "%s"' % person.company
+            "Cannot delete the only designated company reporter "
+            'for "%s"' % person.company
         ]
         actual_messages = map(str, resp.context["messages"])
         self.assertCountEqual(expected_messages, actual_messages)
@@ -601,8 +601,8 @@ class PersonTests(BaseWebTest):
         self.assertRedirects(resp, self.reverse("person", pk=person.pk))
         resp = resp.follow()
         expected_messages = [
-            u"Cannot delete the only designated company reporter "
-            u'for "%s"' % person.company
+            "Cannot delete the only designated company reporter "
+            'for "%s"' % person.company
         ]
         actual_messages = map(str, resp.context["messages"])
         self.assertCountEqual(expected_messages, actual_messages)

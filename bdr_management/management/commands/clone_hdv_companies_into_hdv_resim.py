@@ -8,8 +8,8 @@ class Command(BaseCommand):
     help = "Clone HDV companies into HDV resim"
 
     def handle(self, *args, **options):
-        hdv_obligation = Obligation.objects.get(code='hdv')
-        hdv_resim_obligation = Obligation.objects.get(code='hdv_resim')
+        hdv_obligation = Obligation.objects.get(code="hdv")
+        hdv_resim_obligation = Obligation.objects.get(code="hdv_resim")
         companies = Company.objects.filter(obligation=hdv_obligation)
         for company in companies:
             old_company = Company.objects.get(id=company.id)

@@ -92,13 +92,13 @@ class AccountManager(models.Manager):
             prefix = settings.ACCOUNTS_PREFIX
         else:
             prefix = ""
-        uid = u"{prefix}{o.code}{next_id}".format(
+        uid = "{prefix}{o.code}{next_id}".format(
             prefix=prefix, o=obligation, next_id=next_id
         )
         return self.create(uid=uid)
 
     def create_for_person(self, company, person):
-        uid = u"{company}_{first_name}.{family_name}".format(
+        uid = "{company}_{first_name}.{family_name}".format(
             company=company.account.uid,
             first_name=person.first_name.lower()[:3],
             family_name=person.family_name.lower()[:3],
@@ -107,7 +107,7 @@ class AccountManager(models.Manager):
         try:
             return self.create(uid=uid)
         except IntegrityError:
-            uid = u"{company}_{first_name}.{family_name}".format(
+            uid = "{company}_{first_name}.{family_name}".format(
                 company=company.account.uid,
                 first_name=person.first_name.lower()[:4],
                 family_name=person.family_name.lower()[:4],
@@ -154,7 +154,7 @@ class NextAccountId(models.Model):
     )
 
     def __str__(self):
-        return u"next_id={p.next_id} ({p.obligation.name})".format(p=self)
+        return "next_id={p.next_id} ({p.obligation.name})".format(p=self)
 
 
 class Company(models.Model):
@@ -267,7 +267,7 @@ class CompanyNameHistory(models.Model):
     time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return u"{h.name} {h.time} {h.user}".format(h=self)
+        return "{h.name} {h.time} {h.user}".format(h=self)
 
 
 class Person(models.Model):
@@ -297,10 +297,10 @@ class Person(models.Model):
     @property
     def formal_name(self):
         title = self.title or ""
-        return u"{title} {p.first_name} {p.family_name}".format(title=title, p=self)
+        return "{title} {p.first_name} {p.family_name}".format(title=title, p=self)
 
     def __str__(self):
-        return u"{p.first_name} {p.family_name}".format(p=self)
+        return "{p.first_name} {p.family_name}".format(p=self)
 
 
 class Comment(models.Model):
@@ -336,7 +336,7 @@ class ReportingStatus(models.Model):
     reported = models.BooleanField(null=True)
 
     def __str__(self):
-        return u"company %s reported in %s: %s" % (
+        return "company %s reported in %s: %s" % (
             self.company.pk,
             self.reporting_year.year,
             self.reported,

@@ -10,9 +10,9 @@ class Command(BaseCommand):
     """
 
     def handle(self, *args, **options):
-        hdv_resim_obligation = Obligation.objects.get(code='hdv_resim')
+        hdv_resim_obligation = Obligation.objects.get(code="hdv_resim")
         companies = Company.objects.filter(obligation=hdv_resim_obligation)
-        for company in companies:  
+        for company in companies:
             for person in company.people.all():
                 if person.account:
                     set_role_for_account(person.company, person.account.uid, "remove")
@@ -20,4 +20,3 @@ class Command(BaseCommand):
             if company.account:
                 set_role_for_account(company, company.account.uid, "remove")
             company.delete()
-            

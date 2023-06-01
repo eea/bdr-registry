@@ -110,7 +110,7 @@ class ObligationEdit(
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:obligations"), _("Obligations")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Edit %s" % self.object)),
+            Breadcrumb("", _("Edit %s" % self.object)),
         ]
         data = super(ObligationEdit, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -137,7 +137,7 @@ class ObligationDelete(
             Breadcrumb(reverse("home"), title=_("Registry")),
             Breadcrumb(reverse("management:obligations"), _("Obligations")),
             Breadcrumb(back_url, self.object),
-            Breadcrumb("", _(u"Delete %s" % self.object)),
+            Breadcrumb("", _("Delete %s" % self.object)),
         ]
         data = super(ObligationDelete, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs

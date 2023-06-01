@@ -79,7 +79,7 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin, generic.For
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse("home"), title=_("Registry")),
-            Breadcrumb("", _(u"Request password reset")),
+            Breadcrumb("", _("Request password reset")),
         ]
         data = super(PasswordSetRequest, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs
@@ -135,7 +135,7 @@ class PasswordSetNewPassword(base.ModelTableViewMixin, generic.FormView):
     def get_context_data(self, **kwargs):
         breadcrumbs = [
             Breadcrumb(reverse("home"), title=_("Registry")),
-            Breadcrumb("", _(u"Request password reset")),
+            Breadcrumb("", _("Request password reset")),
         ]
         data = super(PasswordSetNewPassword, self).get_context_data(**kwargs)
         data["breadcrumbs"] = breadcrumbs

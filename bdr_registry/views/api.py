@@ -53,7 +53,7 @@ class CompanyAllView(ApiAccessMixin, View):
                 phones = [person.phone, person.phone2, person.phone3]
                 return OrderedDict(
                     [
-                        ("name", u"{p.first_name} {p.family_name}".format(p=person)),
+                        ("name", "{p.first_name} {p.family_name}".format(p=person)),
                         ("email", person.email),
                         ("phone", [p for p in phones if p]),
                         ("fax", person.fax),
