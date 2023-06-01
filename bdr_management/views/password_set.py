@@ -91,20 +91,22 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin, generic.For
         if form.is_valid():
             account = form.cleaned_data["username"]
             token = self.send_password(account)
-            if hasattr(account, "person"):
-                email = account.person.email
-                msg = _(
-                    "An e-mail with a reset link has been sent to {}.".format(email)
-                )
-                self.send_mail(token, person=account.person)
-            if hasattr(account, "company"):
-                email = account.company.main_reporter.email
-                msg = _(
-                    "An e-mail with a reset link has been sent to the {} (the company account owner).".format(
-                        email
+            if hasattr(account, "persons"):
+                if account.persons.all().count() != 0:
+                    email = account.persons.first().email
+                    msg = _(
+                        "An e-mail with a reset link has been sent to {}.".format(email)
                     )
-                )
-                self.send_mail(token, company=account.company)
+                    self.send_mail(token, person=account.person)
+            if hasattr(account, "companies"):
+                if account.companies.all().count() != 0:
+                    email = account.companies.first().main_reporter.email
+                    msg = _(
+                        "An e-mail with a reset link has been sent to the {} (the company account owner).".format(
+                            email
+                        )
+                    )
+                    self.send_mail(token, company=account.company)
             messages.success(request, msg)
             return self.form_valid(form)
         else:

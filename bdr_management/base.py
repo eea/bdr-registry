@@ -187,8 +187,9 @@ def has_permission(user, company):
         if not account:
             return False
         account = account.first()
-        if account.person.company == company:
-            return True
+        for person in account.persons.all():
+            if person.company == company:
+                return True
     return False
 
 

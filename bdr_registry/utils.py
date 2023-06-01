@@ -84,7 +84,7 @@ def set_role_for_account(company, account_uid, action):
         msg = "%s, on person account %s role setting: %s" % (
             company.account.uid,
             account_uid,
-            ", ".join(rv["errors"]),
+            rv["errors"],
         )
         logging.error(msg)
     else:

@@ -71,16 +71,17 @@ def sync_accounts_with_ldap(accounts):
     ldap_editor = create_ldap_editor()
     counters = defaultdict(int)
     for account in accounts:
-        if ldap_editor.create_account(
-            account.uid,
-            account.company.name,
-            account.company.country.name,
-            account.password,
-        ):
-            counters["create"] += 1
-        else:
-            ldap_editor.reset_password(account.uid, account.password)
-            counters["password"] += 1
+        for company in account.companies.all():
+            if ldap_editor.create_account(
+                account.uid,
+                company.name,
+                company.country.name,
+                account.password,
+            ):
+                counters["create"] += 1
+            else:
+                ldap_editor.reset_password(account.uid, account.password)
+                counters["password"] += 1
     return dict(counters)
 
 

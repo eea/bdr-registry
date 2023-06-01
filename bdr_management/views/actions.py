@@ -424,24 +424,27 @@ class CompaniesForUsernameView(ApiAccessMixin, generic.View):
         account = Account.objects.filter(uid=username)
         if account:
             account = account.first()
-            if hasattr(account, "person"):
-                company = account.person.company
-            else:
-                company = account.company
+            companies = []
+            if hasattr(account, "persons"):
+                if account.persons.all().count() != 0:
+                    companies = account.persons.all()
+            if hasattr(account, "companies"):
+                if account.companies.all().count() != 0:
+                    companies = account.companies.all()
+            for company in companies:
+                folder_path = company.build_reporting_folder_path()
+                has_reporting_folder = company.has_reporting_folder(folder_path)
+                if has_reporting_folder:
+                    reporting_folder = company.build_reporting_folder_path()
+                else:
+                    reporting_folder = ""
 
-            folder_path = company.build_reporting_folder_path()
-            has_reporting_folder = company.has_reporting_folder(folder_path)
-            if has_reporting_folder:
-                reporting_folder = company.build_reporting_folder_path()
-            else:
-                reporting_folder = ""
-
-            registry_url = reverse("company", kwargs={"pk": company.id}).strip("/")
-            company_data = {
-                "company_name": company.name,
-                "reporting_folder": reporting_folder,
-                "has_reporting_folder": has_reporting_folder,
-                "registry_url": "/".join(["/registry", registry_url]),
-            }
-            data.append(company_data)
+                registry_url = reverse("company", kwargs={"pk": company.id}).strip("/")
+                company_data = {
+                    "company_name": company.name,
+                    "reporting_folder": reporting_folder,
+                    "has_reporting_folder": has_reporting_folder,
+                    "registry_url": "/".join(["/registry", registry_url]),
+                }
+                data.append(company_data)
         return HttpResponse(json.dumps(data), content_type="application/json")

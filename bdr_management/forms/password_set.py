@@ -31,13 +31,14 @@ class AccountForm(ModelForm):
 
     def clean_username(self):
         account = self.cleaned_data["username"]
-        if not hasattr(account, "person"):
-            if hasattr(account, "company"):
-                if account.company.has_main_reporter:
-                    return account
-            raise ValidationError(
-                "The account is not a personal account or company account with an owner set."
-            )
+        if not hasattr(account, "persons"):
+            if account.persons.all().count() == 0:
+                if hasattr(account, "companies"):
+                    if account.companies.first().has_main_reporter:
+                        return account
+                raise ValidationError(
+                    "The account is not a personal account or company account with an owner set."
+                )
         return account
 
 
