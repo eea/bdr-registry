@@ -74,7 +74,7 @@
       <div class="col-sm-6">
         {{ form.country|custom_render_field }}
       </div>
-      {% if object.obligation.code == 'hdv' or object is None %}
+      {% if object.obligation.code == 'hdv' or object.obligation.code == 'hdv_resim' or object is None %}
         <div class="col-sm-6">
           {{ form.world_manufacturer_identifier|custom_render_field }}
         </div>

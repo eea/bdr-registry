@@ -52,6 +52,8 @@ def send_password_email_to_people(
     bcc = [s.strip() for s in bcc if valid_email(s.strip())]
     if company.obligation.code == "hdv":
         sender = settings.HDV_EMAIL_FROM
+    elif company.obligation.code == "hdv_resim":
+        sender = settings.HDV_RESIM_EMAIL_FROM
     else:
         sender = settings.BDR_EMAIL_FROM
     if not send_bcc:

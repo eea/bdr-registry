@@ -179,8 +179,15 @@ BDR_HELPDESK_EMAIL = env("BDR_HELPDESK_EMAIL", "")
 
 BDR_EMAIL_FROM = env("BDR_EMAIL_FROM", "bdr@localhost")
 HDV_EMAIL_FROM = env("HDV_EMAIL_FROM", "hdv@localhost")
+HDV_RESIM_EMAIL_FROM = env("HDV_RESIM_EMAIL_FROM", "hdv@localhost")
 
 HDV_MAIL_HEADERS = {
+    "X-OTRS-IsVisibleForCustomer": "0",
+    "X-OTRS-Loop": "True",
+    "X-OTRS-Queue": "HDV CO2 monitoring",
+}
+
+HDV_RESIM_MAIL_HEADERS = {
     "X-OTRS-IsVisibleForCustomer": "0",
     "X-OTRS-Loop": "True",
     "X-OTRS-Queue": "HDV CO2 monitoring",
@@ -229,7 +236,7 @@ LDAP_EDIT_DN = env("LDAP_EDIT_DN", "")
 LDAP_EDIT_PASSWORD = secure_str(env("LDAP_EDIT_PASSWORD", ""))
 
 BDR_REPORTEK_ORGANISATION_URL = env("BDR_REPORTEK_ORGANISATION_URL", "#")
-BDR_API_URL = env("BDR_API_PORTAL_URL", "http://example.com/api")
+BDR_API_URL = env("BDR_API_PORTAL_URL", "")
 BDR_AUDIT_LOG_FILE = env("BDR_AUDIT_LOG_FILE", None)
 
 BDR_API_AUTH_USER = env("BDR_API_AUTH_USER", "")
@@ -242,7 +249,7 @@ DATE_FORMAT = "%d %b %Y"
 
 BDR_HELPDESK_GROUP = "BDR helpdesk"
 LOCALITIES_TABLE_URL = "https://bdr.eionet.europa.eu/localities_table"
-SELF_OBL_EXCLUDE = ["fgas", "ods", "mercury", "hdv"]
+SELF_OBL_EXCLUDE = ["fgas", "ods", "mercury", "hdv", "hdv_resim"]
 FIRST_REPORTING_YEAR = 2012
 
 # TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

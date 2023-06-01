@@ -40,6 +40,8 @@ class SetPasswordMixin:
 
         if company.obligation.code == "hdv":
             sender = settings.HDV_EMAIL_FROM
+        elif company.obligation.code == "hdv_resim":
+            sender = settings.HDV_RESIM_EMAIL_FROM
         else:
             sender = settings.BDR_EMAIL_FROM
         context = {

@@ -17,7 +17,7 @@
             <p class="h4 no-margins">Actions:</p>
             <ul>
               {% if has_account %}
-                {% if company.main_reporter and company.obligation.code == 'hdv' %}
+                {% if company.main_reporter and company.obligation.code in 'hdv,hdv_resim' %}
                   <li>
                     <a id="reset-password-action-company-account" href="{% url 'management:reset_password_company_account' pk=object.pk %}">
                       {% trans "Reset company account password" %}</a>
@@ -41,7 +41,7 @@
                   <a id="create-account-action" href="{% url 'management:create_account' pk=object.pk %}">
                     {% trans "Create account" %}</a>
                 </li>
-              {% elif company.obligation.code == 'hdv' %}
+              {% elif company.obligation.code in 'hdv,hdv_resim' %}
                 <li>
                   <a id="set-company-account" href="{% url 'management:set_company_account_owner' pk=object.pk %}">
                     {% trans "Set company account owner" %}</a>
@@ -63,7 +63,7 @@
       {%endif %}
     {% endif %}
 
-    {% if has_account and user|is_company_account:object and company.obligation.code == 'hdv' %}
+    {% if has_account and user|is_company_account:object and company.obligation.code in 'hdv,hdv_resim' %}
       <div class="box-small no-borders pull-left"
       style="margin-left:24px;">
         <p class="h4 no-margins">Actions:</p>
@@ -134,7 +134,7 @@
         {% endif %}
       {{ person.formal_name }}</a>
 
-      {% if company.obligation.code == 'hdv' %}
+      {% if company.obligation.code in 'hdv,hdv_resim'  %}
         {% if person.account %}
           - Account: {{ person.account }}
           {% if person.account.related_user and not person.account.related_user.is_active %}

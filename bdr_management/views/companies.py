@@ -25,7 +25,6 @@ from bdr_management.forms.companies import CompanyForm, CompanyDeleteForm
 from bdr_management.views.mixins import CompanyMixin
 from bdr_management.views.password_set import SetPasswordMixin
 
-from bdr_registry.admin import set_role_for_person_account
 from bdr_registry.models import (
     Account,
     Company,
@@ -36,6 +35,7 @@ from bdr_registry.models import (
     User,
 )
 from bdr_registry.views import CanEdit
+from bdr_registry.utils import create_reporting_folder, set_role_for_account
 
 
 class Companies(views.StaffuserRequiredMixin, CompanyMixin, generic.TemplateView):
@@ -162,6 +162,13 @@ class CompaniesBaseView(base.ModelTableViewMixin, generic.DetailView):
     template_name = "bdr_management/company_view.html"
     model = Company
     exclude = ("id",)
+
+    def _get_model_fields(self):
+
+        model_fields = super(CompaniesBaseView, self)._get_model_fields()
+        if not self.object.obligation.code == 'hdv_resim':
+            model_fields = filter(lambda x: x.name not in ("linked_hdv_company",), model_fields)
+        return model_fields
 
     def get_context_data(self, **kwargs):
         reporting_year = SiteConfiguration.objects.get().reporting_year
@@ -670,7 +677,7 @@ class CreateAccountPerson(generic.DetailView, SetPasswordMixin):
         self.person.account = account
         self.person.save()
         backend.sync_accounts_with_ldap([account], True)
-        set_role_for_person_account(request, self.person.company, self.person, "add")
+        set_role_for_account(self.person.company, account.uid, "add")
         msg = "Account created."
         messages.success(request, msg)
         if request.POST.get("perform_send"):
@@ -712,7 +719,7 @@ class DisableAccountPerson(generic.DetailView):
         user = User.objects.get(username=account.uid)
         user.is_active = False
         user.save()
-        set_role_for_person_account(request, self.person.company, self.person, "remove")
+        set_role_for_account(request, self.person.company, account.uid, "remove")
         return redirect("person", pk=self.person.pk)
 
 
@@ -738,7 +745,7 @@ class EnableAccountPerson(generic.DetailView):
         user = User.objects.get(username=account.uid)
         user.is_active = True
         user.save()
-        set_role_for_person_account(request, self.person.company, self.person, "add")
+        set_role_for_account(request, self.person.company, account.uid, "add")
         return redirect("person", pk=self.person.pk)
 
 
@@ -792,30 +799,7 @@ class CreateReportingFolder(views.GroupRequiredMixin, generic.DetailView):
         return super(CreateReportingFolder, self).dispatch(request, *args, **kwargs)
 
     def post(self, request, pk):
-        url = settings.BDR_API_URL + "/create_organisation_folder"
-        form = {
-            "country_code": self.company.country.code,
-            "obligation_folder_name": self.company.obligation.reportek_slug,
-            "account_uid": self.company.account.uid,
-            "organisation_name": self.company.name,
-        }
-        resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
-
-        if resp.status_code != 200:
-            messages.error(request, "BDR API request failed: %s" % resp)
-        elif "unauthorized" in bytes.decode(resp.content.lower()):
-            messages.error(request, "BDR API request failed: Unauthorized")
-        else:
-            rv = resp.json()
-            success = rv["success"]
-            if success:
-                if rv["created"]:
-                    messages.success(request, "Created: %s" % rv["path"])
-                else:
-                    messages.warning(request, "Existing: %s" % rv["path"])
-            else:
-                messages.error(request, "Error: %s" % rv["error"])
-
+        create_reporting_folder(self.company, request=request)
         return redirect("management:companies_view", pk=self.company.pk)
 
 

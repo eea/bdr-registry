@@ -30,6 +30,14 @@ ORG_FIXTURE_HDV = {
     "world_manufacturer_identifier": "test1234",
 }
 
+ORG_FIXTURE_HDV_RESIM = {
+    "name": "Teh company",
+    "addr_street": "teh street",
+    "addr_place1": "Copenhagen",
+    "addr_postalcode": "123456",
+    "world_manufacturer_identifier": "test1234",
+}
+
 PERSON_FIXTURE = {
     "title": "Mr.",
     "first_name": "Joe",

@@ -329,6 +329,21 @@
     }
 },
 {
+  "model": "post_office.emailtemplate",
+  "pk": 7,
+  "fields": {
+      "name": "HDV_RESIM",
+      "description": "",
+      "created": "2023-05-31T13:43:30.901Z",
+      "last_updated": "2023-05-31T13:43:30.901Z",
+      "subject": "Reporting data on HDV Resim {{ subject_extra }}",
+      "content": "",
+      "html_content": "<h1>Reporting data on heavy-duty vehicles</h1><p>Dear {{ person.formal_name }},</p><p>This message is addressed to you as {% if personal_account %}a reporter for{% else %}the contact person of{% endif %}&nbsp;manufacturer reporting data concerning fuel consumption and CO2&nbsp;emissions from heavy-duty vehicles in accordance with Article 5 of Regulation (EU) 2018/956.</p><p>The data shall be submitted to the European Environment Agency (EEA) using the online Business Data Repository (BDR) at&nbsp;<a href=\"https://bdr.eionet.europa.eu.\">bdr.eionet.europa.eu</a>&nbsp;.</p><p>{% if not set_owner and not password_reset and not personal_account %}</p><p>In order to submit your report you will need to login using the username and password for your company. The company for which you have received reporting rights is {{company.name}}.</p><p>{% endif %}</p><p>{% if use_reset_url %}</p><p>{% if personal_account %} Your personal username is {{ account.uid }} and you can set your password using the following&nbsp;<a href=\"{{ url }}\">link</a>&nbsp;.</p><p>{% else %}</p><p>The username for your company is {{ account.uid}} and you can set your company account password using the following&nbsp;<a href=\"{{ url }}\">link</a>&nbsp;.</p><p>{% endif %}</p><p>{% else %}</p><p>The username for your company is {{ account.uid }} and the password is {{ account.password }}.</p><p>{% endif %}</p><p>Information on how to report and where to find information on the reporting requirements and formats is available&nbsp;<a href=\"https://bdr.eionet.europa.eu/help/hdv\">here</a>&nbsp;.</p><p>If you received this e-mail but you think that you are no longer subject to the reporting obligation, please be so kind to inform us accordingly.</p><p>Thank you in advance for your co-operation.</p><p>Best regards,</p><p>HDV CO2&nbsp;monitoring team</p>",
+      "language": "",
+      "default_template": null
+  }
+},
+{
     "pk": 1,
     "model": "bdr_registry.obligation",
     "fields": {
@@ -366,6 +381,18 @@
       "code": "hdv",
       "name": "Heavy duty vehicle",
       "reportek_slug": "hdv"
+  }
+},
+{
+  "model": "bdr_registry.obligation",
+  "pk": 7,
+  "fields": {
+      "name": "Heavy-duty vehicles resimulation",
+      "code": "hdv_resim",
+      "reportek_slug": "hdv_resim",
+      "email_template": 7,
+      "bcc": "",
+      "admins": []
   }
 },
 {

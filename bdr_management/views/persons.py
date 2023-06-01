@@ -15,9 +15,8 @@ from bdr_management.base import Breadcrumb
 from bdr_management.forms import PersonFormWithoutCompany, PersonForm
 from bdr_management.views.mixins import CompanyMixin
 
-from bdr_registry.admin import set_role_for_person_account
 from bdr_registry.models import Company, Person, User
-
+from bdr_registry.utils import set_role_for_account
 
 class Persons(views.StaffuserRequiredMixin, generic.TemplateView):
 
@@ -177,8 +176,8 @@ class PersonEditBase(base.ModelTableViewMixin, SuccessMessageMixin, generic.Upda
         response = super(PersonEditBase, self).post(request, *args, **kwargs)
         company_updated = self.get_object().company
         if company != company_updated and person.account:
-            set_role_for_person_account(request, company, person, "remove")
-            set_role_for_person_account(request, company_updated, person, "add")
+            set_role_for_account(company, person.account.uid, "remove")
+            set_role_for_account(company_updated, person.account.uid, "add")
         return response
 
 
@@ -262,9 +261,7 @@ class PersonDeleteBase(base.ModelTableEditMixin, generic.DeleteView):
                     user = user.first()
                     user.is_active = False
                     user.save()
-                set_role_for_person_account(
-                    request, self.object.company, self.object, "remove"
-                )
+                set_role_for_account(self.object.company, self.object.account.uid, "remove")
             return response
         else:
             return self.cannot_delete_last_reporter()

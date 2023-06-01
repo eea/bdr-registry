@@ -179,18 +179,21 @@ class Company(models.Model):
     world_manufacturer_identifier = models.CharField(
         _("World Manufacturer Identifier (WMI)"), max_length=20, blank=True
     )
+    linked_hdv_company = models.OneToOneField(
+        "Company", null=True, blank=True, on_delete=models.PROTECT
+    )
     country = models.ForeignKey(
         Country, null=True, blank=True, on_delete=models.PROTECT
     )
     obligation = models.ForeignKey(
         Obligation, related_name="companies", on_delete=models.PROTECT
     )
-    account = models.OneToOneField(
+    account = models.ForeignKey(
         Account,
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING,
-        related_name="company",
+        related_name="companies",
     )
     website = models.URLField(null=True, blank=True)
 
@@ -279,12 +282,12 @@ class Person(models.Model):
     phone2 = models.CharField(_("Telephone 2"), max_length=255, null=True, blank=True)
     phone3 = models.CharField(_("Telephone 3"), max_length=255, null=True, blank=True)
     fax = models.CharField(_("Fax"), max_length=255, null=True, blank=True)
-    account = models.OneToOneField(
+    account = models.ForeignKey(
         Account,
         null=True,
         blank=True,
         on_delete=models.DO_NOTHING,
-        related_name="person",
+        related_name="persons",
     )
     is_main_user = models.BooleanField(default=False)
     company = models.ForeignKey(
