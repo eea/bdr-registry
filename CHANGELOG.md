@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.1 - (2023-06-01)
+--------------------
+* Modify account companies/persons for relation count change
+  [dianaboiangiu]
+
 1.8.0 - (2023-06-01)
 --------------------
 * Add new obligation for HDV resimulation
