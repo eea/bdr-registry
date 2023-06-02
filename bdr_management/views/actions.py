@@ -427,7 +427,7 @@ class CompaniesForUsernameView(ApiAccessMixin, generic.View):
             companies = []
             if hasattr(account, "persons"):
                 if account.persons.all().count() != 0:
-                    companies = account.persons.all()
+                    companies = [person.company for person in account.persons.all()]
             if hasattr(account, "companies"):
                 if account.companies.all().count() != 0:
                     companies = account.companies.all()

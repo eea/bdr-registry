@@ -34,7 +34,7 @@ urlpatterns = [
         name="companies_view",
     ),
     path(
-        "companies/account/<str:account_uid>/",
+        "companies/account/<str:account_uid>/<str:obligation_code>/",
         views.CompanyFilteredByAccountUID.as_view(),
         name="account_company",
     ),

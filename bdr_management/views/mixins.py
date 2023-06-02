@@ -24,11 +24,13 @@ class CompanyMixin(object):
         except ObjectDoesNotExist:
             return None
 
-    def get_account_company(self, uid):
+    def get_account_company(self, uid, obligation_code):
         account = self.get_account(uid)
         if account:
             try:
-                return Company.objects.get(account=account)
+                return Company.objects.get(
+                    account=account, obligation__code=obligation_code
+                )
             except ObjectDoesNotExist:
                 return None
 

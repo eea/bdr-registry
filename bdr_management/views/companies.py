@@ -120,9 +120,11 @@ class CompaniesFilter(views.StaffuserRequiredMixin, CompanyMixin, base.FilterVie
 class CompanyFilteredByAccountUID(ApiAccessMixin, CompanyMixin, generic.View):
     raise_exception = True
 
-    def get(self, request, account_uid=None):
+    def get(self, request, account_uid=None, obligation_code=None):
         data = {}
-        company = self.get_account_company(uid=account_uid)
+        company = self.get_account_company(
+            uid=account_uid, obligation_code=obligation_code
+        )
         if company:
             people = []
             for person in company.people.all():
