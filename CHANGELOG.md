@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.2 - (2023-06-02)
+--------------------
+* Fixes after switching to multiple companies/persons related to one account
+  [dianaboiangiu]
+
 1.8.1 - (2023-06-01)
 --------------------
 * Modify account companies/persons for relation count change
