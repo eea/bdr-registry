@@ -20,7 +20,7 @@ def sync_accounts_with_ldap(accounts, person=None):
     counters = defaultdict(int)
     for account in accounts:
         if person:
-            company = account.persons.first()
+            company = account.persons.first().company
         else:
             company = account.companies.first()
         if ldap_editor.create_account(
