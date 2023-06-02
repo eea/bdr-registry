@@ -73,7 +73,7 @@ class home(TemplateView):
                         "reporting_folder_path": person.company.build_reporting_folder_path(),
                     }
                     info_entry['has_reporting_folder'] = person.company.has_reporting_folder(
-                        info["reporting_folder_path"]
+                        info_entry["reporting_folder_path"]
                     )
                     info.append(info_entry)
             else:
@@ -83,7 +83,7 @@ class home(TemplateView):
                         "reporting_folder_path": company.build_reporting_folder_path(),
                     }
                     info_entry['has_reporting_folder'] = company.has_reporting_folder(
-                    info["reporting_folder_path"]
+                    info_entry["reporting_folder_path"]
                 )
         return info
 
