@@ -20,11 +20,12 @@ class Command(BaseCommand):
             company.country = eu_country
             company._state.adding = True
             company.save()
-            create_reporting_folder(company)
+            if company.account:
+                create_reporting_folder(company)
             for person in old_company.people.all():
                 person.pk = None
                 person.company = company
                 person._state.adding = True
                 person.save()
-                if person.account:
+                if person.account and company.account:
                     set_role_for_account(person.company, person.account.uid, "add")
