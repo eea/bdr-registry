@@ -58,32 +58,31 @@ class home(TemplateView):
             "has_reporting_folder": False,
             "reporting_folder_path": None,
         }
+        info = []
         try:
             account = models.Account.objects.get(uid=self.request.user)
         except models.Account.DoesNotExist:
             pass
         else:
-            try:
-                company = models.Company.objects.get(account=account)
-            except models.Company.DoesNotExist:
-                try:
-                    person = models.Person.objects.get(account=account)
-                except models.Person.DoesNotExist:
-                    pass
-                else:
-                    info["has_company"] = True
-                    info["company"] = person.company
-                    info[
-                        "reporting_folder_path"
-                    ] = person.company.build_reporting_folder_path()
-                    info["has_reporting_folder"] = person.company.has_reporting_folder(
+            companies = models.Company.objects.filter(account=account)
+            if not len(companies):
+                persons = models.Person.objects.filter(account=account)
+                for person in persons:
+                    info_entry = {
+                        "company": person.company,
+                        "reporting_folder_path": person.company.build_reporting_folder_path(),
+                    }
+                    info_entry['has_reporting_folder'] = person.company.has_reporting_folder(
                         info["reporting_folder_path"]
                     )
+                    info.append(info_entry)
             else:
-                info["has_company"] = True
-                info["company"] = company
-                info["reporting_folder_path"] = company.build_reporting_folder_path()
-                info["has_reporting_folder"] = company.has_reporting_folder(
+                for company in companies:
+                    info_entry = {
+                        "company": company,
+                        "reporting_folder_path": company.build_reporting_folder_path(),
+                    }
+                    info_entry['has_reporting_folder'] = company.has_reporting_folder(
                     info["reporting_folder_path"]
                 )
         return info
