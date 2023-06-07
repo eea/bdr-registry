@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.3 - (2023-06-07)
+--------------------
+* Stop migrations auto run in entrypoint
+  [dianaboiangiu]
+
 1.8.2 - (2023-06-02)
 --------------------
 * Fixes after switching to multiple companies/persons related to one account
