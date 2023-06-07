@@ -16,7 +16,11 @@ fi
 
 args=("$@")
 python manage.py collectstatic --noinput
-python manage.py migrate
+
+if [ "x$DJANGO_MIGRATE" = 'xyes' ]; then
+    python manage.py migrate
+fi
+
 
 case $1 in
     manage)
