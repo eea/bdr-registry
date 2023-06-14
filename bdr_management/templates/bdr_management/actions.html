@@ -16,25 +16,64 @@
       <tr>
         <th>{% trans "Action" %}</th>
         <th>{% trans "Description" %}</th>
+        <th>{% trans "Filter" %}</th>
       </tr>
     </thead>
     <tr>
       <td><a href="{% url 'management:copy_report_status' %}">{% trans "Copy reporting status data" %}</a></td>
       <td>Copy reporting status from {{ last_year }} to {{ curr_year }}</td>
+      <td></td>
     </tr>
     <tr>
-      <td><a href="{% url 'management:companies_export_json' %}">{% trans "JSON export" %}</a></td>
+      <td><a  id="company_json_export_link" href="{% url 'management:companies_export_json' %}">{% trans "JSON export" %}</a></td>
       <td>{% trans "Export all companies with their persons to JSON" %}</td>
+      <td>
+        <select id="company_json_export">
+        <option value="{% url 'management:companies_export_json' %}" default="True">All</option>
+        {% for obligation in obligations %}
+          <option value="{% url 'management:companies_export_json' %}?obligation={{obligation.code}}">{{ obligation.name }}</option>
+        {% endfor %}
+        </select>
+      </td>
     </tr>
     <tr>
-      <td><a href="{% url 'management:companies_export' %}">{% trans "Companies ( including persons) Excel export" %}</a></td>
+      <td><a id="company_excel_export_link" href="{% url 'management:companies_export' %}">{% trans "Companies ( including persons) Excel export" %}</a></td>
       <td>{% trans "Export all companies to Excel, including information regarding persons" %}</td>
+      <td>
+        <select id="company_excel_export">
+        <option value="{% url 'management:companies_export' %}" default="True">All</option>
+        {% for obligation in obligations %}
+          <option value="{% url 'management:companies_export' %}?obligation={{obligation.code}}">{{ obligation.name }}</option>
+        {% endfor %}
+        </select>
+      </td>
     </tr>
     <tr>
-      <td><a href="{% url 'management:persons_export' %}">{% trans "Persons Excel export" %}</a></td>
+      <td><a id="persons_export_link" href="{% url 'management:persons_export' %}">{% trans "Persons Excel export" %}</a></td>
       <td>{% trans "Export all persons to Excel" %}</td>
+      <td>
+        <select id="persons_export">
+        <option value="{% url 'management:persons_export' %}" default="True">All</option>
+        {% for obligation in obligations %}
+          <option value="{% url 'management:persons_export' %}?obligation={{obligation.code}}">{{ obligation.name }}</option>
+        {% endfor %}
+        </select>
+      </td>
     </tr>
 
   </table>
 
+  <script>
+      $("#persons_export").change(function () {
+        $("#persons_export_link").attr('href', this.value);
+      });
+
+      $("#company_excel_export").change(function () {
+        $("#company_excel_export_link").attr('href', this.value);
+      });
+
+      $("#company_json_export").change(function () {
+        $("#company_json_export_link").attr('href', this.value);
+      });
+  </script>
 {% endblock %}
