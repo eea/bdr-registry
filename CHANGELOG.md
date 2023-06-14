@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.4 - (2023-06-14)
+--------------------
+* Add dropdown for filtering by obligation on export
+  [dianaboiangiu]
+
 1.8.3 - (2023-06-07)
 --------------------
 * Stop migrations auto run in entrypoint
