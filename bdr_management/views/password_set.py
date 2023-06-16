@@ -97,7 +97,7 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin, generic.For
                     msg = _(
                         "An e-mail with a reset link has been sent to {}.".format(email)
                     )
-                    self.send_mail(token, person=account.person)
+                    self.send_mail(token, person=account.persons.first())
             if hasattr(account, "companies"):
                 if account.companies.all().count() != 0:
                     email = account.companies.first().main_reporter.email
