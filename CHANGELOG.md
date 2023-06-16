@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.6 - (2023-06-16)
+--------------------
+* Retry docker build
+  [dianaboiangiu]
+
 1.8.5 - (2023-06-16)
 --------------------
 * Fix password functionality
