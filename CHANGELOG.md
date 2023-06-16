@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.5 - (2023-06-16)
+--------------------
+* Fix password functionality
+  [dianaboiangiu]
+
 1.8.4 - (2023-06-14)
 --------------------
 * Add dropdown for filtering by obligation on export
