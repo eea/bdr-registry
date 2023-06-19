@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.7 - (2023-06-19)
+--------------------
+* Retry docker builder
+  [dianaboiangiu]
+
 1.8.6 - (2023-06-16)
 --------------------
 * Retry docker build
