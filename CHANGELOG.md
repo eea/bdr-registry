@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.8.8 - (2023-06-20)
+--------------------
+* Block HDV/HDV resim editing from env
+* Fix docker image
+  [dianboiangiu]
+
 1.8.7 - (2023-06-19)
 --------------------
 * Retry docker builder
