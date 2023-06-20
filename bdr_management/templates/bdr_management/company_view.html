@@ -151,7 +151,7 @@
       </li>
     {% endfor %}
   </ul>
-  {% if user|has_permission:object and user|is_staff_or_company_account:object %}
+  {% if user|has_permission:object and user|is_staff_or_company_account:object and company.can_edit %}
     <div class="btn-toolbar">
       <a href="{{ person_add_url }}" class="btn">
         {% trans "Add a new person" %}</a>

@@ -8,10 +8,9 @@ RUN mkdir -p $BDR_REG_ROOT/logs $BDR_REG_ROOT/static
 
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
-    netcat \
+    netcat-traditional \
     sudo \
-    python-setuptools \
-    python-dev \
+    python-dev-is-python3 \
     build-essential \
     libpq-dev \
     libssl-dev \

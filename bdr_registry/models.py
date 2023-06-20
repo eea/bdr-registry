@@ -180,7 +180,7 @@ class Company(models.Model):
         _("World Manufacturer Identifier (WMI)"), max_length=20, blank=True
     )
     linked_hdv_company = models.OneToOneField(
-        "Company", null=True, blank=True, on_delete=models.PROTECT
+        "Company", null=True, blank=True, on_delete=models.PROTECT, related_name="hdv_resim_company"
     )
     country = models.ForeignKey(
         Country, null=True, blank=True, on_delete=models.PROTECT
@@ -235,6 +235,14 @@ class Company(models.Model):
         if main_user:
             return True
 
+    @property
+    def can_edit(self):
+        if self.obligation.code == 'hdv':
+            return settings.ENABLE_HDV_EDITING
+        elif self.obligation.code == 'hdv_resim':
+            return settings.ENABLE_HDV_RESIM_EDITING
+        else:
+            return True
 
 def organisation_loaded(instance, **extra):
     instance._initial_name = "" if instance.pk is None else instance.name
