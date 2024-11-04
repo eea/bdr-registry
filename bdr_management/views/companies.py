@@ -721,7 +721,15 @@ class DisableAccountPerson(generic.DetailView):
         user = User.objects.get(username=account.uid)
         user.is_active = False
         user.save()
-        set_role_for_account(request, self.person.company, account.uid, "remove")
+        set_role_for_account(self.person.company, account.uid, "remove")
+        if self.person.company.linked_hdv_company:
+            set_role_for_account(
+                self.person.company.linked_hdv_company, account.uid, "remove"
+            )
+        if self.person.company.hdv_resim_company:
+            set_role_for_account(
+                self.person.company.hdv_resim_company, account.uid, "remove"
+            )
         return redirect("person", pk=self.person.pk)
 
 
@@ -747,7 +755,15 @@ class EnableAccountPerson(generic.DetailView):
         user = User.objects.get(username=account.uid)
         user.is_active = True
         user.save()
-        set_role_for_account(request, self.person.company, account.uid, "add")
+        set_role_for_account(self.person.company, account.uid, "add")
+        if self.person.company.linked_hdv_company:
+            set_role_for_account(
+                self.person.company.linked_hdv_company, account.uid, "add"
+            )
+        if self.person.company.hdv_resim_company:
+            set_role_for_account(
+                self.person.company.hdv_resim_company, account.uid, "add"
+            )
         return redirect("person", pk=self.person.pk)
 
 

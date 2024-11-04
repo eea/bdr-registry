@@ -9,6 +9,8 @@ RUN mkdir -p $BDR_REG_ROOT/logs $BDR_REG_ROOT/static
 RUN apt-get update \
  && apt-get install -y --no-install-recommends curl \
     netcat-traditional \
+    vim \
+    curl \
     sudo \
     python-dev-is-python3 \
     build-essential \
