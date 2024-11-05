@@ -370,7 +370,7 @@ class CompaniesManagementEdit(views.GroupRequiredMixin, CompanyBaseEdit):
                 "account_uid": company.account.uid,
                 "organisation_name": request.POST.get("name"),
             }
-            requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
+            requests.post(url, data=form, auth=settings.BDR_API_AUTH)
 
         return super(CompanyBaseEdit, self).post(request, *args, **kwargs)
 

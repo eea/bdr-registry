@@ -217,7 +217,7 @@ class Company(models.Model):
         if folder_path is None:
             folder_path = self.build_reporting_folder_path()
         url = settings.BDR_API_URL + folder_path
-        resp = requests.get(url, verify=False)
+        resp = requests.get(url)
         if resp.status_code == 200:
             return True
         else:

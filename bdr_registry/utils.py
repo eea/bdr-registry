@@ -24,7 +24,7 @@ def create_reporting_folder(company, request=None, *args, **kwargs):
         "account_uid": company.account.uid,
         "organisation_name": company.name,
     }
-    resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH, verify=False)
+    resp = requests.post(url, data=form, auth=settings.BDR_API_AUTH)
 
     if resp.status_code != 200:
         logging.error("BDR API request failed: %s" % resp)
@@ -71,8 +71,7 @@ def set_role_for_account(company, account_uid, action):
         url,
         data=json.dumps(form),
         auth=settings.BDR_API_AUTH,
-        headers=headers,
-        verify=False,
+        headers=headers
     )
     if resp.status_code != 200:
         logging.error("BDR API request failed: %r", resp)
