@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.8.9 - (2024-11-05)
+--------------------
+* Add script for checking HDV accounts' roles
+* Fix set_role call on enable/disable accounts
+  [dianaboiangiu]
+
 1.8.8 - (2023-06-20)
 --------------------
 * Block HDV/HDV resim editing from env
