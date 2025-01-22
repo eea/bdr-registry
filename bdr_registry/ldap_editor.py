@@ -32,6 +32,7 @@ class LdapEditor(object):
         from django.conf import settings
         search_filter = f"(uid={uid})"
         result = self.conn.search_s(self.users_dn, ldap.SCOPE_SUBTREE, search_filter)
+        return result
 
     def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
