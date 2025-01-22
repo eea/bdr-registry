@@ -106,7 +106,7 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin, generic.For
                             email
                         )
                     )
-                    self.send_mail(token, company=account.company)
+                    self.send_mail(token, company=account.companies.first())
             messages.success(request, msg)
             return self.form_valid(form)
         else:
