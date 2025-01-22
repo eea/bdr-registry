@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.10 - (2025-01-22)
+---------------------
+* Add method to check if user exists in LDAP
+  [dianaboiangiu]
+
 1.8.9 - (2024-11-05)
 --------------------
 * Add script for checking HDV accounts' roles
