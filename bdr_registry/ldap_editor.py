@@ -28,6 +28,11 @@ class LdapEditor(object):
     def _account_dn(self, uid):
         return "uid=" + uid + "," + self.users_dn
 
+    def search_account(self, uid):
+        from django.conf import settings
+        search_filter = f"(uid={uid})"
+        result = self.conn.search_s(self.users_dn, ldap.SCOPE_SUBTREE, search_filter)
+
     def create_account(self, uid, org_name, country_name, password):
         name = "%s / %s" % (org_name, country_name)
         attrs = [

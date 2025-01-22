@@ -140,6 +140,9 @@
           {% if person.account.related_user and not person.account.related_user.is_active %}
             <span style="color:red;">(disabled)</span>
           {% endif %}
+          {% if not person.account.exists_in_ldap %}
+            <span style="color: red;">Warning! This account cannot be found in LDAP</span>
+          {% endif %}
         {% else %}
           - This person has no account set.
         {% endif %}

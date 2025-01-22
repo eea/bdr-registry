@@ -13,6 +13,7 @@ from django.utils.encoding import force_text
 from django.utils.translation import ugettext_lazy as _
 
 from solo.models import SingletonModel
+from bdr_registry.ldap_editor import create_ldap_editor
 from .local import *
 from post_office.models import EmailTemplate
 
@@ -127,6 +128,16 @@ class Account(models.Model):
     def set_random_password(self):
         self.password = generate_key(size=8)
         self.save()
+
+    @property
+    def exists_in_ldap(self):
+        try:
+            ldap_editor = create_ldap_editor()
+            result = ldap_editor.search_account(self.uid)
+            if result:
+                return True
+        except Exception as e:
+            return False
 
     objects = AccountManager()
 
