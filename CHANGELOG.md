@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.8.11 - (2025-02-11)
+---------------------
+* Upgrade django-simple-captcha package
+  [dianaboiangiu]
+
 1.8.10 - (2025-01-22)
 ---------------------
 * Add method to check if user exists in LDAP
