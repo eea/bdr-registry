@@ -22,4 +22,5 @@ EMAIL_HOST = "localhost"
 EMAIL_PORT = 25
 
 BDR_API_URL = "http://example.com/api"
+DISABLE_ZOPE_CONNECTION = True
 REPORTING_YEAR = 2016

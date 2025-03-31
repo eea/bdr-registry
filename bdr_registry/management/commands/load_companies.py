@@ -13,13 +13,14 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("user", type=str)
         parser.add_argument("password", type=str)
+        parser.add_argument("url", type=str)
         parser.add_argument("--updated_since", type=str, default="10/10/2017")
 
     def handle(self, *args, **options):
         headers = {"user": options["user"], "password": options["password"]}
         updated_since = options["updated_since"]
         url = (
-            "https://webgate.acceptance.ec.europa.eu/ods2/rest/api/latest/odsundertakings?updatedSince="
+            options["url"]
             + updated_since
         )
         resp = requests.get(url, headers=headers)

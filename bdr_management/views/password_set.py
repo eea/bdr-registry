@@ -13,7 +13,7 @@ from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.utils import timezone
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views import generic
 
 from bdr_management import base
@@ -93,18 +93,14 @@ class PasswordSetRequest(SetPasswordMixin, base.ModelTableViewMixin, generic.For
             token = self.send_password(account)
             if hasattr(account, "persons"):
                 if account.persons.all().count() != 0:
-                    email = account.persons.first().email
                     msg = _(
-                        "An e-mail with a reset link has been sent to {}.".format(email)
+                        "An e-mail with a reset link has been sent to the email address linked to the account."
                     )
                     self.send_mail(token, person=account.persons.first())
             if hasattr(account, "companies"):
                 if account.companies.all().count() != 0:
-                    email = account.companies.first().main_reporter.email
                     msg = _(
-                        "An e-mail with a reset link has been sent to the {} (the company account owner).".format(
-                            email
-                        )
+                        "An e-mail with a reset link has been sent to the company account owner's email address."
                     )
                     self.send_mail(token, company=account.companies.first())
             messages.success(request, msg)

@@ -20,8 +20,8 @@ class secure_str(str):
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 DEBUG = env("DEBUG", False)
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", ["localhost", "127.0.0.1"])
-ADMIN_ALL_BDR_TABLES = env("ADMIN_ALL_BDR_TABLES", False)
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", ["localhost", "127.0.0.1", "0.0.0.0"])
+ADMIN_ALL_BDR_TABLES = env("ADMIN_ALL_BDR_TABLES", True)
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
@@ -95,7 +95,6 @@ INSTALLED_APPS = (
     "django.contrib.messages",
     "django.contrib.admin",
     "django.contrib.staticfiles",
-    "django_nose",
     "frame",
     "gunicorn",
     "widget_tweaks",
@@ -254,12 +253,6 @@ LOCALITIES_TABLE_URL = "https://bdr.eionet.europa.eu/localities_table"
 SELF_OBL_EXCLUDE = ["fgas", "ods", "mercury", "hdv", "hdv_resim"]
 FIRST_REPORTING_YEAR = 2012
 
-# TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = [
-    "--with-coverage",
-    "--cover-package=bdr_registry,bdr_management",
-]
-
 # random name, not honeypot :)
 HONEYPOT_FIELD_NAME = "company_identifier"
 HONEYPOT_FORMAT = "%d%m%Y%H%S%M"
@@ -274,7 +267,7 @@ except ImportError:
 
 if "test" in sys.argv:
     try:
-        from test_settings import *
+        from bdr_registry.test_settings import *
     except ImportError:
         pass
 

@@ -9,8 +9,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.urls import reverse
 from django.db import models, transaction, IntegrityError
-from django.utils.encoding import force_text
-from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_str
+from django.utils.translation import gettext_lazy as _
 
 from solo.models import SingletonModel
 from bdr_registry.ldap_editor import create_ldap_editor
@@ -49,7 +49,7 @@ def validate_comma_separated_email_list(value):
     """
     Validate every email address in a comma separated list of emails.
     """
-    value = force_text(value)
+    value = force_str(value)
 
     emails = [email.strip() for email in value.split(",")]
 

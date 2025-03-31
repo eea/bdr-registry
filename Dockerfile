@@ -1,4 +1,4 @@
-FROM python:3.8-slim
+FROM python:3.13-slim
 
 ENV BDR_REG_ROOT=/bdrreg \
     BDR_REG_APP=/bdrreg/bdr-registry \

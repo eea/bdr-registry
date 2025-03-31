@@ -16,12 +16,12 @@ from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import User
 from django.core import mail
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import path
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from bdr_registry import models
 from .audit import log
@@ -420,11 +420,11 @@ class OrganisationAdmin(ReadOnlyAdmin):
 
     def get_urls(self):
         my_urls = [
-            url(
-                r"^(?P<pk>\d+)/name_history/$",
-                self.admin_site.admin_view(self.name_history),
+            path(
+            "/<int:pk>/name_history/",
+            self.admin_site.admin_view(self.name_history),
             ),
-            url(r"^export$", self.admin_site.admin_view(self.export)),
+            path("/export/", self.admin_site.admin_view(self.export)),
         ]
         return my_urls + super(OrganisationAdmin, self).get_urls()
 
@@ -510,7 +510,7 @@ class PersonAdmin(ReadOnlyAdmin):
 
     def get_urls(self):
         my_urls = [
-            url(r"^export$", self.admin_site.admin_view(self.export)),
+            path("/export/", self.admin_site.admin_view(self.export)),
         ]
         return my_urls + super(PersonAdmin, self).get_urls()
 
