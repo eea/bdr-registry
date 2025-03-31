@@ -1,6 +1,5 @@
 #!/usr/bin/python
-""" Configure settings.py based on environment variables
-"""
+"""Configure settings.py based on environment variables"""
 import os
 import shutil
 

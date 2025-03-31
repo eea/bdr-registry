@@ -19,10 +19,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         headers = {"user": options["user"], "password": options["password"]}
         updated_since = options["updated_since"]
-        url = (
-            options["url"]
-            + updated_since
-        )
+        url = options["url"] + updated_since
         resp = requests.get(url, headers=headers)
         if resp.status_code != 200:
             self.stdout.write("Bad response.")

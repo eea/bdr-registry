@@ -4,7 +4,6 @@ from bdr_registry.models import Company, Obligation, User
 from bdr_registry.utils import set_role_for_account
 
 
-
 class Command(BaseCommand):
     help = """
         Check the status of all HDV users and set the correct role for all accounts.
@@ -21,17 +20,25 @@ class Command(BaseCommand):
             return
         if user.is_active:
             if company.linked_hdv_company:
-                print(f"Set ADD role for {person.account.uid} in {company.linked_hdv_company.name}")
+                print(
+                    f"Set ADD role for {person.account.uid} in {company.linked_hdv_company.name}"
+                )
                 if not options["dry_run"]:
-                    set_role_for_account(company.linked_hdv_company, person.account.uid, "add")
+                    set_role_for_account(
+                        company.linked_hdv_company, person.account.uid, "add"
+                    )
             print(f"Set ADD role for {person.account.uid} in {company.name}")
             if not options["dry_run"]:
                 set_role_for_account(company, person.account.uid, "add")
         else:
             if company.linked_hdv_company:
-                print(f"Set REMOVE role for {person.account.uid} in {company.linked_hdv_company.name}")
+                print(
+                    f"Set REMOVE role for {person.account.uid} in {company.linked_hdv_company.name}"
+                )
                 if not options["dry_run"]:
-                    set_role_for_account(company.linked_hdv_company, person.account.uid, "remove")
+                    set_role_for_account(
+                        company.linked_hdv_company, person.account.uid, "remove"
+                    )
             print(f"Set REMOVE role for {person.account.uid} in {company.name}")
             if not options["dry_run"]:
                 set_role_for_account(person.company, person.account.uid, "remove")

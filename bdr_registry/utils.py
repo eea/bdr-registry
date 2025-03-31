@@ -68,10 +68,7 @@ def set_role_for_account(company, account_uid, action):
     }
     headers = {"Content-type": "application/json"}
     resp = requests.post(
-        url,
-        data=json.dumps(form),
-        auth=settings.BDR_API_AUTH,
-        headers=headers
+        url, data=json.dumps(form), auth=settings.BDR_API_AUTH, headers=headers
     )
     if resp.status_code != 200:
         logging.error("BDR API request failed: %r", resp)

@@ -5,9 +5,7 @@ from bdr_registry.models import Account
 
 
 class Command(BaseCommand):
-    help = (
-        "Check if ldap accounts are created. If they are not, they will be created."
-    )
+    help = "Check if ldap accounts are created. If they are not, they will be created."
 
     def add_arguments(self, parser):
         parser.add_argument("--dry-run", type=bool, default=True)
@@ -18,7 +16,9 @@ class Command(BaseCommand):
         for account in accounts:
             result = ldap_editor.search_account(account.uid)
             if not result:
-                self.stdout.write("Account {uid} does not exist in LDAP.".format(uid=account.uid))
+                self.stdout.write(
+                    "Account {uid} does not exist in LDAP.".format(uid=account.uid)
+                )
                 if options["dry_run"]:
                     continue
 

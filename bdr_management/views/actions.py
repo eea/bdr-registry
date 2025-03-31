@@ -43,7 +43,7 @@ class Actions(views.StaffuserRequiredMixin, generic.TemplateView):
         data["breadcrumbs"] = breadcrumbs
         curr_year = config.reporting_year
         last_year = curr_year - 1
-        data['obligations'] = self.request.user.obligations.all()
+        data["obligations"] = self.request.user.obligations.all()
         data["curr_year"] = curr_year
         data["last_year"] = last_year
         return data
@@ -95,10 +95,14 @@ class CompaniesJsonExport(ApiAccessMixin, CompanyMixin, generic.View):
         companies = []
 
         user_obligations = self.get_obligations(no_user=self.no_user)
-        selected_obligation = Obligation.objects.filter(code=self.request.GET.get('obligation', '')).first()
+        selected_obligation = Obligation.objects.filter(
+            code=self.request.GET.get("obligation", "")
+        ).first()
         if selected_obligation:
             user_obligations = [selected_obligation.id]
-        companies_list = Company.objects.filter(obligation__id__in=user_obligations).all()
+        companies_list = Company.objects.filter(
+            obligation__id__in=user_obligations
+        ).all()
 
         for company in companies_list:
             people = []
@@ -196,7 +200,9 @@ class CompaniesExcelExport(ApiAccessMixin, CompanyMixin, generic.View):
         worksheet.set_column("R1:T1", 20)
         worksheet.write_row("A1", header, format_cols_headers)
         user_obligations = self.get_obligations(no_user=self.no_user)
-        selected_obligation = Obligation.objects.filter(code=self.request.GET.get('obligation', '')).first()
+        selected_obligation = Obligation.objects.filter(
+            code=self.request.GET.get("obligation", "")
+        ).first()
         if selected_obligation:
             user_obligations = [selected_obligation.id]
         companies = Company.objects.filter(obligation__id__in=user_obligations).all()
@@ -356,7 +362,9 @@ class PersonsExport(ApiAccessMixin, CompanyMixin, generic.View):
         rows = []
 
         user_obligations = self.get_obligations(no_user=self.no_user)
-        selected_obligation = Obligation.objects.filter(code=request.GET.get('obligation', '')).first()
+        selected_obligation = Obligation.objects.filter(
+            code=request.GET.get("obligation", "")
+        ).first()
         if selected_obligation:
             user_obligations = [selected_obligation.id]
 

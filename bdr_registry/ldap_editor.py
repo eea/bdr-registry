@@ -30,6 +30,7 @@ class LdapEditor(object):
 
     def search_account(self, uid):
         from django.conf import settings
+
         search_filter = f"(uid={uid})"
         result = self.conn.search_s(self.users_dn, ldap.SCOPE_SUBTREE, search_filter)
         return result

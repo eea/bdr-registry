@@ -1,4 +1,4 @@
-""" Audit logging """
+"""Audit logging"""
 
 import logging
 from django.conf import settings

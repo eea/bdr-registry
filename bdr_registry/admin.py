@@ -1,5 +1,4 @@
 import csv
-import json
 import logging
 import post_office
 import requests
@@ -421,8 +420,8 @@ class OrganisationAdmin(ReadOnlyAdmin):
     def get_urls(self):
         my_urls = [
             path(
-            "/<int:pk>/name_history/",
-            self.admin_site.admin_view(self.name_history),
+                "/<int:pk>/name_history/",
+                self.admin_site.admin_view(self.name_history),
             ),
             path("/export/", self.admin_site.admin_view(self.export)),
         ]
@@ -539,15 +538,18 @@ class PersonAdmin(ReadOnlyAdmin):
             )
         return HttpResponse(of.getvalue(), content_type="text/plain")
 
+
 from django.forms import ModelForm, PasswordInput
+
 
 class AccountForm(ModelForm):
     class Meta:
         model = models.Account
         fields = ("uid",)
         widgets = {
-            'password': PasswordInput(),
+            "password": PasswordInput(),
         }
+
 
 class AccountAdmin(admin.ModelAdmin):
     form = AccountForm
@@ -557,6 +559,7 @@ class AccountAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
 
 admin.site.register(models.Country)
 admin.site.register(models.ApiKey)
