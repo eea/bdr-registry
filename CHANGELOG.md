@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.9.0 - (2025-03-31)
+--------------------
+* Upgrade packages to the latest version
+  [dianaboiangiu]
+
 1.8.11 - (2025-02-11)
 ---------------------
 * Upgrade django-simple-captcha package
