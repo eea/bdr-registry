@@ -9,11 +9,14 @@ BDR Organisations Registry
 	:target: https://coveralls.io/github/eea/bdr-registry?branch=master
 	:alt: Coveralls
 
-.. image:: https://img.shields.io/docker/build/eeacms/reportek.bdr-registry
+.. image:: https://img.shields.io/docker/automated/eeacms/reportek.bdr-registry
 	:target: https://hub.docker.com/r/eeacms/reportek.bdr-registry/builds
-	:alt: Docker image
+	:alt: Docker build
 
-----------
+.. image:: https://img.shields.io/docker/v/eeacms/reportek.bdr-registry
+        :alt: Docker latest version
+
+
 
 `bdr-registry`_ is a registry of company contacts (implemented as a
 Django application) for the reporting process which is handled by the
