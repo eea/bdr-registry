@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.9.1 - (2025-04-02)
+--------------------
+* Upgrade eea.frame package
+  [dianaboiangiu]
+
 1.9.0 - (2025-03-31)
 --------------------
 * Upgrade packages to the latest version
